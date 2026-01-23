@@ -1,7 +1,7 @@
 export const translations = {
     es: {
         title: "Ciberportero",
-        description: "Ciberdefensa y seguridad digital desde la primera línea.",
+        description: "Ciberdefensa y seguridad digital desde la primera línea",
         back: "Volver al inicio",
         footer: "© 2026 | Mens secura in corpore tuto",
         langName: "Español",
@@ -28,7 +28,7 @@ export const translations = {
     },
     en: {
         title: "Ciberportero",
-        description: "Cyberdefense and digital security from the front lines.",
+        description: "Cyberdefense and digital security from the front lines",
         back: "Back to home",
         footer: "© 2026 | Mens secura in corpore tuto",
         langName: "English",
@@ -55,7 +55,7 @@ export const translations = {
     },
     pt: {
         title: "Ciberportero",
-        description: "Ciberdefesa e segurança digital na linha de frente.",
+        description: "Ciberdefesa e segurança digital na linha de frente",
         back: "Voltar ao início",
         footer: "© 2026 | Mens secura in corpore tuto",
         langName: "Português",
