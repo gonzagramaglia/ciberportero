@@ -2,13 +2,13 @@
 
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
-import { ChevronLeft } from 'lucide-react';
-import { useLanguage } from '@/context/LanguageContext';
-import { translations } from '@/lib/translations';
+import { ChevronLeft, Github, Youtube } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
+import { translations } from '../../lib/translations';
 import { useState, useEffect } from 'react';
-import { PostData } from '@/lib/posts-client';
+import { PostData } from '../../lib/posts-client';
 import { useParams, notFound } from 'next/navigation';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
+import LanguageSwitcher from '../../components/LanguageSwitcher';
 
 export default function Post() {
     const { slug } = useParams();
@@ -64,8 +64,14 @@ export default function Post() {
                 </Link>
             </div>
 
-            <footer>
-                {t.footer}
+            <footer style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+                    <Youtube size={22} />
+                </a>
+                <span>{t.footer}</span>
+                <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+                    <Github size={18} />
+                </a>
             </footer>
         </div>
     );

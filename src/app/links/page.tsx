@@ -1,18 +1,26 @@
 'use client';
 
 import Link from 'next/link';
-import { useLanguage } from '@/context/LanguageContext';
-import { translations } from '@/lib/translations';
-import { ChevronLeft, ExternalLink } from 'lucide-react';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
+import { useLanguage } from '../../context/LanguageContext';
+import { translations } from '../../lib/translations';
+import { ChevronLeft, ExternalLink, Mail, Copy, Check, Github, Youtube } from 'lucide-react';
+import LanguageSwitcher from '../../components/LanguageSwitcher';
+
+import { useState } from 'react';
 
 export default function LinksPage() {
     const { lang } = useLanguage();
     const t = translations[lang];
+    const [copied, setCopied] = useState(false);
 
-    const links = [
-        { name: 'Autogestión SIU Guaraní', url: 'https://autogestion.fadena.undef.edu.ar/3w/', desc: 'Aquí solo pueden ingresar alumnos ya inscriptos' },
-    ];
+    const handleCopyEmail = () => {
+        if (!t.contact?.email) return;
+        navigator.clipboard.writeText(t.contact.email);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+    };
+
+    const links = t.links || [];
 
     return (
         <div className="container fade-in">
@@ -43,10 +51,53 @@ export default function LinksPage() {
                         </li>
                     ))}
                 </ul>
+
+                <div style={{ marginTop: '4rem', marginBottom: '2.5rem', padding: '2rem', background: 'rgba(0, 112, 243, 0.03)', borderRadius: '12px', borderLeft: '4px solid var(--accent)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+                        <Mail size={20} color="var(--accent)" />
+                        <h2 style={{ fontSize: '1.2rem', margin: 0 }}>{t.contact?.title}</h2>
+                    </div>
+                    <p style={{ color: 'var(--muted)', marginBottom: '1rem', fontSize: '0.95rem' }}>{t.contact?.description}</p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <button
+                            onClick={handleCopyEmail}
+                            className="post-title"
+                            style={{
+                                fontSize: '1rem',
+                                background: 'none',
+                                border: 'none',
+                                color: 'var(--accent)',
+                                cursor: 'pointer',
+                                padding: 0,
+                                font: 'inherit',
+                                textAlign: 'left',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.5rem'
+                            }}
+                        >
+                            {t.contact?.email}
+                            {copied ? (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                    <Check size={16} color="#0070f3" />
+                                    <span style={{ fontSize: '0.8rem', fontWeight: 500 }}>{t.contact?.copied}</span>
+                                </div>
+                            ) : (
+                                <Copy size={16} />
+                            )}
+                        </button>
+                    </div>
+                </div>
             </main>
 
-            <footer>
-                {t.footer}
+            <footer style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+                    <Youtube size={20} />
+                </a>
+                <span>{t.footer}</span>
+                <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+                    <Github size={18} />
+                </a>
             </footer>
         </div>
     );

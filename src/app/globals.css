@@ -59,10 +59,23 @@ header {
   color: var(--muted);
 }
 
-.lang-switcher a.active {
+.lang-switcher .active {
   color: var(--accent);
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  opacity: 1 !important;
+}
+
+.lang-switcher button {
+  transition: all 0.2s ease;
+  opacity: 0.6;
+}
+
+.lang-switcher button:hover {
+  opacity: 1;
+}
+
+.lang-switcher button.active {
+  color: var(--accent);
+  opacity: 1;
 }
 
 header h1 {

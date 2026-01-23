@@ -1,11 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { useLanguage } from '@/context/LanguageContext';
-import { translations } from '@/lib/translations';
+import { useLanguage } from '../context/LanguageContext';
+import { translations } from '../lib/translations';
 import { useState, useEffect } from 'react';
-import { PostData } from '@/lib/posts-client';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
+import { PostData } from '../lib/posts-client';
+import LanguageSwitcher from '../components/LanguageSwitcher';
+import { Github, Youtube } from 'lucide-react';
 
 export default function Home() {
     const { lang } = useLanguage();
@@ -33,13 +34,11 @@ export default function Home() {
             </header>
 
             <main>
-                <div className="post-item featured">
-                    <Link href="/links">
-                        <span className="featured-tag">{t.featured?.tag}</span>
-                        <span className="post-title">{t.featured?.title}</span>
-                        <p className="post-description">{t.featured?.description}</p>
-                    </Link>
-                </div>
+                <Link href="/links" className="post-item featured" style={{ display: 'block', textDecoration: 'none' }}>
+                    <span className="featured-tag">{t.featured?.tag}</span>
+                    <span className="post-title">{t.featured?.title}</span>
+                    <p className="post-description">{t.featured?.description}</p>
+                </Link>
 
                 <ul className="post-list">
                     {posts.map((post) => (
@@ -69,8 +68,14 @@ export default function Home() {
                 </a>
             </div>
 
-            <footer>
-                {t.footer}
+            <footer style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+                    <Youtube size={22} />
+                </a>
+                <span>{t.footer}</span>
+                <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+                    <Github size={18} />
+                </a>
             </footer>
         </div>
     );
