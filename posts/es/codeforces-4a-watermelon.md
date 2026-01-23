@@ -46,7 +46,7 @@ En Python, lo capturamos así:
 ```python
 w = int(input())
 ```
-**Nota:** Usamos `int()` porque la función `input()` en Python siempre devuelve lo que el usuario escribe como una **cadena de texto (string)**. Para poder hacer cálculos matemáticos con ese número, necesitamos convertirlo explícitamente a un **entero**.
+**Nota:** Usamos `int()` porque la función `input()` en Python siempre devuelve lo que el usuario escribe como un **string**. Por lo cual, para poder hacer cálculos matemáticos con ese número, necesitamos convertirlo explícitamente a un **entero**.
 
 ### 3. Especificaciones de Salida (Output)
 *“Print **YES**, if the boys can divide the watermelon into two parts, each of them weighing even number of kilos; and **NO** in the opposite case.”*

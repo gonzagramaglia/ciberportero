@@ -17,12 +17,12 @@ export const translations = {
             copied: "¡Copiado!"
         },
         links: [
-            { name: 'Autogestión SIU Guaraní', url: 'https://autogestion.fadena.undef.edu.ar/3w/', desc: 'Portal oficial para la gestión académica de alumnos inscriptos' },
-            { name: 'Todo el Material de Estudio (Google Drive)', url: 'https://drive.google.com/drive/folders/1BqM0J_I4qXVZLzSvxdNcExtUlD_dkaBB', desc: 'Carpeta centralizada con bibliografía y material de toda la cursada' },
-            { name: 'Material Esencial del Ingreso (Google Drive)', url: 'https://drive.google.com/drive/folders/1naGT9orvWN66OzA3lVpTB_wMqrXGDnkg', desc: 'Recursos para aprobar el curso de ingreso eliminatorio de la carrera' },
-            { name: '🛡️ Grupo General – Ciberdefensa (WhatsApp)', url: 'https://chat.whatsapp.com/F2NUFYbj4AYGvsETVhFSC1', desc: 'Comunidad principal para coordinación general y avisos' },
-            { name: 'Lic. en Ciberdefensa 2026 (WhatsApp)', url: 'https://chat.whatsapp.com/KjlaP3RGYK94ekGZonwLHR', desc: 'Grupo específico para la cursada de la cohorte 2026' },
-            { name: 'Ciberdefensa FADENA (Discord)', url: 'https://discord.gg/AxqkVzYPeN', desc: 'Servidor oficial de la comunidad académica en FADENA' },
+            { name: 'Autogestión SIU Guaraní', url: 'https://autogestion.fadena.undef.edu.ar/3w/', desc: 'Portal oficial de gestión académica de los alumnos ya inscriptos' },
+            { name: 'Todo el Material de Estudio (Google Drive)', url: 'https://drive.google.com/drive/folders/1BqM0J_I4qXVZLzSvxdNcExtUlD_dkaBB', desc: 'Carpeta que centraliza el material de toda la cursada' },
+            { name: 'Material Esencial del Ingreso (Google Drive)', url: 'https://drive.google.com/drive/folders/1naGT9orvWN66OzA3lVpTB_wMqrXGDnkg', desc: 'Recursos para aprobar el curso de ingreso de la carrera' },
+            { name: '🛡️ Grupo General – Ciberdefensa (WhatsApp)', url: 'https://chat.whatsapp.com/F2NUFYbj4AYGvsETVhFSC1', desc: 'Comunidad principal con subgrupos para cada materia' },
+            { name: 'Lic. en Ciberdefensa 2026 (WhatsApp)', url: 'https://chat.whatsapp.com/KjlaP3RGYK94ekGZonwLHR', desc: 'Grupo específico para la cursada de la camada 2026' },
+            { name: 'Ciberdefensa FADENA (Discord)', url: 'https://discord.gg/AxqkVzYPeN', desc: 'Server oficial de la comunidad de estudiantes de FADENA' },
             { name: 'Comunidad Ciberdefensa Argentina (Discord)', url: 'https://discord.gg/zPWRAfUR82', desc: 'Espacio de estudio y networking de la comunidad nacional' },
         ]
     },
@@ -44,12 +44,12 @@ export const translations = {
             copied: "Copied!"
         },
         links: [
-            { name: 'SIU Guaraní Academic Portal', url: 'https://autogestion.fadena.undef.edu.ar/3w/', desc: 'Official portal for academic management of enrolled students' },
-            { name: 'All Study Material (Google Drive)', url: 'https://drive.google.com/drive/folders/1BqM0J_I4qXVZLzSvxdNcExtUlD_dkaBB', desc: 'Centralized folder with bibliography and material from the entire degree' },
-            { name: 'Essential Admission Material (Google Drive)', url: 'https://drive.google.com/drive/folders/1naGT9orvWN66OzA3lVpTB_wMqrXGDnkg', desc: 'Resources to pass the eliminating admission course of the degree' },
-            { name: '🛡️ General Group – Cyberdefense (WhatsApp)', url: 'https://chat.whatsapp.com/F2NUFYbj4AYGvsETVhFSC1', desc: 'Main community for general coordination and announcements' },
-            { name: 'Bachelor\'s in Cyberdefense 2026 (WhatsApp)', url: 'https://chat.whatsapp.com/KjlaP3RGYK94ekGZonwLHR', desc: 'Specific group for the 2026 cohort' },
-            { name: 'Cyberdefense FADENA (Discord)', url: 'https://discord.gg/AxqkVzYPeN', desc: 'Official server for the academic community at FADENA' },
+            { name: 'SIU Guaraní Academic Portal', url: 'https://autogestion.fadena.undef.edu.ar/3w/', desc: 'Official academic management portal for already enrolled students' },
+            { name: 'All Study Material (Google Drive)', url: 'https://drive.google.com/drive/folders/1BqM0J_I4qXVZLzSvxdNcExtUlD_dkaBB', desc: 'Folder centralizing the material from the entire degree' },
+            { name: 'Essential Admission Material (Google Drive)', url: 'https://drive.google.com/drive/folders/1naGT9orvWN66OzA3lVpTB_wMqrXGDnkg', desc: 'Resources to pass the admission course for the degree' },
+            { name: '🛡️ General Group – Cyberdefense (WhatsApp)', url: 'https://chat.whatsapp.com/F2NUFYbj4AYGvsETVhFSC1', desc: 'Main community with subgroups for each subject' },
+            { name: 'Bachelor\'s in Cyberdefense 2026 (WhatsApp)', url: 'https://chat.whatsapp.com/KjlaP3RGYK94ekGZonwLHR', desc: 'Specific group for the 2026 class' },
+            { name: 'Cyberdefense FADENA (Discord)', url: 'https://discord.gg/AxqkVzYPeN', desc: 'Official server for the FADENA student community' },
             { name: 'Argentina Cyberdefense Community (Discord)', url: 'https://discord.gg/zPWRAfUR82', desc: 'Study and networking space for the national community' },
         ]
     },
@@ -71,12 +71,12 @@ export const translations = {
             copied: "¡Copiado!"
         },
         links: [
-            { name: 'Autogestão SIU Guaraní', url: 'https://autogestion.fadena.undef.edu.ar/3w/', desc: 'Portal oficial para a gestão académica de alunos inscritos' },
-            { name: 'Todo o Material de Estudo (Google Drive)', url: 'https://drive.google.com/drive/folders/1BqM0J_I4qXVZLzSvxdNcExtUlD_dkaBB', desc: 'Pasta centralizada com bibliografia e material de todo o curso' },
-            { name: 'Material Essencial do Ingreso (Google Drive)', url: 'https://drive.google.com/drive/folders/1naGT9orvWN66OzA3lVpTB_wMqrXGDnkg', desc: 'Recursos para aprovar o curso de ingreso eliminatório da carreira' },
-            { name: '🛡️ Grupo General – Ciberdefesa (WhatsApp)', url: 'https://chat.whatsapp.com/F2NUFYbj4AYGvsETVhFSC1', desc: 'Comunidade principal para coordenação geral e avisos' },
+            { name: 'Autogestão SIU Guaraní', url: 'https://autogestion.fadena.undef.edu.ar/3w/', desc: 'Portal oficial de gestão académica dos alunos já inscritos' },
+            { name: 'Todo o Material de Estudo (Google Drive)', url: 'https://drive.google.com/drive/folders/1BqM0J_I4qXVZLzSvxdNcExtUlD_dkaBB', desc: 'Pasta que centraliza o material de todo o curso' },
+            { name: 'Material Essencial do Ingreso (Google Drive)', url: 'https://drive.google.com/drive/folders/1naGT9orvWN66OzA3lVpTB_wMqrXGDnkg', desc: 'Recursos para passar no curso de admissão da carreira' },
+            { name: '🛡️ Grupo General – Ciberdefesa (WhatsApp)', url: 'https://chat.whatsapp.com/F2NUFYbj4AYGvsETVhFSC1', desc: 'Comunidade principal com subgrupos para cada matéria' },
             { name: 'Lic. em Ciberdefesa 2026 (WhatsApp)', url: 'https://chat.whatsapp.com/KjlaP3RGYK94ekGZonwLHR', desc: 'Grupo específico para os alunos da turma de 2026' },
-            { name: 'Ciberdefesa FADENA (Discord)', url: 'https://discord.gg/AxqkVzYPeN', desc: 'Servidor oficial da comunidade académica na FADENA' },
+            { name: 'Ciberdefesa FADENA (Discord)', url: 'https://discord.gg/AxqkVzYPeN', desc: 'Servidor oficial da comunidade de estudantes da FADENA' },
             { name: 'Comunidade Ciberdefesa Argentina (Discord)', url: 'https://discord.gg/zPWRAfUR82', desc: 'Espaço de estudio e networking da comunidade nacional' },
         ]
     }
