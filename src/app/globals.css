@@ -26,6 +26,23 @@ body {
   font-family: var(--font-sans);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/wallpaper.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.05;
+  z-index: -1;
+  pointer-events: none;
 }
 
 a {
@@ -310,7 +327,7 @@ header p {
 }
 
 footer {
-  margin-top: 2rem;
+  margin-top: 2.25rem;
   padding-top: 2rem;
   border-top: 1px solid var(--border);
   color: var(--muted);

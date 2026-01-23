@@ -52,7 +52,7 @@ export default function LinksPage() {
                     ))}
                 </ul>
 
-                <div style={{ marginTop: '4rem', marginBottom: '1rem', padding: '2rem', background: 'rgba(16, 185, 129, 0.05)', borderRadius: '12px', borderLeft: '4px solid var(--success)' }}>
+                <div style={{ marginTop: '4rem', marginBottom: '1.25rem', padding: '2rem', background: 'rgba(16, 185, 129, 0.05)', borderRadius: '12px', borderLeft: '4px solid var(--success)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
                         <Mail size={20} color="var(--success)" />
                         <h2 style={{ fontSize: '1.2rem', margin: 0 }}>{t.contact?.title}</h2>
