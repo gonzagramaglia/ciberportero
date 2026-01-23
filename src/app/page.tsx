@@ -58,7 +58,7 @@ export default function Home() {
                 </ul>
             </main>
 
-            <div style={{ marginTop: '4rem', marginBottom: '0' }}>
+            <div className="home-cover">
                 <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer">
                     <img
                         src="/blog.png"

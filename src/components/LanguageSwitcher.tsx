@@ -23,7 +23,7 @@ export default function LanguageSwitcher() {
             </button>
             <button
                 onClick={() => setLang('pt')}
-                className={lang === 'pt' ? 'active' : ''}
+                className={`mobile-hide ${lang === 'pt' ? 'active' : ''}`}
                 style={{ background: 'none', border: 'none', cursor: 'pointer', font: 'inherit', padding: 0 }}
             >
                 PT
