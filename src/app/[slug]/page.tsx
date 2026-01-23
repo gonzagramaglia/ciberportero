@@ -54,21 +54,20 @@ export default function Post() {
                     day: 'numeric',
                     timeZone: 'UTC'
                 })}</span>
-                <ReactMarkdown>{post.content}</ReactMarkdown>
+                <ReactMarkdown
+                    components={{
+                        a: ({ node, ...props }) => <a {...props} target="_blank" rel="noopener noreferrer" />
+                    }}
+                >
+                    {post.content}
+                </ReactMarkdown>
             </article>
-
-            <div style={{ marginTop: '4rem' }}>
-                <Link href="/" className="back-link">
-                    <ChevronLeft size={16} />
-                    {t.back}
-                </Link>
-            </div>
 
             <footer style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
                     <Youtube size={22} />
                 </a>
-                <span>{t.footer}</span>
+                <Link href="/" style={{ color: 'inherit', textDecoration: 'none' }}>{t.footer}</Link>
                 <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
                     <Github size={18} />
                 </a>

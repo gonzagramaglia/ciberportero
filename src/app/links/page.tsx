@@ -33,7 +33,7 @@ export default function LinksPage() {
             </div>
 
             <header style={{ marginTop: '0.5rem', marginBottom: '3rem' }}>
-                <h1>{t.featured?.title}</h1>
+                <h1 style={{ color: 'var(--foreground)' }}>{t.featured?.title}</h1>
                 <p>{t.featured?.description}</p>
             </header>
 
@@ -52,9 +52,9 @@ export default function LinksPage() {
                     ))}
                 </ul>
 
-                <div style={{ marginTop: '4rem', marginBottom: '2.5rem', padding: '2rem', background: 'rgba(0, 112, 243, 0.03)', borderRadius: '12px', borderLeft: '4px solid var(--accent)' }}>
+                <div style={{ marginTop: '4rem', marginBottom: '2.5rem', padding: '2rem', background: 'rgba(16, 185, 129, 0.05)', borderRadius: '12px', borderLeft: '4px solid var(--success)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-                        <Mail size={20} color="var(--accent)" />
+                        <Mail size={20} color="var(--success)" />
                         <h2 style={{ fontSize: '1.2rem', margin: 0 }}>{t.contact?.title}</h2>
                     </div>
                     <p style={{ color: 'var(--muted)', marginBottom: '1rem', fontSize: '0.95rem' }}>{t.contact?.description}</p>
@@ -66,7 +66,7 @@ export default function LinksPage() {
                                 fontSize: '1rem',
                                 background: 'none',
                                 border: 'none',
-                                color: 'var(--accent)',
+                                color: 'var(--success)',
                                 cursor: 'pointer',
                                 padding: 0,
                                 font: 'inherit',
@@ -79,7 +79,7 @@ export default function LinksPage() {
                             {t.contact?.email}
                             {copied ? (
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                                    <Check size={16} color="#0070f3" />
+                                    <Check size={16} color="var(--success)" />
                                     <span style={{ fontSize: '0.8rem', fontWeight: 500 }}>{t.contact?.copied}</span>
                                 </div>
                             ) : (
@@ -94,7 +94,7 @@ export default function LinksPage() {
                 <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
                     <Youtube size={20} />
                 </a>
-                <span>{t.footer}</span>
+                <Link href="/" style={{ color: 'inherit', textDecoration: 'none' }}>{t.footer}</Link>
                 <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
                     <Github size={18} />
                 </a>

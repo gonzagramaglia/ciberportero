@@ -4,6 +4,7 @@
   --accent: #0070f3;
   --muted: #666666;
   --border: #eaeaea;
+  --success: #10b981;
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
@@ -14,6 +15,7 @@
     --accent: #3291ff;
     --muted: #888888;
     --border: #333333;
+    --success: #00e676;
   }
 }
 
@@ -38,7 +40,24 @@ a {
 }
 
 a:hover {
-  opacity: 0.7;
+  opacity: 0.8;
+  color: var(--accent);
+}
+
+.back-link {
+  color: var(--muted);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.back-link:hover {
+  color: var(--accent);
+  opacity: 1;
 }
 
 .container {
@@ -117,6 +136,7 @@ header p {
   font-weight: 700;
   margin-bottom: 0.5rem;
   display: block;
+  color: var(--accent);
 }
 
 .post-description {
@@ -125,21 +145,35 @@ header p {
 }
 
 .post-item.featured {
-  border: 1px solid var(--accent);
+  border: 1px solid var(--success);
   padding: 1.5rem;
   border-radius: 12px;
-  background: rgba(0, 112, 243, 0.03);
+  background: rgba(16, 185, 129, 0.05);
   margin-bottom: 3.5rem;
 }
 
 .post-item.featured:hover {
   transform: translateY(-2px);
-  background: rgba(0, 112, 243, 0.05);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.post-item.featured .post-title {
+  color: var(--foreground);
+}
+
+@media (prefers-color-scheme: dark) {
+  .post-item.featured {
+    background: rgba(0, 230, 118, 0.05);
+  }
+
+  .post-item.featured:hover {
+    background: rgba(0, 230, 118, 0.08);
+  }
 }
 
 .featured-tag {
   display: inline-block;
-  background: var(--accent);
+  background: var(--success);
   color: white;
   padding: 0.2rem 0.6rem;
   border-radius: 20px;
@@ -150,29 +184,76 @@ header p {
 }
 
 .post-content blockquote {
-  border-left: 4px solid var(--accent);
+  border-left: 4px solid var(--success);
   padding-left: 1.5rem;
-  margin: 2rem 0;
+  margin: 1.5rem 0;
   font-style: italic;
   color: var(--muted);
-  background: rgba(0, 112, 243, 0.03);
+  background: rgba(16, 185, 129, 0.05);
   padding-top: 1rem;
   padding-bottom: 1rem;
   border-radius: 0 8px 8px 0;
 }
 
+@media (prefers-color-scheme: dark) {
+  .post-content blockquote {
+    background: rgba(0, 230, 118, 0.05);
+  }
+}
+
+.post-content blockquote p {
+  color: var(--foreground);
+  opacity: 0.9;
+}
+
+.post-content blockquote p:last-child {
+  margin-bottom: 0;
+}
+
 .post-content {
   margin-top: 2rem;
+  margin-bottom: 6rem;
+}
+
+.post-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  display: block;
+  margin: 2.5rem auto;
 }
 
 .post-content h1 {
   font-size: 2.5rem;
   margin-bottom: 1.5rem;
+  color: var(--foreground);
 }
 
 .post-content h2 {
   font-size: 1.8rem;
-  margin: 2rem 0 1rem;
+  margin: 3rem 0 1rem;
+}
+
+.post-content h3 {
+  font-size: 1.4rem;
+  margin: 2.5rem 0 1rem;
+}
+
+.post-content a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+}
+
+.post-content a:hover {
+  opacity: 0.8;
+  text-decoration-thickness: 2px;
+}
+
+/* Specific highlight for Um_nik bibliography link */
+.post-content a[href*="codeforces.com/blog/entry/62730"] {
+  color: var(--success);
 }
 
 .post-content p {
@@ -202,22 +283,37 @@ header p {
   color: inherit;
 }
 
-.back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--muted);
-  font-size: 0.9rem;
-  margin-bottom: 2rem;
+.post-content blockquote a {
+  color: var(--success);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: rgba(16, 185, 129, 0.4);
+}
+
+.post-content blockquote a:hover {
+  color: var(--success);
+  opacity: 0.8;
+  text-decoration-color: var(--success);
 }
 
 footer {
-  margin-top: 2rem;
+  margin-top: 6rem;
   padding-top: 2rem;
   border-top: 1px solid var(--border);
   color: var(--muted);
   font-size: 0.9rem;
   text-align: center;
+}
+
+footer a {
+  color: var(--muted);
+  transition: all 0.2s ease;
+}
+
+footer a:hover {
+  color: var(--accent);
+  opacity: 1 !important;
+  transform: translateY(-1px);
 }
 
 /* Animations */
