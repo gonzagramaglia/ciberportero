@@ -6,12 +6,16 @@ import { translations } from '../../lib/translations';
 import { ChevronLeft, ExternalLink, Mail, Copy, Check, Github, Youtube } from 'lucide-react';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function LinksPage() {
     const { lang } = useLanguage();
     const t = translations[lang];
     const [copied, setCopied] = useState(false);
+
+    useEffect(() => {
+        document.title = 'Ciberportero | Links';
+    }, []);
 
     const handleCopyEmail = () => {
         if (!t.contact?.email) return;

@@ -23,6 +23,10 @@ export default function Home() {
         fetchPosts();
     }, [lang]);
 
+    useEffect(() => {
+        document.title = 'Ciberportero';
+    }, []);
+
     return (
         <div className="container fade-in">
             <header>

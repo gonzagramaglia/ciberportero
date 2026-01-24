@@ -60,6 +60,16 @@ export default function Post() {
         if (slug) fetchPost();
     }, [slug, lang]);
 
+    useEffect(() => {
+        if (post && slug) {
+            if (slug.toString().includes('codeforces')) {
+                document.title = 'Ciberportero | Codeforces';
+            } else {
+                document.title = `Ciberportero | ${post.title}`;
+            }
+        }
+    }, [post, slug]);
+
     if (loading) return <div className="container fade-in"></div>;
     if (!post) return notFound();
 

@@ -17,12 +17,14 @@ export const translations = {
             copied: "¡Copiado!"
         },
         links: [
+            { name: 'Web Oficial de la Carrera', url: 'https://undef.edu.ar/fadena/carreras-de-grado/licciberdefensa/', desc: 'Información esencial de la Licenciatura en Ciberdefensa' },
+            { name: 'Campus Oficial de la Carrera', url: 'https://campus.fadena.undef.edu.ar/course/index.php?categoryid=25', desc: 'Material actualizado de todas y cada una de las materias' },
             { name: 'Autogestión SIU Guaraní', url: 'https://autogestion.fadena.undef.edu.ar/3w/', desc: 'Portal oficial de gestión académica de los alumnos ya inscriptos' },
-            { name: 'Todo el Material de Estudio (Google Drive)', url: 'https://drive.google.com/drive/folders/1BqM0J_I4qXVZLzSvxdNcExtUlD_dkaBB', desc: 'Carpeta que centraliza el material de toda la cursada' },
+            { name: 'Todo el Material de Estudio (Google Drive)', url: 'https://drive.google.com/drive/folders/1BqM0J_I4qXVZLzSvxdNcExtUlD_dkaBB', desc: 'Carpeta que centraliza el material, y la bibliografía adicional, de toda la cursada' },
             { name: 'Material Esencial del Ingreso (Google Drive)', url: 'https://drive.google.com/drive/folders/1naGT9orvWN66OzA3lVpTB_wMqrXGDnkg', desc: 'Recursos para aprobar el curso de ingreso de la carrera' },
-            { name: '🛡️ Grupo General – Ciberdefensa (WhatsApp)', url: 'https://chat.whatsapp.com/F2NUFYbj4AYGvsETVhFSC1', desc: 'Comunidad principal con subgrupos para cada materia' },
+            { name: '🛡️ Grupo General – Ciberdefesa (WhatsApp)', url: 'https://chat.whatsapp.com/F2NUFYbj4AYGvsETVhFSC1', desc: 'Comunidad principal con subgrupos para cada materia' },
             { name: 'Lic. en Ciberdefensa 2026 (WhatsApp)', url: 'https://chat.whatsapp.com/KjlaP3RGYK94ekGZonwLHR', desc: 'Grupo específico para la cursada de la camada 2026' },
-            { name: 'Ciberdefensa FADENA (Discord)', url: 'https://discord.gg/AxqkVzYPeN', desc: 'Server oficial de la comunidad de estudiantes de FADENA' },
+            { name: 'Ciberdefesa FADENA (Discord)', url: 'https://discord.gg/AxqkVzYPeN', desc: 'Server oficial de la comunidad de estudiantes de FADENA' },
             { name: 'Comunidad Ciberdefensa Argentina (Discord)', url: 'https://discord.gg/zPWRAfUR82', desc: 'Espacio de estudio y networking de la comunidad nacional' },
         ]
     },
@@ -44,6 +46,8 @@ export const translations = {
             copied: "Copied!"
         },
         links: [
+            { name: 'Official Degree Website', url: 'https://undef.edu.ar/fadena/carreras-de-grado/licciberdefensa/', desc: 'Information about the Bachelor\'s in Cyberdefense' },
+            { name: 'Official Degree Campus', url: 'https://campus.fadena.undef.edu.ar/course/index.php?categoryid=25', desc: 'Updated material for each of the subjects' },
             { name: 'SIU Guaraní Academic Portal', url: 'https://autogestion.fadena.undef.edu.ar/3w/', desc: 'Official academic management portal for already enrolled students' },
             { name: 'All Study Material (Google Drive)', url: 'https://drive.google.com/drive/folders/1BqM0J_I4qXVZLzSvxdNcExtUlD_dkaBB', desc: 'Folder centralizing the material from the entire degree' },
             { name: 'Essential Admission Material (Google Drive)', url: 'https://drive.google.com/drive/folders/1naGT9orvWN66OzA3lVpTB_wMqrXGDnkg', desc: 'Resources to pass the admission course for the degree' },
@@ -71,6 +75,8 @@ export const translations = {
             copied: "¡Copiado!"
         },
         links: [
+            { name: 'Site Oficial do Curso', url: 'https://undef.edu.ar/fadena/carreras-de-grado/licciberdefensa/', desc: 'Informações sobre a Licenciatura em Ciberdefesa' },
+            { name: 'Campus Oficial do Curso', url: 'https://campus.fadena.undef.edu.ar/course/index.php?categoryid=25', desc: 'Material atualizado de cada uma das matérias' },
             { name: 'Autogestão SIU Guaraní', url: 'https://autogestion.fadena.undef.edu.ar/3w/', desc: 'Portal oficial de gestão académica dos alunos já inscritos' },
             { name: 'Todo o Material de Estudo (Google Drive)', url: 'https://drive.google.com/drive/folders/1BqM0J_I4qXVZLzSvxdNcExtUlD_dkaBB', desc: 'Pasta que centraliza o material de todo o curso' },
             { name: 'Material Essencial do Ingreso (Google Drive)', url: 'https://drive.google.com/drive/folders/1naGT9orvWN66OzA3lVpTB_wMqrXGDnkg', desc: 'Recursos para passar no curso de admissão da carreira' },
