@@ -8,13 +8,13 @@ description: "A detailed beginner's guide to solving the Watermelon exercise, th
 
 > 🔗 **Official Problem:** [**Codeforces 4A - Watermelon**](https://codeforces.com/problemset/problem/4/A)
 
-A few weeks ago, I started taking competitive programming as a serious hobby. A weekend e-sport. I do sessions of 1+ hour, both Saturday and Sunday, where I solve low-medium difficulty exercises. They allow me to *vibecode* with an awake and calm conscience.
+A few weeks ago, I started taking competitive programming as a serious hobby. A weekend e-sport. I do sessions of 2 to 3 hours on weekends, where I solve [**difficulty 1000 exercises**](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=1000-1000). They allow me to *vibecode* with an awake and calm conscience.
 
-The **Watermelon** exercise is the *Hello World* of Codeforces. **It has been solved [by more than 650,000 users on the platform](https://codeforces.com/problemset?order=BY_SOLVED_DESC).** And since it's easy, in this post I'm going to help you solve it no matter what. There is no excuse not to do it. If someone could solve it from the most remote place in Africa thanks to a Starlink satellite, you can too with this post.
+The **Watermelon** exercise is the *Hello World* of Codeforces. **[It has been solved by more than 650,000 users on the platform](https://codeforces.com/problemset?order=BY_SOLVED_DESC).** And since it's easy, in this post I'm going to help you solve it no matter what. There is no excuse not to do it. If someone could solve it from the most remote place in Africa thanks to a Starlink satellite, you can too with this post.
 
 ### What will you need?
 *   A **code editor**.
-*   Basic **math** knowledge.
+*   Basic **math and algorithms** knowledge.
 *   Basic knowledge of a **programming language**.
 
 For serious programming, I use the [**Antigravity editor by Google**](https://antigravity.google/), but for these exercises, I use [**Sublime Text**](https://www.sublimetext.com/) because it helps me concentrate better. I chose Python as my language because eventually, I want to use it to create scripts that automate cybersecurity tasks. If you want to learn or reinforce the basics, I recommend this [**CS50 masterclass from Harvard**](https://youtu.be/Rl0ludWTLxs).

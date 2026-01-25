@@ -8,13 +8,13 @@ description: "Um guia detalhado para iniciantes sobre o exercício Watermelon, o
 
 > 🔗 **Problema oficial:** [**Codeforces 4A - Watermelon**](https://codeforces.com/problemset/problem/4/A)
 
-Algumas semanas atrás, comecei a levar a programação competitiva como um hobby sério. Um e-sport de fim de semana. Faço sessões de mais de 1 hora, tanto no sábado quanto no domingo, nas quais resolvo exercícios de dificuldade baixa-média. Eles me permitem *vibecodear* com a consciência desperta e tranquila.
+Algumas semanas atrás, comecei a levar a programação competitiva como um hobby sério. Um e-sport de fim de semana. Faço sessões de 2 a 3 horas nos fins de semana, nas quais resolvo [**exercícios de dificuldade 1000**](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=1000-1000). Eles me permitem *vibecodear* com a consciência desperta e tranquila.
 
-O exercício **Watermelon** (ou Melancia, em português), é o *Hello World* do Codeforces. **Foi resolvido [por mais de 650.000 (seiscentos e cinquenta mil) usuários da plataforma](https://codeforces.com/problemset?order=BY_SOLVED_DESC).** E, além de ser fácil, neste post vou te ajudar a resolvê-lo sim o sim. Por isso, não há desculpa para não o fazer. Se alguém conseguiu resolvê-lo do lugar mais remoto da África graças a um satélite Starlink, você com este post também vai conseguir.
+O exercício **Watermelon** (ou Melancia, em português), é o *Hello World* do Codeforces. **[Foi resolvido por mais de 650.000 (seiscentos e cinquenta mil) usuários da plataforma](https://codeforces.com/problemset?order=BY_SOLVED_DESC).** E, além de ser fácil, neste post vou te ajudar a resolvê-lo sim o sim. Por isso, não há desculpa para não o fazer. Se alguém conseguiu resolvê-lo do lugar mais remoto da África graças a um satélite Starlink, você com este post também vai conseguir.
 
 ### O que você vai precisar?
 *   Um **editor de código**.
-*   Conhecimentos básicos de **matemática**.
+*   Conhecimentos básicos de **matemática e algoritmos**.
 *   Conhecimentos básicos de uma **linguagem de programação**.
 
 Para programar sério, uso o editor [**Antigravity do Google**](https://antigravity.google/), mas para os exercícios uso o [**Sublime Text**](https://www.sublimetext.com/), pois me ajuda a concentrar melhor. E como linguagem escolhi Python, já que eventualmente quero usá-lo para criar scripts que automatizem tarefas de cibersegurança. Se você quer aprender ou reforçar as bases, recomenda-se esta [**aula magistral do CS50 de Harvard**](https://youtu.be/Rl0ludWTLxs).

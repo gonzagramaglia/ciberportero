@@ -8,13 +8,13 @@ description: "Una guía detallada para principiantes sobre el ejercicio Watermel
 
 > 🔗 **Problema oficial:** [**Codeforces 4A - Watermelon**](https://codeforces.com/problemset/problem/4/A)
 
-Hace unas semanas comencé a tomarme a la programación competitiva como un hobby serio. Un e-sport de fin de semana. Hago sesiones de +1 hora, tanto sábado como domingo, en las que resuelvo ejercicios de dificultad baja-media. Lo que me permite *vibecodear* con la conciencia despierta y tranquila.
+Hace unas semanas comencé a tomarme a la programación competitiva como un hobby serio. Un e-sport de fin de semana. Hago sesiones de 2 o 3 horas los fines de semana, en las que resuelvo [**ejercicios de dificultad 1000**](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=1000-1000). Lo que me permite *vibecodear* con la conciencia despierta y tranquila.
 
-El ejercicio **Watermelon** (o Sandía, en su traducción al español), es el *Hello World* de Codeforces. **Fue resuelto [por más de 650.000 (seiscientos cincuenta mil) usuarios de la plataforma](https://codeforces.com/problemset?order=BY_SOLVED_DESC).** Y, sobre que es fácil, en este post te voy a ayudar a resolverlo sí o sí. Por lo que no hay excusa para no hacerlo. Si Pepito lo pudo resolver desde el lugar más recóndito de África gracias a un satélite de Starlink, vos con este post también vas a poder. 
+El ejercicio **Watermelon** (o Sandía, en su traducción al español), es el *Hello World* de Codeforces. **[Fue resuelto por más de 650.000 (seiscientos cincuenta mil) usuarios de la plataforma](https://codeforces.com/problemset?order=BY_SOLVED_DESC).** Y, sobre que es fácil, en este post te voy a ayudar a resolverlo sí o sí. Por lo que no hay excusa para no hacerlo. Si Pepito lo pudo resolver desde el lugar más recóndito de África gracias a un satélite de Starlink, vos con este post también vas a poder. 
 
 ### ¿Qué vas a necesitar?
 *   Un **editor de código**.
-*   Conocimientos básicos de **matemática**.
+*   Conocimientos básicos de **matemática y algoritmos**.
 *   Conocimientos básicos de un **lenguaje de programación**.
 
 Para programar en mi día a día uso el editor [**Antigravity de Google**](https://antigravity.google/), pero para los ejercicios de Codeforces uso [**Sublime Text**](https://www.sublimetext.com/), ya que me ayuda a concentrarme mejor. Y como lenguaje elegí Python, ya que quiero usarlo regularmente para crear scripts que automaticen tareas de ciberseguridad. Si querés aprender o reforzar sus bases te recomiendo esta [**clase magistral del CS50 de Harvard**](https://youtu.be/Rl0ludWTLxs).
