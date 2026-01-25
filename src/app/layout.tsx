@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { LanguageProvider } from "@/context/LanguageContext";
+import FeedbackButton from "@/components/FeedbackButton";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -17,6 +18,7 @@ export default function RootLayout({
       <body>
         <LanguageProvider>
           {children}
+          <FeedbackButton />
         </LanguageProvider>
       </body>
     </html>

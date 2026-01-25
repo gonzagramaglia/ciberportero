@@ -26,7 +26,8 @@ export const translations = {
             { name: 'Lic. en Ciberdefensa 2026 (WhatsApp)', url: 'https://chat.whatsapp.com/KjlaP3RGYK94ekGZonwLHR', desc: 'Grupo específico para la cursada de la camada 2026' },
             { name: 'Ciberdefesa FADENA (Discord)', url: 'https://discord.gg/AxqkVzYPeN', desc: 'Server oficial de la comunidad de estudiantes de FADENA' },
             { name: 'Comunidad Ciberdefensa Argentina (Discord)', url: 'https://discord.gg/zPWRAfUR82', desc: 'Espacio de estudio y networking de la comunidad nacional' },
-        ]
+        ],
+        feedback: "¿Por qué elegimos Ciberdefensa?"
     },
     en: {
         title: "Ciberportero",
@@ -55,7 +56,8 @@ export const translations = {
             { name: 'Bachelor\'s in Cyberdefense 2026 (WhatsApp)', url: 'https://chat.whatsapp.com/KjlaP3RGYK94ekGZonwLHR', desc: 'Specific group for the 2026 class' },
             { name: 'Cyberdefense FADENA (Discord)', url: 'https://discord.gg/AxqkVzYPeN', desc: 'Official server for the FADENA student community' },
             { name: 'Argentina Cyberdefense Community (Discord)', url: 'https://discord.gg/zPWRAfUR82', desc: 'Study and networking space for the national community' },
-        ]
+        ],
+        feedback: "Why did we choose Cyberdefense?"
     },
     pt: {
         title: "Ciberportero",
@@ -84,7 +86,8 @@ export const translations = {
             { name: 'Lic. em Ciberdefesa 2026 (WhatsApp)', url: 'https://chat.whatsapp.com/KjlaP3RGYK94ekGZonwLHR', desc: 'Grupo específico para os alunos da turma de 2026' },
             { name: 'Ciberdefesa FADENA (Discord)', url: 'https://discord.gg/AxqkVzYPeN', desc: 'Servidor oficial da comunidade de estudantes da FADENA' },
             { name: 'Comunidade Ciberdefesa Argentina (Discord)', url: 'https://discord.gg/zPWRAfUR82', desc: 'Espaço de estudio e networking da comunidade nacional' },
-        ]
+        ],
+        feedback: "Por que escolhemos a Ciberdefesa?"
     }
 };
 

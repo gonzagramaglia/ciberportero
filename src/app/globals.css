@@ -423,3 +423,60 @@ footer a:hover {
 .fade-in {
   animation: fadeIn 0.5s ease forwards;
 }
+
+.feedback-fab {
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  z-index: 1000;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+}
+
+.feedback-fab.hidden {
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.8) translateY(20px);
+  pointer-events: none;
+}
+
+.feedback-fab:hover {
+  transform: scale(1.1) translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  opacity: 1;
+}
+
+.feedback-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feedback-logo {
+  object-fit: contain;
+  width: 120%;
+  height: 120%;
+}
+
+@media (max-width: 680px) {
+  .feedback-fab {
+    bottom: 1.5rem;
+    left: 1.5rem;
+    width: 48px;
+    height: 48px;
+  }
+}
