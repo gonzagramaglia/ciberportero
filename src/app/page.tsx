@@ -44,6 +44,16 @@ export default function Home() {
                     <p className="post-description">{t.featured?.description}</p>
                 </Link>
 
+                <div className="intro-cover">
+                    <a href="/intro.png" target="_blank" rel="noopener noreferrer">
+                        <img
+                            src="/intro.png"
+                            alt="Calendario Académico de Grado 2026"
+                            style={{ width: '100%', borderRadius: '12px', cursor: 'pointer' }}
+                        />
+                    </a>
+                </div>
+
                 <ul className="post-list">
                     {posts.map((post) => (
                         <li key={post.slug} className="post-item">

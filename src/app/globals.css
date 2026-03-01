@@ -179,7 +179,7 @@ header p {
   padding: 1.5rem;
   border-radius: 12px;
   background: rgba(16, 185, 129, 0.05);
-  margin-bottom: 3.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .post-item.featured:hover {
@@ -313,6 +313,15 @@ header p {
   color: var(--success);
   opacity: 0.8;
   text-decoration-color: var(--success);
+}
+
+.intro-cover {
+  margin-top: 0;
+  margin-bottom: 2.5rem;
+}
+
+.intro-cover img {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
 .home-cover {
