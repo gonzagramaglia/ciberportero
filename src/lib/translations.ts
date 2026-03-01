@@ -18,8 +18,8 @@ export const translations = {
         },
         links: [
             { name: 'Web Oficial de la Carrera', url: 'https://undef.edu.ar/fadena/carreras-de-grado/licciberdefensa/', desc: 'Información esencial de la Licenciatura en Ciberdefensa' },
-            { name: 'Campus Oficial de la Carrera', url: 'https://campus.fadena.undef.edu.ar/course/index.php?categoryid=25', desc: 'Material actualizado de todas y cada una de las materias' },
-            { name: 'Autogestión SIU Guaraní', url: 'https://autogestion.fadena.undef.edu.ar/3w/', desc: 'Portal oficial de gestión académica de los alumnos ya inscriptos' },
+            { name: 'Campus Virtual (Moodle)', url: 'https://campus.fadena.undef.edu.ar/course/index.php?categoryid=25', desc: 'Material actualizado de todas y cada una de las materias' },
+            { name: 'Autogestión (SIU Guaraní)', url: 'https://autogestion.fadena.undef.edu.ar/3w/', desc: 'Portal oficial de gestión académica de los alumnos ya inscriptos' },
             { name: 'Todo el Material de Estudio (Google Drive)', url: 'https://drive.google.com/drive/folders/1BqM0J_I4qXVZLzSvxdNcExtUlD_dkaBB', desc: 'Carpeta que centraliza el material, y la bibliografía adicional, de toda la cursada' },
             { name: 'Material Esencial del Ingreso (Google Drive)', url: 'https://drive.google.com/drive/folders/1naGT9orvWN66OzA3lVpTB_wMqrXGDnkg', desc: 'Recursos para aprobar el curso de ingreso de la carrera' },
             { name: '🛡️ Grupo General – Ciberdefesa (WhatsApp)', url: 'https://chat.whatsapp.com/F2NUFYbj4AYGvsETVhFSC1', desc: 'Comunidad principal con subgrupos para cada materia' },
