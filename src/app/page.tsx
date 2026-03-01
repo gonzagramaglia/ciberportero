@@ -54,6 +54,16 @@ export default function Home() {
                     </a>
                 </div>
 
+                <div className="intro-cover">
+                    <a href="/moodle-siu.png" target="_blank" rel="noopener noreferrer">
+                        <img
+                            src="/moodle-siu.png"
+                            alt="Moodle y SIU"
+                            style={{ width: '100%', borderRadius: '12px', cursor: 'pointer' }}
+                        />
+                    </a>
+                </div>
+
                 <ul className="post-list">
                     {posts.map((post) => (
                         <li key={post.slug} className="post-item">

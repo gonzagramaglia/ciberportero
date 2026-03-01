@@ -5,7 +5,9 @@
   --muted: #666666;
   --border: #eaeaea;
   --success: #10b981;
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-sans:
+    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
 }
 
 @media (max-width: 680px) {
@@ -36,7 +38,7 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('/wallpaper.png');
+  background-image: url("/wallpaper.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -284,7 +286,9 @@ header p {
   padding: 0.2rem 0.4rem;
   border-radius: 4px;
   font-size: 0.9em;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
 }
 
 .post-content pre {
@@ -317,11 +321,15 @@ header p {
 
 .intro-cover {
   margin-top: 0;
-  margin-bottom: 2.5rem;
+  margin-bottom: 0.8rem;
 }
 
 .intro-cover img {
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.intro-cover:last-of-type {
+  margin-bottom: 3.5rem;
 }
 
 .home-cover {
