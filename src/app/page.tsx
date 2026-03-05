@@ -6,12 +6,13 @@ import { translations } from '../lib/translations';
 import { useState, useEffect } from 'react';
 import { PostData } from '../lib/posts-client';
 import LanguageSwitcher from '../components/LanguageSwitcher';
-import { Github, Youtube } from 'lucide-react';
+import { Github, Youtube, Bell, X } from 'lucide-react';
 
 export default function Home() {
     const { lang } = useLanguage();
     const [posts, setPosts] = useState<Omit<PostData, 'content'>[]>([]);
     const t = translations[lang];
+    const [showNotification, setShowNotification] = useState(true);
 
     useEffect(() => {
         // Fetch posts for the current language
@@ -27,8 +28,46 @@ export default function Home() {
         document.title = 'Ciberportero';
     }, []);
 
+    useEffect(() => {
+        if (showNotification) {
+            const timer = setTimeout(() => {
+                setShowNotification(false);
+            }, 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [showNotification]);
+
     return (
         <div className="container fade-in">
+            {showNotification && (
+                <a
+                    href="https://campus.fadena.undef.edu.ar/mod/choice/view.php?id=27815"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="notification-banner"
+                >
+                    <div className="notification-content">
+                        <div className="notification-icon">
+                            <Bell size={18} />
+                        </div>
+                        <div className="notification-text">
+                            <strong>Inscripción a la Actividad Integradora de Intro a la Vida Universitaria</strong>
+                            <span>Deberá inscribirse a un turno dentro de los disponibles. Cierra el 7/3 a las 15:00hs.</span>
+                        </div>
+                        <button
+                            className="notification-close"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setShowNotification(false);
+                            }}
+                        >
+                            <X size={16} />
+                        </button>
+                    </div>
+                    <div className="notification-progress" />
+                </a>
+            )}
             <header>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <h1>{t.title}</h1>

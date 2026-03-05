@@ -497,3 +497,161 @@ footer a:hover {
     height: 48px;
   }
 }
+
+/* Notification Banner */
+.notification-banner {
+  display: block;
+  background: linear-gradient(135deg, #1a4a6e 0%, #103253 100%);
+  border-radius: 12px;
+  padding: 0;
+  text-decoration: none;
+  color: white;
+  overflow: hidden;
+  animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease;
+  box-shadow: 0 4px 16px rgba(16, 50, 83, 0.35);
+  position: fixed;
+  top: 1.5rem;
+  left: 1rem;
+  right: 1rem;
+  z-index: 1000;
+}
+
+.notification-banner:hover {
+  box-shadow: 0 8px 24px rgba(16, 50, 83, 0.45);
+  color: white;
+  opacity: 1;
+}
+
+.notification-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 1.5rem 1.15rem;
+}
+
+.notification-icon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: bellRing 0.6s ease 0.5s;
+}
+
+.notification-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.notification-text strong {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.notification-text span {
+  font-size: 0.82rem;
+  opacity: 0.85;
+  line-height: 1.4;
+}
+
+.notification-close {
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  margin-top: 2px;
+}
+
+.notification-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.notification-progress {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.35);
+  animation: progressShrink 5s linear forwards;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bellRing {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  20% {
+    transform: rotate(14deg);
+  }
+
+  40% {
+    transform: rotate(-14deg);
+  }
+
+  60% {
+    transform: rotate(8deg);
+  }
+
+  80% {
+    transform: rotate(-8deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes progressShrink {
+  from {
+    width: 100%;
+  }
+
+  to {
+    width: 0%;
+  }
+}
+
+@media (max-width: 680px) {
+  .notification-content {
+    padding: 0.85rem 1rem;
+  }
+
+  .notification-text strong {
+    font-size: 0.88rem;
+  }
+
+  .notification-text span {
+    font-size: 0.78rem;
+  }
+
+  .notification-icon {
+    width: 32px;
+    height: 32px;
+  }
+}
