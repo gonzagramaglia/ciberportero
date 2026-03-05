@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useLanguage } from '../../context/LanguageContext';
 import { translations } from '../../lib/translations';
 import { ChevronLeft, ExternalLink, Mail, Copy, Check, Github, Youtube } from 'lucide-react';
@@ -12,7 +13,6 @@ export default function LinksPage() {
     const { lang } = useLanguage();
     const t = translations[lang];
     const [copied, setCopied] = useState(false);
-
     useEffect(() => {
         document.title = 'Ciberportero | Links';
     }, []);
@@ -43,17 +43,44 @@ export default function LinksPage() {
 
             <main>
                 <ul className="post-list">
-                    {links.map((link) => (
-                        <li key={link.url} className="post-item">
-                            <a href={link.url} target="_blank" rel="noopener noreferrer">
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                    <ExternalLink size={20} color="var(--accent)" />
-                                    <span className="post-title" style={{ marginBottom: 0 }}>{link.name}</span>
-                                </div>
-                                <p className="post-description">{link.desc}</p>
-                            </a>
-                        </li>
-                    ))}
+                    {links.map((link) => {
+                        const isWhatsApp = link.url.includes('chat.whatsapp.com');
+                        const isDiscord = link.url.includes('discord.gg');
+                        const isDrive = link.url.includes('drive.google.com');
+                        const hasIcon = isWhatsApp || isDiscord || isDrive;
+
+                        return (
+                            <li key={link.url} className="post-item">
+                                <a href={link.url} target="_blank" rel="noopener noreferrer">
+                                    {hasIcon ? (
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                            <div style={{ width: 46, flexShrink: 0, display: 'flex', justifyContent: 'center' }}>
+                                                <Image
+                                                    src={isWhatsApp ? '/wsp.png' : isDiscord ? '/discord.png' : '/drive.webp'}
+                                                    alt={isWhatsApp ? 'WhatsApp' : isDiscord ? 'Discord' : 'Google Drive'}
+                                                    width={isDiscord ? 34 : isDrive ? 46 : 40}
+                                                    height={isDiscord ? 40 : isDrive ? 38 : 40}
+                                                    style={{ flexShrink: 0, borderRadius: '8px' }}
+                                                />
+                                            </div>
+                                            <div>
+                                                <span className="post-title" style={{ marginBottom: 0 }}>{link.name}</span>
+                                                <p className="post-description">{link.desc}</p>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                                <ExternalLink size={20} color="var(--accent)" />
+                                                <span className="post-title" style={{ marginBottom: 0 }}>{link.name}</span>
+                                            </div>
+                                            <p className="post-description">{link.desc}</p>
+                                        </>
+                                    )}
+                                </a>
+                            </li>
+                        );
+                    })}
                 </ul>
 
                 <div style={{ marginTop: '4rem', marginBottom: '1.25rem', padding: '2rem', background: 'rgba(16, 185, 129, 0.05)', borderRadius: '12px', borderLeft: '4px solid var(--success)' }}>
