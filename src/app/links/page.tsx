@@ -13,6 +13,7 @@ export default function LinksPage() {
     const { lang } = useLanguage();
     const t = translations[lang];
     const [copied, setCopied] = useState(false);
+
     useEffect(() => {
         document.title = 'Ciberportero | Links';
     }, []);
@@ -47,7 +48,14 @@ export default function LinksPage() {
                         const isWhatsApp = link.url.includes('chat.whatsapp.com');
                         const isDiscord = link.url.includes('discord.gg');
                         const isDrive = link.url.includes('drive.google.com');
-                        const hasIcon = isWhatsApp || isDiscord || isDrive;
+                        const isMoodle = link.url.includes('campus.fadena');
+                        const isSIU = link.url.includes('autogestion.fadena');
+                        const hasIcon = isWhatsApp || isDiscord || isDrive || isMoodle || isSIU;
+
+                        const iconSrc = isWhatsApp ? '/wsp.png' : isDiscord ? '/discord.png' : isDrive ? '/drive.webp' : isMoodle ? '/moodle.png' : '/siu-guarani.png';
+                        const iconAlt = isWhatsApp ? 'WhatsApp' : isDiscord ? 'Discord' : isDrive ? 'Google Drive' : isMoodle ? 'Moodle' : 'SIU Guaraní';
+                        const iconW = isDiscord ? 34 : isDrive ? 46 : 40;
+                        const iconH = isDrive ? 38 : 40;
 
                         return (
                             <li key={link.url} className="post-item">
@@ -56,10 +64,10 @@ export default function LinksPage() {
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                                             <div style={{ width: 46, flexShrink: 0, display: 'flex', justifyContent: 'center' }}>
                                                 <Image
-                                                    src={isWhatsApp ? '/wsp.png' : isDiscord ? '/discord.png' : '/drive.webp'}
-                                                    alt={isWhatsApp ? 'WhatsApp' : isDiscord ? 'Discord' : 'Google Drive'}
-                                                    width={isDiscord ? 34 : isDrive ? 46 : 40}
-                                                    height={isDiscord ? 40 : isDrive ? 38 : 40}
+                                                    src={iconSrc}
+                                                    alt={iconAlt}
+                                                    width={iconW}
+                                                    height={iconH}
                                                     style={{ flexShrink: 0, borderRadius: '8px' }}
                                                 />
                                             </div>
