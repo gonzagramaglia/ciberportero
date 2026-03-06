@@ -655,3 +655,126 @@ footer a:hover {
     height: 32px;
   }
 }
+
+/* Sidebar Widgets */
+.sidebar-widget {
+  position: fixed;
+  top: 5.5rem;
+  width: 200px;
+  background: linear-gradient(135deg, #1a4a6e 0%, #103253 100%);
+  border-radius: 14px;
+  padding: 1.1rem;
+  color: white;
+  z-index: 90;
+  box-shadow: 0 8px 24px rgba(16, 50, 83, 0.35);
+}
+
+.sidebar-widget-left {
+  right: calc(50% + 340px + 3rem);
+  left: auto;
+  top: 16.5rem;
+}
+
+.sidebar-widget-math {
+  right: calc(50% + 340px + 3rem);
+  left: auto;
+  top: 4.5rem;
+}
+
+.sidebar-widget-final {
+  left: calc(50% + 340px + 3rem);
+  right: auto;
+  top: 4.5rem;
+}
+
+.sidebar-widget.warning {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: #103253;
+  box-shadow: 0 8px 24px rgba(217, 119, 6, 0.35);
+}
+
+.sidebar-widget.warning .countdown-number,
+.sidebar-widget.warning .countdown-desc strong,
+.sidebar-widget.warning .warning-text {
+  color: #000;
+}
+
+.sidebar-widget.warning .countdown-header,
+.sidebar-widget.warning .countdown-label,
+.sidebar-widget.warning .countdown-sep,
+.sidebar-widget.warning .countdown-desc {
+  color: rgba(0, 0, 0, 0.75);
+}
+
+.sidebar-widget.warning .countdown-desc strong {
+  color: #000;
+  opacity: 1;
+}
+
+.countdown-header {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.9;
+}
+
+.countdown-timer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  margin-bottom: 0.75rem;
+}
+
+.countdown-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+}
+
+.countdown-number {
+  font-size: 1.4rem;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  min-width: 2ch;
+  text-align: center;
+}
+
+.countdown-label {
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  opacity: 0.55;
+  letter-spacing: 0.04em;
+}
+
+.countdown-sep {
+  font-size: 1.2rem;
+  font-weight: 700;
+  opacity: 0.35;
+  margin-top: -0.7rem;
+}
+
+.countdown-desc {
+  font-size: 0.68rem;
+  line-height: 1.4;
+  opacity: 0.7;
+  margin: 0;
+}
+
+.countdown-desc strong {
+  opacity: 1;
+  color: white;
+}
+
+@media (max-width: 1100px) {
+  .sidebar-widget {
+    display: none;
+  }
+}

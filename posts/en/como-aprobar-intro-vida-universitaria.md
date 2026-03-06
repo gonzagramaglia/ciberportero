@@ -8,6 +8,7 @@ description: "Guide to passing with 80% or higher the Introduction to University
 
 > 📚 The [**Introduction to University Life**](https://campus.fadena.undef.edu.ar/course/view.php?id=534) Module is part of **FADENA's Admission Course**. Passing it with **80% or higher** is an **essential requirement to enroll in the annual subjects** of the Bachelor's in Cyberdefense.
 
+[![Introduction to University Life Announcement](/announcement-ivu-1.png)](https://campus.fadena.undef.edu.ar/mod/choice/view.php?id=27815)
 ## Coming soon...
 
 ![In process](/in-process.png)

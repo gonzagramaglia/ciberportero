@@ -8,6 +8,7 @@ description: "Guía para aprobar con 80% o más el Módulo de Introducción a la
 
 > 📚 El Módulo de [**Introducción a la Vida Universitaria**](https://campus.fadena.undef.edu.ar/course/view.php?id=534) es parte del **Curso de Ingreso de FADENA**. Aprobarlo con un **80% o más** es un **requisito indispensable para poder inscribirse a las materias anuales** de la Licenciatura en Ciberdefensa.
 
+[![Aviso Introducción a la Vida Universitaria](/announcement-ivu-1.png)](https://campus.fadena.undef.edu.ar/mod/choice/view.php?id=27815)
 ## Próximamente...
 
 ![En proceso](/in-process.png)
