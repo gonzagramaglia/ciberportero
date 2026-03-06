@@ -65,7 +65,7 @@ export default function CountdownWidget() {
             <a href="https://campus.fadena.undef.edu.ar/mod/choice/view.php?id=27815" target="_blank" rel="noopener noreferrer" className="sidebar-widget sidebar-widget-left" style={{ textDecoration: 'none', color: 'white' }}>
                 <div className="countdown-header">
                     <Clock size={14} />
-                    <span>Act. Integradora – Módulo de Intro a la Vida Universitaria</span>
+                    <span>Act. Integradora – Curso de Intro a la Vida Universitaria</span>
                 </div>
                 {!ivuTime.expired ? (
                     <TimerLines time={ivuTime} />
@@ -81,7 +81,7 @@ export default function CountdownWidget() {
             <div className="sidebar-widget sidebar-widget-math">
                 <div className="countdown-header">
                     <BookOpen size={14} />
-                    <span>Act. Integradora – Módulo de Matemática</span>
+                    <span>Act. Integradora – Curso de Matemática</span>
                 </div>
                 <p className="countdown-desc" style={{ textAlign: 'center', marginTop: '0.25rem' }}>
                     <strong>Fecha aún no confirmada</strong>

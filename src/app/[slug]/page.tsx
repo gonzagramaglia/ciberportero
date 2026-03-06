@@ -76,18 +76,18 @@ export default function Post() {
 
     return (
         <>
-            <div className="container fade-in">
-                {selectedImage && (
-                    <div className="lightbox-overlay" onClick={() => setSelectedImage(null)}>
-                        <div className="lightbox-content">
-                            <button className="lightbox-close" onClick={() => setSelectedImage(null)}>
-                                <X size={24} />
-                            </button>
-                            <img src={selectedImage} alt="Enlarged view" onClick={() => setSelectedImage(null)} style={{ cursor: 'zoom-out' }} />
-                        </div>
+            {selectedImage && (
+                <div className="lightbox-overlay" style={{ zIndex: 9999 }} onClick={() => setSelectedImage(null)}>
+                    <div className="lightbox-content">
+                        <button className="lightbox-close" onClick={() => setSelectedImage(null)}>
+                            <X size={24} />
+                        </button>
+                        <img src={selectedImage} alt="Enlarged view" onClick={() => setSelectedImage(null)} style={{ cursor: 'zoom-out' }} />
                     </div>
-                )}
+                </div>
+            )}
 
+            <div className="container fade-in">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem', marginBottom: '2rem' }}>
                     <Link href="/" className="back-link" style={{ marginBottom: 0 }}>
                         <ChevronLeft size={16} />
@@ -106,13 +106,16 @@ export default function Post() {
                     <ReactMarkdown
                         components={{
                             a: ({ node, ...props }) => <a {...props} target="_blank" rel="noopener noreferrer" />,
-                            img: ({ node, ...props }) => (
-                                <img
-                                    {...props}
-                                    style={{ cursor: 'zoom-in' }}
-                                    onClick={() => setSelectedImage((props.src as string) || null)}
-                                />
-                            )
+                            img: ({ node, ...props }) => {
+                                const src = props.src as string;
+                                return (
+                                    <img
+                                        {...props}
+                                        style={{ cursor: 'zoom-in' }}
+                                        onClick={() => setSelectedImage(src || null)}
+                                    />
+                                );
+                            }
                         }}
                     >
                         {post.content}
