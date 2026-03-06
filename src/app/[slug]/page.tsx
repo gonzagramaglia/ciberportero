@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
-import { ChevronLeft, Github, Youtube, ArrowUp, ArrowDown } from 'lucide-react';
+import { ChevronLeft, Github, Youtube, ArrowUp, ArrowDown, X } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { translations } from '../../lib/translations';
 import { useState, useEffect } from 'react';
@@ -17,6 +17,7 @@ export default function Post() {
     const [loading, setLoading] = useState(true);
     const [showTop, setShowTop] = useState(false);
     const [showBottom, setShowBottom] = useState(true);
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const t = translations[lang];
 
     useEffect(() => {
@@ -76,6 +77,17 @@ export default function Post() {
     return (
         <>
             <div className="container fade-in">
+                {selectedImage && (
+                    <div className="lightbox-overlay" onClick={() => setSelectedImage(null)}>
+                        <div className="lightbox-content">
+                            <button className="lightbox-close" onClick={() => setSelectedImage(null)}>
+                                <X size={24} />
+                            </button>
+                            <img src={selectedImage} alt="Enlarged view" onClick={() => setSelectedImage(null)} style={{ cursor: 'zoom-out' }} />
+                        </div>
+                    </div>
+                )}
+
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem', marginBottom: '2rem' }}>
                     <Link href="/" className="back-link" style={{ marginBottom: 0 }}>
                         <ChevronLeft size={16} />
@@ -93,7 +105,14 @@ export default function Post() {
                     })}</span>
                     <ReactMarkdown
                         components={{
-                            a: ({ node, ...props }) => <a {...props} target="_blank" rel="noopener noreferrer" />
+                            a: ({ node, ...props }) => <a {...props} target="_blank" rel="noopener noreferrer" />,
+                            img: ({ node, ...props }) => (
+                                <img
+                                    {...props}
+                                    style={{ cursor: 'zoom-in' }}
+                                    onClick={() => setSelectedImage((props.src as string) || null)}
+                                />
+                            )
                         }}
                     >
                         {post.content}

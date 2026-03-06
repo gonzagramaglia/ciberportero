@@ -6,7 +6,6 @@ import { translations } from '../lib/translations';
 import { useState, useEffect } from 'react';
 import { PostData } from '../lib/posts-client';
 import LanguageSwitcher from '../components/LanguageSwitcher';
-import CountdownWidget from '../components/CountdownWidget';
 import { Github, Youtube, Bell, X } from 'lucide-react';
 
 export default function Home() {
@@ -140,7 +139,6 @@ export default function Home() {
                     <Github size={18} />
                 </a>
             </footer>
-            <CountdownWidget />
         </div>
     );
 }
