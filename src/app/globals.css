@@ -501,7 +501,7 @@ footer a:hover {
 /* Notification Banner */
 .notification-banner {
   display: block;
-  background: linear-gradient(135deg, #1a4a6e 0%, #103253 100%);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   border-radius: 12px;
   padding: 0;
   text-decoration: none;
@@ -510,7 +510,7 @@ footer a:hover {
   animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   cursor: pointer;
   transition: box-shadow 0.2s ease;
-  box-shadow: 0 4px 16px rgba(16, 50, 83, 0.35);
+  box-shadow: 0 4px 16px rgba(5, 150, 105, 0.35);
   position: fixed;
   top: 1.5rem;
   left: 1rem;
@@ -519,7 +519,7 @@ footer a:hover {
 }
 
 .notification-banner:hover {
-  box-shadow: 0 8px 24px rgba(16, 50, 83, 0.45);
+  box-shadow: 0 8px 24px rgba(5, 150, 105, 0.45);
   color: white;
   opacity: 1;
 }
@@ -540,7 +540,7 @@ footer a:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: bellRing 0.6s ease 0.5s;
+  animation: bellRing 2s ease infinite;
 }
 
 .notification-text {
@@ -688,9 +688,9 @@ footer a:hover {
 }
 
 .sidebar-widget.warning {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-  color: #103253;
-  box-shadow: 0 8px 24px rgba(217, 119, 6, 0.35);
+  background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
+  color: #000;
+  box-shadow: 0 8px 24px rgba(234, 179, 8, 0.35);
 }
 
 .sidebar-widget.warning .countdown-number,
