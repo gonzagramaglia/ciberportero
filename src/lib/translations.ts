@@ -7,7 +7,7 @@ export const translations = {
         langName: "Español",
         featured: {
             title: "Recursos y Enlaces Útiles",
-            description: "Recursos curados para estudiantes de la Lic. en Ciberdefensa de la UNDEF",
+            description: "Recursos para estudiantes de la Lic. en Ciberdefensa de la UNDEF",
             tag: "Destacado"
         },
         contact: {
@@ -38,7 +38,7 @@ export const translations = {
         langName: "English",
         featured: {
             title: "Useful Resources and Links",
-            description: "Curated resources for Cyberdefense students at UNDEF",
+            description: "Resources for Cyberdefense students at UNDEF",
             tag: "Featured"
         },
         contact: {
@@ -69,7 +69,7 @@ export const translations = {
         langName: "Português",
         featured: {
             title: "Recursos e Links Úteis",
-            description: "Recursos selecionados para estudantes de Ciberdefesa da UNDEF",
+            description: "Recursos para estudantes de Ciberdefesa da UNDEF",
             tag: "Destaque"
         },
         contact: {
