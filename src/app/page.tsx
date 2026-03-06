@@ -14,6 +14,7 @@ export default function Home() {
     const [posts, setPosts] = useState<Omit<PostData, 'content'>[]>([]);
     const t = translations[lang];
     const [showNotification, setShowNotification] = useState(true);
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
     useEffect(() => {
         // Fetch posts for the current language
@@ -28,15 +29,6 @@ export default function Home() {
     useEffect(() => {
         document.title = 'Ciberportero';
     }, []);
-
-    useEffect(() => {
-        if (showNotification) {
-            const timer = setTimeout(() => {
-                setShowNotification(false);
-            }, 5000);
-            return () => clearTimeout(timer);
-        }
-    }, [showNotification]);
 
     return (
         <div className="container fade-in">
@@ -66,9 +58,20 @@ export default function Home() {
                             <X size={16} />
                         </button>
                     </div>
-                    <div className="notification-progress" />
                 </a>
             )}
+
+            {selectedImage && (
+                <div className="lightbox-overlay" onClick={() => setSelectedImage(null)}>
+                    <div className="lightbox-content">
+                        <button className="lightbox-close" onClick={() => setSelectedImage(null)}>
+                            <X size={24} />
+                        </button>
+                        <img src={selectedImage} alt="Enlarged view" onClick={() => setSelectedImage(null)} style={{ cursor: 'zoom-out' }} />
+                    </div>
+                </div>
+            )}
+
             <header>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <h1>{t.title}</h1>
@@ -84,24 +87,20 @@ export default function Home() {
                     <p className="post-description">{t.featured?.description}</p>
                 </Link>
 
-                <div className="intro-cover">
-                    <a href="/intro.png" target="_blank" rel="noopener noreferrer">
-                        <img
-                            src="/intro.png"
-                            alt="Calendario Académico de Grado 2026"
-                            style={{ width: '100%', borderRadius: '12px', cursor: 'pointer' }}
-                        />
-                    </a>
+                <div className="intro-cover" onClick={() => setSelectedImage('/moodle-siu.png')}>
+                    <img
+                        src="/moodle-siu.png"
+                        alt="Moodle y SIU"
+                        style={{ width: '100%', borderRadius: '12px', cursor: 'zoom-in' }}
+                    />
                 </div>
 
-                <div className="intro-cover">
-                    <a href="/moodle-siu.png" target="_blank" rel="noopener noreferrer">
-                        <img
-                            src="/moodle-siu.png"
-                            alt="Moodle y SIU"
-                            style={{ width: '100%', borderRadius: '12px', cursor: 'pointer' }}
-                        />
-                    </a>
+                <div className="intro-cover" onClick={() => setSelectedImage('/intro.png')}>
+                    <img
+                        src="/intro.png"
+                        alt="Calendario Académico de Grado 2026"
+                        style={{ width: '100%', borderRadius: '12px', cursor: 'zoom-in' }}
+                    />
                 </div>
 
                 <ul className="post-list">
