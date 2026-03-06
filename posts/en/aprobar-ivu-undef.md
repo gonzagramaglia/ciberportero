@@ -1,15 +1,23 @@
----
-title: "How to pass the Intro to University Life Module"
+title: "How to pass the Intro to University Life Course"
 date: "2026-03-04"
-description: "Guide to passing with 80% or higher the Introduction to University Life Module of FADENA's Admission Course, a requirement to enroll in the Cyberdefense degree subjects"
+description: "Guide to passing with 80% or higher the Introduction to University Life Course of FADENA's Admission, a requirement to enroll in the Cyberdefense degree subjects"
 ---
 
-# How to pass the Intro to University Life Module
+# How to pass the Intro to University Life Course
 
-> 📚 The [**Introduction to University Life**](https://campus.fadena.undef.edu.ar/course/view.php?id=534) Module is part of **FADENA's Admission Course**. Passing it with **80% or higher** is an **essential requirement to enroll in the annual subjects** of the Bachelor's in Cyberdefense.
+> 📚 The [**Introduction to University Life**](https://campus.fadena.undef.edu.ar/course/view.php?id=534) Course is part of **FADENA's Admission**. Passing it with **80% or higher** is an **essential requirement to enroll in the annual subjects** of the Bachelor's in Cyberdefense.
 
 ![Introduction to University Life Announcement](/announcement-ivu-1.png)
-## Coming soon...
+## Quick Guide (In Progress)
+
+To be eligible for the **Final Integrating Activity** on Monday, March 9, you must complete the **questionnaires** for each course:
+
+- **[Module 1 Questionnaire (Intro to University Life)](https://campus.fadena.undef.edu.ar/mod/quiz/view.php?id=27450)**
+- **[Module 2 Questionnaire (Intro to University Life)](https://campus.fadena.undef.edu.ar/mod/quiz/view.php?id=27452)**
+- **[Module 3 Questionnaire (Intro to University Life)](https://campus.fadena.undef.edu.ar/mod/quiz/view.php?id=27454)**
+
+Once completed, don't forget to enroll:
+- **[Enrollment for the IVU Integrating Activity Shift](https://campus.fadena.undef.edu.ar/mod/choice/view.php?id=27815)**
 
 ![In process](/in-process.png)
 ## Blog post under construction...
