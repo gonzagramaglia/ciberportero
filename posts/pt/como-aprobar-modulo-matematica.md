@@ -1,6 +1,6 @@
 ---
 title: "Como passar no Módulo de Matemática"
-date: "2026-03-05"
+date: "2026-03-04"
 description: "Guia para passar com 80% ou mais no Módulo de Matemática do Curso de Ingresso da FADENA, requisito para se inscrever nas matérias do curso de Ciberdefesa"
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: "Cómo aprobar el Módulo de Matemática"
-date: "2026-03-05"
+date: "2026-03-04"
 description: "Guía para aprobar con 80% o más el Módulo de Matemática del Curso de Ingreso a FADENA, requisito para inscribirse a las materias de la carrera de Ciberdefensa"
 ---
 

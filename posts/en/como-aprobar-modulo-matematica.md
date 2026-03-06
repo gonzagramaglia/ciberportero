@@ -1,6 +1,6 @@
 ---
 title: "How to pass the Mathematics Module"
-date: "2026-03-05"
+date: "2026-03-04"
 description: "Guide to passing with 80% or higher the Mathematics Module of FADENA's Admission Course, a requirement to enroll in the Cyberdefense degree subjects"
 ---
 
