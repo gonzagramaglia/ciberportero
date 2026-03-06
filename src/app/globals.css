@@ -501,24 +501,25 @@ footer a:hover {
 /* Notification Banner */
 .notification-banner {
   display: block;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
   border-radius: 12px;
   padding: 0;
   text-decoration: none;
-  color: white;
+  color: #000;
   overflow: hidden;
   animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   cursor: pointer;
   transition: box-shadow 0.2s ease;
-  box-shadow: 0 4px 16px rgba(5, 150, 105, 0.35);
+  box-shadow: 0 4px 16px rgba(234, 179, 8, 0.35);
   position: relative;
+  margin-top: 0.5rem;
   margin-bottom: 2.5rem;
   z-index: 100;
 }
 
 .notification-banner:hover {
-  box-shadow: 0 8px 24px rgba(5, 150, 105, 0.45);
-  color: white;
+  box-shadow: 0 8px 24px rgba(234, 179, 8, 0.45);
+  color: #000;
   opacity: 1;
 }
 
@@ -534,11 +535,12 @@ footer a:hover {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
   animation: bellRing 2s ease infinite;
+  color: #000;
 }
 
 .notification-text {
@@ -563,9 +565,9 @@ footer a:hover {
 
 .notification-close {
   flex-shrink: 0;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.1);
   border: none;
-  color: white;
+  color: #000;
   width: 28px;
   height: 28px;
   border-radius: 50%;
@@ -578,7 +580,7 @@ footer a:hover {
 }
 
 .notification-close:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .notification-progress {
@@ -679,11 +681,7 @@ footer a:hover {
   top: 4.5rem;
 }
 
-.sidebar-widget-final {
-  left: calc(50% + 340px + 3rem);
-  right: auto;
-  top: 4.5rem;
-}
+
 
 .sidebar-widget.warning {
   background: linear-gradient(135deg, #facc15 0%, #eab308 100%);

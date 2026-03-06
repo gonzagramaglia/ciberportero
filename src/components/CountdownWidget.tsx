@@ -91,24 +91,6 @@ export default function CountdownWidget() {
                 </p>
             </div>
 
-            {/* Right side: Exámenes Finales */}
-            <div className="sidebar-widget sidebar-widget-final warning">
-                <div className="countdown-header">
-                    <GraduationCap size={16} />
-                    <span>Exámenes Finales</span>
-                </div>
-                {!finalTime.expired ? (
-                    <TimerLines time={finalTime} />
-                ) : (
-                    <p className="countdown-desc" style={{ textAlign: 'center', fontWeight: 700, marginBottom: '0.5rem' }}>¡En curso!</p>
-                )}
-                <p className="countdown-desc" style={{ textAlign: 'center', marginTop: '0.25rem' }}>
-                    Viernes <strong>13 de marzo</strong>.
-                </p>
-                <p className="countdown-desc warning-text" style={{ marginTop: '0.5rem', fontWeight: 600 }}>
-                    Requisito obligatorio: si no se aprueban no se puede cursar las materias de la carrera.
-                </p>
-            </div>
         </>
     );
 }
