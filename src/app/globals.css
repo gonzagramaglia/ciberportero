@@ -869,3 +869,37 @@ footer a:hover {
     font-size: 1.5rem;
   }
 }
+
+.copy-button {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--background);
+  border: 1px solid var(--border);
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.copy-button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(0, 112, 243, 0.03);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.copy-button:active {
+  transform: translateY(0);
+}
+
+.copy-button.success {
+  border-color: var(--success);
+  color: var(--success);
+  background: rgba(16, 185, 129, 0.05);
+}

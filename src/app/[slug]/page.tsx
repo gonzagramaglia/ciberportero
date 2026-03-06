@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
-import { ChevronLeft, Github, Youtube, ArrowUp, ArrowDown, X } from 'lucide-react';
+import { ChevronLeft, Github, Youtube, ArrowUp, ArrowDown, X, Link2, Check } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { translations } from '../../lib/translations';
 import { useState, useEffect } from 'react';
@@ -18,7 +18,14 @@ export default function Post() {
     const [showTop, setShowTop] = useState(false);
     const [showBottom, setShowBottom] = useState(true);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [copied, setCopied] = useState(false);
     const t = translations[lang];
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(window.location.href);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
 
     useEffect(() => {
         const handleScroll = () => {
@@ -121,6 +128,16 @@ export default function Post() {
                         {post.content}
                     </ReactMarkdown>
                 </article>
+
+                <div style={{ display: 'flex', justifyContent: 'flex-start', margin: '2rem 0' }}>
+                    <button
+                        onClick={handleCopy}
+                        className={`copy-button ${copied ? 'success' : ''}`}
+                    >
+                        {copied ? <Check size={16} /> : <Link2 size={16} />}
+                        <span>{copied ? t.share.copied : t.share.copy}</span>
+                    </button>
+                </div>
 
                 <footer style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>

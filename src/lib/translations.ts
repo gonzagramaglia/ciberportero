@@ -28,7 +28,27 @@ export const translations = {
             { name: 'Comunidad Ciberdefensa Argentina (Discord)', url: 'https://discord.gg/zPWRAfUR82', desc: 'Espacio de estudio y networking de la comunidad nacional' },
             { name: 'Plan de Estudios de la Carrera', url: 'https://undef.edu.ar/fadena/wp-content/uploads/2025/10/Plan-de-estudios-CIBERDEFENSA.pdf', desc: 'Documento oficial con la currícula completa de la Licenciatura' },
         ],
-        feedback: "¿Por qué elegimos Ciberdefensa?"
+        feedback: "¿Por qué elegimos Ciberdefensa?",
+        countdown: {
+            ivuTitle: "Act. Integradora – Curso de Intro a la Vida Universitaria",
+            mateTitle: "Act. Integradora – Curso de Matemática",
+            days: "días",
+            hours: "hs",
+            minutes: "min",
+            seconds: "seg",
+            available: "¡Ya disponible!",
+            ivuDesc: "Disponible el <strong>lunes 9/3</strong> según el turno que hayas elegido. <strong>Obligatoria para el ingreso</strong>.",
+            mateDateNotConfirmed: "Fecha aún no confirmada",
+            mateDesc: "Pendiente de confirmação. Se anunciará en el <strong>campus virtual</strong>."
+        },
+        notification: {
+            title: "Inscripción a la Actividad Integradora de Intro a la Vida Universitaria",
+            desc: "Deberá inscribirse a un turno dentro de los disponibles. Cierra el 7/3 a las 15:00hs."
+        },
+        share: {
+            copy: "Copiar enlace del post",
+            copied: "¡Enlace del post copiado!"
+        }
     },
     en: {
         title: "Ciberportero",
@@ -59,7 +79,27 @@ export const translations = {
             { name: 'Argentina Cyberdefense Community (Discord)', url: 'https://discord.gg/zPWRAfUR82', desc: 'Study and networking space for the national community' },
             { name: 'Degree Study Plan', url: 'https://undef.edu.ar/fadena/wp-content/uploads/2025/10/Plan-de-estudios-CIBERDEFENSA.pdf', desc: 'Official document with the full Bachelor\'s curriculum' },
         ],
-        feedback: "Why did we choose Cyberdefense?"
+        feedback: "Why did we choose Cyberdefense?",
+        countdown: {
+            ivuTitle: "Integrating Activity – Intro to University Life Course",
+            mateTitle: "Integrating Activity – Mathematics Course",
+            days: "days",
+            hours: "hs",
+            minutes: "min",
+            seconds: "sec",
+            available: "Available now!",
+            ivuDesc: "Available on <strong>Monday 3/9</strong> according to chosen shift. <strong>Mandatory for admission</strong>.",
+            mateDateNotConfirmed: "Date not yet confirmed",
+            mateDesc: "Pending confirmation. It will be announced on the <strong>virtual campus</strong>."
+        },
+        notification: {
+            title: "Enrollment for the Intro to University Life Integrating Activity",
+            desc: "You must enroll in one of the available shifts. Closes on 3/7 at 3:00 PM."
+        },
+        share: {
+            copy: "Copy post link",
+            copied: "Post link copied!"
+        }
     },
     pt: {
         title: "Ciberportero",
@@ -90,7 +130,27 @@ export const translations = {
             { name: 'Comunidade Ciberdefesa Argentina (Discord)', url: 'https://discord.gg/zPWRAfUR82', desc: 'Espaço de estudio e networking da comunidade nacional' },
             { name: 'Plano de Estudos do Curso', url: 'https://undef.edu.ar/fadena/wp-content/uploads/2025/10/Plan-de-estudios-CIBERDEFENSA.pdf', desc: 'Documento oficial com a grade curricular completa' },
         ],
-        feedback: "Por que escolhemos a Ciberdefesa?"
+        feedback: "Por que escolhemos a Ciberdefesa?",
+        countdown: {
+            ivuTitle: "Ativ. Integradora – Curso de Intro à Vida Universitária",
+            mateTitle: "Ativ. Integradora – Curso de Matemática",
+            days: "dias",
+            hours: "hs",
+            minutes: "min",
+            seconds: "seg",
+            available: "Já disponível",
+            ivuDesc: "Disponível em <strong>segunda-feira 9/3</strong> de acordo com o turno escolhido. <strong>Obrigatória para o ingresso</strong>.",
+            mateDateNotConfirmed: "Data ainda não confirmada",
+            mateDesc: "Pendente de confirmação. Será anunciado no <strong>campus virtual</strong>."
+        },
+        notification: {
+            title: "Inscrição para a Atividade Integradora de Intro à Vida Universitária",
+            desc: "Você deve se inscrever em um dos turnos disponíveis. Encerra em 7/3 às 15:00hs."
+        },
+        share: {
+            copy: "Copiar link do post",
+            copied: "¡Link do post copiado!"
+        }
     }
 };
 
