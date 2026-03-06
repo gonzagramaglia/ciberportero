@@ -1,14 +1,14 @@
+---
 title: "How to pass the Intro to University Life Course"
 date: "2026-03-04"
-description: "Guide to passing with 80% or higher the Introduction to University Life Course of FADENA's Admission, a requirement to enroll in the Cyberdefense degree subjects"
+description: "Guide to passing with 80% or higher the Introduction to University Life Course of FADENA's Admission, a requirement to enroll in the semester subjects of the Bachelor's in Cyberdefense"
 ---
 
 # How to pass the Intro to University Life Course
 
-> 📚 The [**Introduction to University Life**](https://campus.fadena.undef.edu.ar/course/view.php?id=534) Course is part of **FADENA's Admission**. Passing it with **80% or higher** is an **essential requirement to enroll in the annual subjects** of the Bachelor's in Cyberdefense.
+> 📚 The [**Introduction to University Life**](https://campus.fadena.undef.edu.ar/course/view.php?id=534) Course is part of **FADENA's Admission**. Passing it with **80% or higher** is an **essential requirement to enroll in the semester subjects** of the Bachelor's in Cyberdefense.
 
-![Introduction to University Life Announcement](/announcement-ivu-1.png)
-## Quick Guide (In Progress)
+## Quick guide (in progress)
 
 To be eligible for the **Final Integrating Activity** on Monday, March 9, you must complete the **questionnaires** for each course:
 
@@ -22,7 +22,5 @@ Once completed, don't forget to enroll:
 ![In process](/in-process.png)
 ## Blog post under construction...
 ---
-
-
 
 Being written with 💛 by [**Gonza**](https://github.com/gonzalogramagia)

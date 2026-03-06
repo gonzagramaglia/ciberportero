@@ -6,10 +6,10 @@ description: "Guía para aprobar con 80% o más el Curso de Introducción a la V
 
 # Cómo aprobar el Curso de Intro a la Vida Universitaria
 
-> 📚 El Curso de [**Introducción a la Vida Universitaria**](https://campus.fadena.undef.edu.ar/course/view.php?id=534) es parte del **Ingreso a FADENA**. Aprobarlo con un **80% o más** es un **requisito indispensable para poder inscribirse a las materias anuales** de la Licenciatura en Ciberdefensa.
+> 📚 El Curso de [**Introducción a la Vida Universitaria**](https://campus.fadena.undef.edu.ar/course/view.php?id=534) es parte del **Ingreso a FADENA**. Aprobarlo con un **80% o más** es un **requisito indispensable para poder inscribirse a las materias cuatrimestrales** de la Licenciatura en Ciberdefensa.
 
 ![Aviso Introducción a la Vida Universitaria](/announcement-ivu-1.png)
-## Guía rápida (En desarrollo)
+## Guía rápida (en desarrollo)
 
 Para poder realizar la **Actividad Integradora Final** el lunes 9/3, es obligatorio completar los **cuestionarios** de cada curso:
 
