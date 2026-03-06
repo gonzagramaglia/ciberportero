@@ -10,16 +10,16 @@ description: "Guide to passing with 80% or higher the Mathematics Course of FADE
 
 > 🎥 **Math Classes:** A fellow student, who also gives private math lessons, teaches ad honorem classes. You can watch the full playlist here: [**Math Classes – FADENA Admission**](https://www.youtube.com/playlist?list=PLLiqnZYloFpu0ebcXDj8VlKqYOA-GeiKB)
 
-## Quick guide (in progress)
+## Quick Guide (in progress)
 
-To pass the course and be eligible for the **Final Integrating Activity** (the one that defines the entrance grade), keep in mind:
+To be able to take the **Final Integrating Activity** on Wednesday 3/11, it is mandatory to complete the **self-assessments** for each course:
 
-- **Practice Guides:** These are **optional**. They help you study each unit's topics, but completing them on the campus is not required.
-- **Self-Assessments:** These are **mandatory**. They must be completed at the end of each thematic unit to move forward and, most importantly, they are a **requirement to enable the integrating activity (final exam)** of the course.
-    - **[Module 1 Self-Assessment (Mathematics)](https://campus.fadena.undef.edu.ar/mod/quiz/view.php?id=27469)**
-    - **[Module 2 Self-Assessment (Mathematics)](https://campus.fadena.undef.edu.ar/mod/quiz/view.php?id=27474)**
+- [**Mathematics Module 1 Self-Assessment**](https://campus.fadena.undef.edu.ar/mod/quiz/view.php?id=27469)
+- [**Mathematics Module 2 Self-Assessment**](https://campus.fadena.undef.edu.ar/mod/quiz/view.php?id=27474)
 
-> ⚠️ **Important:** The date for the **Final Integrating Activity** has not been confirmed yet. We recommend keeping an eye on the [**virtual campus**](/links) for updates.
+Once completed, don't forget to enroll:
+
+[**Enrollment for the Mathematics Integrating Activity shift**](https://campus.fadena.undef.edu.ar/course/view.php?id=539)
 
 ![In process](/in-process.png)
 ## Blog post under construction...

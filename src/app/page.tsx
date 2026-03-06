@@ -13,10 +13,10 @@ export default function Home() {
     const [posts, setPosts] = useState<Omit<PostData, 'content'>[]>([]);
     const t = translations[lang];
     const [showNotification, setShowNotification] = useState(true);
+    const [showNotificationMate, setShowNotificationMate] = useState(true);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
     useEffect(() => {
-        // Fetch posts for the current language
         const fetchPosts = async () => {
             const response = await fetch(`/api/posts?lang=${lang}`);
             const data = await response.json();
@@ -44,7 +44,7 @@ export default function Home() {
                         </div>
                         <div className="notification-text">
                             <strong>{t.notification?.title}</strong>
-                            <span>{t.notification?.desc}</span>
+                            <span dangerouslySetInnerHTML={{ __html: t.notification?.desc || '' }} />
                         </div>
                         <button
                             className="notification-close"
@@ -52,6 +52,36 @@ export default function Home() {
                                 e.preventDefault();
                                 e.stopPropagation();
                                 setShowNotification(false);
+                            }}
+                        >
+                            <X size={16} />
+                        </button>
+                    </div>
+                </a>
+            )}
+
+            {showNotificationMate && (
+                <a
+                    href="https://campus.fadena.undef.edu.ar/course/view.php?id=539"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="notification-banner"
+                    style={{ marginTop: showNotification ? '-1.5rem' : '0.5rem' }}
+                >
+                    <div className="notification-content">
+                        <div className="notification-icon">
+                            <Bell size={18} />
+                        </div>
+                        <div className="notification-text">
+                            <strong>{t.notificationMate?.title}</strong>
+                            <span dangerouslySetInnerHTML={{ __html: t.notificationMate?.desc || '' }} />
+                        </div>
+                        <button
+                            className="notification-close"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setShowNotificationMate(false);
                             }}
                         >
                             <X size={16} />

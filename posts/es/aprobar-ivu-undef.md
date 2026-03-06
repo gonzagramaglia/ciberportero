@@ -1,10 +1,10 @@
 ---
-title: "Cómo aprobar el Curso de Intro a la Vida Universitaria"
+title: "Cómo aprobar el Curso de IVU"
 date: "2026-03-04"
 description: "Guía para aprobar con 80% o más el Curso de Introducción a la Vida Universitaria del Ingreso a FADENA, requisito para inscribirse a las materias de la carrera de Ciberdefensa"
 ---
 
-# Cómo aprobar el Curso de Intro a la Vida Universitaria
+# Cómo aprobar el Curso de IVU
 
 > 📚 El Curso de [**Introducción a la Vida Universitaria**](https://campus.fadena.undef.edu.ar/course/view.php?id=534) es parte del **Ingreso a FADENA**. Aprobarlo con un **80% o más** es un **requisito indispensable para poder inscribirse a las materias cuatrimestrales** de la Licenciatura en Ciberdefensa.
 

@@ -1,10 +1,10 @@
 ---
-title: "Como passar no Curso de Intro à Vida Universitária"
+title: "Como passar no Curso de IVU"
 date: "2026-03-04"
 description: "Guia para passar com 80% ou mais no Curso de Introdução à Vida Universitária do Ingresso a FADENA, requisito para se inscrever nas matérias do curso de Ciberdefesa"
 ---
 
-# Como passar no Curso de Intro à Vida Universitária
+# Como passar no Curso de IVU
 
 > 📚 O Curso de [**Introdução à Vida Universitária**](https://campus.fadena.undef.edu.ar/course/view.php?id=534) faz parte do **Ingresso a FADENA**. Aprová-lo com **80% ou mais** é um **requisito indispensável para se inscrever nas matérias quadrimestrais** da Licenciatura em Ciberdefesa.
 

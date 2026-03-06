@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Clock, BookOpen, GraduationCap } from 'lucide-react';
+import { Clock, BookOpen } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { translations } from '../lib/translations';
 
@@ -9,7 +9,7 @@ export default function CountdownWidget() {
     const { lang } = useLanguage();
     const t = translations[lang].countdown;
     const ivuDate = new Date('2026-03-09T00:00:00-03:00');
-    const finalDate = new Date('2026-03-13T00:00:00-03:00');
+    const mateDate = new Date('2026-03-11T00:00:00-03:00');
 
     const calculateTimeLeft = (target: Date) => {
         const now = new Date();
@@ -27,12 +27,12 @@ export default function CountdownWidget() {
     };
 
     const [ivuTime, setIvuTime] = useState(() => calculateTimeLeft(ivuDate));
-    const [finalTime, setFinalTime] = useState(() => calculateTimeLeft(finalDate));
+    const [mateTime, setMateTime] = useState(() => calculateTimeLeft(mateDate));
 
     useEffect(() => {
         const timer = setInterval(() => {
             setIvuTime(calculateTimeLeft(ivuDate));
-            setFinalTime(calculateTimeLeft(finalDate));
+            setMateTime(calculateTimeLeft(mateDate));
         }, 1000);
         return () => clearInterval(timer);
     }, []);
@@ -80,15 +80,17 @@ export default function CountdownWidget() {
             </a>
 
             {/* Left Top: Matemática */}
-            <a href="https://campus.fadena.undef.edu.ar/mod/forum/view.php?id=27675" target="_blank" rel="noopener noreferrer" className="sidebar-widget sidebar-widget-math" style={{ textDecoration: 'none', color: 'white' }}>
+            <a href="https://campus.fadena.undef.edu.ar/course/view.php?id=539" target="_blank" rel="noopener noreferrer" className="sidebar-widget sidebar-widget-math" style={{ textDecoration: 'none', color: 'white' }}>
                 <div className="countdown-header">
                     <BookOpen size={14} />
                     <span>{t.mateTitle}</span>
                 </div>
-                <p className="countdown-desc" style={{ textAlign: 'center', marginTop: '0.25rem' }}>
-                    <strong>{t.mateDateNotConfirmed}</strong>
-                </p>
-                <p className="countdown-desc" style={{ marginTop: '0.5rem' }} dangerouslySetInnerHTML={{ __html: t.mateDesc }} />
+                {!mateTime.expired ? (
+                    <TimerLines time={mateTime} />
+                ) : (
+                    <p className="countdown-desc" style={{ textAlign: 'center', fontWeight: 700, marginBottom: '0.5rem' }}>{t.available}</p>
+                )}
+                <p className="countdown-desc" dangerouslySetInnerHTML={{ __html: t.mateDesc }} />
             </a>
         </>
     );

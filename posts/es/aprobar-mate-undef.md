@@ -10,16 +10,18 @@ description: "Guía para aprobar con 80% o más el Curso de Matemática del Ingr
 
 > 🎥 **Clases de Matemática:** Un compañero de la carrera, que también da clases particulares de matemática, dicta clases ad honorem. Podés ver la playlist completa acá: [**Clases de Matemática – Ingreso a FADENA**](https://www.youtube.com/playlist?list=PLLiqnZYloFpu0ebcXDj8VlKqYOA-GeiKB)
 
+![Aviso Matemática](/announcement-mate-1.png)
+
 ## Guía rápida (en desarrollo)
 
-Para aprobar el curso y quedar habilitado para la **Actividad Integradora Final** (la que define la nota de ingreso), es importante tener en cuenta:
+Para poder realizar la **Actividad Integradora Final** el miércoles 11/3, es obligatorio completar las **autoevaluaciones** de cada curso:
 
-- **Guías de Ejercicios:** Son **opcionales**. Sirven para practicar los temas de cada unidad, pero no es obligatorio entregarlas ni completarlas en el campus.
-- **Autoevaluaciones:** Son **obligatorias**. Deben completarse al final de cada unidad temática para poder avanzar y, lo más importante, son un **requisito para habilitar la actividad integradora (examen final)** del curso.
-    - **[Autoevaluación del Módulo 1 de Matemática](https://campus.fadena.undef.edu.ar/mod/quiz/view.php?id=27469)**
-    - **[Autoevaluación del Módulo 2 de Matemática](https://campus.fadena.undef.edu.ar/mod/quiz/view.php?id=27474)**
+- [**Autoevaluación del Módulo 1 de Matemática**](https://campus.fadena.undef.edu.ar/mod/quiz/view.php?id=27469)
+- [**Autoevaluación del Módulo 2 de Matemática**](https://campus.fadena.undef.edu.ar/mod/quiz/view.php?id=27474)
 
-> ⚠️ **Importante:** La fecha de la **Actividad Integradora Final** aún no ha sido confirmada. Te recomendamos estar atento al [**campus virtual**](/links) para novedades.
+Una vez completadas, no olvides inscribirte:
+
+[**Inscripción al turno de la Actividad Integradora de Matemática**](https://campus.fadena.undef.edu.ar/course/view.php?id=539)
 
 ![En proceso](/in-process.png)
 ## Blog post en construcción...

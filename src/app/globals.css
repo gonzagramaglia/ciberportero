@@ -617,7 +617,7 @@ footer a:hover {
 .sidebar-widget-left {
   right: calc(50% + 340px + 3rem);
   left: auto;
-  top: 16.5rem;
+  top: 18rem;
 }
 
 .sidebar-widget-math {

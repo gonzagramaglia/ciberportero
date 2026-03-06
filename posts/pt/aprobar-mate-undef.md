@@ -12,14 +12,14 @@ description: "Guia para passar com 80% ou mais no Curso de Matemática do Ingres
 
 ## Guia rápido (em desenvolvimento)
 
-Para passar no curso e poder realizar a **Atividade Integradora Final** (que define a nota de ingresso), é importante levar em conta:
+Para poder realizar a **Atividade Integradora Final** na quarta-feira 11/3, é obrigatório completar as **autoavaliações** de cada curso:
 
-- **Guias de Exercícios:** São **opcionais**. Servem para praticar os temas de cada unidade, mas não é obrigatório enviá-las nem completá-las no campus.
-- **Autoavaliações:** São **obrigatórias**. Devem ser concluídas ao final de cada unidade temática para que você possa avançar e, o mais importante, são um **requisito para habilitar a atividade integradora (exame final)** do curso.
-    - **[Autoavaliação do Módulo 1 de Matemática](https://campus.fadena.undef.edu.ar/mod/quiz/view.php?id=27469)**
-    - **[Autoavaliação do Módulo 2 de Matemática](https://campus.fadena.undef.edu.ar/mod/quiz/view.php?id=27474)**
+- [**Autoavaliação do Módulo 1 de Matemática**](https://campus.fadena.undef.edu.ar/mod/quiz/view.php?id=27469)
+- [**Autoavaliação do Módulo 2 de Matemática**](https://campus.fadena.undef.edu.ar/mod/quiz/view.php?id=27474)
 
-> ⚠️ **Importante:** A data da **Atividade Integradora Final** ainda não foi confirmada. Recomendamos ficar atento ao [**campus virtual**](/links) para novidades.
+Uma vez concluídas, não se esqueça de se inscrever:
+
+[**Inscrição para o turno da Atividade Integradora de Matemática**](https://campus.fadena.undef.edu.ar/course/view.php?id=539)
 
 ![Em processo](/in-process.png)
 ## Blog post em construção...
