@@ -2,8 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { Clock, BookOpen, GraduationCap } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
+import { translations } from '../lib/translations';
 
 export default function CountdownWidget() {
+    const { lang } = useLanguage();
+    const t = translations[lang].countdown;
     const ivuDate = new Date('2026-03-09T00:00:00-03:00');
     const finalDate = new Date('2026-03-13T00:00:00-03:00');
 
@@ -39,22 +43,22 @@ export default function CountdownWidget() {
         <div className="countdown-timer">
             <div className="countdown-unit">
                 <span className="countdown-number">{pad(time.days)}</span>
-                <span className="countdown-label">días</span>
+                <span className="countdown-label">{t.days}</span>
             </div>
             <span className="countdown-sep">:</span>
             <div className="countdown-unit">
                 <span className="countdown-number">{pad(time.hours)}</span>
-                <span className="countdown-label">hs</span>
+                <span className="countdown-label">{t.hours}</span>
             </div>
             <span className="countdown-sep">:</span>
             <div className="countdown-unit">
                 <span className="countdown-number">{pad(time.minutes)}</span>
-                <span className="countdown-label">min</span>
+                <span className="countdown-label">{t.minutes}</span>
             </div>
             <span className="countdown-sep">:</span>
             <div className="countdown-unit">
                 <span className="countdown-number">{pad(time.seconds)}</span>
-                <span className="countdown-label">seg</span>
+                <span className="countdown-label">{t.seconds}</span>
             </div>
         </div>
     );
@@ -65,32 +69,27 @@ export default function CountdownWidget() {
             <a href="https://campus.fadena.undef.edu.ar/mod/choice/view.php?id=27815" target="_blank" rel="noopener noreferrer" className="sidebar-widget sidebar-widget-left" style={{ textDecoration: 'none', color: 'white' }}>
                 <div className="countdown-header">
                     <Clock size={14} />
-                    <span>Act. Integradora – Curso de Intro a la Vida Universitaria</span>
+                    <span>{t.ivuTitle}</span>
                 </div>
                 {!ivuTime.expired ? (
                     <TimerLines time={ivuTime} />
                 ) : (
-                    <p className="countdown-desc" style={{ textAlign: 'center', fontWeight: 700, marginBottom: '0.5rem' }}>¡Ya disponible!</p>
+                    <p className="countdown-desc" style={{ textAlign: 'center', fontWeight: 700, marginBottom: '0.5rem' }}>{t.available}</p>
                 )}
-                <p className="countdown-desc">
-                    Disponible el <strong>lunes 9/3</strong> según turno. Obligatoria para el ingreso.
-                </p>
+                <p className="countdown-desc" dangerouslySetInnerHTML={{ __html: t.ivuDesc }} />
             </a>
 
             {/* Left Top: Matemática */}
-            <div className="sidebar-widget sidebar-widget-math">
+            <a href="https://campus.fadena.undef.edu.ar/mod/forum/view.php?id=27675" target="_blank" rel="noopener noreferrer" className="sidebar-widget sidebar-widget-math" style={{ textDecoration: 'none', color: 'white' }}>
                 <div className="countdown-header">
                     <BookOpen size={14} />
-                    <span>Act. Integradora – Curso de Matemática</span>
+                    <span>{t.mateTitle}</span>
                 </div>
                 <p className="countdown-desc" style={{ textAlign: 'center', marginTop: '0.25rem' }}>
-                    <strong>Fecha aún no confirmada</strong>
+                    <strong>{t.mateDateNotConfirmed}</strong>
                 </p>
-                <p className="countdown-desc" style={{ marginTop: '0.5rem' }}>
-                    Pendiente de confirmación. Se publicará en el aula virtual.
-                </p>
-            </div>
-
+                <p className="countdown-desc" style={{ marginTop: '0.5rem' }} dangerouslySetInnerHTML={{ __html: t.mateDesc }} />
+            </a>
         </>
     );
 }

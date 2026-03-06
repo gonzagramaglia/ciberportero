@@ -43,8 +43,8 @@ export default function Home() {
                             <Bell size={18} />
                         </div>
                         <div className="notification-text">
-                            <strong>Inscripción a la Actividad Integradora de Intro a la Vida Universitaria</strong>
-                            <span>Deberá inscribirse a un turno dentro de los disponibles. Cierra el 7/3 a las 15:00hs.</span>
+                            <strong>{t.notification?.title}</strong>
+                            <span>{t.notification?.desc}</span>
                         </div>
                         <button
                             className="notification-close"
@@ -86,21 +86,25 @@ export default function Home() {
                     <p className="post-description">{t.featured?.description}</p>
                 </Link>
 
-                <div className="intro-cover" onClick={() => setSelectedImage('/moodle-siu.png')}>
-                    <img
-                        src="/moodle-siu.png"
-                        alt="Moodle y SIU"
-                        style={{ width: '100%', borderRadius: '12px', cursor: 'zoom-in' }}
-                    />
-                </div>
+                {lang === 'es' && (
+                    <>
+                        <div className="intro-cover" onClick={() => setSelectedImage('/moodle-siu.png')}>
+                            <img
+                                src="/moodle-siu.png"
+                                alt="Moodle y SIU"
+                                style={{ width: '100%', borderRadius: '12px', cursor: 'zoom-in' }}
+                            />
+                        </div>
 
-                <div className="intro-cover" onClick={() => setSelectedImage('/intro.png')}>
-                    <img
-                        src="/intro.png"
-                        alt="Calendario Académico de Grado 2026"
-                        style={{ width: '100%', borderRadius: '12px', cursor: 'zoom-in' }}
-                    />
-                </div>
+                        <div className="intro-cover" onClick={() => setSelectedImage('/intro.png')}>
+                            <img
+                                src="/intro.png"
+                                alt="Calendario Académico de Grado 2026"
+                                style={{ width: '100%', borderRadius: '12px', cursor: 'zoom-in' }}
+                            />
+                        </div>
+                    </>
+                )}
 
                 <ul className="post-list">
                     {posts.map((post) => (
