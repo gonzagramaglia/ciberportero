@@ -29,6 +29,15 @@ export default function Home() {
         document.title = 'Ciberportero';
     }, []);
 
+    useEffect(() => {
+        if (selectedImage) {
+            document.body.classList.add('lightbox-open');
+        } else {
+            document.body.classList.remove('lightbox-open');
+        }
+        return () => document.body.classList.remove('lightbox-open');
+    }, [selectedImage]);
+
     return (
         <div className="container fade-in">
             <NotificationBanners />

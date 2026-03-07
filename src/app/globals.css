@@ -377,6 +377,7 @@ footer a:hover {
   flex-direction: column;
   gap: 0.75rem;
   z-index: 100;
+  transition: opacity 0.3s ease, filter 0.3s ease;
 }
 
 .fab-button {
@@ -612,6 +613,7 @@ footer a:hover {
   color: white;
   z-index: 90;
   box-shadow: 0 8px 24px rgba(16, 50, 83, 0.35);
+  transition: opacity 0.3s ease, filter 0.3s ease;
 }
 
 .sidebar-widget-left {
@@ -735,6 +737,15 @@ footer a:hover {
   animation: fadeIn 0.2s ease;
   backdrop-filter: blur(4px);
   padding: 2rem;
+}
+
+body.lightbox-open .sidebar-widget,
+body.lightbox-open .fab-container,
+body.lightbox-open .notification-banner {
+  opacity: 0.2 !important;
+  pointer-events: none;
+  filter: blur(2px);
+  transition: opacity 0.3s ease, filter 0.3s ease;
 }
 
 .lightbox-content {
