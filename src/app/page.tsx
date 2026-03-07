@@ -8,12 +8,12 @@ import { PostData } from '../lib/posts-client';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import { Github, Youtube, Bell, X } from 'lucide-react';
 
+import NotificationBanners from '../components/NotificationBanners';
+
 export default function Home() {
     const { lang } = useLanguage();
     const [posts, setPosts] = useState<Omit<PostData, 'content'>[]>([]);
     const t = translations[lang];
-    const [showNotification, setShowNotification] = useState(true);
-    const [showNotificationMate, setShowNotificationMate] = useState(true);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
     useEffect(() => {
@@ -31,64 +31,7 @@ export default function Home() {
 
     return (
         <div className="container fade-in">
-            {showNotification && (
-                <a
-                    href="https://campus.fadena.undef.edu.ar/mod/choice/view.php?id=27815"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="notification-banner"
-                >
-                    <div className="notification-content">
-                        <div className="notification-icon">
-                            <Bell size={18} />
-                        </div>
-                        <div className="notification-text">
-                            <strong>{t.notification?.title}</strong>
-                            <span dangerouslySetInnerHTML={{ __html: t.notification?.desc || '' }} />
-                        </div>
-                        <button
-                            className="notification-close"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                setShowNotification(false);
-                            }}
-                        >
-                            <X size={16} />
-                        </button>
-                    </div>
-                </a>
-            )}
-
-            {showNotificationMate && (
-                <a
-                    href="https://campus.fadena.undef.edu.ar/course/view.php?id=539"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="notification-banner"
-                    style={{ marginTop: showNotification ? '-1.5rem' : '0.5rem' }}
-                >
-                    <div className="notification-content">
-                        <div className="notification-icon">
-                            <Bell size={18} />
-                        </div>
-                        <div className="notification-text">
-                            <strong>{t.notificationMate?.title}</strong>
-                            <span dangerouslySetInnerHTML={{ __html: t.notificationMate?.desc || '' }} />
-                        </div>
-                        <button
-                            className="notification-close"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                setShowNotificationMate(false);
-                            }}
-                        >
-                            <X size={16} />
-                        </button>
-                    </div>
-                </a>
-            )}
+            <NotificationBanners />
 
             {selectedImage && (
                 <div className="lightbox-overlay" onClick={() => setSelectedImage(null)}>
@@ -113,11 +56,19 @@ export default function Home() {
                 <Link href="/links" className="post-item featured" style={{ display: 'block', textDecoration: 'none' }}>
                     <span className="featured-tag">{t.featured?.tag}</span>
                     <span className="post-title">{t.featured?.title}</span>
-                    <p className="post-description">{t.featured?.description}</p>
+                    <p className="post-description" dangerouslySetInnerHTML={{ __html: t.featured?.description || '' }} />
                 </Link>
 
                 {lang === 'es' && (
                     <>
+                        <div className="intro-cover" onClick={() => setSelectedImage('/cyberdefense-fadena-undef.png')}>
+                            <img
+                                src="/cyberdefense-fadena-undef.png"
+                                alt="Cyberdefense FADENA UNDEF"
+                                style={{ width: '100%', borderRadius: '12px', cursor: 'zoom-in' }}
+                            />
+                        </div>
+
                         <div className="intro-cover" onClick={() => setSelectedImage('/moodle-siu.png')}>
                             <img
                                 src="/moodle-siu.png"

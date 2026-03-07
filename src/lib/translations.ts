@@ -7,7 +7,7 @@ export const translations = {
         langName: "Español",
         featured: {
             title: "Recursos y Enlaces Útiles",
-            description: "Recursos para estudiantes de la Lic. en Ciberdefensa de la UNDEF",
+            description: "Para los estudiantes de la <strong>Licenciatura en Ciberdefensa de la UNDEF</strong>",
             tag: "Destacado"
         },
         contact: {
@@ -37,16 +37,16 @@ export const translations = {
             minutes: "min",
             seconds: "seg",
             available: "¡Ya disponible!",
-            ivuDesc: "Disponible el <strong>lunes 9/3</strong> según el turno elegido. <strong>Obligatoria para el ingreso</strong>.",
+            ivuDesc: "Disponible el <strong>lunes 9/3</strong> según el turno elegido. <strong>Obligatoria para ingresar</strong>.",
             mateDate: "Disponible el miércoles 11/3",
-            mateDesc: "Disponible el <strong>miércoles 11/3</strong> según el turno elegido. <strong>Obligatoria para el ingreso</strong>."
+            mateDesc: "Disponible el <strong>miércoles 11/3</strong> según el turno elegido. <strong>Obligatoria para ingresar</strong>."
         },
         notification: {
-            title: "Inscribirse a la Actividad Integradora de Intro a la Vida Universitaria",
+            title: "Inscribite a la Actividad Integradora de Intro a la Vida Universitaria",
             desc: "Tenés tiempo para elegir turno hasta el <strong>sábado 7/3 a las 15:00hs</strong>."
         },
         notificationMate: {
-            title: "Inscribirse a la Actividad Integradora de Matemática",
+            title: "Inscribite a la Actividad Integradora de Matemática",
             desc: "Tenés tiempo para elegir turno hasta el <strong>martes 10/3 a las 10:00hs</strong>."
         },
         share: {
@@ -62,7 +62,7 @@ export const translations = {
         langName: "English",
         featured: {
             title: "Useful Resources and Links",
-            description: "Resources for Cyberdefense students at UNDEF",
+            description: "For students of the <strong>Bachelor's Degree in Cyberdefense at UNDEF</strong>",
             tag: "Featured"
         },
         contact: {
@@ -117,7 +117,7 @@ export const translations = {
         langName: "Português",
         featured: {
             title: "Recursos e Links Úteis",
-            description: "Recursos para estudantes de Ciberdefesa da UNDEF",
+            description: "Pensados para os estudantes de <strong>Ciberdefesa da UNDEF</strong>",
             tag: "Destaque"
         },
         contact: {

@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
     title: 'Ciberportero | Links',
-    description: 'Recursos y Enlaces Útiles para estudiantes de la Lic. en Ciberdefensa de la UNDEF',
+    description: 'Para los estudiantes de la Licenciatura en Ciberdefensa de FADENA | UNDEF',
 };
 
 export default function LinksLayout({

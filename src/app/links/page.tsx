@@ -9,6 +9,8 @@ import LanguageSwitcher from '../../components/LanguageSwitcher';
 
 import { useState, useEffect } from 'react';
 
+import NotificationBanners from '../../components/NotificationBanners';
+
 export default function LinksPage() {
     const { lang } = useLanguage();
     const t = translations[lang];
@@ -29,6 +31,7 @@ export default function LinksPage() {
 
     return (
         <div className="container fade-in">
+            <NotificationBanners limitTo="none" />
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem', marginBottom: '1rem', paddingRight: '0.5rem' }}>
                 <Link href="/" className="back-link" style={{ marginBottom: 0 }}>
                     <ChevronLeft size={16} />
@@ -39,7 +42,7 @@ export default function LinksPage() {
 
             <header style={{ marginTop: '0.5rem', marginBottom: '3rem' }}>
                 <h1 style={{ color: 'var(--foreground)' }}>{t.featured?.title}</h1>
-                <p>{t.featured?.description}</p>
+                <p dangerouslySetInnerHTML={{ __html: t.featured?.description || '' }} />
             </header>
 
             <main>

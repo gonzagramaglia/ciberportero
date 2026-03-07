@@ -10,6 +10,8 @@ import { PostData } from '../../lib/posts-client';
 import { useParams, notFound } from 'next/navigation';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 
+import NotificationBanners from '../../components/NotificationBanners';
+
 export default function Post() {
     const { slug } = useParams();
     const { lang } = useLanguage();
@@ -95,6 +97,11 @@ export default function Post() {
             )}
 
             <div className="container fade-in">
+                <NotificationBanners limitTo={
+                    post.slug.includes('mate') ? 'mate' :
+                        post.slug.includes('ivu') ? 'ivu' :
+                            post.slug.includes('codeforces') ? 'none' : 'all'
+                } />
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem', marginBottom: '2rem' }}>
                     <Link href="/" className="back-link" style={{ marginBottom: 0 }}>
                         <ChevronLeft size={16} />
