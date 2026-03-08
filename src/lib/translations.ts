@@ -43,7 +43,7 @@ export const translations = {
         },
         notification: {
             title: "Inscribite a la Actividad Integradora de Intro a la Vida Universitaria",
-            desc: "Tenés tiempo para elegir turno hasta el <strong>sábado 7/3 a las 15:00hs</strong>."
+            desc: "Tenés tiempo para elegir turno hasta el <strong>domingo 8/3 a las 15:00hs</strong>. <strong>¡La inscripción fue extendida un día más, aprovechá!</strong>"
         },
         notificationMate: {
             title: "Inscribite a la Actividad Integradora de Matemática",
@@ -98,7 +98,7 @@ export const translations = {
         },
         notification: {
             title: "Enroll in the Intro to University Life Integrating Activity",
-            desc: "You have until <strong>Saturday 3/7 at 3:00 PM</strong> to choose your shift."
+            desc: "You have until <strong>Sunday 3/8 at 3:00 PM</strong> to choose your shift. <strong>Enrollment extended by one day, take advantage!</strong>"
         },
         notificationMate: {
             title: "Enroll in the Mathematics Integrating Activity",
@@ -153,7 +153,7 @@ export const translations = {
         },
         notification: {
             title: "Inscrever-se na Atividade Integradora de Intro à Vida Universitária",
-            desc: "Você tem tempo para escolher o turno até <strong>sábado 7/3 às 15:00hs</strong>."
+            desc: "Você tem tempo para escolher o turno até <strong>domingo 8/3 às 15:00hs</strong>. <strong>A inscrição foi estendida por mais um dia, aproveite!</strong>"
         },
         notificationMate: {
             title: "Inscrever-se na Atividade Integradora de Matemática",

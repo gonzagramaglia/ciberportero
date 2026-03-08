@@ -6,10 +6,10 @@ description: "Guia para passar com 80% ou mais no Curso de Introdução à Vida 
 
 # Como passar no Curso de IVU
 
-> 📚 O Curso de [**Introdução à Vida Universitária**](https://campus.fadena.undef.edu.ar/course/view.php?id=534) faz parte do **Ingresso a FADENA**. Aprová-lo com **80% ou mais** é um **requisito indispensável para se inscrever nas matérias quadrimestrais** da Licenciatura em Ciberdefesa.
+> 📚 O Curso de [**Introdução à Vida Universitária**](https://campus.fadena.undef.edu.ar/course/view.php?id=534) faz parte do **Ingresso a FADENA**. Aprová-lo com **80% ou mais** es um **requisito indispensável para se inscrever nas matérias quadrimestrais** da Licenciatura em Ciberdefesa.
 
 
-## Guia rápido (em desenvolvimento)
+## Guia rápido
 
 Para poder realizar a **Atividade Integradora Final** na segunda-feira, 9/3, é obrigatório concluir os **questionários** de cada curso:
 
@@ -18,12 +18,10 @@ Para poder realizar a **Atividade Integradora Final** na segunda-feira, 9/3, é 
 - **[Questionário do Módulo 3 de Intro à Vida Universitária](https://campus.fadena.undef.edu.ar/mod/quiz/view.php?id=27454)**
 
 Depois de concluídos, não esqueça de se inscrever:
-- **[Inscripción para o turno da Atividade Integradora de IVU](https://campus.fadena.undef.edu.ar/mod/choice/view.php?id=27815)**
+- **[Inscrição para o turno da Atividade Integradora de IVU](https://campus.fadena.undef.edu.ar/mod/choice/view.php?id=27815)**
 
-![Em processo](/in-process.png)
-## Blog post em construção...
----
+> 💡 **Tip:** Os exercícios da Atividade Integradora serão semelhantes aos vistos nos questionários de cada módulo.
 
+> 📜 **Recomendação:** Ler atentamente o [**Regulamento da UNDEF**](https://drive.google.com/file/d/1ebdZ_zecr452v2XYp6N1pJkgm6h36EEb/view?usp=sharing), pois várias respostas estarão lá.
 
-
-Sendo escrito com 💛 por [**Gonza**](https://github.com/gonzalogramagia)
+Escrito com 💛 por [**Gonza**](https://github.com/gonzalogramagia)

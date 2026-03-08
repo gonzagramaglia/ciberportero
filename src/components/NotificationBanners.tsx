@@ -16,8 +16,8 @@ export default function NotificationBanners({ limitTo = 'all' }: { limitTo?: 'iv
         setIsMounted(true);
         if (limitTo === 'none') return;
 
-        const hiddenIVU = localStorage.getItem('hide_notification_ivu');
-        const hiddenMate = localStorage.getItem('hide_notification_mate');
+        const hiddenIVU = localStorage.getItem('hide_notification_ivu_v3');
+        const hiddenMate = localStorage.getItem('hide_notification_mate_v3');
 
         const canShowIVU = limitTo === 'all' || limitTo === 'ivu';
         const canShowMate = limitTo === 'all' || limitTo === 'mate';
@@ -33,14 +33,14 @@ export default function NotificationBanners({ limitTo = 'all' }: { limitTo?: 'iv
         e.preventDefault();
         e.stopPropagation();
         setShowNotification(false);
-        localStorage.setItem('hide_notification_ivu', 'true');
+        localStorage.setItem('hide_notification_ivu_v3', 'true');
     };
 
     const closeMate = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
         setShowNotificationMate(false);
-        localStorage.setItem('hide_notification_mate', 'true');
+        localStorage.setItem('hide_notification_mate_v3', 'true');
     };
 
     if (!isMounted) return null;

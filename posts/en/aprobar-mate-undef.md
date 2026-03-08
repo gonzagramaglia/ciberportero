@@ -21,8 +21,6 @@ Once completed, don't forget to enroll:
 
 [**Enrollment for the Mathematics Integrating Activity shift**](https://campus.fadena.undef.edu.ar/course/view.php?id=539)
 
-![In process](/in-process.png)
-## Blog post under construction...
----
+> 💡 **Tip:** The exercises in the Integrating Activity will be similar to those seen in the self-assessments for each module.
 
-Being written with 💛 by [**Gonza**](https://github.com/gonzalogramagia)
+Written with 💛 by [**Gonza**](https://github.com/gonzalogramagia)

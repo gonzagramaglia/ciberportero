@@ -23,8 +23,6 @@ Una vez completadas, no olvides inscribirte:
 
 [**Inscripción al turno de la Actividad Integradora de Matemática**](https://campus.fadena.undef.edu.ar/course/view.php?id=539)
 
-![En proceso](/in-process.png)
-## Blog post en construcción...
----
+> 💡 **Tip:** Los ejercicios de la Actividad Integradora serán similares a los vistos en las autoevaluaciones de cada módulo.
 
-Siendo escrito con 💛 por [**Gonza**](https://github.com/gonzalogramagia)
+Escrito con 💛 por [**Gonza**](https://github.com/gonzalogramagia)
