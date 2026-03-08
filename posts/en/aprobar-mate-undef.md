@@ -19,7 +19,7 @@ To be able to take the **Final Integrating Activity** on Wednesday 3/11, it is m
 
 Once completed, don't forget to enroll:
 
-[**Enrollment for the Mathematics Integrating Activity shift**](https://campus.fadena.undef.edu.ar/course/view.php?id=539)
+[**Enrollment for the Mathematics Integrating Activity shift**](https://campus.fadena.undef.edu.ar/mod/choice/view.php?id=27826)
 
 > 💡 **Tip:** The exercises in the Integrating Activity will be similar to those seen in the self-assessments for each module.
 

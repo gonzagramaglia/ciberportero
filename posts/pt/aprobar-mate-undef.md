@@ -19,7 +19,7 @@ Para poder realizar a **Atividade Integradora Final** na quarta-feira 11/3, é o
 
 Uma vez concluídas, não se esqueça de se inscrever:
 
-[**Inscrição para o turno da Atividade Integradora de Matemática**](https://campus.fadena.undef.edu.ar/course/view.php?id=539)
+[**Inscrição para o turno da Atividade Integradora de Matemática**](https://campus.fadena.undef.edu.ar/mod/choice/view.php?id=27826)
 
 > 💡 **Tip:** Os exercícios da Atividade Integradora serão semelhantes aos vistos nas autoavaliações de cada módulo.
 

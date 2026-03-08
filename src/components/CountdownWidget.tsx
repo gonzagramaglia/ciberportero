@@ -8,8 +8,8 @@ import { translations } from '../lib/translations';
 export default function CountdownWidget() {
     const { lang } = useLanguage();
     const t = translations[lang].countdown;
-    const ivuDate = new Date('2026-03-09T00:00:00-03:00');
-    const mateDate = new Date('2026-03-11T00:00:00-03:00');
+    const ivuDate = new Date('2026-03-09T09:30:00-03:00');
+    const mateDate = new Date('2026-03-11T09:30:00-03:00');
 
     const calculateTimeLeft = (target: Date) => {
         const now = new Date();
@@ -80,7 +80,7 @@ export default function CountdownWidget() {
             </a>
 
             {/* Left Top: Matemática */}
-            <a href="https://campus.fadena.undef.edu.ar/course/view.php?id=539" target="_blank" rel="noopener noreferrer" className="sidebar-widget sidebar-widget-math" style={{ textDecoration: 'none', color: 'white' }}>
+            <a href="https://campus.fadena.undef.edu.ar/mod/choice/view.php?id=27826" target="_blank" rel="noopener noreferrer" className="sidebar-widget sidebar-widget-math" style={{ textDecoration: 'none', color: 'white' }}>
                 <div className="countdown-header">
                     <BookOpen size={14} />
                     <span>{t.mateTitle}</span>

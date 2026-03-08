@@ -49,7 +49,7 @@ export default function NotificationBanners({ limitTo = 'all' }: { limitTo?: 'iv
         <>
             {showNotificationMate && (
                 <a
-                    href="https://campus.fadena.undef.edu.ar/course/view.php?id=539"
+                    href="https://campus.fadena.undef.edu.ar/mod/choice/view.php?id=27826"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="notification-banner"
