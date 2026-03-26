@@ -1,15 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Clock, BookOpen } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { translations } from '../lib/translations';
 
 export default function CountdownWidget() {
     const { lang } = useLanguage();
     const t = translations[lang].countdown;
-    const ivuDate = new Date('2026-03-09T09:30:00-03:00');
-    const mateDate = new Date('2026-03-11T09:30:00-03:00');
+    // New target date for Inscripción a Materias: March 31, 2026 at 12:00
+    const targetDate = new Date('2026-03-31T12:00:00-03:00');
 
     const calculateTimeLeft = (target: Date) => {
         const now = new Date();
@@ -26,13 +26,11 @@ export default function CountdownWidget() {
         };
     };
 
-    const [ivuTime, setIvuTime] = useState(() => calculateTimeLeft(ivuDate));
-    const [mateTime, setMateTime] = useState(() => calculateTimeLeft(mateDate));
+    const [timeLeft, setTimeLeft] = useState(() => calculateTimeLeft(targetDate));
 
     useEffect(() => {
         const timer = setInterval(() => {
-            setIvuTime(calculateTimeLeft(ivuDate));
-            setMateTime(calculateTimeLeft(mateDate));
+            setTimeLeft(calculateTimeLeft(targetDate));
         }, 1000);
         return () => clearInterval(timer);
     }, []);
@@ -65,33 +63,35 @@ export default function CountdownWidget() {
 
     return (
         <>
-            {/* Left Bottom: IVU Countdown */}
-            <a href="https://campus.fadena.undef.edu.ar/mod/choice/view.php?id=27815" target="_blank" rel="noopener noreferrer" className="sidebar-widget sidebar-widget-left" style={{ textDecoration: 'none', color: 'white' }}>
+            {/* Left Side: Inscripción Countdown */}
+            <a 
+                href="https://autogestion.fadena.undef.edu.ar/3w/" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="sidebar-widget sidebar-widget-left" 
+                style={{ textDecoration: 'none', color: 'white' }}
+            >
                 <div className="countdown-header">
                     <Clock size={14} />
                     <span>{t.ivuTitle}</span>
                 </div>
-                {!ivuTime.expired ? (
-                    <TimerLines time={ivuTime} />
+                {!timeLeft.expired ? (
+                    <TimerLines time={timeLeft} />
                 ) : (
                     <p className="countdown-desc" style={{ textAlign: 'center', fontWeight: 700, marginBottom: '0.5rem' }}>{t.available}</p>
                 )}
                 <p className="countdown-desc" dangerouslySetInnerHTML={{ __html: t.ivuDesc }} />
             </a>
 
-            {/* Left Top: Matemática */}
-            <a href="https://campus.fadena.undef.edu.ar/mod/choice/view.php?id=27826" target="_blank" rel="noopener noreferrer" className="sidebar-widget sidebar-widget-math" style={{ textDecoration: 'none', color: 'white' }}>
-                <div className="countdown-header">
-                    <BookOpen size={14} />
-                    <span>{t.mateTitle}</span>
-                </div>
-                {!mateTime.expired ? (
-                    <TimerLines time={mateTime} />
-                ) : (
-                    <p className="countdown-desc" style={{ textAlign: 'center', fontWeight: 700, marginBottom: '0.5rem' }}>{t.available}</p>
-                )}
-                <p className="countdown-desc" dangerouslySetInnerHTML={{ __html: t.mateDesc }} />
-            </a>
+            {/* Right Side: SIU Image Widget */}
+            <div className="sidebar-widget sidebar-widget-right">
+                <a href="/siu.png" target="_blank" rel="noopener noreferrer">
+                    <img 
+                        src="/siu.png" 
+                        alt="Inscripción SIU Guaraní" 
+                    />
+                </a>
+            </div>
         </>
     );
 }

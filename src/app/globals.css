@@ -619,13 +619,33 @@ footer a:hover {
 .sidebar-widget-left {
   right: calc(50% + 340px + 3rem);
   left: auto;
-  top: 18rem;
+  top: 4.5rem;
 }
 
 .sidebar-widget-math {
-  right: calc(50% + 340px + 3rem);
-  left: auto;
+  display: none;
+}
+
+.sidebar-widget-right {
+  left: calc(50% + 340px + 3rem);
+  right: auto;
   top: 4.5rem;
+  width: 280px;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.sidebar-widget-right img {
+  width: 100%;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.sidebar-widget-right img:hover {
+  transform: scale(1.02);
 }
 
 

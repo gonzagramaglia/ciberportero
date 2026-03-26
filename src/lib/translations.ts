@@ -21,8 +21,10 @@ export const translations = {
             { name: 'Campus Virtual (Moodle)', url: 'https://campus.fadena.undef.edu.ar/my/courses.php', desc: 'Material actualizado de todas y cada una de las materias' },
             { name: 'Autogestión (SIU Guaraní)', url: 'https://autogestion.fadena.undef.edu.ar/3w/', desc: 'Portal oficial de gestión académica de los alumnos ya inscriptos' },
             { name: 'Todo el Material de Estudio (Google Drive)', url: 'https://drive.google.com/drive/folders/1BqM0J_I4qXVZLzSvxdNcExtUlD_dkaBB', desc: 'Carpeta que centraliza el material de toda la cursada' },
+            { name: 'Material del 1er Cuatri de 1er Año (Google Drive)', url: 'https://drive.google.com/drive/folders/1BnlGi3g2Rfu59RPlYi9RPJc1TqC_v-sE?usp=sharing', desc: 'Recursos clave para las materias del primer cuatrimestre' },
             { name: 'Material Esencial del Ingreso (Google Drive)', url: 'https://drive.google.com/drive/folders/1naGT9orvWN66OzA3lVpTB_wMqrXGDnkg', desc: 'Recursos para aprobar el curso de ingreso de la carrera' },
             { name: '🛡️ Grupo General – Ciberdefesa (WhatsApp)', url: 'https://chat.whatsapp.com/F2NUFYbj4AYGvsETVhFSC1', desc: 'Comunidad principal con subgrupos para cada materia' },
+            { name: 'Los Magios - Lic. en Ciberdefensa (WhatsApp)', url: 'https://chat.whatsapp.com/HonLxwUP8JODfxHbLXXmhd', desc: 'Grupo de la comunidad de estudiantes para consultas y avisos' },
             { name: 'Lic. en Ciberdefensa 2026 (WhatsApp)', url: 'https://chat.whatsapp.com/KjlaP3RGYK94ekGZonwLHR', desc: 'Grupo específico para la cursada de la camada 2026' },
             { name: 'Ciberdefesa FADENA (Discord)', url: 'https://discord.gg/AxqkVzYPeN', desc: 'Server oficial de la comunidad de estudiantes de FADENA' },
             { name: 'Comunidad Ciberdefensa Argentina (Discord)', url: 'https://discord.gg/zPWRAfUR82', desc: 'Espacio de estudio y networking de la comunidad nacional' },
@@ -30,24 +32,24 @@ export const translations = {
         ],
         feedback: "¿Por qué elegimos Ciberdefensa?",
         countdown: {
-            ivuTitle: "Act. Integradora – Curso de Intro a la Vida Universitaria",
-            mateTitle: "Act. Integradora – Curso de Matemática",
+            ivuTitle: "Inscripción a Materias – SIU Guaraní",
+            mateTitle: "Inicio de Cursada",
             days: "días",
             hours: "hs",
             minutes: "min",
             seconds: "seg",
-            available: "¡Ya disponible!",
-            ivuDesc: "Disponible el <strong>lunes 9/3</strong> según el turno elegido. <strong>Obligatoria para ingresar</strong>.",
-            mateDate: "Disponible el miércoles 11/3",
-            mateDesc: "Disponible el <strong>miércoles 11/3</strong> según el turno elegido. <strong>Obligatoria para ingresar</strong>."
+            available: "¡Inscripciones abiertas!",
+            ivuDesc: "Disponible el <strong>martes 31/3</strong> a las <strong>12:00hs</strong>. Obligatorio para todos los alumnos.",
+            mateDate: "Próximamente",
+            mateDesc: "La cursada comienza en Abril. Mantente atento a los avisos."
         },
         notification: {
-            title: "Inscribite a la Actividad Integradora de Intro a la Vida Universitaria",
-            desc: "Tenés tiempo para elegir turno hasta el <strong>domingo 8/3 a las 15:00hs</strong>. <strong>¡La inscripción fue extendida un día más, aprovechá!</strong>"
+            title: "Inscripción a las Materias de la Carrera en el SIU Guaraní",
+            desc: "Las inscripciones comienzan el <strong>martes 31/3 al mediodía</strong>. ¡No te olvides!"
         },
         notificationMate: {
-            title: "Inscribite a la Actividad Integradora de Matemática",
-            desc: "Tenés tiempo para elegir turno hasta el <strong>martes 10/3 a las 10:00hs</strong>."
+            title: "Revisá tu acceso al SIU Guaraní",
+            desc: "Asegurate de tener tu usuario y contraseña activos antes del 31/3."
         },
         share: {
             copy: "Copiar enlace del post",
@@ -76,8 +78,10 @@ export const translations = {
             { name: 'Official Degree Campus', url: 'https://campus.fadena.undef.edu.ar/my/courses.php', desc: 'Updated material for each of the subjects' },
             { name: 'SIU Guaraní Academic Portal', url: 'https://autogestion.fadena.undef.edu.ar/3w/', desc: 'Official academic management portal for already enrolled students' },
             { name: 'All Study Material (Google Drive)', url: 'https://drive.google.com/drive/folders/1BqM0J_I4qXVZLzSvxdNcExtUlD_dkaBB', desc: 'Folder centralizing the material from the entire degree' },
+            { name: 'Material for 1st Year / 1st Semester (Google Drive)', url: 'https://drive.google.com/drive/folders/1BnlGi3g2Rfu59RPlYi9RPJc1TqC_v-sE?usp=sharing', desc: 'Key resources for first semester subjects' },
             { name: 'Essential Admission Material (Google Drive)', url: 'https://drive.google.com/drive/folders/1naGT9orvWN66OzA3lVpTB_wMqrXGDnkg', desc: 'Resources to pass the admission course for the degree' },
             { name: '🛡️ General Group – Cyberdefense (WhatsApp)', url: 'https://chat.whatsapp.com/F2NUFYbj4AYGvsETVhFSC1', desc: 'Main community with subgroups for each subject' },
+            { name: 'Los Magios - Bachelor\'s in Cyberdefense (WhatsApp)', url: 'https://chat.whatsapp.com/HonLxwUP8JODfxHbLXXmhd', desc: 'Student community group for inquiries and notices' },
             { name: 'Bachelor\'s in Cyberdefense 2026 (WhatsApp)', url: 'https://chat.whatsapp.com/KjlaP3RGYK94ekGZonwLHR', desc: 'Specific group for the 2026 class' },
             { name: 'Cyberdefense FADENA (Discord)', url: 'https://discord.gg/AxqkVzYPeN', desc: 'Official server for the FADENA student community' },
             { name: 'Argentina Cyberdefense Community (Discord)', url: 'https://discord.gg/zPWRAfUR82', desc: 'Study and networking space for the national community' },
@@ -85,24 +89,24 @@ export const translations = {
         ],
         feedback: "Why did we choose Cyberdefense?",
         countdown: {
-            ivuTitle: "Integrating Activity – Intro to University Life Course",
-            mateTitle: "Integrating Activity – Mathematics Course",
+            ivuTitle: "Subject Enrollment – SIU Guaraní",
+            mateTitle: "Course Start",
             days: "days",
             hours: "hs",
             minutes: "min",
             seconds: "sec",
-            available: "Available now!",
-            ivuDesc: "Available on <strong>Monday 3/9</strong> according to chosen shift. <strong>Mandatory for admission</strong>.",
-            mateDate: "Available on Wednesday 3/11",
-            mateDesc: "Available on <strong>Wednesday 3/11</strong> according to chosen shift. <strong>Mandatory for admission</strong>."
+            available: "Enrollment open!",
+            ivuDesc: "Available on <strong>Tuesday 3/31</strong> at <strong>12:00 PM</strong>. Mandatory for all students.",
+            mateDate: "Coming soon",
+            mateDesc: "Courses start in April. Stay tuned for announcements."
         },
         notification: {
-            title: "Enroll in the Intro to University Life Integrating Activity",
-            desc: "You have until <strong>Sunday 3/8 at 3:00 PM</strong> to choose your shift. <strong>Enrollment extended by one day, take advantage!</strong>"
+            title: "Subject Enrollment in SIU Guaraní",
+            desc: "Enrollment begins on <strong>Tuesday 3/31 at noon</strong>. Don't forget!"
         },
         notificationMate: {
-            title: "Enroll in the Mathematics Integrating Activity",
-            desc: "You have until <strong>Tuesday 3/10 at 10:00 AM</strong> to choose your shift."
+            title: "Check your SIU Guaraní access",
+            desc: "Make sure your username and password are active before 3/31."
         },
         share: {
             copy: "Copy post link",
@@ -131,8 +135,10 @@ export const translations = {
             { name: 'Campus Oficial do Curso', url: 'https://campus.fadena.undef.edu.ar/my/courses.php', desc: 'Material atualizado de cada uma das matérias' },
             { name: 'Autogestão SIU Guaraní', url: 'https://autogestion.fadena.undef.edu.ar/3w/', desc: 'Portal oficial de gestão académica dos alunos já inscritos' },
             { name: 'Todo o Material de Estudo (Google Drive)', url: 'https://drive.google.com/drive/folders/1BqM0J_I4qXVZLzSvxdNcExtUlD_dkaBB', desc: 'Pasta que centraliza o material de todo o curso' },
+            { name: 'Material do 1º Cuatrimestre / 1º Ano (Google Drive)', url: 'https://drive.google.com/drive/folders/1BnlGi3g2Rfu59RPlYi9RPJc1TqC_v-sE?usp=sharing', desc: 'Recursos fundamentais para as matérias do primeiro semestre' },
             { name: 'Material Essencial del Ingreso (Google Drive)', url: 'https://drive.google.com/drive/folders/1naGT9orvWN66OzA3lVpTB_wMqrXGDnkg', desc: 'Recursos para passar no curso de admissão da carreira' },
             { name: '🛡️ Grupo General – Ciberdefesa (WhatsApp)', url: 'https://chat.whatsapp.com/F2NUFYbj4AYGvsETVhFSC1', desc: 'Comunidade principal con subgrupos para cada matéria' },
+            { name: 'Los Magios - Lic. em Ciberdefesa (WhatsApp)', url: 'https://chat.whatsapp.com/HonLxwUP8JODfxHbLXXmhd', desc: 'Grupo da comunidade de estudantes para dúvidas e avisos' },
             { name: 'Lic. em Ciberdefesa 2026 (WhatsApp)', url: 'https://chat.whatsapp.com/KjlaP3RGYK94ekGZonwLHR', desc: 'Grupo específico para os alunos da turma de 2026' },
             { name: 'Ciberdefesa FADENA (Discord)', url: 'https://discord.gg/AxqkVzYPeN', desc: 'Servidor oficial da comunidade de estudantes da FADENA' },
             { name: 'Comunidade Ciberdefesa Argentina (Discord)', url: 'https://discord.gg/zPWRAfUR82', desc: 'Espaço de estudio e networking da comunidade nacional' },
@@ -140,24 +146,24 @@ export const translations = {
         ],
         feedback: "Por que escolhemos a Ciberdefesa?",
         countdown: {
-            ivuTitle: "Ativ. Integradora – Curso de Intro à Vida Universitária",
-            mateTitle: "Ativ. Integradora – Curso de Matemática",
+            ivuTitle: "Inscrição em Matérias – SIU Guaraní",
+            mateTitle: "Início das Aulas",
             days: "dias",
             hours: "hs",
             minutes: "min",
             seconds: "seg",
-            available: "Já disponible",
-            ivuDesc: "Disponível em <strong>segunda-feira 9/3</strong> de acordo com o turno escolhido. <strong>Obrigatória para o ingresso</strong>.",
-            mateDate: "Disponível na quarta-feira 11/3",
-            mateDesc: "Disponível na <strong>quarta-feira 11/3</strong> de acordo com o turno escolhido. <strong>Obrigatória para o ingresso</strong>."
+            available: "Inscrições abertas!",
+            ivuDesc: "Disponível na <strong>terça-feira 31/3</strong> às <strong>12:00hs</strong>. Obrigatório para todos os alunos.",
+            mateDate: "Em breve",
+            mateDesc: "As aulas começam em Abril. Fique atento aos avisos."
         },
         notification: {
-            title: "Inscrever-se na Atividade Integradora de Intro à Vida Universitária",
-            desc: "Você tem tempo para escolher o turno até <strong>domingo 8/3 às 15:00hs</strong>. <strong>A inscrição foi estendida por mais um dia, aproveite!</strong>"
+            title: "Inscrição nas Matérias no SIU Guaraní",
+            desc: "As inscrições começam na <strong>terça-feira 31/3 ao meio-dia</strong>. Não se esqueça!"
         },
         notificationMate: {
-            title: "Inscrever-se na Atividade Integradora de Matemática",
-            desc: "Você tem tempo para escolher o turno até <strong>terça-feira, 10/03, às 10:00hs</strong>."
+            title: "Verifique seu acesso ao SIU Guaraní",
+            desc: "Certifique-se de que seu usuário e senha estejam ativos antes de 31/3."
         },
         share: {
             copy: "Copiar link do post",
