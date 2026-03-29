@@ -54,6 +54,53 @@ export const translations = {
         share: {
             copy: "Copiar enlace del post",
             copied: "¡Enlace del post copiado!"
+        },
+        studentPortal: {
+            guestTitle: "Registro de Avance Académico",
+            guestDesc: "Llevá un control de tus autoevaluaciones y exámenes completados de la carrera.",
+            userTitle: "Tu Escritorio Académico",
+            userDesc: "Gestioná tu progreso y revisá tus actividades completadas.",
+            loginCta: "Ingresar"
+        },
+        dashboard: {
+            title: "Portal del Estudiante",
+            back: "← Volver al Inicio",
+            guestUser: "Estudiante Invitado",
+            welcome: "Hola",
+            loading: "Cargando portal...",
+            stats: {
+                autoevaluaciones: "Autoevaluaciones",
+                parciales: "Exámenes Parciales"
+            },
+            tracking: {
+                title: "Seguimiento de Actividad",
+                materia: "Materia",
+                tipo: "Tipo de Actividad",
+                nombre: "Nombre de la Tarea",
+                link: "Link al Campus (opcional)",
+                calificacion: "Calificación",
+                fecha: "Fecha",
+                observaciones: "Observaciones (opcional)",
+                placeholderTarea: "ej: Autoevaluación #1, Parcial #1, etc.",
+                placeholderObservaciones: "Notas o temas a repasar...",
+                submit: "Registrar en mi Avance",
+                isAdding: "Cargando..."
+            },
+            filters: {
+                all: "Todas"
+            },
+            list: {
+                empty: "No hay actividades registradas aún.",
+                records: "Registros",
+                avances: "Avances",
+                autoevaluacion: "Autoevaluación",
+                parcial: "Examen Parcial",
+                campus: "Campus"
+            },
+            beta: {
+                title: "🚀 Versión Beta v0.1",
+                desc: "Tu progreso se guarda automáticamente en el navegador (Local Storage). Pronto integraremos el inicio de sesión con Google para sincronizar tus avances en la nube."
+            }
         }
     },
     en: {
@@ -111,11 +158,58 @@ export const translations = {
         share: {
             copy: "Copy post link",
             copied: "Post link copied!"
+        },
+        studentPortal: {
+            guestTitle: "Academic Progress Tracking",
+            guestDesc: "Keep track of your self-assessments and completed exams throughout the degree.",
+            userTitle: "Your Academic Desktop",
+            userDesc: "Manage your progress and review your completed activities.",
+            loginCta: "Login"
+        },
+        dashboard: {
+            title: "Student Portal",
+            back: "← Back to Home",
+            guestUser: "Guest Student",
+            welcome: "Hello",
+            loading: "Loading portal...",
+            stats: {
+                autoevaluaciones: "Self-assessments",
+                parciales: "Partial Exams"
+            },
+            tracking: {
+                title: "Activity Tracking",
+                materia: "Subject",
+                tipo: "Activity Type",
+                nombre: "Task Name",
+                link: "Campus Link (optional)",
+                calificacion: "Grade",
+                fecha: "Date",
+                observaciones: "Notes (optional)",
+                placeholderTarea: "e.g.: Self-assessment #1, Partial #1, etc.",
+                placeholderObservaciones: "Additional notes...",
+                submit: "Record in my Progress",
+                isAdding: "Loading..."
+            },
+            filters: {
+                all: "All"
+            },
+            list: {
+                empty: "No activities registered yet.",
+                records: "Records",
+                avances: "Advances",
+                autoevaluacion: "Self-assessment",
+                parcial: "Partial Exam",
+                campus: "Campus"
+            },
+            beta: {
+                title: "🚀 Beta Version v0.1",
+                desc: "Your progress is automatically saved in the browser (Local Storage). We will soon integrate Google login to sync your advances in the cloud."
+            }
         }
     },
     pt: {
         title: "Ciberportero",
-        description: "Ciberdefesa e segurança digital na linha de frente",
+        description: "Ciberdefesa e segurança digital na línea de frente",
         back: "Voltar ao início",
         footer: "© 2026 | Mens secura in corpore tuto",
         langName: "Português",
@@ -126,7 +220,7 @@ export const translations = {
         },
         contact: {
             title: "Consultas Oficiais UNDEF",
-            description: "Canal oficial de contacto para consultas académicas e administrativas",
+            description: "Canal oficial de contacto para consultas académicas y administrativas",
             email: "licciberdefensa@fadena.undef.edu.ar",
             copied: "¡Copiado!"
         },
@@ -163,11 +257,58 @@ export const translations = {
         },
         notificationMate: {
             title: "Verifique seu acesso ao SIU Guaraní",
-            desc: "Certifique-se de que seu usuário e senha estejam ativos antes de 31/3."
+            desc: "Certifique-se de que seu usuário e senha estejam activos antes de 31/3."
         },
         share: {
             copy: "Copiar link do post",
             copied: "¡Link do post copiado!"
+        },
+        studentPortal: {
+            guestTitle: "Registro de Progresso Académico",
+            guestDesc: "Acompanhe suas autoavaliações e exames concluídos ao longo da graduação.",
+            userTitle: "Sua Área Académica",
+            userDesc: "Gerencie seu progresso e revise suas atividades concluídas.",
+            loginCta: "Acessar"
+        },
+        dashboard: {
+            title: "Portal do Estudante",
+            back: "← Voltar ao Início",
+            guestUser: "Estudante Convidado",
+            welcome: "Olá",
+            loading: "Carregando portal...",
+            stats: {
+                autoevaluaciones: "Autoavaliações",
+                parciales: "Exames Parciais"
+            },
+            tracking: {
+                title: "Acompanhamento de Atividades",
+                materia: "Matéria",
+                tipo: "Tipo de Atividade",
+                nombre: "Nome da Tarefa",
+                link: "Link do Campus (opcional)",
+                calificacion: "Nota",
+                fecha: "Data",
+                observaciones: "Observações (opcional)",
+                placeholderTarea: "ex: Autoavaliação #1, Parcial #1, etc.",
+                placeholderObservaciones: "Notas adicionais...",
+                submit: "Registrar no meu Avanço",
+                isAdding: "Carregando..."
+            },
+            filters: {
+                all: "Todas"
+            },
+            list: {
+                empty: "Ainda não há atividades registradas.",
+                records: "Registros",
+                avances: "Avanços",
+                autoevaluacion: "Autoavaliação",
+                parcial: "Exame Parcial",
+                campus: "Campus"
+            },
+            beta: {
+                title: "🚀 Versão Beta v0.1",
+                desc: "Seu progresso é salvo automaticamente no navegador (Local Storage). Em breve integraremos o login com o Google para sincronizar seus avanços na nuvem."
+            }
         }
     }
 };
