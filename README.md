@@ -1,35 +1,36 @@
 # 🛡️ Ciberportero 
 
-Welcome to **Ciberportero**, a space dedicated to the study and promotion of Cyberdefense. This blog was created with a minimalist approach to prioritize reading and learning.
+Welcome to **Ciberportero**, an academic ecosystem and study portal specifically designed for the **UNDEF (National Defense University)** community. While it serves as a space for cyberdefense research, its primary mission is to provide students with a centralized, high-fidelity experience for managing their academic life.
 
 ## 🎓 For UNDEF Students
 
-This site includes a special **Useful Resources and Links** section designed specifically for students of the **Bachelor's Degree in Cyberdefense at the National Defense University (UNDEF)**. Here you will find direct access to:
+This site is **heavily focused on the needs of students** of the **Bachelor's Degree in Cyberdefense at the National Defense University (UNDEF)**. It currently features:
 
-- SIU Guaraní Academic Portal.
-- Accesses to the communities.
-- Curated study material.
+- **Student Portal (Beta v0.1)**: A dedicated, localized space to track academic progress, self-assessments, and partial exams.
+- **Resources Hub**: Direct, one-click access to SIU Guaraní, Moodle Campus, and curated study material community drives.
+- **WhatsApp & Discord Communities**: Instant navigation to class-specific and general peer-to-peer study groups.
 
-## ✨ Features
+## ✨ Key Features
 
-- **Authentication & Dashboard**: Secure Google Login for students to track their self-assessments and exams.
-- **Security-First Approach**: Built with high security standards, following Ciberdefense principles (see [BEST_PRACTICES.md](./BEST_PRACTICES.md)).
-- **Multi-language Support:** Read content in Spanish, English, or Portuguese. The site will remember your preference.
-- **Clean Reading Experience:** Distraction-free, focusing 100% on the content.
-- **Easy Updates:** Articles are written simply using text files (Markdown).
+- **Progress Tracking (Guest Mode)**: Track your academic performance without initial login requirements. Data is securely persisted in your browser's **LocalStorage**.
+- **Full Localization (ES / EN / PT)**: The entire platform—including the student dashboard and tracking tools—is localized to ensure a native experience for all students.
+- **Secure Deletion Flow**: Implemented a two-step confirmation system for activity records to prevent accidental data loss.
+- **Regional Institutional Branding**: A clean, premium UI synchronized with the **Flag of Córdoba** color palette and UNDEF institutional aesthetics.
+- **Clean Reading Experience**: Distraction-free, security-first content focusing on cyberdefense education.
+- **Security-First Approach**: Built following strict Ciberdefense principles (see [BEST_PRACTICES.md](./BEST_PRACTICES.md)).
 
 ## 📝 How to publish a new article
 
 If you want to add a new post, you can do so by submitting a **Pull Request**. Simply create a file in the `posts/` folder according to your preferred language. 
 
-Note that all submissions will go through a **review process** before being accepted. We encourage you to specify in your Pull Request description why you consider the article relevant or important for the community.
+Note that all submissions go through a **review process**. We encourage you to specify in your Pull Request description why you consider the article relevant for the student community.
 
-Each file must start with this basic information:
+Each file must start with this basic frontmatter:
 
 ```markdown
 ---
 title: "Your title here"
-date: "2026-01-23"
+date: "2026-03-29"
 description: "A short description of your note"
 ---
 

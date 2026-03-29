@@ -1,32 +1,37 @@
-# 🛡️ Security Best Practices - Ciberportero Project
+# 🛡️ Strategic Vision & Best Practices - Ciberportero Project
 
-This project implements a management system for **Cyberdefense (UNDEF)** students following professional security and privacy standards.
+This document outlines the security, privacy, and development principles that guide the **Ciberportero** project. Our core mission is to empower the **UNDEF (National Defense University)** community with a professional-grade academic management ecosystem.
 
-## 1. Authentication and Identity Management (OAuth 2.0)
-We have implemented **Auth.js v5** with the **Google** provider.
-- **Passwordless**: We do not store passwords in our database. This eliminates the risk of credential leakage (Credential Stuffing / Brute Force).
-- **Delegation**: We rely on Google's security infrastructure for identity validation.
-- **AUTH_SECRET**: We use a high-entropy 32-byte secret generated cryptographically to sign session cookies (JWE), preventing session hijacking.
+## 🚀 Strategic Direction: Student-First
+While this project originated as a research blog, our roadmap has shifted to prioritize the **UNDEF student experience**. Every feature is designed to reduce frictionless access to academic tools while maintaining the highest security standards.
 
-## 2. Server-Side Data Protection (Next.js Middleware)
-Security is not limited to the user interface.
-- **Middleware**: Access to the `/dashboard` route is validated at the server level *before* any component is rendered.
-- **Server Components**: Student data queries are performed in server components, meaning the client never receives raw database data, only the final HTML.
+### 🌓 Privacy-by-Design (Beta v0.1)
+*   **Zero-Friction Adoption**: We currently utilize **LocalStorage** for activity tracking. This allows students to immediately benefit from the portal without undergoing authentication procedures.
+*   **Client-Side Sovereignty**: All progress data remains within the user's browser, ensuring total privacy until the user chooses to sync with the cloud.
+*   **Evolution to Cloud Sync**: As the platform matures, we will integrate **Google OAuth 2.0 (Auth.js)** as an opt-in feature to allow multi-device synchronization while maintaining a "Guest Mode" for privacy-conscious users.
 
-## 3. Database Security (Prisma + SQLite)
-- **Principle of Least Privilege**: We only request strictly necessary fields (`email`, `name`, `image`).
-- **Prisma Adapter**: We use the official Auth.js adapter that prevents SQL injection and handles relationships securely.
+## 🔐 Security Architecture
 
-## 4. Secret and Repository Management
-- **.env Exclusion**: The `.env` file is in `.gitignore`. It must never be uploaded to the repository.
-- **DB Exclusion**: The local `dev.db` database is excluded to prevent the leakage of test data.
+### 1. Identity Management (Planned OAuth 2.0)
+We are prepared to deploy **Auth.js v5** with the following security-first features:
+- **Passwordless**: We never store passwords, eliminating the risk of credential leakage.
+- **Delegated Trust**: We rely on Google's institutional-grade infrastructure for identity validation.
+- **Signed Sessions (JWE)**: Using high-entropy secrets to sign and encrypt session cookies.
 
-## 5. Recommendations for Production
-For final deployment, these additional steps should be followed:
-- **Enforced HTTPS**: Ensure the domain has SSL (Vercel does this by default).
-- **Security Headers**: Implement headers such as `Content-Security-Policy`, `X-Frame-Options`, and `X-Content-Type-Options`.
-- **Secret Rotation**: Change the `AUTH_SECRET` every 6-12 months.
-- **Managed Database**: Move from local SQLite to a managed Postgres (Supabase/Neon) with encryption at rest.
+### 2. Localization-by-Default
+*   **Inclusive Design**: Localization (ES / EN / PT) is not a feature; it is a **Core Development Standard**. Every new component must support multi-language strings from day one.
+*   **Institutional Language**: We prioritize Argentinian Spanish (`es-AR`) for academic contexts while providing full internationalization for the global cyberdefense community.
+
+### 3. Secure Workflow: Two-Step Verification
+*   **Accidental Prevention**: Critical actions (like deleting academic records) require a **two-step confirmation**. This aligns with the "Human-in-the-Loop" security principle, ensuring that no data is lost due to a single misclick during intense study sessions.
+
+### 4. Database Security (Prisma + PostgreSQL)
+- **Least Privilege**: We only request and store the minimum necessary metadata (`email`, `name`).
+- **SQL Injection Prevention**: Using Prisma's type-safe query builder to eliminate malicious input vectors.
+
+## 🛠️ Project Integrity & Secret Management
+- **Environment Isolation**: `.env` and local database files are strictly excluded from version control.
+- **Security Headers**: We implement `Content-Security-Policy` and `X-Frame-Options` to proactively defend against XSS and Clickjacking.
 
 ---
-*"Mens secura in corpore tuto"*
+*"Mens secura in corpore tuto"* – *A secure mind in a safe body.*
