@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { AuthProvider } from "@/context/AuthProvider";
 import CountdownWidget from "@/components/CountdownWidget";
 import "./globals.css";
 
@@ -16,10 +17,12 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body>
-        <LanguageProvider>
-          {children}
-          <CountdownWidget />
-        </LanguageProvider>
+        <AuthProvider>
+          <LanguageProvider>
+            {children}
+            <CountdownWidget />
+          </LanguageProvider>
+        </AuthProvider>
       </body>
     </html>
   );

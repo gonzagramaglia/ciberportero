@@ -9,9 +9,12 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@auth/prisma-adapter": "^2.11.1",
+    "@prisma/client": "6",
     "gray-matter": "^4.0.3",
     "lucide-react": "^0.562.0",
     "next": "16.1.4",
+    "next-auth": "^5.0.0-beta.30",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-markdown": "^10.1.0"
@@ -22,6 +25,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.4",
+    "prisma": "6",
     "typescript": "^5"
   }
 }

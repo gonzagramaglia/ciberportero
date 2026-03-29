@@ -934,3 +934,50 @@ body.lightbox-open .notification-banner {
   color: var(--success);
   background: rgba(16, 185, 129, 0.05);
 }
+
+/* Authentication & Dashboard */
+.auth-button {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid var(--border);
+}
+
+.sign-in {
+  background: var(--foreground);
+  color: var(--background);
+}
+
+.sign-in:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.sign-out {
+  background: transparent;
+  color: var(--muted);
+}
+
+.sign-out:hover {
+  color: #ef4444;
+  border-color: #ef4444;
+}
+
+.dashboard-link {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  border: 1px solid var(--accent);
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.dashboard-link:hover {
+  background: var(--accent);
+  color: white;
+}

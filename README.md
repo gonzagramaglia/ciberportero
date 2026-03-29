@@ -12,6 +12,8 @@ This site includes a special **Useful Resources and Links** section designed spe
 
 ## ✨ Features
 
+- **Authentication & Dashboard**: Secure Google Login for students to track their self-assessments and exams.
+- **Security-First Approach**: Built with high security standards, following Ciberdefense principles (see [BEST_PRACTICES.md](./BEST_PRACTICES.md)).
 - **Multi-language Support:** Read content in Spanish, English, or Portuguese. The site will remember your preference.
 - **Clean Reading Experience:** Distraction-free, focusing 100% on the content.
 - **Easy Updates:** Articles are written simply using text files (Markdown).

@@ -7,8 +7,25 @@ import { useState, useEffect } from 'react';
 import { PostData } from '../lib/posts-client';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import { Github, Youtube, Bell, X } from 'lucide-react';
-
 import NotificationBanners from '../components/NotificationBanners';
+import { useSession } from 'next-auth/react';
+import { SignInButton } from '../components/AuthButtons';
+
+function AuthStatus() {
+    const { data: session, status } = useSession();
+
+    if (status === 'loading') return null;
+
+    if (session) {
+        return (
+            <Link href="/dashboard" className="dashboard-link">
+                Dashboard Estudiante
+            </Link>
+        );
+    }
+
+    return <SignInButton />;
+}
 
 export default function Home() {
     const { lang } = useLanguage();
@@ -54,9 +71,12 @@ export default function Home() {
             )}
 
             <header>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
                     <h1>{t.title}</h1>
-                    <LanguageSwitcher />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <AuthStatus />
+                        <LanguageSwitcher />
+                    </div>
                 </div>
                 <p>{t.description}</p>
             </header>
