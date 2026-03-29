@@ -4,9 +4,13 @@ import { useState, useEffect } from 'react';
 import { Clock } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { translations } from '../lib/translations';
+import { usePathname } from 'next/navigation';
 
 export default function CountdownWidget() {
+    const pathname = usePathname();
     const { lang } = useLanguage();
+
+    if (pathname === '/dashboard') return null;
     const t = translations[lang].countdown;
     // New target date for Inscripción a Materias: March 31, 2026 at 12:00
     const targetDate = new Date('2026-03-31T12:00:00-03:00');
