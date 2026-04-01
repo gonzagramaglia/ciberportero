@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useState, useEffect } from "react"
 import { SignOutButton } from "@/components/AuthButtons"
 import { ProgressList } from "./components/ProgressList"
-import { Github, Youtube } from 'lucide-react'
+import { Github, Youtube, ArrowLeft, Zap, CheckCircle, Info, Book } from 'lucide-react'
 import { useLanguage } from "@/context/LanguageContext"
 import { translations } from "@/lib/translations"
 import LanguageSwitcher from "@/components/LanguageSwitcher"
@@ -15,7 +15,7 @@ export default function DashboardPage() {
   const t = translations[lang].dashboard
   const { data: session, status } = useSession()
   const [isGuest, setIsGuest] = useState(false)
-  const [stats, setStats] = useState({ autoevaluaciones: 0, parciales: 0 })
+  const [stats, setStats] = useState({ autoevaluaciones: 0, parciales: 0, trabajosPracticos: 0 })
   const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
@@ -30,6 +30,7 @@ export default function DashboardPage() {
         setStats({
           autoevaluaciones: progress.filter((p: any) => p.type === 'autoevaluacion').length,
           parciales: progress.filter((p: any) => p.type === 'parcial').length,
+          trabajosPracticos: progress.filter((p: any) => p.type === 'tp').length,
         })
       } catch (e) {
         console.error(e)
@@ -42,62 +43,80 @@ export default function DashboardPage() {
     return <div className="container" style={{ padding: '2rem', textAlign: 'center' }}>{t.loading}</div>
   }
 
-  // Redirect if not authenticated (either via session or guest)
-  if (!session && !isGuest) {
-    window.location.href = "/"
-    return null
-  }
 
   const userName = session?.user?.name || t.guestUser
 
   return (
-    <div className="container fade-in" style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem' }}>
-      <header>
+    <div className="container fade-in" style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}>
+      <header style={{ marginBottom: '3rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Link href="/" className="back-link" style={{ textDecoration: 'none', color: 'var(--muted)', fontWeight: '600' }}>{t.back}</Link>
+          <Link href="/" className="back-link" style={{ textDecoration: 'none', color: 'var(--muted)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <ArrowLeft size={18} /> {translations[lang].back}
+          </Link>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <SignOutButton />
+             <LanguageSwitcher />
           </div>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
-          <h1 style={{ margin: 0, fontSize: '2.5rem', fontWeight: '800', color: '#000' }}>{t.title}</h1>
-          <LanguageSwitcher />
+        
+        <div style={{ marginTop: '2.5rem' }}>
+          <h1 className="dashboard-title" style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em' }}>{t.title}</h1>
         </div>
-        <p style={{ color: 'var(--muted)', fontSize: '1.2rem', marginTop: '0.5rem' }}>{t.welcome}, {userName}</p>
+
+        {/* Unified Stats Bar */}
+        <div style={{ 
+          marginTop: '2rem', 
+          padding: '1.5rem', 
+          background: 'white', 
+          borderRadius: '24px', 
+          border: '1px solid var(--border)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '2.5rem',
+          flexWrap: 'wrap'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+             <div style={{ padding: '0.6rem', background: 'rgba(8, 145, 178, 0.06)', borderRadius: '12px' }}>
+                <Book size={22} color="#0891b2" />
+             </div>
+             <div>
+                <span style={{ display: 'block', fontSize: '1.4rem', fontWeight: '900', color: '#0891b2' }}>{stats.trabajosPracticos}</span>
+                <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--muted)', textTransform: 'uppercase' }}>{t.stats.trabajosPracticos}</span>
+             </div>
+          </div>
+
+          <div style={{ width: '1px', height: '30px', background: 'var(--border)' }}></div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+             <div style={{ padding: '0.6rem', background: 'rgba(217, 119, 6, 0.06)', borderRadius: '12px' }}>
+                <Zap size={22} color="#d97706" fill="#d97706" />
+             </div>
+             <div>
+                <span style={{ display: 'block', fontSize: '1.4rem', fontWeight: '900', color: '#d97706' }}>{stats.autoevaluaciones}</span>
+                <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--muted)', textTransform: 'uppercase' }}>{t.stats.autoevaluaciones}</span>
+             </div>
+          </div>
+
+          <div style={{ width: '1px', height: '30px', background: 'var(--border)' }}></div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+             <div style={{ padding: '0.6rem', background: 'rgba(198, 11, 30, 0.06)', borderRadius: '12px' }}>
+                <CheckCircle size={22} color="#C60B1E" />
+             </div>
+             <div>
+                <span style={{ display: 'block', fontSize: '1.4rem', fontWeight: '900', color: '#C60B1E' }}>{stats.parciales}</span>
+                <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--muted)', textTransform: 'uppercase' }}>{t.stats.parciales}</span>
+             </div>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--muted)', fontSize: '0.74rem', fontWeight: '600', width: '100%', justifyContent: 'center', marginTop: '-0.8rem', opacity: 0.8 }}>
+             <Info size={14} />
+             <span>{translations[lang].plan.storageNotice}</span>
+          </div>
+        </div>
       </header>
 
       <main>
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: '1fr 1fr', 
-          gap: '1.5rem', 
-          marginBottom: '3rem',
-          marginTop: '2.5rem'
-        }}>
-          <div style={{ 
-            padding: '2rem', 
-            borderRadius: '16px', 
-            background: 'white', 
-            border: '1px solid var(--border)',
-            textAlign: 'center',
-            boxShadow: '0 4px 6px rgba(0,0,0,0.02)'
-          }}>
-            <span style={{ fontSize: '3rem', fontWeight: '800', display: 'block', color: 'var(--accent)' }}>{stats.autoevaluaciones}</span>
-            <span style={{ fontSize: '0.9rem', color: "var(--muted)", textTransform: 'uppercase', fontWeight: '700', letterSpacing: '0.1em' }}>{t.stats.autoevaluaciones}</span>
-          </div>
-          <div style={{ 
-            padding: '2rem', 
-            borderRadius: '16px', 
-            background: 'white', 
-            border: '1px solid var(--border)',
-            textAlign: 'center',
-            boxShadow: '0 4px 6px rgba(0,0,0,0.02)'
-          }}>
-            <span style={{ fontSize: '3rem', fontWeight: '800', display: 'block', color: '#C60B1E' }}>{stats.parciales}</span>
-            <span style={{ fontSize: '0.9rem', color: "var(--muted)", textTransform: 'uppercase', fontWeight: '700', letterSpacing: '0.1em' }}>{t.stats.parciales}</span>
-          </div>
-        </div>
-
         <section>
           <ProgressList />
         </section>
@@ -117,19 +136,19 @@ export default function DashboardPage() {
           <p style={{ margin: 0, fontWeight: '800', color: 'var(--accent)', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
             {t.beta.title}
           </p>
-          <p style={{ margin: 0, fontSize: '0.95rem', color: '#475569', lineHeight: '1.6', fontWeight: '500' }}>
+          <p style={{ margin: 0, fontSize: '0.95rem', color: '#475569', lineHeight: '1.6', fontWeight: '500', whiteSpace: 'pre-line' }}>
             {t.beta.desc}
           </p>
         </div>
       </main>
       
-      <footer style={{ marginTop: '5rem', padding: '2rem 0', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'inherit' }}>
-            <Youtube size={22} />
+      <footer className="footer-main" style={{ marginTop: '5rem', padding: '2.5rem 0', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
+            <Github size={20} />
         </a>
-        <span style={{ fontSize: '0.9rem', opacity: 0.6 }}>{translations[lang].footer}</span>
-        <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'inherit' }}>
-            <Github size={18} />
+        <span style={{ fontSize: '0.9rem', opacity: 0.6, color: 'var(--muted)', fontWeight: '500' }}>{translations[lang].footer}</span>
+        <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
+            <Youtube size={22} />
         </a>
       </footer>
     </div>

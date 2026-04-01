@@ -57,8 +57,8 @@ export const translations = {
             copied: "¡Enlace del post copiado!"
         },
         studentPortal: {
-            guestTitle: "Registro de Avance Académico",
-            guestDesc: "Llevá un control de tus autoevaluaciones y exámenes completados de la carrera.",
+            guestTitle: "Avance Académico",
+            guestDesc: "<strong>Registrá y llevá un control de tus autoevaluaciones y exámenes</strong> completados de la carrera.",
             userTitle: "Tu Escritorio Académico",
             userDesc: "Gestioná tu progreso y revisá tus actividades completadas.",
             loginCta: "Ingresar"
@@ -71,7 +71,8 @@ export const translations = {
             loading: "Cargando portal...",
             stats: {
                 autoevaluaciones: "Autoevaluaciones",
-                parciales: "Exámenes Parciales"
+                parciales: "Exámenes Parciales",
+                trabajosPracticos: "Trabajos Prácticos"
             },
             tracking: {
                 title: "Seguimiento de Actividad",
@@ -96,17 +97,18 @@ export const translations = {
                 avances: "Avances",
                 autoevaluacion: "Autoevaluación",
                 parcial: "Examen Parcial",
+                tp: "Trabajo Práctico",
                 campus: "Campus"
             },
             beta: {
                 title: "🚀 Versión Beta v0.1",
-                desc: "Tu progreso se guarda automáticamente en el navegador (Local Storage). Pronto integraremos el inicio de sesión con Google para sincronizar tus avances en la nube."
+                desc: "Tu progreso se guarda automáticamente en el navegador (Local Storage).\nPronto integraremos el inicio de sesión con Google para sincronizar tus avances en la nube."
             }
         },
         plan: {
             title: "Plan de Estudios",
             subtitle: "Licenciatura en Ciberdefensa - UNDEF",
-            description: "Visualizá tu progreso, las correlatividades y las materias que vas desbloqueando.",
+            description: "<strong>Visualizá tu progreso</strong>, las correlatividades y las materias que vas desbloqueando.",
             completed: "Completada",
             inProgress: "En curso",
             notStarted: "Pendiente",
@@ -195,8 +197,8 @@ export const translations = {
             copied: "Post link copied!"
         },
         studentPortal: {
-            guestTitle: "Academic Progress Tracking",
-            guestDesc: "Keep track of your self-assessments and completed exams throughout the degree.",
+            guestTitle: "Academic Progress",
+            guestDesc: "<strong>Record and keep track of your self-assessments and exams</strong> completed throughout the degree.",
             userTitle: "Your Academic Desktop",
             userDesc: "Manage your progress and review your completed activities.",
             loginCta: "Login"
@@ -208,8 +210,9 @@ export const translations = {
             welcome: "Hello",
             loading: "Loading portal...",
             stats: {
-                autoevaluaciones: "Self-assessments",
-                parciales: "Partial Exams"
+                autoevaluaciones: "Self-Assessments",
+                parciales: "Partial Exams",
+                trabajosPracticos: "Practical Works"
             },
             tracking: {
                 title: "Activity Tracking",
@@ -232,19 +235,20 @@ export const translations = {
                 empty: "No activities registered yet.",
                 records: "Records",
                 avances: "Advances",
-                autoevaluacion: "Self-assessment",
+                autoevaluacion: "Self-Assessment",
                 parcial: "Partial Exam",
+                tp: "Practical Work",
                 campus: "Campus"
             },
             beta: {
                 title: "🚀 Beta Version v0.1",
-                desc: "Your progress is automatically saved in the browser (Local Storage). We will soon integrate Google login to sync your advances in the cloud."
+                desc: "Your progress is automatically saved in your browser (Local Storage).\nSoon we will integrate Google login to sync your progress in the cloud."
             }
         },
         plan: {
             title: "Study Plan",
             subtitle: "Bachelor's in Cyberdefense - UNDEF",
-            description: "Visualize your progress, prerequisites, and the subjects you are unlocking.",
+            description: "<strong>Visualize your progress</strong>, prerequisites, and the subjects you are unlocking.",
             completed: "Completed",
             inProgress: "In progress",
             notStarted: "Pending",
@@ -333,8 +337,8 @@ export const translations = {
             copied: "¡Link do post copiado!"
         },
         studentPortal: {
-            guestTitle: "Registro de Progresso Académico",
-            guestDesc: "Acompanhe suas autoavaliações e exames concluídos ao longo da graduação.",
+            guestTitle: "Progresso Acadêmico",
+            guestDesc: "<strong>Registre e acompanhe suas autoavaliações e exames</strong> concluídos ao longo da graduação.",
             userTitle: "Sua Área Académica",
             userDesc: "Gerencie seu progresso e revise suas atividades concluídas.",
             loginCta: "Acessar"
@@ -347,7 +351,8 @@ export const translations = {
             loading: "Carregando portal...",
             stats: {
                 autoevaluaciones: "Autoavaliações",
-                parciales: "Exames Parciais"
+                parciales: "Exames Parciais",
+                trabajosPracticos: "Trabalhos Práticos"
             },
             tracking: {
                 title: "Acompanhamento de Atividades",
@@ -372,17 +377,18 @@ export const translations = {
                 avances: "Avanços",
                 autoevaluacion: "Autoavaliação",
                 parcial: "Exame Parcial",
+                tp: "Trabalho Prático",
                 campus: "Campus"
             },
             beta: {
                 title: "🚀 Versão Beta v0.1",
-                desc: "Seu progresso é salvo automaticamente no navegador (Local Storage). Em breve integraremos o login com o Google para sincronizar seus avanços na nuvem."
+                desc: "Seu progresso é salvo automaticamente no seu navegador (Local Storage).\nEm breve integraremos o login do Google para sincronizar seu progresso na nuvem."
             }
         },
         plan: {
             title: "Plano de Estudos",
             subtitle: "Licenciatura em Ciberdefesa - UNDEF",
-            description: "Visualize o seu progresso, as correlatividades e as matérias que você está desbloqueando.",
+            description: "<strong>Visualize o seu progresso</strong>, as correlatividades e as matérias que você está desbloqueando.",
             completed: "Concluída",
             inProgress: "Em curso",
             notStarted: "Pendente",

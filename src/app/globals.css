@@ -10,13 +10,19 @@
     "Helvetica Neue", Arial, sans-serif;
 }
 
-@media (max-width: 680px) {
+@media (max-width: 768px) {
   .container {
     padding: 1.5rem 1.5rem 3rem;
   }
   .storage-notice-wrapper {
     width: 100%;
     margin-top: 0.2rem;
+  }
+  h1, .dashboard-title {
+    font-size: 2rem !important;
+  }
+  .post-title {
+    font-size: 1.25rem !important;
   }
 }
 
@@ -168,7 +174,7 @@ header p {
 }
 
 .post-title {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
   display: block;
@@ -991,10 +997,6 @@ body.lightbox-open .notification-banner {
   border-radius: 12px;
 }
 
-.portal-user .post-title {
-  color: var(--accent) !important;
-  font-size: 1.8rem !important;
-}
 
 .portal-user .post-description {
   color: var(--muted) !important;

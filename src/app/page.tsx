@@ -147,7 +147,7 @@ export default function Home() {
             <main style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 <Link href="/links" className="post-item featured" style={{ display: 'block', textDecoration: 'none' }}>
                     <span className="featured-tag">{t.featured?.tag}</span>
-                    <span className="post-title" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--success)', fontSize: '1.8rem' }}>
+                    <span className="post-title" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--success)' }}>
                         <LinkIcon size={20} />
                         {t.featured?.title}
                     </span>
@@ -165,67 +165,34 @@ export default function Home() {
                         <span className="featured-tag" style={{ background: 'var(--accent)', color: 'white' }}>{t.featured?.tag || 'Nuevo'}</span>
                     </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', marginTop: '1.2rem' }}>
-                        <span className="post-title" style={{ fontSize: '1.8rem', display: 'flex', alignItems: 'center', gap: '0.8rem', color: 'var(--accent)' }}>
-                            <Zap size={28} className="bell-animation" fill="var(--accent)" />
-                            {t.plan?.title}
-                        </span>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem' }}>
-                            <p className="post-description" style={{ margin: 0, fontSize: '1.1rem', opacity: 0.8, lineHeight: '1.5', color: 'var(--accent)' }}>
-                                {t.plan?.description}
-                            </p>
-                            <ArrowRight className="arrow-portal" size={42} style={{ color: 'var(--accent)', opacity: 0.15 }} />
-                        </div>
+                    <span className="post-title" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: 'var(--accent)' }}>
+                        <Zap size={28} className="bell-animation" fill="var(--accent)" />
+                        {t.plan?.title}
+                    </span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem' }}>
+                        <p className="post-description" dangerouslySetInnerHTML={{ __html: t.plan?.description || '' }} style={{ margin: 0 }} />
+                        <ArrowRight className="arrow-portal" size={42} style={{ color: 'var(--accent)', opacity: 0.45 }} />
                     </div>
                 </Link>
 
-                {!isAuthenticated ? (
-                    <div className="post-item featured portal-guest" style={{ display: 'block' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <span className="featured-tag" style={{ background: 'var(--accent)', color: 'white' }}>Portal</span>
-                        </div>
-                        
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', marginTop: '1.2rem' }}>
-                            <span className="post-title" style={{ fontSize: '1.8rem', display: 'flex', alignItems: 'center', gap: '0.8rem', color: 'var(--accent)' }}>
-                                <CheckCircle size={28} className="bell-animation" />
-                                {t.studentPortal?.guestTitle}
-                            </span>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem' }}>
-                                <p className="post-description" style={{ margin: 0, fontSize: '1.1rem', opacity: 0.8, lineHeight: '1.5' }}>
-                                    {t.studentPortal?.guestDesc}
-                                </p>
-                                <SignInButton />
-                            </div>
-                        </div>
+                <Link 
+                    href="/dashboard" 
+                    className="post-item featured portal-user" 
+                    style={{ display: 'block', textDecoration: 'none' }}
+                >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <span className="featured-tag" style={{ background: 'var(--accent)', color: 'white' }}>Portal</span>
                     </div>
-                ) : (
-                    <Link 
-                        href="/dashboard" 
-                        className="post-item featured portal-user" 
-                        style={{ display: 'block', textDecoration: 'none' }}
-                    >
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                            <span className="featured-tag" style={{ background: 'var(--accent)', color: 'white' }}>Portal</span>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--accent)', fontSize: '0.8rem', fontWeight: '700', padding: '0.4rem 0.8rem', background: 'rgba(0,112,243,0.05)', borderRadius: '20px', border: '1px solid rgba(0,112,243,0.1)' }}>
-                                <div style={{ width: '8px', height: '8px', background: 'var(--accent)', borderRadius: '50%' }}></div>
-                                {session?.user?.name?.split(' ')[0] || 'Invitado'}
-                            </div>
-                        </div>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', marginTop: '1.2rem' }}>
-                            <span className="post-title" style={{ fontSize: '1.8rem', display: 'flex', alignItems: 'center', gap: '0.8rem', color: 'var(--accent)' }}>
-                                <CheckCircle size={28} className="bell-animation" />
-                                {t.studentPortal?.guestTitle}
-                            </span>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem' }}>
-                                <p className="post-description" style={{ margin: 0, fontSize: '1.1rem', opacity: 0.8, lineHeight: '1.5' }}>
-                                    {t.studentPortal?.guestDesc}
-                                </p>
-                                <ArrowRight className="arrow-portal" size={42} style={{ color: 'var(--accent)', opacity: 0.4 }} />
-                            </div>
-                        </div>
-                    </Link>
-                )}
+                    <span className="post-title" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: 'var(--accent)' }}>
+                        <CheckCircle size={28} className="bell-animation" />
+                        {t.studentPortal?.guestTitle}
+                    </span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem' }}>
+                        <p className="post-description" dangerouslySetInnerHTML={{ __html: t.studentPortal?.guestDesc || '' }} style={{ margin: 0 }} />
+                        <ArrowRight className="arrow-portal" size={42} style={{ color: 'var(--accent)', opacity: 0.45 }} />
+                    </div>
+                </Link>
 
                 {lang === 'es' && (
                     <>

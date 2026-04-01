@@ -11,6 +11,17 @@ This site is **heavily focused on the needs of students** of the **Bachelor's De
 - **Smart Locking System**: Subjects are automatically "locked" (🔒) until their prerequisites are completed, preventing planning errors.
 - **Objective-Based Progress**: Toggle between **Analista (Intermediate 📜)** and **Licenciatura (Full 🎓)** objectives. All statistics and dependency lists update in real-time.
 - **Reactive Search Engine**: A fast, accent-insensitive search bar to find subjects by name or ID instantly.
+- **Tri-State Subject Tracking**: Manage your semester with precision. Subjects now support three distinct states: **Pending** (⚪), **In Progress** (🔵), and **Completed** (🟢), allowing for dynamic career visualization.
+
+## 📊 Student Dashboard (Academic Progress)
+
+Beyond the curriculum roadmap, Ciberportero now features a **high-density tracking dashboard** to manage your daily performance:
+
+- **Grid-Based Architecture**: A responsive, 3-column card layout (1/3 width) designed to maximize information density.
+- **Hierarchical Sorting**: Subjects are ordered numerically (e.g., [01], [02]...) to match the official academic sequence exactly.
+- **Activity Prioritization**: Within each subject, **Practical Works (TPs)** and **Self-Assessments** appear first, followed by Exams, keeping current tasks most visible.
+- **Unified Analytics**: A centered mission-control bar providing real-time totals of your academic milestones across the entire career.
+- **No-Friction Access**: Direct entry from the homepage with no mandatory sign-in. Your progress is yours, stored exclusively in **LocalStorage**.
 
 ## ✨ Technical Highlights
 
@@ -33,10 +44,6 @@ date: "2026-03-29"
 description: "A short description of your note"
 ---
 ```
-
-## 🤝 Credits & Inspiration
-
-This project, specifically the interactive curriculum roadmap, was deeply inspired by the original work of **zzzNata** and their [Mapa Interactivo CiberDefensa UNDEF](https://github.com/zzzNata/Mapa-Interactivo-CiberDefensa-UNDEF). **Ciberportero** aims to build upon that vision, integrating it into a comprehensive student portal with multi-language support and persistent tracking.
 
 ## 📜 Footer
 
