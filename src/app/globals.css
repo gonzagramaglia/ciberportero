@@ -334,18 +334,21 @@ header p {
   }
 }
 
-footer {
-  margin-top: 4.5rem;
-  padding-top: 2rem;
+.footer-main {
+  margin-top: 5rem;
+  padding: 2rem 0;
   border-top: 1px solid var(--border);
-  color: var(--muted);
-  font-size: 0.9rem;
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
 }
 
 @media (max-width: 680px) {
-  footer {
-    margin-top: 4rem;
+  .footer-main {
+    flex-direction: column;
+    text-align: center;
+    padding: 2.5rem 1.5rem;
   }
 }
 
