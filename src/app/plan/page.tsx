@@ -38,6 +38,11 @@ export default function PlanPage() {
 
   // Cycle through states: Pending (0) -> In Progress (1) -> Completed (2) -> Pending (0)
   const toggleSubjectState = (id: number) => {
+    // Prevent toggling locked subjects
+    const subject = curriculum.find(s => s.id === id)
+    const isLocked = subject?.prerequisites.some(p => !completed.includes(p))
+    if (isLocked) return
+
     const isCompleted = completed.includes(id)
     const isInProgress = inProgress.includes(id)
 
@@ -212,10 +217,12 @@ export default function PlanPage() {
         }}>
           <div style={{ flex: 1, minWidth: '200px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '0.8rem' }}>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.6rem' }}>
-                <span style={{ fontWeight: '700', fontSize: '1rem', color: '#000', opacity: 0.8 }}>{t.stats.progress}:</span>
-                <span style={{ fontWeight: '900', fontSize: '1.25rem', color: '#000' }}>{progressPercent}%</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: 'var(--muted)', fontSize: '0.7rem', fontWeight: '500', opacity: 0.6 }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.6rem', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.6rem' }}>
+                  <span style={{ fontWeight: '700', fontSize: '1rem', color: '#000', opacity: 0.8 }}>{t.stats.progress}:</span>
+                  <span style={{ fontWeight: '900', fontSize: '1.25rem', color: '#000' }}>{progressPercent}%</span>
+                </div>
+                <div className="storage-notice-wrapper" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: 'var(--muted)', fontSize: '0.7rem', fontWeight: '500', opacity: 0.6 }}>
                   <Info size={11} />
                   <span>{t.storageNotice}</span>
                 </div>
@@ -304,7 +311,7 @@ export default function PlanPage() {
                   background: isLocked ? '#f1f5f9' : 'white',
                   border: '1px solid var(--border)',
                   transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                  cursor: 'pointer',
+                  cursor: isLocked ? 'not-allowed' : 'pointer',
                   position: 'relative',
                   display: 'flex',
                   flexDirection: 'column',
@@ -407,11 +414,11 @@ export default function PlanPage() {
         </a>
         <span style={{ fontSize: '0.9rem', opacity: 0.6, color: 'var(--muted)' }}>{translations[lang].footer}</span>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
-              <Youtube size={20} />
-          </a>
           <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
               <Github size={18} />
+          </a>
+          <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
+              <Youtube size={20} />
           </a>
         </div>
       </footer>

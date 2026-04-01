@@ -14,6 +14,10 @@
   .container {
     padding: 1.5rem 1.5rem 3rem;
   }
+  .storage-notice-wrapper {
+    width: 100%;
+    margin-top: 0.2rem;
+  }
 }
 
 * {
