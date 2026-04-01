@@ -1,29 +1,28 @@
 # 🛡️ Ciberportero 
 
-Welcome to **Ciberportero**, an academic ecosystem and study portal specifically designed for the **UNDEF (National Defense University)** community. While it serves as a space for cyberdefense research, its primary mission is to provide students with a centralized, high-fidelity experience for managing their academic life.
+Welcome to **Ciberportero**, an advanced academic ecosystem and study portal specifically designed for the **UNDEF (National Defense University)** community. While it serves as a space for cyberdefense research, its primary mission is to provide students with a centralized, high-fidelity experience for managing their academic life.
 
 ## 🎓 For UNDEF Students
 
-This site is **heavily focused on the needs of students** of the **Bachelor's Degree in Cyberdefense at the National Defense University (UNDEF)**. It currently features:
+This site is **heavily focused on the needs of students** of the **Bachelor's Degree in Cyberdefense (UNDEF)**. It currently features a state-of-the-art **Academic Plan Manager (Beta v0.1)**:
 
-- **Student Portal (Beta v0.1)**: A dedicated, localized space to track academic progress, self-assessments, and partial exams.
-- **Resources Hub**: Direct, one-click access to SIU Guaraní, Moodle Campus, and curated study material community drives.
-- **WhatsApp & Discord Communities**: Instant navigation to class-specific and general peer-to-peer study groups.
+- **Interactive Kanban Roadmap**: A high-density, side-by-side view of all four academic years. Scroll horizontally to plan your entire career at a glance.
+- **Dependency Tracking (Smart Hover)**: Hover over any subject to instantly see its **Prerequisites** (🔴) and **Unlocks** (🔵) light up with high-intensity gradients.
+- **Smart Locking System**: Subjects are automatically "locked" (🔒) until their prerequisites are completed, preventing planning errors.
+- **Objective-Based Progress**: Toggle between **Analista (Intermediate 📜)** and **Licenciatura (Full 🎓)** objectives. All statistics and dependency lists update in real-time.
+- **Reactive Search Engine**: A fast, accent-insensitive search bar to find subjects by name or ID instantly.
 
-## ✨ Key Features
+## ✨ Technical Highlights
 
-- **Progress Tracking (Guest Mode)**: Track your academic performance without initial login requirements. Data is securely persisted in your browser's **LocalStorage**.
-- **Full Localization (ES / EN / PT)**: The entire platform—including the student dashboard and tracking tools—is localized to ensure a native experience for all students.
-- **Secure Deletion Flow**: Implemented a two-step confirmation system for activity records to prevent accidental data loss.
-- **Regional Institutional Branding**: A clean, premium UI synchronized with the **Flag of Córdoba** color palette and UNDEF institutional aesthetics.
-- **Clean Reading Experience**: Distraction-free, security-first content focusing on cyberdefense education.
+- **Progress Persistence**: Track your degree progress without requiring an account. Data is securely saved in your browser's **LocalStorage**.
+- **Performance-First Design**: Built with a "Mission Control" aesthetic, optimized for information density and horizontal scanning. 
+- **Full Localization (ES / EN / PT)**: The entire platform—including the student dashboard and tracking logic—is localized across three languages.
+- **Regional Branding**: A clean, premium UI synchronized with the **Flag of Córdoba** color palette and UNDEF institutional aesthetics.
 - **Security-First Approach**: Built following strict Ciberdefense principles (see [BEST_PRACTICES.md](./BEST_PRACTICES.md)).
 
-## 📝 How to publish a new article
+## 📝 Community Contributions
 
-If you want to add a new post, you can do so by submitting a **Pull Request**. Simply create a file in the `posts/` folder according to your preferred language. 
-
-Note that all submissions go through a **review process**. We encourage you to specify in your Pull Request description why you consider the article relevant for the student community.
+If you want to add a new post or resource, you can do so by submitting a **Pull Request**. Simply create a file in the `posts/` folder according to your preferred language. All submissions go through a review process to ensure relevance for the student community.
 
 Each file must start with this basic frontmatter:
 
@@ -33,10 +32,12 @@ title: "Your title here"
 date: "2026-03-29"
 description: "A short description of your note"
 ---
-
-# Your content here...
 ```
+
+## 🤝 Credits & Inspiration
+
+This project, specifically the interactive curriculum roadmap, was deeply inspired by the original work of **zzzNata** and their [Mapa Interactivo CiberDefensa UNDEF](https://github.com/zzzNata/Mapa-Interactivo-CiberDefensa-UNDEF). **Ciberportero** aims to build upon that vision, integrating it into a comprehensive student portal with multi-language support and persistent tracking.
 
 ## 📜 Footer
 
-© 2026 | Mens secura in corpore tuto
+© 2026 | *Mens secura in corpore tuto*

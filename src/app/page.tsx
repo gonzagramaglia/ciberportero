@@ -6,7 +6,7 @@ import { translations } from '../lib/translations';
 import { useState, useEffect } from 'react';
 import { PostData } from '../lib/posts-client';
 import LanguageSwitcher from '../components/LanguageSwitcher';
-import { Github, Youtube, CheckCircle, BookOpen, Calendar, Info, Link as LinkIcon, X, ArrowRight } from 'lucide-react';
+import { Github, Youtube, CheckCircle, BookOpen, Calendar, Info, Link as LinkIcon, X, ArrowRight, Layers, Star } from 'lucide-react';
 import NotificationBanners from '../components/NotificationBanners';
 import { useSession } from 'next-auth/react';
 import { SignInButton } from '../components/AuthButtons';
@@ -75,7 +75,6 @@ export default function Home() {
 
     return (
         <div className="container fade-in">
-            <NotificationBanners />
 
             {selectedImage && (
                 <div className="lightbox-overlay" onClick={() => setSelectedImage(null)}>
@@ -158,49 +157,20 @@ export default function Home() {
                     </Link>
                 )}
 
-                {lang === 'es' && (
-                    <>
-                        <div style={{ marginTop: '2.5rem', marginBottom: '1.5rem' }}>
-                            <span className="featured-tag" style={{ background: '#f8fafc', color: 'var(--muted)', border: '1px solid var(--border)', marginBottom: '1rem' }}>Info</span>
-                            <h2 style={{ fontSize: '1.8rem', fontWeight: '700', color: '#000', display: 'flex', alignItems: 'center', gap: '0.8rem', margin: 0 }}>
-                                <Info size={26} style={{ color: 'var(--muted)' }} />
-                                Información de la Carrera
-                            </h2>
-                        </div>
+                <Link href="/plan" className="post-item featured" style={{ display: 'block', textDecoration: 'none', borderColor: '#e2e8f0' }}>
+                    <span className="featured-tag" style={{ background: '#000', color: '#fff' }}>New</span>
+                    <span className="post-title" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: '#000', fontSize: '1.8rem' }}>
+                        <Layers size={22} />
+                        {t.plan?.title}
+                    </span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem' }}>
+                        <p className="post-description" style={{ margin: 0 }}>
+                            {t.plan?.description}
+                        </p>
+                        <ArrowRight className="arrow-portal" size={28} style={{ color: '#000', opacity: 0.1 }} />
+                    </div>
+                </Link>
 
-                        <div className="intro-cover" onClick={() => setSelectedImage('/cyberdefense-fadena-undef.png')}>
-                            <img
-                                src="/cyberdefense-fadena-undef.png"
-                                alt="Cyberdefense FADENA UNDEF"
-                                style={{ width: '100%', borderRadius: '12px', cursor: 'zoom-in' }}
-                            />
-                        </div>
-
-                        <div className="intro-cover" onClick={() => setSelectedImage('/moodle-siu.png')}>
-                            <img
-                                src="/moodle-siu.png"
-                                alt="Moodle y SIU"
-                                style={{ width: '100%', borderRadius: '12px', cursor: 'zoom-in' }}
-                            />
-                        </div>
-
-                        <div style={{ marginTop: '2.5rem', marginBottom: '1.5rem' }}>
-                            <span className="featured-tag" style={{ background: '#f8fafc', color: 'var(--muted)', border: '1px solid var(--border)', marginBottom: '1rem' }}>Info</span>
-                            <h2 style={{ fontSize: '1.8rem', fontWeight: '700', color: '#000', display: 'flex', alignItems: 'center', gap: '0.8rem', margin: 0 }}>
-                                <Calendar size={26} style={{ color: 'var(--muted)' }} />
-                                Calendario Tentativo
-                            </h2>
-                        </div>
-
-                        <div className="intro-cover" onClick={() => setSelectedImage('/intro.png')}>
-                            <img
-                                src="/intro.png"
-                                alt="Calendario Académico de Grado 2026"
-                                style={{ width: '100%', borderRadius: '12px', cursor: 'zoom-in' }}
-                            />
-                        </div>
-                    </>
-                )}
 
                 <div style={{ marginTop: '1.5rem', marginBottom: '1.5rem' }}>
                     <span className="featured-tag" style={{ background: '#f8fafc', color: 'var(--muted)', border: '1px solid var(--border)', marginBottom: '1rem' }}>Feed</span>
@@ -228,24 +198,21 @@ export default function Home() {
                 </ul>
             </main>
 
-            <div className="home-cover">
-                <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer">
-                    <img
-                        src="/blog.png"
-                        alt="Ciberportero Blog Cover"
-                        style={{ width: '100%', borderRadius: '12px', cursor: 'pointer' }}
-                    />
-                </a>
-            </div>
 
-            <footer style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
-                    <Youtube size={22} />
+            <footer style={{ marginTop: '5rem', padding: '2rem 0', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <a href="https://github.com/zzzNata/Mapa-Interactivo-CiberDefensa-UNDEF" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'var(--muted)', fontSize: '0.8rem', fontWeight: '500', transition: 'color 0.2s', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <Star size={14} style={{ color: 'var(--accent)', fill: 'var(--accent)', opacity: 0.8 }} />
+                    {t.credits}
                 </a>
-                <span>{t.footer}</span>
-                <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
-                    <Github size={18} />
-                </a>
+                <span style={{ fontSize: '0.9rem', opacity: 0.6 }}>{t.footer}</span>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'inherit' }}>
+                        <Youtube size={20} />
+                    </a>
+                    <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'inherit' }}>
+                        <Github size={18} />
+                    </a>
+                </div>
             </footer>
         </div>
     );

@@ -4,6 +4,7 @@ export const translations = {
         description: "Ciberdefensa y seguridad digital desde la primera línea",
         back: "Volver al inicio",
         footer: "© 2026 | Mens secura in corpore tuto",
+        credits: "Inspirado en el trabajo de zzzNata",
         langName: "Español",
         featured: {
             title: "Recursos y Enlaces Útiles",
@@ -101,6 +102,39 @@ export const translations = {
                 title: "🚀 Versión Beta v0.1",
                 desc: "Tu progreso se guarda automáticamente en el navegador (Local Storage). Pronto integraremos el inicio de sesión con Google para sincronizar tus avances en la nube."
             }
+        },
+        plan: {
+            title: "Plan de Estudios",
+            subtitle: "Licenciatura en Ciberdefensa - UNDEF",
+            description: "Visualizá tu progreso, las correlatividades y las materias que vas desbloqueando.",
+            completed: "Completada",
+            inProgress: "En Cursada",
+            notStarted: "Pendiente",
+            prerequisites: "Correlativas",
+            unlocks: "Habilita",
+            year: "Año",
+            term: "Cuatrimestre",
+            totalHours: "Horas Totales",
+            stats: {
+                completed: "Materias Completadas",
+                remaining: "Materias Restantes",
+                progress: "Progreso Total"
+            },
+            objective: "Objetivo Académico",
+            intermediate: "Título Intermedio (Analista)",
+            full: "Licenciatura Completa",
+            search: "Buscar materia o ID...",
+            storageNotice: "Tus progresos se guardan localmente en este navegador.",
+            subjectNames: {
+                1: "Análisis Matemático I", 2: "Álgebra I", 3: "Gestión de Servicios de Información", 4: "Inglés I", 5: "Sistemas Operativos I",
+                6: "Sistemas de Tratamiento de Datos", 7: "Infraestructura de Telecomunicaciones", 8: "Sociedad y Estado", 9: "Sistemas Operativos II", 10: "Lenguajes de Programación",
+                11: "Análisis Matemático II", 12: "Álgebra II", 13: "Probabilidad y Estadística", 14: "Inglés II", 15: "Tecnología Operativa",
+                16: "Programación Segura", 17: "Ciberseguridad Aplicada", 18: "Dispositivos Remotos e IoT", 19: "Ética Profesional", 20: "Gestión de Seguridad de la Información",
+                21: "Protección de Infraestructuras Críticas", 22: "Metodologías de Análisis de Riesgos", 23: "Análisis de Escenarios y Capacidades", 24: "Gobierno y Políticas Públicas", 25: "Informática Forense",
+                26: "Relaciones Internacionales", 27: "IA y Aprendizaje de Máquina", 28: "Geopolítica", 29: "Derecho a la Defensa Nacional", 30: "Sistema de Inteligencia Nacional",
+                31: "Investigación Operativa", 32: "Criptografía Aplicada", 33: "Gestión de Proyectos", 34: "Instrumento Militar y Sistemas de Armas", 35: "Modelos y Simulación",
+                36: "Prospectiva Estratégica", 37: "Actores en el Quinto Dominio"
+            }
         }
     },
     en: {
@@ -108,6 +142,7 @@ export const translations = {
         description: "Cyberdefense and digital security from the front lines",
         back: "Back to home",
         footer: "© 2026 | Mens secura in corpore tuto",
+        credits: "Inspired by zzzNata's project",
         langName: "English",
         featured: {
             title: "Useful Resources and Links",
@@ -205,6 +240,39 @@ export const translations = {
                 title: "🚀 Beta Version v0.1",
                 desc: "Your progress is automatically saved in the browser (Local Storage). We will soon integrate Google login to sync your advances in the cloud."
             }
+        },
+        plan: {
+            title: "Study Plan",
+            subtitle: "Bachelor's in Cyberdefense - UNDEF",
+            description: "Visualize your progress, prerequisites, and the subjects you are unlocking.",
+            completed: "Completed",
+            inProgress: "In Progress",
+            notStarted: "Pending",
+            prerequisites: "Prerequisites",
+            unlocks: "Unlocks",
+            year: "Year",
+            term: "Term",
+            totalHours: "Total Hours",
+            stats: {
+                completed: "Completed Subjects",
+                remaining: "Remaining Subjects",
+                progress: "Total Progress"
+            },
+            objective: "Academic Objective",
+            intermediate: "Intermediate Degree (Analista)",
+            full: "Full Degree (Licenciatura)",
+            search: "Search subject or ID...",
+            storageNotice: "Your progress is saved locally in this browser.",
+            subjectNames: {
+                1: "Calculus I", 2: "Algebra I", 3: "Information Services Management", 4: "English I", 5: "Operating Systems I",
+                6: "Data Processing Systems", 7: "Telecommunications Infrastructure", 8: "Society and State", 9: "Operating Systems II", 10: "Programming Languages",
+                11: "Calculus II", 12: "Algebra II", 13: "Probability and Statistics", 14: "English II", 15: "Operational Technology",
+                16: "Secure Programming", 17: "Applied Cybersecurity", 18: "Remote Devices and IoT", 19: "Professional Ethics", 20: "Information Security Management",
+                21: "Critical Infrastructure Protection", 22: "Risk Analysis Methodologies", 23: "Scenario and Capability Analysis", 24: "Government and Public Policy", 25: "Forensic IT",
+                26: "International Relations", 27: "AI and Machine Learning", 28: "Geopolitics", 29: "National Defense Law", 30: "National Intelligence System",
+                31: "Operations Research", 32: "Applied Cryptography", 33: "Project Management", 34: "Military Instrument and Weapon Systems", 35: "Models and Simulation",
+                36: "Strategic Foresight", 37: "Actors in the Fifth Domain"
+            }
         }
     },
     pt: {
@@ -212,6 +280,7 @@ export const translations = {
         description: "Ciberdefesa e segurança digital na línea de frente",
         back: "Voltar ao início",
         footer: "© 2026 | Mens secura in corpore tuto",
+        credits: "Inspirado no trabalho de zzzNata",
         langName: "Português",
         featured: {
             title: "Recursos e Links Úteis",
@@ -308,6 +377,39 @@ export const translations = {
             beta: {
                 title: "🚀 Versão Beta v0.1",
                 desc: "Seu progresso é salvo automaticamente no navegador (Local Storage). Em breve integraremos o login com o Google para sincronizar seus avanços na nuvem."
+            }
+        },
+        plan: {
+            title: "Plano de Estudos",
+            subtitle: "Licenciatura em Ciberdefesa - UNDEF",
+            description: "Visualize o seu progresso, as correlatividades e as matérias que você está desbloqueando.",
+            completed: "Concluída",
+            inProgress: "Em Curso",
+            notStarted: "Pendente",
+            prerequisites: "Pré-requisitos",
+            unlocks: "Habilita",
+            year: "Ano",
+            term: "Semestre",
+            totalHours: "Horas Totais",
+            stats: {
+                completed: "Matérias Concluídas",
+                remaining: "Matérias Restantes",
+                progress: "Progreso Total"
+            },
+            objective: "Objetivo Acadêmico",
+            intermediate: "Título Intermediário (Analista)",
+            full: "Licenciatura Completa",
+            search: "Buscar matéria ou ID...",
+            storageNotice: "Seu progresso é salvo localmente neste navegador.",
+            subjectNames: {
+                1: "Cálculo I", 2: "Álgebra I", 3: "Gestão de Serviços de Informação", 4: "Inglês I", 5: "Sistemas Operacionais I",
+                6: "Sistemas de Processamento de Dados", 7: "Infraestrutura de Telecomunicações", 8: "Sociedade e Estado", 9: "Sistemas Operacionais II", 10: "Linguagens de Programação",
+                11: "Cálculo II", 12: "Álgebra II", 13: "Probabilidade e Estatística", 14: "Inglês II", 15: "Tecnologia Operacional",
+                16: "Programação Segura", 17: "Cibersegurança Aplicada", 18: "Dispositivos Remotos e IoT", 19: "Ética Profissional", 20: "Gestão de Segurança da Informação",
+                21: "Proteção de Infraestruturas Críticas", 22: "Metodologias de Análise de Riscos", 23: "Análise de Cenários e Capacidades", 24: "Governo e Políticas Públicas", 25: "Informática Forense",
+                26: "Relações Internacionais", 27: "IA e Aprendizado de Máquina", 28: "Geopolítica", 29: "Direito à Defesa Nacional", 30: "Sistema de Inteligência Nacional",
+                31: "Investigação Operativa", 32: "Criptografia Aplicada", 33: "Gestão de Projetos", 34: "Instrumento Militar e Sistemas de Armas", 35: "Modelos e Simulação",
+                36: "Prospectiva Estratégica", 37: "Atores no Quinto Domínio"
             }
         }
     }
