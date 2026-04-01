@@ -12,6 +12,7 @@ export default function PlanPage() {
   const { lang } = useLanguage()
   const t = translations[lang].plan
   const [completed, setCompleted] = useState<number[]>([])
+  const [inProgress, setInProgress] = useState<number[]>([])
   const [objective, setObjective] = useState<'intermediate' | 'degree'>('degree')
   const [search, setSearch] = useState('')
   const [hoveredId, setHoveredId] = useState<number | null>(null)
@@ -19,13 +20,13 @@ export default function PlanPage() {
 
   // Load from localStorage
   useEffect(() => {
-    const saved = localStorage.getItem("ciberportero_completed_subjects")
-    if (saved) {
-      try {
-        setCompleted(JSON.parse(saved))
-      } catch (e) {
-        console.error("Error loading completed subjects", e)
-      }
+    const savedCompleted = localStorage.getItem("ciberportero_completed_subjects")
+    if (savedCompleted) {
+      try { setCompleted(JSON.parse(savedCompleted)) } catch (e) {}
+    }
+    const savedInProgress = localStorage.getItem("ciberportero_inprogress_subjects")
+    if (savedInProgress) {
+      try { setInProgress(JSON.parse(savedInProgress)) } catch (e) {}
     }
 
     const savedObj = localStorage.getItem("ciberportero_plan_objective")
@@ -35,13 +36,30 @@ export default function PlanPage() {
     setIsLoaded(true)
   }, [])
 
-  // Sync to localStorage
-  const toggleCompleted = (id: number) => {
-    const newCompleted = completed.includes(id)
-      ? completed.filter(c => c !== id)
-      : [...completed, id]
-    setCompleted(newCompleted)
-    localStorage.setItem("ciberportero_completed_subjects", JSON.stringify(newCompleted))
+  // Cycle through states: Pending (0) -> In Progress (1) -> Completed (2) -> Pending (0)
+  const toggleSubjectState = (id: number) => {
+    const isCompleted = completed.includes(id)
+    const isInProgress = inProgress.includes(id)
+
+    if (!isInProgress && !isCompleted) {
+      // Transition to In Progress
+      const nextInProgress = [...inProgress, id]
+      setInProgress(nextInProgress)
+      localStorage.setItem("ciberportero_inprogress_subjects", JSON.stringify(nextInProgress))
+    } else if (isInProgress) {
+      // Transition to Completed
+      const nextInProgress = inProgress.filter(i => i !== id)
+      const nextCompleted = [...completed, id]
+      setInProgress(nextInProgress)
+      setCompleted(nextCompleted)
+      localStorage.setItem("ciberportero_inprogress_subjects", JSON.stringify(nextInProgress))
+      localStorage.setItem("ciberportero_completed_subjects", JSON.stringify(nextCompleted))
+    } else {
+      // Transition to Pending
+      const nextCompleted = completed.filter(c => c !== id)
+      setCompleted(nextCompleted)
+      localStorage.setItem("ciberportero_completed_subjects", JSON.stringify(nextCompleted))
+    }
   }
 
   const changeObjective = (obj: 'intermediate' | 'degree') => {
@@ -109,7 +127,10 @@ export default function PlanPage() {
 
   // Statistics
   const completedInObjective = completed.filter(id => currentCurriculum.some(s => s.id === id))
-  const progressPercent = Math.round((completedInObjective.length / currentCurriculum.length) * 100)
+  const inProgressInObjective = inProgress.filter(id => currentCurriculum.some(s => s.id === id))
+  const totalSubjects = currentCurriculum.length
+  const progressPercent = Math.round((completedInObjective.length / totalSubjects) * 100)
+  const inProgressPercent = Math.round((inProgressInObjective.length / totalSubjects) * 100)
 
   if (!isLoaded) return null
 
@@ -191,26 +212,31 @@ export default function PlanPage() {
         }}>
           <div style={{ flex: 1, minWidth: '200px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '0.8rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-                <span style={{ fontWeight: '700', fontSize: '0.9rem', color: '#000' }}>{t.stats.progress}</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--muted)', fontSize: '0.7rem', fontWeight: '500', opacity: 0.8 }}>
-                  <Info size={12} />
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.6rem' }}>
+                <span style={{ fontWeight: '700', fontSize: '1rem', color: '#000', opacity: 0.8 }}>{t.stats.progress}:</span>
+                <span style={{ fontWeight: '900', fontSize: '1.25rem', color: '#000' }}>{progressPercent}%</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: 'var(--muted)', fontSize: '0.7rem', fontWeight: '500', opacity: 0.6 }}>
+                  <Info size={11} />
                   <span>{t.storageNotice}</span>
                 </div>
               </div>
-              <span style={{ fontWeight: '900', fontSize: '1.1rem', color: 'var(--accent)' }}>{progressPercent}%</span>
             </div>
-            <div style={{ height: '10px', background: '#f1f5f9', borderRadius: '10px', overflow: 'hidden' }}>
-              <div style={{ width: `${progressPercent}%`, height: '100%', background: 'var(--accent)', transition: 'width 0.5s cubic-bezier(0.4, 0, 0.2, 1)' }}></div>
+            <div style={{ height: '10px', background: '#f1f5f9', borderRadius: '10px', overflow: 'hidden', display: 'flex' }}>
+              <div style={{ width: `${progressPercent}%`, height: '100%', background: 'var(--success)', transition: 'width 0.5s' }}></div>
+              <div style={{ width: `${inProgressPercent}%`, height: '100%', background: '#fbbf24', transition: 'width 0.5s' }}></div>
             </div>
           </div>
           <div style={{ display: 'flex', gap: '2rem' }}>
             <div style={{ textAlign: 'center' }}>
-              <span style={{ display: 'block', fontSize: '1.5rem', fontWeight: '900' }}>{completedInObjective.length}</span>
-              <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--muted)', textTransform: 'uppercase' }}>{t.stats.completed}</span>
+              <span style={{ display: 'block', fontSize: '1.5rem', fontWeight: '900', color: '#fbbf24' }}>{inProgressInObjective.length}</span>
+              <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--muted)', textTransform: 'uppercase' }}>{t.inProgress}</span>
             </div>
             <div style={{ textAlign: 'center' }}>
-              <span style={{ display: 'block', fontSize: '1.5rem', fontWeight: '900' }}>{currentCurriculum.length - completedInObjective.length}</span>
+              <span style={{ display: 'block', fontSize: '1.5rem', fontWeight: '900', color: 'var(--success)' }}>{completedInObjective.length}</span>
+              <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--muted)', textTransform: 'uppercase' }}>{t.completed}</span>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <span style={{ display: 'block', fontSize: '1.5rem', fontWeight: '900' }}>{totalSubjects - completedInObjective.length}</span>
               <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--muted)', textTransform: 'uppercase' }}>{t.stats.remaining}</span>
             </div>
           </div>
@@ -268,6 +294,7 @@ export default function PlanPage() {
               {searchedCurriculum.filter(s => s.year === year).map(subject => {
                 const relation = isRelatated(subject.id)
                 const isCompleted = completed.includes(subject.id)
+                const isInProgress = inProgress.includes(subject.id)
                 const isLocked = subject.prerequisites.some(p => !completed.includes(p))
                 const isHovered = hoveredId === subject.id
 
@@ -301,6 +328,10 @@ export default function PlanPage() {
                 } else if (isCompleted) {
                   cardStyle.borderColor = '#10b981'
                   cardStyle.background = 'rgba(16, 185, 129, 0.05)'
+                } else if (isInProgress) {
+                  cardStyle.borderColor = '#fbbf24'
+                  cardStyle.background = 'rgba(251, 191, 36, 0.12)'
+                  cardStyle.boxShadow = 'inset 0 0 15px rgba(251, 191, 36, 0.05)'
                 }
 
                 return (
@@ -309,7 +340,7 @@ export default function PlanPage() {
                     style={cardStyle}
                     onMouseEnter={() => setHoveredId(subject.id)}
                     onMouseLeave={() => setHoveredId(null)}
-                    onClick={() => toggleCompleted(subject.id)}
+                    onClick={() => toggleSubjectState(subject.id)}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.6rem' }}>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
@@ -321,27 +352,33 @@ export default function PlanPage() {
                           fontSize: '0.9rem', 
                           fontWeight: relation ? '900' : '800', 
                           lineHeight: 1.2, 
-                          color: relation ? (relation.type === 'prerequisite' ? '#ef4444' : '#0070f3') : (isCompleted ? '#059669' : (isLocked ? 'var(--muted)' : '#000'))
+                          color: relation ? (relation.type === 'prerequisite' ? '#ef4444' : '#0070f3') : (isCompleted ? '#059669' : (isLocked ? 'var(--muted)' : (isInProgress ? '#d97706' : '#000')))
                         }}>
                           {t.subjectNames[subject.id as keyof typeof t.subjectNames] || subject.name}
                         </h3>
+                        {isInProgress && (
+                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', marginTop: '0.2rem' }}>
+                              <Zap size={10} fill="#fbbf24" style={{ color: '#fbbf24' }} />
+                              <span style={{ fontSize: '0.6rem', fontWeight: '900', color: '#d97706', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t.inProgress}</span>
+                           </div>
+                        )}
                       </div>
                       <div 
                         style={{ 
                           width: '24px', 
                           height: '24px', 
                           borderRadius: '50%', 
-                          border: `1.5px solid ${isCompleted ? '#10b981' : (isLocked ? '#e2e8f0' : 'var(--border)')}`,
+                          border: `1.5px solid ${isCompleted ? '#10b981' : (isInProgress ? '#fbbf24' : (isLocked ? '#e2e8f0' : 'var(--border)'))}`,
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          background: isCompleted ? '#10b981' : (isLocked ? '#f1f5f9' : 'transparent'),
+                          background: isCompleted ? '#10b981' : (isInProgress ? '#fbbf24' : (isLocked ? '#f1f5f9' : 'transparent')),
                           color: 'white',
                           transition: 'all 0.2s',
                           flexShrink: 0
                         }}
                       >
-                        {isCompleted ? <CheckCircle size={14} /> : (isLocked ? <Lock size={12} style={{ color: 'var(--muted)', opacity: 0.8 }} /> : null)}
+                        {isCompleted ? <CheckCircle size={14} /> : (isInProgress ? <Zap size={12} fill="white" /> : (isLocked ? <Lock size={12} style={{ color: 'var(--muted)', opacity: 0.8 }} /> : null))}
                       </div>
                     </div>
 
@@ -363,17 +400,17 @@ export default function PlanPage() {
         ))}
       </main>
 
-      <footer style={{ marginTop: '5rem', padding: '2rem 0', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <footer className="footer-main">
         <a href="https://github.com/zzzNata/Mapa-Interactivo-CiberDefensa-UNDEF" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'var(--muted)', fontSize: '0.8rem', fontWeight: '500', transition: 'color 0.2s', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
           <Star size={14} style={{ color: '#fbbf24', fill: '#fbbf24', opacity: 0.9 }} />
           {translations[lang].credits}
         </a>
-        <span style={{ fontSize: '0.9rem', opacity: 0.6 }}>{translations[lang].footer}</span>
+        <span style={{ fontSize: '0.9rem', opacity: 0.6, color: 'var(--muted)' }}>{translations[lang].footer}</span>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'inherit' }}>
+          <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
               <Youtube size={20} />
           </a>
-          <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'inherit' }}>
+          <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
               <Github size={18} />
           </a>
         </div>

@@ -46,7 +46,7 @@ export const translations = {
         },
         notification: {
             title: "Inscripción a las Materias de la Carrera en el SIU Guaraní",
-            desc: "Las inscripciones comienzan el <strong>martes 31/3 al mediodía</strong>. ¡No te olvides!"
+            desc: "Las inscripciones <strong>cierran hoy 1 de abril a medianoche</strong>. ¡No te quedes afuera!"
         },
         notificationMate: {
             title: "Revisá tu acceso al SIU Guaraní",
@@ -108,7 +108,7 @@ export const translations = {
             subtitle: "Licenciatura en Ciberdefensa - UNDEF",
             description: "Visualizá tu progreso, las correlatividades y las materias que vas desbloqueando.",
             completed: "Completada",
-            inProgress: "En Cursada",
+            inProgress: "En curso",
             notStarted: "Pendiente",
             prerequisites: "Correlativas",
             unlocks: "Habilita",
@@ -184,7 +184,7 @@ export const translations = {
         },
         notification: {
             title: "Subject Enrollment in SIU Guaraní",
-            desc: "Enrollment begins on <strong>Tuesday 3/31 at noon</strong>. Don't forget!"
+            desc: "Enrollment <strong>closes tonight April 1st at midnight</strong>. Don't miss out!"
         },
         notificationMate: {
             title: "Check your SIU Guaraní access",
@@ -246,7 +246,7 @@ export const translations = {
             subtitle: "Bachelor's in Cyberdefense - UNDEF",
             description: "Visualize your progress, prerequisites, and the subjects you are unlocking.",
             completed: "Completed",
-            inProgress: "In Progress",
+            inProgress: "In progress",
             notStarted: "Pending",
             prerequisites: "Prerequisites",
             unlocks: "Unlocks",
@@ -322,7 +322,7 @@ export const translations = {
         },
         notification: {
             title: "Inscrição nas Matérias no SIU Guaraní",
-            desc: "As inscrições começam na <strong>terça-feira 31/3 ao meio-dia</strong>. Não se esqueça!"
+            desc: "As inscrições <strong>encerram hoje, 1º de abril, à meia-noite</strong>. Não se esqueça!"
         },
         notificationMate: {
             title: "Verifique seu acesso ao SIU Guaraní",
@@ -384,7 +384,7 @@ export const translations = {
             subtitle: "Licenciatura em Ciberdefesa - UNDEF",
             description: "Visualize o seu progresso, as correlatividades e as matérias que você está desbloqueando.",
             completed: "Concluída",
-            inProgress: "Em Curso",
+            inProgress: "Em curso",
             notStarted: "Pendente",
             prerequisites: "Pré-requisitos",
             unlocks: "Habilita",
