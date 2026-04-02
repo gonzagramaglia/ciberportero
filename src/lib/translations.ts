@@ -19,6 +19,7 @@ export const translations = {
         },
         links: [
             { name: 'Web Oficial de la Carrera', url: 'https://undef.edu.ar/fadena/carreras-de-grado/licciberdefensa/', desc: 'Información esencial de la Licenciatura en Ciberdefensa' },
+            { name: 'Plan de Estudios de la Carrera', url: 'https://undef.edu.ar/fadena/wp-content/uploads/2025/10/Plan-de-estudios-CIBERDEFENSA.pdf', desc: 'Documento oficial con la currícula completa de la Licenciatura' },
             { name: 'Campus Virtual (Moodle)', url: 'https://campus.fadena.undef.edu.ar/my/courses.php', desc: 'Material actualizado de todas y cada una de las materias' },
             { name: 'Autogestión (SIU Guaraní)', url: 'https://autogestion.fadena.undef.edu.ar/3w/', desc: 'Portal oficial de gestión académica de los alumnos ya inscriptos' },
             { name: 'Todo el Material de Estudio (Google Drive)', url: 'https://drive.google.com/drive/folders/1BqM0J_I4qXVZLzSvxdNcExtUlD_dkaBB', desc: 'Carpeta que centraliza el material de toda la cursada' },
@@ -29,7 +30,6 @@ export const translations = {
             { name: 'Lic. en Ciberdefensa 2026 (WhatsApp)', url: 'https://chat.whatsapp.com/KjlaP3RGYK94ekGZonwLHR', desc: 'Grupo específico para la cursada de la camada 2026' },
             { name: 'Ciberdefesa FADENA (Discord)', url: 'https://discord.gg/AxqkVzYPeN', desc: 'Server oficial de la comunidad de estudiantes de FADENA' },
             { name: 'Comunidad Ciberdefensa Argentina (Discord)', url: 'https://discord.gg/zPWRAfUR82', desc: 'Espacio de estudio y networking de la comunidad nacional' },
-            { name: 'Plan de Estudios de la Carrera', url: 'https://undef.edu.ar/fadena/wp-content/uploads/2025/10/Plan-de-estudios-CIBERDEFENSA.pdf', desc: 'Documento oficial con la currícula completa de la Licenciatura' },
         ],
         feedback: "¿Por qué elegimos Ciberdefensa?",
         countdown: {
@@ -71,6 +71,7 @@ export const translations = {
         },
         dashboard: {
             title: "Portal del Estudiante",
+            description: "<strong>Registrá tu avance académico</strong>, llevá el control de tus notas y organizá tus tareas del campus.",
             back: "← Voltar ao início",
             guestUser: "Estudiante Invitado",
             welcome: "Hola",
@@ -165,6 +166,7 @@ export const translations = {
         },
         links: [
             { name: 'Official Degree Website', url: 'https://undef.edu.ar/fadena/carreras-de-grado/licciberdefensa/', desc: 'Information about the Bachelor\'s in Cyberdefense' },
+            { name: 'Degree Study Plan', url: 'https://undef.edu.ar/fadena/wp-content/uploads/2025/10/Plan-de-estudios-CIBERDEFENSA.pdf', desc: 'Official document with the full Bachelor\'s curriculum' },
             { name: 'Official Degree Campus', url: 'https://campus.fadena.undef.edu.ar/my/courses.php', desc: 'Updated material for each of the subjects' },
             { name: 'SIU Guaraní Academic Portal', url: 'https://autogestion.fadena.undef.edu.ar/3w/', desc: 'Official academic management portal for already enrolled students' },
             { name: 'All Study Material (Google Drive)', url: 'https://drive.google.com/drive/folders/1BqM0J_I4qXVZLzSvxdNcExtUlD_dkaBB', desc: 'Folder centralizing the material from the entire degree' },
@@ -175,7 +177,6 @@ export const translations = {
             { name: 'Bachelor\'s in Cyberdefense 2026 (WhatsApp)', url: 'https://chat.whatsapp.com/KjlaP3RGYK94ekGZonwLHR', desc: 'Specific group for the 2026 class' },
             { name: 'Cyberdefense FADENA (Discord)', url: 'https://discord.gg/AxqkVzYPeN', desc: 'Official server for the FADENA student community' },
             { name: 'Argentina Cyberdefense Community (Discord)', url: 'https://discord.gg/zPWRAfUR82', desc: 'Study and networking space for the national community' },
-            { name: 'Degree Study Plan', url: 'https://undef.edu.ar/fadena/wp-content/uploads/2025/10/Plan-de-estudios-CIBERDEFENSA.pdf', desc: 'Official document with the full Bachelor\'s curriculum' },
         ],
         feedback: "Why did we choose Cyberdefense?",
         countdown: {
@@ -217,6 +218,7 @@ export const translations = {
         },
         dashboard: {
             title: "Student Portal",
+            description: "<strong>Track your academic progress</strong>, manage your grades, and organize your campus tasks.",
             back: "← Back to home",
             guestUser: "Guest Student",
             welcome: "Hello",
@@ -311,6 +313,7 @@ export const translations = {
         },
         links: [
             { name: 'Site Oficial do Curso', url: 'https://undef.edu.ar/fadena/carreras-de-grado/licciberdefensa/', desc: 'Informações sobre a Licenciatura em Ciberdefesa' },
+            { name: 'Plano de Estudos do Curso', url: 'https://undef.edu.ar/fadena/wp-content/uploads/2025/10/Plan-de-estudios-CIBERDEFENSA.pdf', desc: 'Documento oficial con a grade curricular completa' },
             { name: 'Campus Oficial do Curso', url: 'https://campus.fadena.undef.edu.ar/my/courses.php', desc: 'Material atualizado de cada uma das matérias' },
             { name: 'Autogestão SIU Guaraní', url: 'https://autogestion.fadena.undef.edu.ar/3w/', desc: 'Portal oficial de gestão académica dos alunos já inscritos' },
             { name: 'Todo o Material de Estudo (Google Drive)', url: 'https://drive.google.com/drive/folders/1BqM0J_I4qXVZLzSvxdNcExtUlD_dkaBB', desc: 'Pasta que centraliza o material de todo o curso' },
@@ -321,7 +324,6 @@ export const translations = {
             { name: 'Lic. em Ciberdefesa 2026 (WhatsApp)', url: 'https://chat.whatsapp.com/KjlaP3RGYK94ekGZonwLHR', desc: 'Grupo específico para os alunos da turma de 2026' },
             { name: 'Ciberdefesa FADENA (Discord)', url: 'https://discord.gg/AxqkVzYPeN', desc: 'Servidor oficial da comunidade de estudantes da FADENA' },
             { name: 'Comunidade Ciberdefesa Argentina (Discord)', url: 'https://discord.gg/zPWRAfUR82', desc: 'Espaço de estudio e networking da comunidade nacional' },
-            { name: 'Plano de Estudos do Curso', url: 'https://undef.edu.ar/fadena/wp-content/uploads/2025/10/Plan-de-estudios-CIBERDEFENSA.pdf', desc: 'Documento oficial con a grade curricular completa' },
         ],
         feedback: "Por que escolhemos a Ciberdefesa?",
         countdown: {
@@ -363,6 +365,7 @@ export const translations = {
         },
         dashboard: {
             title: "Portal do Estudante",
+            description: "<strong>Acompanhe seu progresso acadêmico</strong>, gerencie suas notas e organize suas tarefas do campus.",
             back: "← Voltar ao início",
             guestUser: "Estudante Convidado",
             welcome: "Olá",

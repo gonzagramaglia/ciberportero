@@ -227,6 +227,20 @@ header p {
   }
 }
 
+.links-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 768px) {
+  .links-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 .featured-tag {
   display: inline-block;
   background: var(--success);
@@ -237,6 +251,32 @@ header p {
   font-weight: 700;
   text-transform: uppercase;
   margin-bottom: 1rem;
+}
+
+.contact-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.contact-container-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+  width: 100%;
+  justify-content: flex-start;
+}
+
+@media (min-width: 1024px) {
+  .contact-container {
+    align-items: center;
+    text-align: center;
+  }
+  .contact-container-inner {
+    justify-content: center;
+  }
 }
 
 .post-content blockquote {

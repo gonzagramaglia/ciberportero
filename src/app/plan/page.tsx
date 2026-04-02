@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
@@ -6,11 +6,13 @@ import { useLanguage } from "@/context/LanguageContext"
 import { translations } from "@/lib/translations"
 import { curriculum, Subject } from "@/data/curriculum"
 import LanguageSwitcher from "@/components/LanguageSwitcher"
-import { CheckCircle, Info, Lock, ArrowLeft, Layers, Star, Zap, Github, Youtube, Search, X } from "lucide-react"
+import { CheckCircle, Info, Lock, ArrowLeft, Layers, Star, Zap, Github, Youtube, Search, X, Calendar } from "lucide-react"
+import NotificationBanners from "@/components/NotificationBanners"
 
 export default function PlanPage() {
   const { lang } = useLanguage()
-  const t = translations[lang].plan
+  const t = translations[lang]
+  const pt = translations[lang].plan
   const [completed, setCompleted] = useState<number[]>([])
   const [inProgress, setInProgress] = useState<number[]>([])
   const [objective, setObjective] = useState<'intermediate' | 'degree'>('degree')
@@ -35,6 +37,54 @@ export default function PlanPage() {
     }
     setIsLoaded(true)
   }, [])
+
+  const [isFinished, setIsFinished] = useState(false);
+  const [isClassesFinished, setIsClassesFinished] = useState(false);
+  const [countdown, setCountdown] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
+  const [classesCountdown, setClassesCountdown] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
+
+  useEffect(() => {
+      const enrollmentTarget = new Date('2026-04-01T23:59:59-03:00').getTime();
+      const classesTarget = new Date('2026-04-06T09:00:00-03:00').getTime();
+      
+      const updateCountdowns = () => {
+          const now = new Date().getTime();
+          
+          // Enrollment Countdown
+          const eDistance = enrollmentTarget - now;
+          if (eDistance < 0) {
+              setCountdown({ days: 0, hours: 0, mins: 0, secs: 0 });
+              setIsFinished(true);
+          } else {
+              setCountdown({
+                  days: Math.floor(eDistance / (1000 * 60 * 60 * 24)),
+                  hours: Math.floor((eDistance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+                  mins: Math.floor((eDistance % (1000 * 60 * 60)) / (1000 * 60)),
+                  secs: Math.floor((eDistance % (1000 * 60)) / 1000)
+              });
+              setIsFinished(false);
+          }
+
+          // Classes Countdown
+          const cDistance = classesTarget - now;
+          if (cDistance < 0) {
+              setClassesCountdown({ days: 0, hours: 0, mins: 0, secs: 0 });
+              setIsClassesFinished(true);
+          } else {
+              setClassesCountdown({
+                  days: Math.floor(cDistance / (1000 * 60 * 60 * 24)),
+                  hours: Math.floor((cDistance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+                  mins: Math.floor((cDistance % (1000 * 60 * 60)) / (1000 * 60)),
+                  secs: Math.floor((cDistance % (1000 * 60)) / 1000)
+              });
+              setIsClassesFinished(false);
+          }
+      };
+      
+      const timer = setInterval(updateCountdowns, 1000);
+      updateCountdowns();
+      return () => clearInterval(timer);
+  }, []);
 
   // Cycle through states: Pending (0) -> In Progress (1) -> Completed (2) -> Pending (0)
   const toggleSubjectState = (id: number) => {
@@ -78,7 +128,7 @@ export default function PlanPage() {
     : curriculum
 
   const searchedCurriculum = currentCurriculum.filter(s => {
-    const localizedName = t.subjectNames[s.id as keyof typeof t.subjectNames] || s.name
+    const localizedName = pt.subjectNames[s.id as keyof typeof pt.subjectNames] || s.name
     const searchNorm = search.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     return (
       s.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(searchNorm) || 
@@ -125,9 +175,9 @@ export default function PlanPage() {
     if (lang === 'en') {
       const suffixes = ["th", "st", "nd", "rd"]
       const suffix = (num <= 3) ? suffixes[num] : suffixes[0]
-      return `${num}${suffix} ${type === 'year' ? t.year : t.term}`
+      return `${num}${suffix} ${type === 'year' ? pt.year : pt.term}`
     }
-    return `${num}º ${type === 'year' ? t.year : t.term}`
+    return `${num}º ${type === 'year' ? pt.year : pt.term}`
   }
 
   // Statistics
@@ -140,7 +190,94 @@ export default function PlanPage() {
   if (!isLoaded) return null
 
   return (
-    <div className="container fade-in" style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}>
+    <div className="container fade-in" style={{ maxWidth: '1200px', margin: '0 auto', padding: '6.0rem 2rem 2rem 2rem' }}>
+      {/* Widget de Inscripciones (Izquierda) */}
+      <div className={`sidebar-widget sidebar-widget-left`}>
+          <div className="countdown-header">
+              <Calendar size={14} />
+              <span>{t.countdown.ivuTitle}</span>
+          </div>
+          {!isFinished ? (
+              <>
+                  <div className="countdown-timer">
+                      <div className="countdown-unit">
+                          <span className="countdown-number">{countdown.hours}</span>
+                          <span className="countdown-label">{t.countdown.hours}</span>
+                      </div>
+                      <span className="countdown-sep">:</span>
+                      <div className="countdown-unit">
+                          <span className="countdown-number">{countdown.mins}</span>
+                          <span className="countdown-label">{t.countdown.minutes}</span>
+                      </div>
+                      <span className="countdown-sep">:</span>
+                      <div className="countdown-unit">
+                          <span className="countdown-number">{countdown.secs}</span>
+                          <span className="countdown-label">{t.countdown.seconds}</span>
+                      </div>
+                  </div>
+                  <p className="countdown-desc" style={{ color: '#fff', opacity: 0.9 }}>
+                      Cierre de inscripciones <strong>Hoy</strong> a las <strong>23:59hs</strong>.
+                  </p>
+              </>
+          ) : (
+              <div style={{ marginTop: '0.8rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  <p style={{ fontSize: '1.2rem', fontWeight: '800', margin: 0, lineHeight: '1.2', color: '#fff' }}>{t.countdown.enrollmentClosed}</p>
+                  <p style={{ fontSize: '0.7rem', opacity: 0.9, margin: 0, lineHeight: '1.4', color: '#fff' }}>{t.countdown.enrollmentClosedDesc}</p>
+              </div>
+          )}
+      </div>
+
+      {/* Widget de Inicio de Clases (Derecha) */}
+      <div className={`sidebar-widget sidebar-widget-right`} style={{ 
+          background: 'linear-gradient(135deg, #1a4a6e 0%, #103253 100%)',
+          boxShadow: '0 8px 24px rgba(16, 50, 83, 0.35)',
+          padding: '1.1rem'
+      }}>
+          <div className="countdown-header">
+              <Zap size={14} />
+              <span>{t.countdown.classesTitle}</span>
+          </div>
+          {!isClassesFinished ? (
+              <>
+                  <div className="countdown-timer">
+                      {classesCountdown.days > 0 && (
+                          <>
+                              <div className="countdown-unit">
+                                  <span className="countdown-number">{classesCountdown.days}</span>
+                                  <span className="countdown-label">{t.countdown.days}</span>
+                              </div>
+                              <span className="countdown-sep">:</span>
+                          </>
+                      )}
+                      <div className="countdown-unit">
+                          <span className="countdown-number">{classesCountdown.hours}</span>
+                          <span className="countdown-label">{t.countdown.hours}</span>
+                      </div>
+                      <span className="countdown-sep">:</span>
+                      <div className="countdown-unit">
+                          <span className="countdown-number">{classesCountdown.mins}</span>
+                          <span className="countdown-label">{t.countdown.minutes}</span>
+                      </div>
+                      <span className="countdown-sep">:</span>
+                      <div className="countdown-unit">
+                          <span className="countdown-number">{classesCountdown.secs}</span>
+                          <span className="countdown-label">{t.countdown.seconds}</span>
+                      </div>
+                  </div>
+                  <p className="countdown-desc" style={{ color: '#fff', opacity: 0.9 }}>
+                      {t.countdown.classesDesc}
+                  </p>
+              </>
+          ) : (
+              <div style={{ marginTop: '0.8rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  <p style={{ fontSize: '1.2rem', fontWeight: '800', margin: 0, lineHeight: '1.2', color: '#fff' }}>{t.countdown.classesStarted}</p>
+                  <p style={{ fontSize: '0.7rem', opacity: 0.9, margin: 0, lineHeight: '1.4', color: '#fff' }}>{t.countdown.classesStartedDesc}</p>
+              </div>
+          )}
+      </div>
+
+      <NotificationBanners />
+
       <header style={{ marginBottom: '3rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Link href="/" className="back-link" style={{ textDecoration: 'none', color: 'var(--muted)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -149,10 +286,10 @@ export default function PlanPage() {
           <LanguageSwitcher />
         </div>
         
-        <div style={{ marginTop: '2.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '2rem' }}>
+        <div style={{ marginTop: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '2rem' }}>
           <div>
-            <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em' }}>{t.title}</h1>
-            <p style={{ color: 'var(--muted)', fontSize: '1.2rem', marginTop: '0.5rem', fontWeight: '500' }}>{t.subtitle}</p>
+            <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em' }}>{pt.title}</h1>
+            <p style={{ color: 'var(--muted)', fontSize: '1.2rem', marginTop: '0.5rem', fontWeight: '500' }}>{pt.subtitle}</p>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'flex-end' }}>
@@ -180,7 +317,7 @@ export default function PlanPage() {
                   boxShadow: objective === 'intermediate' ? '0 4px 12px rgba(0,0,0,0.05)' : 'none'
                 }}
               >
-                {t.intermediate}
+                {pt.intermediate}
               </button>
               <button 
                 onClick={() => changeObjective('degree')}
@@ -197,7 +334,7 @@ export default function PlanPage() {
                   boxShadow: objective === 'degree' ? '0 4px 12px rgba(0,0,0,0.05)' : 'none'
                 }}
               >
-                {t.full}
+                {pt.full}
               </button>
             </div>
           </div>
@@ -219,12 +356,12 @@ export default function PlanPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '0.8rem' }}>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.6rem', flexWrap: 'wrap' }}>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.6rem' }}>
-                  <span style={{ fontWeight: '700', fontSize: '1rem', color: '#000', opacity: 0.8 }}>{t.stats.progress}:</span>
+                  <span style={{ fontWeight: '700', fontSize: '1rem', color: '#000', opacity: 0.8 }}>{pt.stats.progress}:</span>
                   <span style={{ fontWeight: '900', fontSize: '1.25rem', color: '#000' }}>{progressPercent}%</span>
                 </div>
                 <div className="storage-notice-wrapper" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: 'var(--muted)', fontSize: '0.7rem', fontWeight: '500', opacity: 0.6 }}>
                   <Info size={11} />
-                  <span>{t.storageNotice}</span>
+                  <span>{pt.storageNotice}</span>
                 </div>
               </div>
             </div>
@@ -236,15 +373,15 @@ export default function PlanPage() {
           <div style={{ display: 'flex', gap: '2rem' }}>
             <div style={{ textAlign: 'center' }}>
               <span style={{ display: 'block', fontSize: '1.5rem', fontWeight: '900', color: '#fbbf24' }}>{inProgressInObjective.length}</span>
-              <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--muted)', textTransform: 'uppercase' }}>{t.inProgress}</span>
+              <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--muted)', textTransform: 'uppercase' }}>{pt.inProgress}</span>
             </div>
             <div style={{ textAlign: 'center' }}>
               <span style={{ display: 'block', fontSize: '1.5rem', fontWeight: '900', color: 'var(--success)' }}>{completedInObjective.length}</span>
-              <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--muted)', textTransform: 'uppercase' }}>{t.completed}</span>
+              <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--muted)', textTransform: 'uppercase' }}>{pt.completed}</span>
             </div>
             <div style={{ textAlign: 'center' }}>
               <span style={{ display: 'block', fontSize: '1.5rem', fontWeight: '900' }}>{totalSubjects - completedInObjective.length}</span>
-              <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--muted)', textTransform: 'uppercase' }}>{t.stats.remaining}</span>
+              <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--muted)', textTransform: 'uppercase' }}>{pt.stats.remaining}</span>
             </div>
           </div>
         </div>
@@ -253,7 +390,7 @@ export default function PlanPage() {
         <div style={{ position: 'relative', width: '100%', marginTop: '1.5rem' }}>
           <input 
             type="text"
-            placeholder={t.search}
+            placeholder={pt.search}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={{
@@ -361,12 +498,12 @@ export default function PlanPage() {
                           lineHeight: 1.2, 
                           color: relation ? (relation.type === 'prerequisite' ? '#ef4444' : '#0070f3') : (isCompleted ? '#059669' : (isLocked ? 'var(--muted)' : (isInProgress ? '#d97706' : '#000')))
                         }}>
-                          {t.subjectNames[subject.id as keyof typeof t.subjectNames] || subject.name}
+                          {pt.subjectNames[subject.id as keyof typeof pt.subjectNames] || subject.name}
                         </h3>
                         {isInProgress && (
                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', marginTop: '0.2rem' }}>
                               <Zap size={10} fill="#fbbf24" style={{ color: '#fbbf24' }} />
-                              <span style={{ fontSize: '0.6rem', fontWeight: '900', color: '#d97706', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t.inProgress}</span>
+                              <span style={{ fontSize: '0.6rem', fontWeight: '900', color: '#d97706', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{pt.inProgress}</span>
                            </div>
                         )}
                       </div>
@@ -394,7 +531,7 @@ export default function PlanPage() {
                           <div style={{ display: 'flex', gap: '0.2rem', alignItems: 'center', marginTop: '0.2rem' }}>
                              <Star size={10} style={{ color: 'var(--accent)' }} />
                              <span style={{ fontSize: '0.6rem', color: 'var(--accent)', fontWeight: '800' }}>
-                               {t.unlocks}: {getUnlocks(subject.id).map(p => `#${p}`).join(', ')}
+                               {pt.unlocks}: {getUnlocks(subject.id).map(p => `#${p}`).join(', ')}
                              </span>
                           </div>
                         )}
