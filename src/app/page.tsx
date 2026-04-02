@@ -93,18 +93,8 @@ export default function Home() {
     }, []);
 
     return (
-        <div className="container fade-in">
-            <div className="sidebar-widget sidebar-widget-right">
-                <a href="https://autogestion.fadena.undef.edu.ar/3w/cursada" target="_blank" rel="noopener noreferrer">
-                    <img 
-                        src="/announcement-siu-guarani.png" 
-                        alt="SIU Guaraní" 
-                        style={{ width: '100%', height: 'auto' }} 
-                    />
-                </a>
-            </div>
-
-            {/* Inscripciones Widget */}
+        <div className="container fade-in" style={{ maxWidth: '1200px', margin: '0 auto', padding: '6.0rem 2rem 2rem 2rem' }}>
+            {/* Widget de Inscripciones (Izquierda) */}
             <div className={`sidebar-widget sidebar-widget-left`}>
                 <div className="countdown-header">
                     <Calendar size={14} />
@@ -140,8 +130,12 @@ export default function Home() {
                 )}
             </div>
 
-            {/* Inicio de Clases Widget */}
-            <div className={`sidebar-widget sidebar-widget-left`} style={{ top: isFinished ? '15.5rem' : '20.5rem' }}>
+            {/* Widget de Inicio de Clases (Derecha) */}
+            <div className={`sidebar-widget sidebar-widget-right`} style={{ 
+                background: 'linear-gradient(135deg, #1a4a6e 0%, #103253 100%)',
+                boxShadow: '0 8px 24px rgba(16, 50, 83, 0.35)',
+                padding: '1.1rem'
+            }}>
                 <div className="countdown-header">
                     <Zap size={14} />
                     <span>{t.countdown.classesTitle}</span>
@@ -198,22 +192,31 @@ export default function Home() {
                 </div>
             )}
 
-            <header>
+            <header style={{ marginBottom: '3rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-                    <h1>{t.title}</h1>
+                    <div style={{ flex: 1, minWidth: '300px' }}>
+                        <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em' }}>{t.title}</h1>
+                        <p style={{ color: 'var(--muted)', fontSize: '1.2rem', marginTop: '0.5rem', fontWeight: '500' }}>{t.description}</p>
+                    </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                         <LanguageSwitcher />
                     </div>
                 </div>
-                <p>{t.description}</p>
             </header>
 
             <main style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <div className="featured-grid">
-                    <Link href="/links" className="post-item featured" style={{ display: 'block', textDecoration: 'none' }}>
-                        <span className="featured-tag">{t.featured?.tag}</span>
-                        <span className="post-title" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--success)' }}>
-                            <LinkIcon size={20} />
+                    <Link 
+                        href="/links" 
+                        className="post-item featured roadmap-block links-card" 
+                        style={{ display: 'block', textDecoration: 'none', border: '1px solid var(--success)', background: 'rgba(16, 185, 129, 0.03)' }}
+                    >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                            <span className="featured-tag" style={{ background: 'var(--success)', color: 'white' }}>{t.featured?.tag || 'Destaque'}</span>
+                        </div>
+
+                        <span className="post-title" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: 'var(--success)' }}>
+                            <LinkIcon size={28} className="bell-animation" color="var(--success)" />
                             {t.featured?.title}
                         </span>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem' }}>
@@ -223,11 +226,11 @@ export default function Home() {
 
                     <Link 
                         href="/plan" 
-                        className="post-item featured roadmap-block" 
+                        className="post-item featured roadmap-block plan-card" 
                         style={{ display: 'block', textDecoration: 'none', border: '1px solid var(--accent)', background: 'rgba(0,112,243,0.02)' }}
                     >
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                            <span className="featured-tag" style={{ background: 'var(--accent)', color: 'white' }}>{t.featured?.tag || 'Nuevo'}</span>
+                            <span className="featured-tag" style={{ background: 'var(--accent)', color: 'white' }}>{t.featured?.tag || 'Destaque'}</span>
                         </div>
 
                         <span className="post-title" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: 'var(--accent)' }}>
@@ -236,17 +239,16 @@ export default function Home() {
                         </span>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem' }}>
                             <p className="post-description" dangerouslySetInnerHTML={{ __html: t.plan?.description || '' }} style={{ margin: 0 }} />
-                            <ArrowRight className="arrow-portal" size={42} style={{ color: 'var(--accent)', opacity: 0.45 }} />
                         </div>
                     </Link>
 
                     <Link 
                         href="/dashboard" 
-                        className="post-item featured roadmap-block" 
+                        className="post-item featured roadmap-block dashboard-card" 
                         style={{ display: 'block', textDecoration: 'none', border: '1px solid var(--accent)', background: 'rgba(0,112,243,0.02)' }}
                     >
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                            <span className="featured-tag" style={{ background: 'var(--accent)', color: 'white' }}>{t.featured?.tag || 'Destacado'}</span>
+                            <span className="featured-tag" style={{ background: 'var(--accent)', color: 'white' }}>{t.featured?.tag || 'Destaque'}</span>
                         </div>
 
                         <span className="post-title" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: 'var(--accent)' }}>
@@ -255,7 +257,6 @@ export default function Home() {
                         </span>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem' }}>
                             <p className="post-description" dangerouslySetInnerHTML={{ __html: t.studentPortal?.guestDesc || '' }} style={{ margin: 0 }} />
-                            <ArrowRight className="arrow-portal" size={42} style={{ color: 'var(--accent)', opacity: 0.45 }} />
                         </div>
                     </Link>
                 </div>

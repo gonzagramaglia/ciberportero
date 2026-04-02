@@ -7,7 +7,7 @@ export const translations = {
         credits: "Inspirado en el trabajo de zzzNata",
         langName: "Español",
         featured: {
-            title: "Recursos y Enlaces Útiles",
+            title: "Enlaces Útiles",
             description: "Para los estudiantes de la <strong>Licenciatura en Ciberdefensa de la UNDEF</strong>",
             tag: "Destacado"
         },
@@ -64,7 +64,7 @@ export const translations = {
         },
         studentPortal: {
             guestTitle: "Tu Avance",
-            guestDesc: "<strong>Registrá y llevá un control de tus autoevaluaciones y exámenes</strong> completados de la carrera.",
+            guestDesc: "<strong>Registrá y llevá un control de tus autoevaluaciones, tps y exámenes.</strong>",
             userTitle: "Tu Escritorio Académico",
             userDesc: "Gestioná tu progreso y revisá tus actividades completadas.",
             loginCta: "Ingresar"
@@ -153,7 +153,7 @@ export const translations = {
         credits: "Inspired by zzzNata's project",
         langName: "English",
         featured: {
-            title: "Useful Resources and Links",
+            title: "Useful Links",
             description: "For students of the <strong>Bachelor's Degree in Cyberdefense at UNDEF</strong>",
             tag: "Featured"
         },
@@ -210,7 +210,7 @@ export const translations = {
         },
         studentPortal: {
             guestTitle: "Your Progress",
-            guestDesc: "<strong>Record and keep track of your self-assessments and exams</strong> completed throughout the degree.",
+            guestDesc: "<strong>Record and keep track of your self-assessments, TPs, and exams.</strong>",
             userTitle: "Your Academic Desktop",
             userDesc: "Manage your progress and review your completed activities.",
             loginCta: "Login"
@@ -299,7 +299,7 @@ export const translations = {
         credits: "Inspirado no trabalho de zzzNata",
         langName: "Português",
         featured: {
-            title: "Recursos e Links Úteis",
+            title: "Links Úteis",
             description: "Pensados para os estudantes de <strong>Ciberdefesa da UNDEF</strong>",
             tag: "Destaque"
         },
@@ -356,7 +356,7 @@ export const translations = {
         },
         studentPortal: {
             guestTitle: "Seu Progresso",
-            guestDesc: "<strong>Registre e acompanhe suas autoavaliações e exames</strong> concluídos ao longo da graduação.",
+            guestDesc: "<strong>Registre e acompanhe suas autoavaliações, tps e exames.</strong>",
             userTitle: "Sua Área Académica",
             userDesc: "Gerencie seu progresso e revise suas atividades concluídas.",
             loginCta: "Acessar"
