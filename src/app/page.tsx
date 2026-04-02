@@ -45,32 +45,50 @@ export default function Home() {
     const isAuthenticated = !!session || isGuest;
 
     const [isFinished, setIsFinished] = useState(false);
+    const [isClassesFinished, setIsClassesFinished] = useState(false);
     const [countdown, setCountdown] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
+    const [classesCountdown, setClassesCountdown] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
 
     useEffect(() => {
-        const targetDate = new Date('2026-04-01T23:59:59-03:00').getTime();
+        const enrollmentTarget = new Date('2026-04-01T23:59:59-03:00').getTime();
+        const classesTarget = new Date('2026-04-06T09:00:00-03:00').getTime();
         
-        const updateCountdown = () => {
+        const updateCountdowns = () => {
             const now = new Date().getTime();
-            const distance = targetDate - now;
             
-            if (distance < 0) {
+            // Enrollment Countdown
+            const eDistance = enrollmentTarget - now;
+            if (eDistance < 0) {
                 setCountdown({ days: 0, hours: 0, mins: 0, secs: 0 });
                 setIsFinished(true);
-                return;
+            } else {
+                setCountdown({
+                    days: Math.floor(eDistance / (1000 * 60 * 60 * 24)),
+                    hours: Math.floor((eDistance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+                    mins: Math.floor((eDistance % (1000 * 60 * 60)) / (1000 * 60)),
+                    secs: Math.floor((eDistance % (1000 * 60)) / 1000)
+                });
+                setIsFinished(false);
             }
-            
-            setCountdown({
-                days: Math.floor(distance / (1000 * 60 * 60 * 24)),
-                hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-                mins: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
-                secs: Math.floor((distance % (1000 * 60)) / 1000)
-            });
-            setIsFinished(false);
+
+            // Classes Countdown
+            const cDistance = classesTarget - now;
+            if (cDistance < 0) {
+                setClassesCountdown({ days: 0, hours: 0, mins: 0, secs: 0 });
+                setIsClassesFinished(true);
+            } else {
+                setClassesCountdown({
+                    days: Math.floor(cDistance / (1000 * 60 * 60 * 24)),
+                    hours: Math.floor((cDistance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+                    mins: Math.floor((cDistance % (1000 * 60 * 60)) / (1000 * 60)),
+                    secs: Math.floor((cDistance % (1000 * 60)) / 1000)
+                });
+                setIsClassesFinished(false);
+            }
         };
         
-        const timer = setInterval(updateCountdown, 1000);
-        updateCountdown();
+        const timer = setInterval(updateCountdowns, 1000);
+        updateCountdowns();
         return () => clearInterval(timer);
     }, []);
 
@@ -86,37 +104,83 @@ export default function Home() {
                 </a>
             </div>
 
+            {/* Inscripciones Widget */}
             <div className={`sidebar-widget sidebar-widget-left`}>
                 <div className="countdown-header">
                     <Calendar size={14} />
-                    <span>Últimas Horas!</span>
+                    <span>{t.countdown.ivuTitle}</span>
                 </div>
                 {!isFinished ? (
                     <>
                         <div className="countdown-timer">
                             <div className="countdown-unit">
                                 <span className="countdown-number">{countdown.hours}</span>
-                                <span className="countdown-label">h</span>
+                                <span className="countdown-label">{t.countdown.hours}</span>
                             </div>
                             <span className="countdown-sep">:</span>
                             <div className="countdown-unit">
                                 <span className="countdown-number">{countdown.mins}</span>
-                                <span className="countdown-label">m</span>
+                                <span className="countdown-label">{t.countdown.minutes}</span>
                             </div>
                             <span className="countdown-sep">:</span>
                             <div className="countdown-unit">
                                 <span className="countdown-number">{countdown.secs}</span>
-                                <span className="countdown-label">s</span>
+                                <span className="countdown-label">{t.countdown.seconds}</span>
                             </div>
                         </div>
                         <p className="countdown-desc" style={{ color: '#fff', opacity: 0.9 }}>
-                            Cierre de inscripciones <strong>Hoy</strong> a las <strong>23:59hs</strong>. ¡No pierdas tu lugar! Asegurate de confirmar tus materias hoy mismo.
+                            Cierre de inscripciones <strong>Hoy</strong> a las <strong>23:59hs</strong>.
                         </p>
                     </>
                 ) : (
                     <div style={{ marginTop: '0.8rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        <p style={{ fontSize: '1.2rem', fontWeight: '800', margin: 0, lineHeight: '1.2', color: '#000' }}>Inscripciones Cerradas</p>
-                        <p style={{ fontSize: '0.7rem', opacity: 0.9, margin: 0, lineHeight: '1.4', color: '#000' }}>El período de inscripción ha finalizado por SIU Guaraní.</p>
+                        <p style={{ fontSize: '1.2rem', fontWeight: '800', margin: 0, lineHeight: '1.2', color: '#fff' }}>{t.countdown.enrollmentClosed}</p>
+                        <p style={{ fontSize: '0.7rem', opacity: 0.9, margin: 0, lineHeight: '1.4', color: '#fff' }}>{t.countdown.enrollmentClosedDesc}</p>
+                    </div>
+                )}
+            </div>
+
+            {/* Inicio de Clases Widget */}
+            <div className={`sidebar-widget sidebar-widget-left`} style={{ top: isFinished ? '15.5rem' : '20.5rem' }}>
+                <div className="countdown-header">
+                    <Zap size={14} />
+                    <span>{t.countdown.classesTitle}</span>
+                </div>
+                {!isClassesFinished ? (
+                    <>
+                        <div className="countdown-timer">
+                            {classesCountdown.days > 0 && (
+                                <>
+                                    <div className="countdown-unit">
+                                        <span className="countdown-number">{classesCountdown.days}</span>
+                                        <span className="countdown-label">{t.countdown.days}</span>
+                                    </div>
+                                    <span className="countdown-sep">:</span>
+                                </>
+                            )}
+                            <div className="countdown-unit">
+                                <span className="countdown-number">{classesCountdown.hours}</span>
+                                <span className="countdown-label">{t.countdown.hours}</span>
+                            </div>
+                            <span className="countdown-sep">:</span>
+                            <div className="countdown-unit">
+                                <span className="countdown-number">{classesCountdown.mins}</span>
+                                <span className="countdown-label">{t.countdown.minutes}</span>
+                            </div>
+                            <span className="countdown-sep">:</span>
+                            <div className="countdown-unit">
+                                <span className="countdown-number">{classesCountdown.secs}</span>
+                                <span className="countdown-label">{t.countdown.seconds}</span>
+                            </div>
+                        </div>
+                        <p className="countdown-desc" style={{ color: '#fff', opacity: 0.9 }}>
+                            {t.countdown.classesDesc}
+                        </p>
+                    </>
+                ) : (
+                    <div style={{ marginTop: '0.8rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        <p style={{ fontSize: '1.2rem', fontWeight: '800', margin: 0, lineHeight: '1.2', color: '#fff' }}>{t.countdown.classesStarted}</p>
+                        <p style={{ fontSize: '0.7rem', opacity: 0.9, margin: 0, lineHeight: '1.4', color: '#fff' }}>{t.countdown.classesStartedDesc}</p>
                     </div>
                 )}
             </div>
@@ -144,59 +208,61 @@ export default function Home() {
                 <p>{t.description}</p>
             </header>
 
-            <main style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                <Link href="/links" className="post-item featured" style={{ display: 'block', textDecoration: 'none' }}>
-                    <span className="featured-tag">{t.featured?.tag}</span>
-                    <span className="post-title" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--success)' }}>
-                        <LinkIcon size={20} />
-                        {t.featured?.title}
-                    </span>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem' }}>
-                        <p className="post-description" dangerouslySetInnerHTML={{ __html: t.featured?.description || '' }} style={{ margin: 0 }} />
-                    </div>
-                </Link>
+            <main style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div className="featured-grid">
+                    <Link href="/links" className="post-item featured" style={{ display: 'block', textDecoration: 'none' }}>
+                        <span className="featured-tag">{t.featured?.tag}</span>
+                        <span className="post-title" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--success)' }}>
+                            <LinkIcon size={20} />
+                            {t.featured?.title}
+                        </span>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem' }}>
+                            <p className="post-description" dangerouslySetInnerHTML={{ __html: t.featured?.description || '' }} style={{ margin: 0 }} />
+                        </div>
+                    </Link>
 
-                <Link 
-                    href="/plan" 
-                    className="post-item featured roadmap-block" 
-                    style={{ display: 'block', textDecoration: 'none', border: '1px solid var(--accent)', background: 'rgba(0,112,243,0.02)' }}
-                >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                        <span className="featured-tag" style={{ background: 'var(--accent)', color: 'white' }}>{t.featured?.tag || 'Nuevo'}</span>
-                    </div>
+                    <Link 
+                        href="/plan" 
+                        className="post-item featured roadmap-block" 
+                        style={{ display: 'block', textDecoration: 'none', border: '1px solid var(--accent)', background: 'rgba(0,112,243,0.02)' }}
+                    >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                            <span className="featured-tag" style={{ background: 'var(--accent)', color: 'white' }}>{t.featured?.tag || 'Nuevo'}</span>
+                        </div>
 
-                    <span className="post-title" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: 'var(--accent)' }}>
-                        <Zap size={28} className="bell-animation" fill="var(--accent)" />
-                        {t.plan?.title}
-                    </span>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem' }}>
-                        <p className="post-description" dangerouslySetInnerHTML={{ __html: t.plan?.description || '' }} style={{ margin: 0 }} />
-                        <ArrowRight className="arrow-portal" size={42} style={{ color: 'var(--accent)', opacity: 0.45 }} />
-                    </div>
-                </Link>
+                        <span className="post-title" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: 'var(--accent)' }}>
+                            <Zap size={28} className="bell-animation" fill="var(--accent)" />
+                            {t.plan?.title}
+                        </span>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem' }}>
+                            <p className="post-description" dangerouslySetInnerHTML={{ __html: t.plan?.description || '' }} style={{ margin: 0 }} />
+                            <ArrowRight className="arrow-portal" size={42} style={{ color: 'var(--accent)', opacity: 0.45 }} />
+                        </div>
+                    </Link>
 
-                <Link 
-                    href="/dashboard" 
-                    className="post-item featured portal-user" 
-                    style={{ display: 'block', textDecoration: 'none' }}
-                >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                        <span className="featured-tag" style={{ background: 'var(--accent)', color: 'white' }}>Portal</span>
-                    </div>
+                    <Link 
+                        href="/dashboard" 
+                        className="post-item featured roadmap-block" 
+                        style={{ display: 'block', textDecoration: 'none', border: '1px solid var(--accent)', background: 'rgba(0,112,243,0.02)' }}
+                    >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                            <span className="featured-tag" style={{ background: 'var(--accent)', color: 'white' }}>{t.featured?.tag || 'Destacado'}</span>
+                        </div>
 
-                    <span className="post-title" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: 'var(--accent)' }}>
-                        <CheckCircle size={28} className="bell-animation" />
-                        {t.studentPortal?.guestTitle}
-                    </span>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem' }}>
-                        <p className="post-description" dangerouslySetInnerHTML={{ __html: t.studentPortal?.guestDesc || '' }} style={{ margin: 0 }} />
-                        <ArrowRight className="arrow-portal" size={42} style={{ color: 'var(--accent)', opacity: 0.45 }} />
-                    </div>
-                </Link>
+                        <span className="post-title" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: 'var(--accent)' }}>
+                            <CheckCircle size={28} className="bell-animation" />
+                            {t.studentPortal?.guestTitle}
+                        </span>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem' }}>
+                            <p className="post-description" dangerouslySetInnerHTML={{ __html: t.studentPortal?.guestDesc || '' }} style={{ margin: 0 }} />
+                            <ArrowRight className="arrow-portal" size={42} style={{ color: 'var(--accent)', opacity: 0.45 }} />
+                        </div>
+                    </Link>
+                </div>
 
                 {lang === 'es' && (
                     <>
-                        <div style={{ marginTop: '2.5rem', marginBottom: '1.5rem' }}>
+                        <div style={{ marginTop: '1.5rem', marginBottom: '0.8rem' }}>
                             <span className="featured-tag" style={{ background: '#f8fafc', color: 'var(--muted)', border: '1px solid var(--border)', marginBottom: '1rem' }}>Info</span>
                             <h2 style={{ fontSize: '1.8rem', fontWeight: '700', color: '#000', display: 'flex', alignItems: 'center', gap: '0.8rem', margin: 0 }}>
                                 <Info size={26} style={{ color: 'var(--muted)' }} />
@@ -220,7 +286,7 @@ export default function Home() {
                             />
                         </div>
 
-                        <div style={{ marginTop: '2.5rem', marginBottom: '1.5rem' }}>
+                        <div style={{ marginTop: '1.5rem', marginBottom: '0.8rem' }}>
                             <span className="featured-tag" style={{ background: '#f8fafc', color: 'var(--muted)', border: '1px solid var(--border)', marginBottom: '1rem' }}>Info</span>
                             <h2 style={{ fontSize: '1.8rem', fontWeight: '700', color: '#000', display: 'flex', alignItems: 'center', gap: '0.8rem', margin: 0 }}>
                                 <Calendar size={26} style={{ color: 'var(--muted)' }} />
@@ -238,7 +304,7 @@ export default function Home() {
                     </>
                 )}
 
-                <div style={{ marginTop: '1.5rem', marginBottom: '1.5rem' }}>
+                <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
                     <span className="featured-tag" style={{ background: '#f8fafc', color: 'var(--muted)', border: '1px solid var(--border)', marginBottom: '1rem' }}>Feed</span>
                     <h2 style={{ fontSize: '1.8rem', fontWeight: '700', color: '#000', display: 'flex', alignItems: 'center', gap: '0.8rem', margin: 0 }}>
                         <BookOpen size={26} style={{ color: 'var(--muted)' }} />

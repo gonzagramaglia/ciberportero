@@ -33,14 +33,20 @@ export const translations = {
         ],
         feedback: "¿Por qué elegimos Ciberdefensa?",
         countdown: {
-            ivuTitle: "Inscripción a Materias – SIU Guaraní",
+            ivuTitle: "Inscripción a Materias",
             mateTitle: "Inicio de Cursada",
+            classesTitle: "Inicio de Clases",
             days: "días",
             hours: "hs",
             minutes: "min",
             seconds: "seg",
             available: "¡Inscripciones abiertas!",
             ivuDesc: "Disponible el <strong>martes 31/3</strong> a las <strong>12:00hs</strong>. Obligatorio para todos los alumnos.",
+            classesDesc: "Preparate para el primer día de clases. ¡Muchos éxitos!",
+            enrollmentClosed: "Inscripciones Cerradas",
+            enrollmentClosedDesc: "El período de inscripción ha finalizado por SIU Guaraní.",
+            classesStarted: "¡Clases Iniciadas!",
+            classesStartedDesc: "Éxitos en este nuevo periodo lectivo.",
             mateDate: "Próximamente",
             mateDesc: "La cursada comienza en Abril. Mantente atento a los avisos."
         },
@@ -57,7 +63,7 @@ export const translations = {
             copied: "¡Enlace del post copiado!"
         },
         studentPortal: {
-            guestTitle: "Avance Académico",
+            guestTitle: "Tu Avance",
             guestDesc: "<strong>Registrá y llevá un control de tus autoevaluaciones y exámenes</strong> completados de la carrera.",
             userTitle: "Tu Escritorio Académico",
             userDesc: "Gestioná tu progreso y revisá tus actividades completadas.",
@@ -65,7 +71,7 @@ export const translations = {
         },
         dashboard: {
             title: "Portal del Estudiante",
-            back: "← Volver al Inicio",
+            back: "← Voltar ao início",
             guestUser: "Estudiante Invitado",
             welcome: "Hola",
             loading: "Cargando portal...",
@@ -101,13 +107,13 @@ export const translations = {
                 campus: "Campus"
             },
             beta: {
-                title: "🚀 Versión Beta v0.1",
+                title: "🚀 Versão Beta v0.1",
                 desc: "Tu progreso se guarda automáticamente en el navegador (Local Storage).\nPronto integraremos el inicio de sesión con Google para sincronizar tus avances en la nube."
             }
         },
         plan: {
             title: "Plan de Estudios",
-            subtitle: "Licenciatura en Ciberdefensa - UNDEF",
+            subtitle: "Licenciatura em Ciberdefesa - UNDEF",
             description: "<strong>Visualizá tu progreso</strong>, las correlatividades y las materias que vas desbloqueando.",
             completed: "Completada",
             inProgress: "En curso",
@@ -128,14 +134,14 @@ export const translations = {
             search: "Buscar materia o ID...",
             storageNotice: "Tus progresos se guardan localmente en este navegador.",
             subjectNames: {
-                1: "Análisis Matemático I", 2: "Álgebra I", 3: "Gestión de Servicios de Información", 4: "Inglés I", 5: "Sistemas Operativos I",
-                6: "Sistemas de Tratamiento de Datos", 7: "Infraestructura de Telecomunicaciones", 8: "Sociedad y Estado", 9: "Sistemas Operativos II", 10: "Lenguajes de Programación",
-                11: "Análisis Matemático II", 12: "Álgebra II", 13: "Probabilidad y Estadística", 14: "Inglés II", 15: "Tecnología Operativa",
-                16: "Programación Segura", 17: "Ciberseguridad Aplicada", 18: "Dispositivos Remotos e IoT", 19: "Ética Profesional", 20: "Gestión de Seguridad de la Información",
+                1: "Análisis Matemático I", 2: "Álgebra I", 3: "Gestão de Serviços de Informação", 4: "Inglês I", 5: "Sistemas Operativos I",
+                6: "Sistemas de Tratamiento de Datos", 7: "Infraestrutura de Telecomunicações", 8: "Sociedade e Estado", 9: "Sistemas Operativos II", 10: "Lenguajes de Programación",
+                11: "Análisis Matemático II", 12: "Álgebra II", 13: "Probabilidad y Estadística", 14: "Inglés II", 15: "Tecnologia Operacional",
+                16: "Programación Segura", 17: "Ciberseguridad Aplicada", 18: "Dispositivos Remotos e IoT", 19: "Ética Profissional", 20: "Gestão de Segurança da Informação",
                 21: "Protección de Infraestructuras Críticas", 22: "Metodologías de Análisis de Riesgos", 23: "Análisis de Escenarios y Capacidades", 24: "Gobierno y Políticas Públicas", 25: "Informática Forense",
-                26: "Relaciones Internacionales", 27: "IA y Aprendizaje de Máquina", 28: "Geopolítica", 29: "Derecho a la Defensa Nacional", 30: "Sistema de Inteligencia Nacional",
-                31: "Investigación Operativa", 32: "Criptografía Aplicada", 33: "Gestión de Proyectos", 34: "Instrumento Militar y Sistemas de Armas", 35: "Modelos y Simulación",
-                36: "Prospectiva Estratégica", 37: "Actores en el Quinto Dominio"
+                26: "Relaciones Internacionales", 27: "IA y Aprendizado de Máquina", 28: "Geopolítica", 29: "Derecho a la Defensa Nacional", 30: "Sistema de Inteligencia Nacional",
+                31: "Investigación Operativa", 32: "Criptografía Aplicada", 33: "Gestão de Projetos", 34: "Instrumento Militar e Sistemas de Armas", 35: "Modelos e Simulação",
+                36: "Prospectiva Estratégica", 37: "Atores no Quinto Domínio"
             }
         }
     },
@@ -173,14 +179,20 @@ export const translations = {
         ],
         feedback: "Why did we choose Cyberdefense?",
         countdown: {
-            ivuTitle: "Subject Enrollment – SIU Guaraní",
+            ivuTitle: "Subject Enrollment",
             mateTitle: "Course Start",
+            classesTitle: "Classes Start",
             days: "days",
             hours: "hs",
             minutes: "min",
             seconds: "sec",
             available: "Enrollment open!",
             ivuDesc: "Available on <strong>Tuesday 3/31</strong> at <strong>12:00 PM</strong>. Mandatory for all students.",
+            classesDesc: "Get ready for the first day of classes. Good luck!",
+            enrollmentClosed: "Enrollment Closed",
+            enrollmentClosedDesc: "The enrollment period has ended on SIU Guaraní.",
+            classesStarted: "Classes Started!",
+            classesStartedDesc: "Good luck with the new academic term.",
             mateDate: "Coming soon",
             mateDesc: "Courses start in April. Stay tuned for announcements."
         },
@@ -197,7 +209,7 @@ export const translations = {
             copied: "Post link copied!"
         },
         studentPortal: {
-            guestTitle: "Academic Progress",
+            guestTitle: "Your Progress",
             guestDesc: "<strong>Record and keep track of your self-assessments and exams</strong> completed throughout the degree.",
             userTitle: "Your Academic Desktop",
             userDesc: "Manage your progress and review your completed activities.",
@@ -205,7 +217,7 @@ export const translations = {
         },
         dashboard: {
             title: "Student Portal",
-            back: "← Back to Home",
+            back: "← Back to home",
             guestUser: "Guest Student",
             welcome: "Hello",
             loading: "Loading portal...",
@@ -313,14 +325,20 @@ export const translations = {
         ],
         feedback: "Por que escolhemos a Ciberdefesa?",
         countdown: {
-            ivuTitle: "Inscrição em Matérias – SIU Guaraní",
+            ivuTitle: "Inscrição em Matérias",
             mateTitle: "Início das Aulas",
+            classesTitle: "Início do Semestre",
             days: "dias",
             hours: "hs",
             minutes: "min",
             seconds: "seg",
             available: "Inscrições abertas!",
             ivuDesc: "Disponível na <strong>terça-feira 31/3</strong> às <strong>12:00hs</strong>. Obrigatório para todos os alunos.",
+            classesDesc: "Prepare-se para o primeiro dia de aula. Boa sorte!",
+            enrollmentClosed: "Inscrições Encerradas",
+            enrollmentClosedDesc: "O período de inscrição terminou no SIU Guaraní.",
+            classesStarted: "Aulas Iniciadas!",
+            classesStartedDesc: "Boa sorte neste novo período letivo.",
             mateDate: "Em breve",
             mateDesc: "As aulas começam em Abril. Fique atento aos avisos."
         },
@@ -337,7 +355,7 @@ export const translations = {
             copied: "¡Link do post copiado!"
         },
         studentPortal: {
-            guestTitle: "Progresso Acadêmico",
+            guestTitle: "Seu Progresso",
             guestDesc: "<strong>Registre e acompanhe suas autoavaliações e exames</strong> concluídos ao longo da graduação.",
             userTitle: "Sua Área Académica",
             userDesc: "Gerencie seu progresso e revise suas atividades concluídas.",
@@ -345,7 +363,7 @@ export const translations = {
         },
         dashboard: {
             title: "Portal do Estudante",
-            back: "← Voltar ao Início",
+            back: "← Voltar ao início",
             guestUser: "Estudante Convidado",
             welcome: "Olá",
             loading: "Carregando portal...",
