@@ -113,94 +113,75 @@ export function ProgressList() {
       </div>
 
       {/* Entry Form */}
-      <form onSubmit={handleAdd} style={{ 
-        display: 'flex', 
-        gap: '2rem', 
-        marginBottom: '2.5rem', 
-        background: 'white', 
-        padding: '2.5rem', 
-        borderRadius: '30px',
-        border: '1px solid var(--border)',
-        flexDirection: 'column',
-        boxShadow: '0 8px 40px rgba(0,0,0,0.03)'
-      }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <form onSubmit={handleAdd} className="progress-form">
+        <div className="form-container">
             {/* Row 1: Primary Selection */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(250px, 1.2fr) 1fr 1fr', gap: '1.5rem' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                    <label style={{ fontSize: '0.9rem', fontWeight: '700', color: 'var(--muted)' }}>{t.tracking.materia}</label>
+            <div className="form-row">
+                <div className="form-group flex-1-2">
+                    <label>{t.tracking.materia}</label>
                     <select 
                         value={materia} 
                         onChange={e => setMateria(e.target.value)}
-                        style={{ padding: '1.1rem', borderRadius: '16px', border: '1px solid var(--border)', background: '#f8fafc', fontSize: '1rem', fontWeight: '700', cursor: 'pointer' }}
                     >
                         {MATERIAS_1CUAT.map(m => (
                             <option key={m} value={m}>{m}</option>
                         ))}
                     </select>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                    <label style={{ fontSize: '0.9rem', fontWeight: '700', color: 'var(--muted)' }}>{t.tracking.tipo}</label>
+                <div className="form-group">
+                    <label>{t.tracking.tipo}</label>
                     <select 
                         value={type} 
                         onChange={e => setType(e.target.value)}
-                        style={{ padding: '1.1rem', borderRadius: '16px', border: '1px solid var(--border)', background: '#f8fafc', fontSize: '1rem', cursor: 'pointer' }}
                     >
                         <option value="tp">📖 {t.list.tp}</option>
                         <option value="autoevaluacion">📚 {t.list.autoevaluacion}</option>
                         <option value="parcial">🎯 {t.list.parcial}</option>
                     </select>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                    <label style={{ fontSize: '0.9rem', fontWeight: '700', color: 'var(--muted)' }}>{t.tracking.fecha}</label>
-                    <input type="date" value={fecha} onChange={e => setFecha(e.target.value)} required style={{ padding: '1.1rem', borderRadius: '16px', border: '1px solid var(--border)', background: '#f8fafc', fontSize: '1rem', cursor: 'pointer' }} />
+                <div className="form-group">
+                    <label>{t.tracking.fecha}</label>
+                    <input type="date" value={fecha} onChange={e => setFecha(e.target.value)} required />
                 </div>
             </div>
 
             {/* Row 2: Secondary Info */}
-            <div style={{ display: 'grid', gridTemplateColumns: '2.5fr 2fr 1.2fr', gap: '1.5rem' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                    <label style={{ fontSize: '0.9rem', fontWeight: '700', color: 'var(--muted)' }}>{t.tracking.nombre}</label>
-                    <input type="text" placeholder={t.tracking.placeholderTarea} value={examTitle} onChange={e => setExamTitle(e.target.value)} required style={{ padding: '1.1rem', borderRadius: '16px', border: '1px solid var(--border)', background: '#f8fafc', fontSize: '1rem' }} />
+            <div className="form-row">
+                <div className="form-group flex-2-5">
+                    <label>{t.tracking.nombre}</label>
+                    <input type="text" placeholder={t.tracking.placeholderTarea} value={examTitle} onChange={e => setExamTitle(e.target.value)} required />
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                    <label style={{ fontSize: '0.9rem', fontWeight: '700', color: 'var(--muted)' }}>{t.tracking.link}</label>
-                    <input type="url" placeholder="https://campus.fadena.undef.edu.ar/..." value={campusLink} onChange={e => setCampusLink(e.target.value)} style={{ padding: '1.1rem', borderRadius: '16px', border: '1px solid var(--border)', background: '#f8fafc', fontSize: '1rem' }} />
+                <div className="form-group flex-2">
+                    <label>{t.tracking.link}</label>
+                    <input type="url" placeholder="https://campus.fadena.undef.edu.ar/..." value={campusLink} onChange={e => setCampusLink(e.target.value)} />
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                    <label style={{ fontSize: '0.9rem', fontWeight: '700', color: 'var(--muted)' }}>{t.tracking.calificacion}</label>
-                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                <div className="form-group flex-1-2">
+                    <label>{t.tracking.calificacion}</label>
+                    <div className="input-with-icon">
                         <input type="number" min="0" max="100" placeholder="0" value={calificacion} onChange={e => {
                                 const val = parseInt(e.target.value)
                                 if (isNaN(val)) setCalificacion("")
                                 else if (val > 100) setCalificacion("100")
                                 else if (val < 0) setCalificacion("0")
                                 else setCalificacion(val.toString())
-                            }} style={{ padding: '1.1rem', paddingRight: '2.5rem', borderRadius: '16px', border: '1px solid var(--border)', background: '#f8fafc', fontSize: '1.1rem', textAlign: 'center', width: '100%', cursor: 'pointer', fontWeight: '900', color: 'var(--accent)' }} />
-                        <span style={{ position: 'absolute', right: '1.2rem', fontWeight: '900', color: 'var(--muted)', pointerEvents: 'none', opacity: 0.5 }}>%</span>
+                            }} />
+                        <span className="input-suffix">%</span>
                     </div>
                 </div>
             </div>
 
             {/* Row 3: Observaciones + Submit */}
-            <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-end' }}>
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                    <label style={{ fontSize: '0.9rem', fontWeight: '700', color: 'var(--muted)' }}>{t.tracking.observaciones}</label>
+            <div className="form-row-last">
+                <div className="form-group flex-1">
+                    <label>{t.tracking.observaciones}</label>
                     <input 
                         type="text"
                         placeholder={t.tracking.placeholderObservaciones} 
                         value={observaciones} 
                         onChange={e => setObservaciones(e.target.value)}
-                        style={{ 
-                            padding: '1.1rem', 
-                            borderRadius: '16px', 
-                            border: '1px solid var(--border)', 
-                            background: '#f8fafc', 
-                            fontSize: '1rem'
-                        }} 
                     />
                 </div>
-                <button type="submit" disabled={isAdding} style={{ height: '54px', padding: '0 2.5rem', borderRadius: '16px', background: 'var(--accent)', color: 'white', border: 'none', cursor: 'pointer', fontWeight: '900', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.8rem', transition: 'all 0.2s', boxShadow: '0 10px 25px rgba(0, 112, 243, 0.25)' }}>
+                <button type="submit" disabled={isAdding} className="form-submit-button">
                   {isAdding ? t.tracking.isAdding : <><Plus size={22} /> {t.tracking.submit}</>}
                 </button>
             </div>

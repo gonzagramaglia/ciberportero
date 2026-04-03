@@ -190,7 +190,7 @@ export default function PlanPage() {
   if (!isLoaded) return null
 
   return (
-    <div className="container fade-in" style={{ maxWidth: '1200px', margin: '0 auto', padding: '6.0rem 2rem 2rem 2rem' }}>
+    <div className="container fade-in page-container" style={{ maxWidth: '1200px', margin: '0 auto' }}>
       {/* Widget de Inscripciones (Izquierda) */}
       <div className={`sidebar-widget sidebar-widget-left`}>
           <div className="countdown-header">
@@ -279,8 +279,8 @@ export default function PlanPage() {
       <NotificationBanners />
 
       <header style={{ marginBottom: '3rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Link href="/" className="back-link" style={{ textDecoration: 'none', color: 'var(--muted)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <div className="nav-header-row">
+          <Link href="/" className="back-link">
             <ArrowLeft size={18} /> {translations[lang].back}
           </Link>
           <LanguageSwitcher />

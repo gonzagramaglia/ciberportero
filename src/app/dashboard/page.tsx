@@ -96,7 +96,7 @@ export default function DashboardPage() {
   const userName = session?.user?.name || dt.guestUser
 
   return (
-    <div className="container fade-in" style={{ maxWidth: '1200px', margin: '0 auto', padding: '6.0rem 2rem 2rem 2rem' }}>
+    <div className="container fade-in page-container" style={{ maxWidth: '1200px', margin: '0 auto' }}>
       {/* Widget de Inscripciones (Izquierda) */}
       <div className={`sidebar-widget sidebar-widget-left`}>
           <div className="countdown-header">
@@ -185,13 +185,11 @@ export default function DashboardPage() {
       <NotificationBanners />
 
       <header style={{ marginBottom: '3rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Link href="/" className="back-link" style={{ textDecoration: 'none', color: 'var(--muted)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <div className="nav-header-row">
+          <Link href="/" className="back-link">
             <ArrowLeft size={18} /> {translations[lang].back}
           </Link>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-             <LanguageSwitcher />
-          </div>
+          <LanguageSwitcher />
         </div>
         
         <div style={{ marginTop: '0.5rem' }}>
@@ -200,53 +198,37 @@ export default function DashboardPage() {
         </div>
 
         {/* Unified Stats Bar */}
-        <div style={{ 
-          marginTop: '2rem', 
-          padding: '1.5rem', 
-          background: 'white', 
-          borderRadius: '24px', 
-          border: '1px solid var(--border)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '2.5rem',
-          flexWrap: 'wrap'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-             <div style={{ padding: '0.6rem', background: 'rgba(8, 145, 178, 0.06)', borderRadius: '12px' }}>
+        <div className="stats-bar">
+          <div className="stats-item">
+             <div className="stats-icon-wrapper" style={{ background: 'rgba(8, 145, 178, 0.06)' }}>
                 <Book size={22} color="#0891b2" />
              </div>
-             <div>
-                <span style={{ display: 'block', fontSize: '1.4rem', fontWeight: '900', color: '#0891b2' }}>{stats.trabajosPracticos}</span>
-                <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--muted)', textTransform: 'uppercase' }}>{dt.stats.trabajosPracticos}</span>
+             <div className="stats-item-content">
+                <span style={{ color: '#0891b2' }}>{stats.trabajosPracticos}</span>
+                <span>{dt.stats.trabajosPracticos}</span>
              </div>
           </div>
-
-          <div style={{ width: '1px', height: '30px', background: 'var(--border)' }}></div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-             <div style={{ padding: '0.6rem', background: 'rgba(217, 119, 6, 0.06)', borderRadius: '12px' }}>
+          <div className="stats-divider"></div>
+          <div className="stats-item">
+             <div className="stats-icon-wrapper" style={{ background: 'rgba(217, 119, 6, 0.06)' }}>
                 <Zap size={22} color="#d97706" fill="#d97706" />
              </div>
-             <div>
-                <span style={{ display: 'block', fontSize: '1.4rem', fontWeight: '900', color: '#d97706' }}>{stats.autoevaluaciones}</span>
-                <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--muted)', textTransform: 'uppercase' }}>{dt.stats.autoevaluaciones}</span>
+             <div className="stats-item-content">
+                <span style={{ color: '#d97706' }}>{stats.autoevaluaciones}</span>
+                <span>{dt.stats.autoevaluaciones}</span>
              </div>
           </div>
-
-          <div style={{ width: '1px', height: '30px', background: 'var(--border)' }}></div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-             <div style={{ padding: '0.6rem', background: 'rgba(198, 11, 30, 0.06)', borderRadius: '12px' }}>
+          <div className="stats-divider"></div>
+          <div className="stats-item">
+             <div className="stats-icon-wrapper" style={{ background: 'rgba(198, 11, 30, 0.06)' }}>
                 <CheckCircle size={22} color="#C60B1E" />
              </div>
-             <div>
-                <span style={{ display: 'block', fontSize: '1.4rem', fontWeight: '900', color: '#C60B1E' }}>{stats.parciales}</span>
-                <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--muted)', textTransform: 'uppercase' }}>{dt.stats.parciales}</span>
+             <div className="stats-item-content">
+                <span style={{ color: '#C60B1E' }}>{stats.parciales}</span>
+                <span>{dt.stats.parciales}</span>
              </div>
           </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--muted)', fontSize: '0.74rem', fontWeight: '600', width: '100%', justifyContent: 'center', marginTop: '-0.8rem', opacity: 0.8 }}>
+          <div className="stats-notice">
              <Info size={14} />
              <span>{translations[lang].plan.storageNotice}</span>
           </div>

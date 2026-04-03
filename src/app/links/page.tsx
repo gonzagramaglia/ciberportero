@@ -76,7 +76,7 @@ export default function LinksPage() {
     const links = t.links || [];
 
     return (
-        <div className="container fade-in" style={{ maxWidth: '1200px', margin: '0 auto', padding: '6.0rem 2rem 2rem 2rem' }}>
+        <div className="container fade-in page-container" style={{ maxWidth: '1200px', margin: '0 auto' }}>
             {/* Widget de Inscripciones (Izquierda) */}
             <div className={`sidebar-widget sidebar-widget-left`}>
                 <div className="countdown-header">
@@ -164,8 +164,8 @@ export default function LinksPage() {
 
             <NotificationBanners limitTo="none" />
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                <Link href="/" className="back-link" style={{ marginBottom: 0 }}>
+            <div className="nav-header-row">
+                <Link href="/" className="back-link">
                     <ChevronLeft size={18} />
                     {t.back}
                 </Link>
@@ -235,7 +235,7 @@ export default function LinksPage() {
                     <div className="contact-container-inner">
                         <button
                             onClick={handleCopyEmail}
-                            className="post-title"
+                            className="post-title email-button"
                             style={{
                                 fontSize: '1.1rem',
                                 background: 'none',
@@ -264,12 +264,12 @@ export default function LinksPage() {
                 </div>
             </main>
 
-            <footer style={{ marginTop: '5rem', padding: '2rem 0', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'inherit' }}>
+            <footer className="footer-main">
+                <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
                     <Github size={18} />
                 </a>
-                <span style={{ fontSize: '0.9rem', opacity: 0.6 }}>{t.footer}</span>
-                <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'inherit' }}>
+                <span>{t.footer}</span>
+                <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
                     <Youtube size={22} />
                 </a>
             </footer>

@@ -93,7 +93,7 @@ export default function Home() {
     }, []);
 
     return (
-        <div className="container fade-in" style={{ maxWidth: '1200px', margin: '0 auto', padding: '6.0rem 2rem 2rem 2rem' }}>
+        <div className="container fade-in home-container" style={{ maxWidth: '1200px', margin: '0 auto' }}>
             {/* Widget de Inscripciones (Izquierda) */}
             <div className={`sidebar-widget sidebar-widget-left`}>
                 <div className="countdown-header">
@@ -192,16 +192,13 @@ export default function Home() {
                 </div>
             )}
 
+            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '1.5rem' }}>
+                <LanguageSwitcher />
+            </div>
+
             <header style={{ marginBottom: '3rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
-                    <div style={{ flex: 1, minWidth: '300px' }}>
-                        <h1 style={{ margin: 0, marginTop: '2.0rem', fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em' }}>{t.title}</h1>
-                        <p style={{ color: 'var(--muted)', fontSize: '1.2rem', marginTop: '0.5rem', fontWeight: '500' }}>{t.description}</p>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                        <LanguageSwitcher />
-                    </div>
-                </div>
+                <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em' }}>{t.title}</h1>
+                <p style={{ color: 'var(--muted)', fontSize: '1.2rem', marginTop: '0.5rem', fontWeight: '500' }}>{t.description}</p>
             </header>
 
             <main style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -267,7 +264,8 @@ export default function Home() {
                             <span className="featured-tag" style={{ background: '#f8fafc', color: 'var(--muted)', border: '1px solid var(--border)', marginBottom: '1rem' }}>Info</span>
                             <h2 style={{ fontSize: '1.8rem', fontWeight: '700', color: '#000', display: 'flex', alignItems: 'center', gap: '0.8rem', margin: 0 }}>
                                 <Info size={26} style={{ color: 'var(--muted)' }} />
-                                Información de la Carrera
+                                <span className="mobile-hide">Información de la Carrera</span>
+                                <span className="mobile-only">Info de la Carrera</span>
                             </h2>
                         </div>
 
@@ -341,12 +339,12 @@ export default function Home() {
                 </a>
             </div>
 
-            <footer style={{ marginTop: '5rem', padding: '2rem 0', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'inherit' }}>
+            <footer className="footer-main">
+                <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
                     <Github size={18} />
                 </a>
-                <span style={{ fontSize: '0.9rem', opacity: 0.6 }}>{t.footer}</span>
-                <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'inherit' }}>
+                <span>{t.footer}</span>
+                <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
                     <Youtube size={22} />
                 </a>
             </footer>

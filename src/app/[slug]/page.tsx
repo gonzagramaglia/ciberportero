@@ -105,14 +105,14 @@ export default function Post() {
                 </div>
             )}
 
-            <div className="container fade-in">
+            <div className="container fade-in post-container">
                 <NotificationBanners limitTo={
                     post.slug.includes('mate') ? 'mate' :
                         post.slug.includes('ivu') ? 'ivu' :
                             post.slug.includes('codeforces') ? 'none' : 'all'
                 } />
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem', marginBottom: '2rem' }}>
-                    <Link href="/" className="back-link" style={{ marginBottom: 0 }}>
+                <div className="nav-header-row">
+                    <Link href="/" className="back-link">
                         <ChevronLeft size={16} />
                         {t.back}
                     </Link>
@@ -145,7 +145,7 @@ export default function Post() {
                     </ReactMarkdown>
                 </article>
 
-                <div style={{ display: 'flex', justifyContent: 'flex-start', margin: '2rem 0' }}>
+                <div className="copy-container">
                     <button
                         onClick={handleCopy}
                         className={`copy-button ${copied ? 'success' : ''}`}
@@ -155,13 +155,13 @@ export default function Post() {
                     </button>
                 </div>
 
-                <footer style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
-                        <Youtube size={22} />
-                    </a>
-                    <Link href="/" style={{ color: 'inherit', textDecoration: 'none' }}>{t.footer}</Link>
+                <footer className="footer-main">
                     <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
                         <Github size={18} />
+                    </a>
+                    <span>{t.footer}</span>
+                    <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+                        <Youtube size={22} />
                     </a>
                 </footer>
             </div>
