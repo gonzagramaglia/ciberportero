@@ -6,6 +6,7 @@ import { useLanguage } from "@/context/LanguageContext"
 import { translations } from "@/lib/translations"
 
 import { curriculum, Subject } from "@/data/curriculum"
+import { normalizeString } from "@/lib/string-utils"
 
 const DASHBOARD_CURRICULUM = curriculum.filter(s => s.year <= 2);
 const ALL_TERMS = Array.from(new Set(DASHBOARD_CURRICULUM.map(s => `${s.year}.${s.term}`))).sort();
@@ -62,7 +63,7 @@ export function ProgressList() {
   const subjectsInForm = DASHBOARD_CURRICULUM.map(getSubjectName);
 
   const filteredSubjectsInForm = subjectsInForm.filter(s => 
-    s.toLowerCase().includes(materiaSearch.toLowerCase())
+    normalizeString(s).includes(normalizeString(materiaSearch))
   );
 
   // Set default materia when term changes or component mounts

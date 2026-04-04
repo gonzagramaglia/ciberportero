@@ -70,7 +70,7 @@ export const translations = {
             loginCta: "Ingresar"
         },
         dashboard: {
-            title: "Dashboard de Estudio",
+            title: "Dashboard de Estudios",
             description: "<strong>Registrá tu avance académico</strong>, llevá el control de tus notas y organizá tus tareas del campus.",
             back: "← Voltar ao início",
             guestUser: "Estudiante Invitado",
@@ -217,7 +217,7 @@ export const translations = {
             loginCta: "Login"
         },
         dashboard: {
-            title: "Student Portal",
+            title: "Studies Dashboard",
             description: "<strong>Track your academic progress</strong>, manage your grades, and organize your campus tasks.",
             back: "← Back to home",
             guestUser: "Guest Student",
@@ -364,7 +364,7 @@ export const translations = {
             loginCta: "Acessar"
         },
         dashboard: {
-            title: "Portal do Estudante",
+            title: "Dashboard de Estudos",
             description: "<strong>Acompanhe seu progresso acadêmico</strong>, gerencie suas notas e organize suas tarefas do campus.",
             back: "← Voltar ao início",
             guestUser: "Estudante Convidado",

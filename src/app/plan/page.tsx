@@ -8,6 +8,7 @@ import { curriculum, Subject } from "@/data/curriculum"
 import LanguageSwitcher from "@/components/LanguageSwitcher"
 import { CheckCircle, Info, Lock, ArrowLeft, Layers, Star, Zap, Github, Youtube, Search, X, Calendar, ExternalLink } from "lucide-react"
 import NotificationBanners from "@/components/NotificationBanners"
+import { normalizeString } from "@/lib/string-utils"
 
 export default function PlanPage() {
   const { lang } = useLanguage()
@@ -133,10 +134,10 @@ export default function PlanPage() {
 
   const searchedCurriculum = currentCurriculum.filter(s => {
     const localizedName = pt.subjectNames[s.id as keyof typeof pt.subjectNames] || s.name
-    const searchNorm = search.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    const searchNorm = normalizeString(search)
     return (
-      s.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(searchNorm) || 
-      localizedName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(searchNorm) ||
+      normalizeString(s.name).includes(searchNorm) || 
+      normalizeString(localizedName).includes(searchNorm) ||
       s.id.toString() === search
     )
   })
@@ -517,7 +518,7 @@ export default function PlanPage() {
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.6rem' }}>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
                         <span style={{ fontSize: '0.65rem', fontWeight: '900', color: '#000', opacity: 0.9 }}>
-                          #{subject.id} <span style={{ color: 'var(--muted)', opacity: 0.7 }}>• {getOrdinalLabel(subject.term, 'term')}</span>
+                          [{subject.id.toString().padStart(2, '0')}] <span style={{ color: 'var(--muted)', opacity: 0.7 }}>• {getOrdinalLabel(subject.term, 'term')}</span>
                         </span>
                         <h3 style={{ 
                           margin: 0, 
@@ -559,7 +560,7 @@ export default function PlanPage() {
                           <div style={{ display: 'flex', gap: '0.2rem', alignItems: 'center', marginTop: '0.2rem' }}>
                              <Star size={10} style={{ color: 'var(--accent)' }} />
                              <span style={{ fontSize: '0.6rem', color: 'var(--accent)', fontWeight: '800' }}>
-                               {pt.unlocks}: {getUnlocks(subject.id).map(p => `#${p}`).join(', ')}
+                               {pt.unlocks}: {getUnlocks(subject.id).map(p => `[${p.toString().padStart(2, '0')}]`).join(', ')}
                              </span>
                           </div>
                         )}
