@@ -85,12 +85,12 @@ a:hover {
 }
 
 .container {
-  max-width: 680px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 4rem 1.5rem;
 }
 
-.home-container, .page-container {
+.home-container, .page-container, .post-container {
   padding-top: 6rem !important;
 }
 

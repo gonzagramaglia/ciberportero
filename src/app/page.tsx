@@ -93,7 +93,7 @@ export default function Home() {
     }, []);
 
     return (
-        <div className="container fade-in home-container" style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        <div className="container fade-in home-container">
             {/* Widget de Inscripciones (Izquierda) */}
             <div className={`sidebar-widget sidebar-widget-left`}>
                 <div className="countdown-header">

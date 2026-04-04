@@ -10,11 +10,9 @@ description: "Recursos recomendados para cursar a matéria: Aulas gravadas com m
 
 ### Aulas Grabadas (FADENA | UNDEF / FAMAF | UNC)
 Você pode ver a [**Playlist de Álgebra I no YouTube**](https://www.youtube.com/playlist?list=PLLiqnZYloFpvvXZZnQ27wbVzRvMxUWx8T) que centraliza aulas de diferentes fontes:
-1. **Aulas de FADENA | UNDEF:** No início da lista você encontrará as gravações da nossa carrera, ministradas pelo professor **Nelson Monzón**, com **marcas temporais incluídas** para facilitar el estudo.
-2. **Aulas de FAMAF | UNC:** Prácticos e teóricos grabados na Faculdade de Matemática, Astronomía, Física e Computação da Universidade Nacional de Córdoba.
-
-### Sobre o material
-⚠️ **Aviso:** A aula 2 de **FADENA | UNDEF** brilha por sua ausência.
+1. **Aulas de FADENA | UNDEF:** No início da lista você encontrará as gravações da nossa carreira, ministradas pelo professor **Nelson Monzón**, com **marcas temporais incluídas** para facilitar o estudo.
+   - ~~⚠️ **Aviso:** A aula 2 de FADENA | UNDEF brilha por sua ausência.~~
+2. **Aulas de FAMAF | UNC:** Prácticos e teóricos gravados na Faculdade de Matemática, Astronomia, Física e Computação da Universidade Nacional de Córdoba.
 
 ### Material Adicional
 Se você procura guias de exercícios, resumos ou exames anteriores, pode conferir esta pasta:

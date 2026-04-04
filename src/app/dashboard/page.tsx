@@ -41,6 +41,10 @@ export default function DashboardPage() {
     setIsLoaded(true)
   }, [])
 
+  useEffect(() => {
+    document.title = 'Ciberportero | Dashboard'
+  }, [])
+
   const [isFinished, setIsFinished] = useState(false);
   const [isClassesFinished, setIsClassesFinished] = useState(false);
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
@@ -96,7 +100,7 @@ export default function DashboardPage() {
   const userName = session?.user?.name || dt.guestUser
 
   return (
-    <div className="container fade-in page-container" style={{ maxWidth: '1200px', margin: '0 auto' }}>
+    <div className="container fade-in page-container">
       {/* Widget de Inscripciones (Izquierda) */}
       <div className={`sidebar-widget sidebar-widget-left`}>
           <div className="countdown-header">

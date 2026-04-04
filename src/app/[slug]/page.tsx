@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { ChevronLeft, Github, Youtube, ArrowUp, ArrowDown, X, Link2, Check } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { translations } from '../../lib/translations';
@@ -127,6 +128,7 @@ export default function Post() {
                         timeZone: 'UTC'
                     })}</span>
                     <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
                         components={{
                             a: ({ node, ...props }) => <a {...props} target="_blank" rel="noopener noreferrer" />,
                             img: ({ node, ...props }) => {
@@ -138,7 +140,8 @@ export default function Post() {
                                         onClick={() => setSelectedImage(src || null)}
                                     />
                                 );
-                            }
+                            },
+                            del: ({ node, ...props }) => <span style={{ color: '#ca8a04', fontWeight: '800' }} {...props} />
                         }}
                     >
                         {post.content}

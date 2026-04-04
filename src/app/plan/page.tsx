@@ -38,6 +38,10 @@ export default function PlanPage() {
     setIsLoaded(true)
   }, [])
 
+  useEffect(() => {
+    document.title = 'Ciberportero | Plan'
+  }, [])
+
   const [isFinished, setIsFinished] = useState(false);
   const [isClassesFinished, setIsClassesFinished] = useState(false);
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
@@ -190,7 +194,7 @@ export default function PlanPage() {
   if (!isLoaded) return null
 
   return (
-    <div className="container fade-in page-container" style={{ maxWidth: '1200px', margin: '0 auto' }}>
+    <div className="container fade-in page-container">
       {/* Widget de Inscripciones (Izquierda) */}
       <div className={`sidebar-widget sidebar-widget-left`}>
           <div className="countdown-header">

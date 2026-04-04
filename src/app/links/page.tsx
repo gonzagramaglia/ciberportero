@@ -76,7 +76,7 @@ export default function LinksPage() {
     const links = t.links || [];
 
     return (
-        <div className="container fade-in page-container" style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        <div className="container fade-in page-container">
             {/* Widget de Inscripciones (Izquierda) */}
             <div className={`sidebar-widget sidebar-widget-left`}>
                 <div className="countdown-header">
