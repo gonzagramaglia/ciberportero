@@ -6,7 +6,7 @@ import { useLanguage } from "@/context/LanguageContext"
 import { translations } from "@/lib/translations"
 import { curriculum, Subject } from "@/data/curriculum"
 import LanguageSwitcher from "@/components/LanguageSwitcher"
-import { CheckCircle, Info, Lock, ArrowLeft, Layers, Star, Zap, Github, Youtube, Search, X, Calendar } from "lucide-react"
+import { CheckCircle, Info, Lock, ArrowLeft, Layers, Star, Zap, Github, Youtube, Search, X, Calendar, ExternalLink } from "lucide-react"
 import NotificationBanners from "@/components/NotificationBanners"
 
 export default function PlanPage() {
@@ -293,7 +293,31 @@ export default function PlanPage() {
         <div style={{ marginTop: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '2rem' }}>
           <div>
             <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em' }}>{pt.title}</h1>
-            <p style={{ color: 'var(--muted)', fontSize: '1.2rem', marginTop: '0.5rem', fontWeight: '500' }}>{pt.subtitle}</p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
+              <p style={{ color: 'var(--muted)', fontSize: '1.2rem', margin: 0, fontWeight: '500' }}>{pt.subtitle}</p>
+              <a 
+                href="https://undef.edu.ar/fadena/wp-content/uploads/2025/10/Plan-de-estudios-CIBERDEFENSA.pdf" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="pdf-link"
+                style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '0.4rem', 
+                  fontSize: '0.85rem', 
+                  color: 'var(--accent)', 
+                  fontWeight: '700', 
+                  padding: '0.4rem 0.8rem', 
+                  background: 'rgba(0, 112, 243, 0.05)', 
+                  borderRadius: '10px',
+                  textDecoration: 'none',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <ExternalLink size={16} />
+                Plan Oficial (PDF)
+              </a>
+            </div>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'flex-end' }}>

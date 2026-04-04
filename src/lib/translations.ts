@@ -25,10 +25,10 @@ export const translations = {
             { name: 'Todo el Material de Estudio (Google Drive)', url: 'https://drive.google.com/drive/folders/1BqM0J_I4qXVZLzSvxdNcExtUlD_dkaBB', desc: 'Carpeta que centraliza el material de toda la cursada' },
             { name: 'Material del 1er Cuatri de 1er Año (Google Drive)', url: 'https://drive.google.com/drive/folders/1BnlGi3g2Rfu59RPlYi9RPJc1TqC_v-sE?usp=sharing', desc: 'Recursos clave para las materias del primer cuatrimestre' },
             { name: 'Material Esencial del Ingreso (Google Drive)', url: 'https://drive.google.com/drive/folders/1naGT9orvWN66OzA3lVpTB_wMqrXGDnkg', desc: 'Recursos para aprobar el curso de ingreso de la carrera' },
-            { name: '🛡️ Grupo General – Ciberdefesa (WhatsApp)', url: 'https://chat.whatsapp.com/F2NUFYbj4AYGvsETVhFSC1', desc: 'Comunidad principal con subgrupos para cada materia' },
+            { name: '🛡️ Grupo General – Ciberdefensa (WhatsApp)', url: 'https://chat.whatsapp.com/F2NUFYbj4AYGvsETVhFSC1', desc: 'Comunidad principal con subgrupos para cada materia' },
             { name: 'Los Magios - Lic. en Ciberdefensa (WhatsApp)', url: 'https://chat.whatsapp.com/HonLxwUP8JODfxHbLXXmhd', desc: 'Grupo de la comunidad de estudiantes para consultas y avisos' },
             { name: 'Lic. en Ciberdefensa 2026 (WhatsApp)', url: 'https://chat.whatsapp.com/KjlaP3RGYK94ekGZonwLHR', desc: 'Grupo específico para la cursada de la camada 2026' },
-            { name: 'Ciberdefesa FADENA (Discord)', url: 'https://discord.gg/AxqkVzYPeN', desc: 'Server oficial de la comunidad de estudiantes de FADENA' },
+            { name: 'Ciberdefensa FADENA (Discord)', url: 'https://discord.gg/AxqkVzYPeN', desc: 'Server oficial de la comunidad de estudiantes de FADENA' },
             { name: 'Comunidad Ciberdefensa Argentina (Discord)', url: 'https://discord.gg/zPWRAfUR82', desc: 'Espacio de estudio y networking de la comunidad nacional' },
         ],
         feedback: "¿Por qué elegimos Ciberdefensa?",
@@ -70,12 +70,12 @@ export const translations = {
             loginCta: "Ingresar"
         },
         dashboard: {
-            title: "Portal del Estudiante",
+            title: "Dashboard de Estudio",
             description: "<strong>Registrá tu avance académico</strong>, llevá el control de tus notas y organizá tus tareas del campus.",
             back: "← Voltar ao início",
             guestUser: "Estudiante Invitado",
             welcome: "Hola",
-            loading: "Cargando portal...",
+            loading: "Cargando dashboard...",
             stats: {
                 autoevaluaciones: "Autoevaluaciones",
                 parciales: "Exámenes Parciales",
@@ -114,7 +114,7 @@ export const translations = {
         },
         plan: {
             title: "Plan de Estudios",
-            subtitle: "Licenciatura em Ciberdefesa - UNDEF",
+            subtitle: "Licenciatura en Ciberdefensa - UNDEF",
             description: "<strong>Visualizá tu progreso</strong>, las correlatividades y las materias que vas desbloqueando.",
             completed: "Completada",
             inProgress: "En curso",
@@ -135,14 +135,14 @@ export const translations = {
             search: "Buscar materia o ID...",
             storageNotice: "Tus progresos se guardan localmente en este navegador.",
             subjectNames: {
-                1: "Análisis Matemático I", 2: "Álgebra I", 3: "Gestão de Serviços de Informação", 4: "Inglês I", 5: "Sistemas Operativos I",
-                6: "Sistemas de Tratamiento de Datos", 7: "Infraestrutura de Telecomunicações", 8: "Sociedade e Estado", 9: "Sistemas Operativos II", 10: "Lenguajes de Programación",
-                11: "Análisis Matemático II", 12: "Álgebra II", 13: "Probabilidad y Estadística", 14: "Inglés II", 15: "Tecnologia Operacional",
-                16: "Programación Segura", 17: "Ciberseguridad Aplicada", 18: "Dispositivos Remotos e IoT", 19: "Ética Profissional", 20: "Gestão de Segurança da Informação",
+                1: "Análisis Matemático I", 2: "Álgebra I", 3: "Gestión de Servicios de Información", 4: "Inglés I", 5: "Sistemas Operativos I",
+                6: "Sistemas de Tratamiento de Datos", 7: "Infraestructura de Telecomunicaciones", 8: "Sociedad y Estado", 9: "Sistemas Operativos II", 10: "Lenguajes de Programación",
+                11: "Análisis Matemático II", 12: "Álgebra II", 13: "Probabilidad y Estadística", 14: "Inglés II", 15: "Tecnología Operacional",
+                16: "Programación Segura", 17: "Ciberseguridad Aplicada", 18: "Dispositivos Remotos e Internet de las Cosas", 19: "Ética Profesional", 20: "Gestión de Seguridad de la Información",
                 21: "Protección de Infraestructuras Críticas", 22: "Metodologías de Análisis de Riesgos", 23: "Análisis de Escenarios y Capacidades", 24: "Gobierno y Políticas Públicas", 25: "Informática Forense",
-                26: "Relaciones Internacionales", 27: "IA y Aprendizado de Máquina", 28: "Geopolítica", 29: "Derecho a la Defensa Nacional", 30: "Sistema de Inteligencia Nacional",
-                31: "Investigación Operativa", 32: "Criptografía Aplicada", 33: "Gestão de Projetos", 34: "Instrumento Militar e Sistemas de Armas", 35: "Modelos e Simulação",
-                36: "Prospectiva Estratégica", 37: "Atores no Quinto Domínio"
+                26: "Relaciones Internacionales", 27: "IA y Aprendizaje de Máquina", 28: "Geopolítica", 29: "Derecho a la Defensa Nacional", 30: "Sistema de Inteligencia Nacional",
+                31: "Investigación Operativa", 32: "Criptografía Aplicada", 33: "Gestión de Proyectos", 34: "Instrumento Militar y Sistemas de Armas", 35: "Modelos y Simulación",
+                36: "Prospectiva Estratégica", 37: "Actores en el Quinto Dominio"
             }
         }
     },

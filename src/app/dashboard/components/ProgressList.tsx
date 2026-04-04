@@ -1,17 +1,14 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Plus, Trash2, CheckCircle, Clock, Star, ExternalLink, Book, MessageSquare, Check, Zap } from "lucide-react"
+import { useState, useEffect, useRef } from "react"
+import { Plus, Trash2, CheckCircle, Clock, Star, ExternalLink, Book, MessageSquare, Check, Zap, Search } from "lucide-react"
 import { useLanguage } from "@/context/LanguageContext"
 import { translations } from "@/lib/translations"
 
-const MATERIAS_1CUAT = [
-    "[01] Análisis Matemático I",
-    "[02] Álgebra I",
-    "[03] Gestión de Servicios de Información",
-    "[04] Inglés I",
-    "[05] Sistemas Operativos I"
-]
+import { curriculum, Subject } from "@/data/curriculum"
+
+const DASHBOARD_CURRICULUM = curriculum.filter(s => s.year <= 2);
+const ALL_TERMS = Array.from(new Set(DASHBOARD_CURRICULUM.map(s => `${s.year}.${s.term}`))).sort();
 
 export function ProgressList() {
   const { lang } = useLanguage()
@@ -19,18 +16,69 @@ export function ProgressList() {
   
   const [examTitle, setExamTitle] = useState("")
   const [type, setType] = useState("autoevaluacion")
-  const [materia, setMateria] = useState(MATERIAS_1CUAT[0])
+  const [selectedTerm, setSelectedTerm] = useState("1.1")
+  const [materia, setMateria] = useState("")
   const [campusLink, setCampusLink] = useState("")
   const [calificacion, setCalificacion] = useState("")
   const [observaciones, setObservaciones] = useState("")
   const [fecha, setFecha] = useState(new Date().toISOString().split('T')[0])
   const [progress, setProgress] = useState<any[]>([])
   const [isAdding, setIsAdding] = useState(false)
+  
+  // Advanced Filter State
+  const [filterYear, setFilterYear] = useState<string | "Todas">("1")
+  const [filterTerm, setFilterTerm] = useState<string | "Todas">("1")
   const [filterMateria, setFilterMateria] = useState("Todas")
   
   // Deletion Confirmation States
   const [confirmingDelete, setConfirmingDelete] = useState<string | null>(null)
   const [deleteTimer, setDeleteTimer] = useState<any>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  const getSubjectName = (s: Subject) => {
+    const pt = translations[lang].plan;
+    const name = pt.subjectNames[s.id as keyof typeof pt.subjectNames] || s.name;
+    return `[${s.id.toString().padStart(2, '0')}] ${name}`;
+  };
+
+  const getSubjectTerm = (subjectName: string) => {
+    const idMatch = subjectName.match(/(\d+)/);
+    if (!idMatch) return null;
+    const id = parseInt(idMatch[1]);
+    const subject = curriculum.find(s => s.id === id);
+    return subject ? `${subject.year}.${subject.term}` : null;
+  };
+
+  const getTermLabel = (termKey: string) => {
+    if (termKey === "Todas") return t.filters.all;
+    const [y, t_num] = termKey.split('.');
+    return `${y}º Año - ${t_num}º Cuatri`;
+  };
+
+  const [materiaSearch, setMateriaSearch] = useState("")
+  const [isMateriaDropdownOpen, setIsMateriaDropdownOpen] = useState(false)
+  
+  // Subjects for the FORM (Searchable across all 1st and 2nd year)
+  const subjectsInForm = DASHBOARD_CURRICULUM.map(getSubjectName);
+
+  const filteredSubjectsInForm = subjectsInForm.filter(s => 
+    s.toLowerCase().includes(materiaSearch.toLowerCase())
+  );
+
+  // Set default materia when term changes or component mounts
+  useEffect(() => {
+    const subjectsInTerm = DASHBOARD_CURRICULUM
+      .filter(s => `${s.year}.${s.term}` === selectedTerm)
+      .map(getSubjectName);
+      
+    if (subjectsInTerm.length > 0 && (!materia || !subjectsInTerm.includes(materia))) {
+        // Only auto-change if user hasn't typed anything or item is totally different
+        if (!materiaSearch || !DASHBOARD_CURRICULUM.some(s => getSubjectName(s) === materiaSearch)) {
+          setMateria(subjectsInTerm[0]);
+          setMateriaSearch(subjectsInTerm[0]);
+        }
+    }
+  }, [selectedTerm, lang]);
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -53,6 +101,19 @@ export function ProgressList() {
     localStorage.setItem("ciberportero_progress", JSON.stringify(newList))
   }
 
+  // Handle Close Search Dropdown on Click Outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsMateriaDropdownOpen(false);
+        // If we have a selected materia, make sure search text matches it
+        if (materia) setMateriaSearch(materia);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [materia]);
+
   function handleAdd(e: React.FormEvent) {
     e.preventDefault()
     setIsAdding(true)
@@ -73,6 +134,8 @@ export function ProgressList() {
     saveProgress(newList)
     
     setExamTitle("")
+    setMateria("")
+    setMateriaSearch("")
     setCampusLink("")
     setCalificacion("")
     setObservaciones("")
@@ -95,16 +158,42 @@ export function ProgressList() {
     }
   }
 
-  // Filter and dynamic grouping
+  // REFINED FILTERING LOGIC
+  const currentFilterTermKey = (filterYear === "Todas" || filterTerm === "Todas") ? "Todas" : `${filterYear}.${filterTerm}`;
+
+  const progressByTerm = filterYear === "Todas"
+      ? progress
+      : progress.filter(p => {
+          const term = getSubjectTerm(p.subject);
+          if (!term) return false;
+          const [y, t] = term.split('.');
+          if (filterTerm === "Todas") return y === filterYear;
+          return term === `${filterYear}.${filterTerm}`;
+      });
+
   const filteredProgress = filterMateria === "Todas" 
-    ? progress 
-    : progress.filter(p => p.subject === filterMateria)
+    ? progressByTerm 
+    : progressByTerm.filter(p => p.subject === filterMateria);
 
   const grouped = filteredProgress.reduce((acc: any, item: any) => {
     if (!acc[item.subject]) acc[item.subject] = []
     acc[item.subject].push(item)
     return acc
   }, {})
+
+  // Dynamic Subjects for current selection
+  const subjectsInSelection = DASHBOARD_CURRICULUM
+      .filter(s => {
+          if (filterYear === "Todas") return true;
+          if (filterTerm === "Todas") return s.year === parseInt(filterYear);
+          return s.year === parseInt(filterYear) && s.term === parseInt(filterTerm);
+      })
+      .map(getSubjectName);
+
+  // Counts
+  const getMateriaCount = (m: string) => progress.filter(p => p.subject === m).length;
+  const getYearCount = (y: string) => progress.filter(p => getSubjectTerm(p.subject)?.startsWith(y)).length;
+  const getTermCount = (y: string, t: string) => progress.filter(p => getSubjectTerm(p.subject) === `${y}.${t}`).length;
 
   return (
     <div className="progress-section">
@@ -117,16 +206,80 @@ export function ProgressList() {
         <div className="form-container">
             {/* Row 1: Primary Selection */}
             <div className="form-row">
-                <div className="form-group flex-1-2">
-                    <label>{t.tracking.materia}</label>
+                <div className="form-group">
+                    <label>{translations[lang].plan.year} / {translations[lang].plan.term}</label>
                     <select 
-                        value={materia} 
-                        onChange={e => setMateria(e.target.value)}
+                        value={selectedTerm} 
+                        onChange={e => setSelectedTerm(e.target.value)}
                     >
-                        {MATERIAS_1CUAT.map(m => (
-                            <option key={m} value={m}>{m}</option>
+                        {ALL_TERMS.map(term => (
+                            <option key={term} value={term}>{getTermLabel(term)}</option>
                         ))}
                     </select>
+                </div>
+                <div className="form-group flex-1-2" style={{ position: 'relative' }} ref={dropdownRef}>
+                    <label>{t.tracking.materia}</label>
+                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                        <Book size={18} style={{ position: 'absolute', left: '1.2rem', color: 'var(--muted)', opacity: 0.5, zIndex: 1 }} />
+                        <input 
+                            type="text"
+                            placeholder={translations[lang].plan.search}
+                            value={materiaSearch}
+                            onFocus={() => {
+                                setMateriaSearch("");
+                                setIsMateriaDropdownOpen(true);
+                            }}
+                            onChange={(e) => {
+                                setMateriaSearch(e.target.value);
+                                setMateria(""); // Clear selection to force pick from list
+                                setIsMateriaDropdownOpen(true);
+                            }}
+                            style={{ paddingLeft: '3.2rem' }}
+                        />
+                    </div>
+                    
+                    {isMateriaDropdownOpen && (
+                        <div 
+                          className="subject-dropdown" 
+                          style={{ 
+                            position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 100, 
+                            background: 'white', borderRadius: '16px', marginTop: '0.5rem',
+                            border: '1px solid var(--border)', boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
+                            maxHeight: '250px', overflowY: 'auto', padding: '0.5rem'
+                          }}
+                        >
+                            {filteredSubjectsInForm.map(s => (
+                                <div 
+                                    key={s}
+                                    onClick={() => {
+                                        setMateria(s);
+                                        setMateriaSearch(s);
+                                        setIsMateriaDropdownOpen(false);
+                                        
+                                        // Auto-update term for user convenience
+                                        const term = getSubjectTerm(s);
+                                        if (term) setSelectedTerm(term);
+                                    }}
+                                    style={{ 
+                                        padding: '0.8rem 1rem', borderRadius: '10px', cursor: 'pointer',
+                                        background: materia === s ? 'black' : 'transparent',
+                                        color: materia === s ? 'white' : 'inherit',
+                                        fontSize: '0.9rem', fontWeight: 600,
+                                        transition: 'background 0.2s'
+                                    }}
+                                    onMouseEnter={(e) => { if (materia !== s) e.currentTarget.style.background = '#f8fafc' }}
+                                    onMouseLeave={(e) => { if (materia !== s) e.currentTarget.style.background = 'transparent' }}
+                                >
+                                    {s}
+                                </div>
+                            ))}
+                            {filteredSubjectsInForm.length === 0 && (
+                                <div style={{ padding: '1rem', color: 'var(--muted)', textAlign: 'center', fontSize: '0.85rem' }}>
+                                    {t.list.empty}
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
                 <div className="form-group">
                     <label>{t.tracking.tipo}</label>
@@ -188,23 +341,103 @@ export function ProgressList() {
         </div>
       </form>
 
-      {/* Filter Bar */}
-      <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap', marginBottom: '2.5rem', borderBottom: '1px solid var(--border)', paddingBottom: '2.2rem' }}>
-        <button 
-          onClick={() => setFilterMateria("Todas")}
-          style={{ padding: '0.7rem 1.4rem', borderRadius: '100px', background: filterMateria === "Todas" ? 'var(--accent)' : 'white', color: filterMateria === "Todas" ? 'white' : 'var(--muted)', border: '1px solid var(--border)', fontSize: '0.9rem', fontWeight: '800', cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.2s' }}
-        >
-          {t.filters.all}
-        </button>
-        {MATERIAS_1CUAT.map(m => (
-          <button 
-            key={m} 
-            onClick={() => setFilterMateria(m)}
-            style={{ padding: '0.7rem 1.4rem', borderRadius: '100px', background: filterMateria === m ? 'var(--accent)' : 'white', color: filterMateria === m ? 'white' : 'var(--muted)', border: '1px solid var(--border)', fontSize: '0.9rem', fontWeight: '800', cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.2s' }}
-          >
-            {m.split('] ')[1] || m}
-          </button>
-        ))}
+      {/* Modern Filter Dashboard */}
+      <div className="filter-dashboard" style={{ 
+          background: 'white', 
+          borderRadius: '24px', 
+          padding: '1.5rem', 
+          border: '1px solid var(--border)', 
+          marginBottom: '3rem',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '1.5rem',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.02)'
+      }}>
+        <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', alignItems: 'center' }}>
+            <div className="filter-group">
+                <label style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--muted)', textTransform: 'uppercase', marginBottom: '0.6rem', display: 'block' }}>{translations[lang].plan.year}</label>
+                <div style={{ display: 'flex', gap: '0.4rem' }}>
+                    {["Todas", "1", "2"].map(y => (
+                        <button 
+                            key={y}
+                            onClick={() => { setFilterYear(y); setFilterTerm("Todas"); setFilterMateria("Todas"); }}
+                            style={{ 
+                                padding: '0.5rem 1rem', borderRadius: '10px', fontSize: '0.85rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s',
+                                background: filterYear === y ? 'black' : '#f1f5f9',
+                                color: filterYear === y ? 'white' : '#475569',
+                                border: 'none'
+                            }}
+                        >
+                            {y === "Todas" ? t.filters.all : `${y}º ${translations[lang].plan.year}`}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {filterYear !== "Todas" && (
+                <div className="filter-group">
+                    <label style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--muted)', textTransform: 'uppercase', marginBottom: '0.6rem', display: 'block' }}>{translations[lang].plan.term}</label>
+                    <div style={{ display: 'flex', gap: '0.4rem' }}>
+                        {["Todas", "1", "2"].map(term => (
+                            <button 
+                                key={term}
+                                onClick={() => { setFilterTerm(term); setFilterMateria("Todas"); }}
+                                style={{ 
+                                    padding: '0.5rem 1rem', borderRadius: '10px', fontSize: '0.85rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s',
+                                    background: filterTerm === term ? 'black' : '#f8fafc',
+                                    color: filterTerm === term ? 'white' : '#64748b',
+                                    border: 'none'
+                                }}
+                            >
+                                {term === "Todas" ? t.filters.all : `${term}º ${translations[lang].plan.term}`}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
+
+        <div className="filter-subjects">
+            <label style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--muted)', textTransform: 'uppercase', marginBottom: '0.8rem', display: 'block' }}>{t.tracking.materia}</label>
+            <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
+                <button 
+                    onClick={() => setFilterMateria("Todas")}
+                    style={{ 
+                        padding: '0.5rem 1.2rem', borderRadius: '100px', fontSize: '0.85rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s',
+                        background: filterMateria === "Todas" ? 'black' : 'white',
+                        color: filterMateria === "Todas" ? 'white' : '#64748b',
+                        border: '1px solid #e2e8f0'
+                    }}
+                >
+                    {t.filters.all} ({progressByTerm.length})
+                </button>
+                {subjectsInSelection.map(m => {
+                    const count = getMateriaCount(m);
+                    // Only show subjects with records OR if a specific semester is picked
+                    if (count === 0 && filterTerm === "Todas" && filterYear === "Todas") return null;
+                    
+                    const isBlocked = count === 0;
+
+                    return (
+                        <button 
+                            key={m} 
+                            onClick={() => !isBlocked && setFilterMateria(m)}
+                            disabled={isBlocked}
+                            style={{ 
+                                padding: '0.5rem 1.2rem', borderRadius: '100px', fontSize: '0.85rem', fontWeight: 700, cursor: isBlocked ? 'not-allowed' : 'pointer', transition: 'all 0.2s',
+                                background: filterMateria === m ? 'black' : 'white',
+                                color: filterMateria === m ? 'white' : isBlocked ? '#94a3b8' : '#64748b',
+                                border: `1px solid ${filterMateria === m ? 'black' : isBlocked ? '#f1f5f9' : '#e2e8f0'}`,
+                                opacity: isBlocked ? 0.7 : 1,
+                                filter: isBlocked ? 'grayscale(1)' : 'none'
+                            }}
+                        >
+                            {m} {count > 0 ? `(${count})` : ''}
+                        </button>
+                    );
+                })}
+            </div>
+        </div>
       </div>
 
       <div className="grouped-list" style={{ 
