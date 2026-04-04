@@ -2,6 +2,7 @@
 title: "Como passar no Curso de IVU"
 date: "2026-03-04"
 description: "Guia para passar com 80% ou mais no Curso de Introdução à Vida Universitária do Ingresso a FADENA, requisito para se inscrever nas matérias do curso de Ciberdefesa"
+hidden: true
 ---
 
 # Como passar no Curso de IVU

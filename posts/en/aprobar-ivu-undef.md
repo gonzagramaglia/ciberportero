@@ -2,6 +2,7 @@
 title: "How to pass the IVU Course"
 date: "2026-03-04"
 description: "Guide to passing with 80% or higher the Introduction to University Life Course of FADENA's Admission, a requirement to enroll in the semester subjects of the Bachelor's in Cyberdefense"
+hidden: true
 ---
 
 # How to pass the IVU Course

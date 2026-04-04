@@ -33,8 +33,10 @@ export function getAllPosts(lang: string = 'es'): Omit<PostData, 'content'>[] {
         title: matterResult.data.title,
         date: matterResult.data.date,
         description: matterResult.data.description,
+        hidden: matterResult.data.hidden === true,
       };
-    });
+    })
+    .filter((post) => !post.hidden);
 
   return allPostsData.sort((a, b) => (a.date < b.date ? 1 : -1));
 }

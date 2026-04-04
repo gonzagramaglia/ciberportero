@@ -2,6 +2,7 @@
 title: "Cómo aprobar el Curso de IVU"
 date: "2026-03-04"
 description: "Guía para aprobar con 80% o más el Curso de Introducción a la Vida Universitaria del Ingreso a FADENA, requisito para inscribirse a las materias de la carrera de Ciberdefensa"
+hidden: true
 ---
 
 # Cómo aprobar el Curso de IVU
