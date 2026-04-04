@@ -19,6 +19,14 @@ export default function Home() {
     const t = translations[lang];
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
+    const handleImageClick = (src: string) => {
+        if (typeof window !== 'undefined' && window.innerWidth < 768 && src === '/cyberdefense-fadena-undef.png') {
+            window.open('https://undef.edu.ar/fadena/carreras-de-grado/licciberdefensa/', '_blank');
+            return;
+        }
+        setSelectedImage(src);
+    };
+
     useEffect(() => {
         setIsGuest(localStorage.getItem("ciberportero_guest") === "true");
         const fetchPosts = async () => {
@@ -269,21 +277,26 @@ export default function Home() {
                             </h2>
                         </div>
 
-                        <div className="intro-cover" onClick={() => setSelectedImage('/cyberdefense-fadena-undef.png')}>
+                        <a 
+                            href="https://undef.edu.ar/fadena/carreras-de-grado/licciberdefensa/" 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="intro-cover"
+                        >
                             <img
                                 src="/cyberdefense-fadena-undef.png"
                                 alt="Cyberdefense FADENA UNDEF"
-                                style={{ width: '100%', borderRadius: '12px', cursor: 'zoom-in' }}
+                                style={{ width: '100%', borderRadius: '12px' }}
                             />
-                        </div>
+                        </a>
 
-                        <div className="intro-cover" onClick={() => setSelectedImage('/moodle-siu.png')}>
+                        <Link href="/links" className="intro-cover">
                             <img
                                 src="/moodle-siu.png"
                                 alt="Moodle y SIU"
-                                style={{ width: '100%', borderRadius: '12px', cursor: 'zoom-in' }}
+                                style={{ width: '100%', borderRadius: '12px' }}
                             />
-                        </div>
+                        </Link>
 
                         <div style={{ marginTop: '1.5rem', marginBottom: '0.8rem' }}>
                             <span className="featured-tag" style={{ background: '#f8fafc', color: 'var(--muted)', border: '1px solid var(--border)', marginBottom: '1rem' }}>Info</span>
@@ -293,7 +306,7 @@ export default function Home() {
                             </h2>
                         </div>
 
-                        <div className="intro-cover" onClick={() => setSelectedImage('/intro.png')}>
+                        <div className="intro-cover" onClick={() => handleImageClick('/intro.png')}>
                             <img
                                 src="/intro.png"
                                 alt="Calendario Académico de Grado 2026"

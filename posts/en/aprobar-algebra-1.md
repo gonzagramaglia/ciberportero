@@ -1,6 +1,6 @@
 ---
 title: "How to pass [02] Algebra I"
-date: "2026-04-02"
+date: "2026-04-03"
 description: "Recommended resources for the course: Recorded classes with full timestamps."
 ---
 

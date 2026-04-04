@@ -1,6 +1,6 @@
 ---
 title: "Como aprovar [02] Álgebra I"
-date: "2026-04-02"
+date: "2026-04-03"
 description: "Recursos recomendados para cursar a matéria: Aulas gravadas com marcas temporais completas."
 ---
 
