@@ -59,7 +59,7 @@ export default function Home() {
 
     useEffect(() => {
         const enrollmentTarget = new Date('2026-04-01T23:59:59-03:00').getTime();
-        const classesTarget = new Date('2026-04-06T09:00:00-03:00').getTime();
+        const classesTarget = new Date('2026-04-13T09:00:00-03:00').getTime();
         
         const updateCountdowns = () => {
             const now = new Date().getTime();

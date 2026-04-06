@@ -25,7 +25,7 @@ export default function LinksPage() {
 
     useEffect(() => {
         const enrollmentTarget = new Date('2026-04-01T23:59:59-03:00').getTime();
-        const classesTarget = new Date('2026-04-06T09:00:00-03:00').getTime();
+        const classesTarget = new Date('2026-04-13T09:00:00-03:00').getTime();
         
         const updateCountdowns = () => {
             const now = new Date().getTime();
@@ -183,14 +183,15 @@ export default function LinksPage() {
                         const isWhatsApp = link.url.includes('chat.whatsapp.com');
                         const isDiscord = link.url.includes('discord.gg');
                         const isDrive = link.url.includes('drive.google.com');
+                        const isYoutube = link.url.includes('youtube.com');
                         const isMoodle = link.url.includes('campus.fadena');
                         const isSIU = link.url.includes('autogestion.fadena');
-                        const hasIcon = isWhatsApp || isDiscord || isDrive || isMoodle || isSIU;
+                        const hasIcon = isWhatsApp || isDiscord || isDrive || isMoodle || isSIU || isYoutube;
 
-                        const iconSrc = isWhatsApp ? '/wsp.png' : isDiscord ? '/discord.png' : isDrive ? '/drive.webp' : isMoodle ? '/moodle.png' : '/siu-guarani.png';
-                        const iconAlt = isWhatsApp ? 'WhatsApp' : isDiscord ? 'Discord' : isDrive ? 'Google Drive' : isMoodle ? 'Moodle' : 'SIU Guaraní';
-                        const iconW = isDiscord ? 34 : isDrive ? 46 : 40;
-                        const iconH = isDrive ? 38 : 40;
+                        const iconSrc = isWhatsApp ? '/wsp.png' : isDiscord ? '/discord.png' : isDrive ? '/drive.webp' : isMoodle ? '/moodle.png' : isYoutube ? '/youtube.png' : '/siu-guarani.png';
+                        const iconAlt = isWhatsApp ? 'WhatsApp' : isDiscord ? 'Discord' : isDrive ? 'Google Drive' : isMoodle ? 'Moodle' : isYoutube ? 'YouTube' : 'SIU Guaraní';
+                        const iconW = isDiscord ? 34 : isDrive ? 46 : isYoutube ? 44 : 40;
+                        const iconH = isDrive ? 38 : isYoutube ? 44 : 40;
 
                         return (
                             <li key={link.url} className="post-item" style={{ marginBottom: 0 }}>
