@@ -324,7 +324,7 @@ export const translations = {
         },
         calendar: {
             title: "Academic Calendar",
-            description: "<strong>Plan your year</strong>, check key dates and keep track of your student schedule.",
+            description: "<strong>Anticipate critical dates</strong>, plan your academic cycle, and maintain control of your studies.",
             loading: "Loading calendar...",
             months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
             days: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
@@ -339,7 +339,7 @@ export const translations = {
                 holyWeek: "Holy Week",
                 examWeek: "Exam week"
             },
-            notice: "As soon as the first exams or deliverables are announced, the calendar will be updated with the key dates.",
+            notice: "As exams and deliverables are announced, the calendar will be updated accordingly.",
             periodFilter: "Semester",
             firstPeriod: "1st semester of 1st year",
             periodMessage: "This is currently the only option"
@@ -497,7 +497,7 @@ export const translations = {
         },
         calendar: {
             title: "Calendário Acadêmico",
-            description: "<strong>Planeje seu ano</strong>, verifique datas importantes e mantenha o controle de sua agenda estudantil.",
+            description: "<strong>Antecipe datas críticas</strong>, planeje seu ciclo letivo e mantenha o controle de seus estudos.",
             loading: "Carregando calendário...",
             months: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
             days: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
@@ -512,7 +512,7 @@ export const translations = {
                 holyWeek: "Semana Santa",
                 examWeek: "Semana de exames"
             },
-            notice: "À medida que os primeiros exames ou entregas forem anunciados, o calendário será atualizado com as datas principales.",
+            notice: "O calendário será atualizado à medida que as entregas e exames forem anunciados.",
             periodFilter: "Semestre",
             firstPeriod: "1º semestre do 1º ano",
             periodMessage: "Por enquanto esta é a única opção"

@@ -1,7 +1,8 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState, Suspense } from 'react';
 import { Locale, translations } from '@/lib/translations';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 type LanguageContextType = {
     lang: Locale;
@@ -10,22 +11,51 @@ type LanguageContextType = {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
+function LanguageContent({ children }: { children: React.ReactNode }) {
     const [lang, setLangState] = useState<Locale>('es');
     const [mounted, setMounted] = useState(false);
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
 
     useEffect(() => {
-        const savedLang = localStorage.getItem('lang') as Locale;
-        if (savedLang && translations[savedLang]) {
-            setLangState(savedLang);
+        const locales: Locale[] = ['en', 'pt', 'es'] as Locale[];
+        
+        // Detection strategy: URL > SearchParams > Cookie > LocalStorage
+        const pathSegments = pathname.split('/');
+        const pathLang = pathSegments[1] as Locale;
+        const queryLang = searchParams.get('lang') as Locale;
+        const cookieLang = typeof document !== 'undefined' 
+            ? document.cookie.split('; ').find(row => row.startsWith('lang='))?.split('=')[1] as Locale
+            : null;
+
+        let detectedLang: Locale | null = null;
+
+        if (locales.includes(pathLang)) {
+            detectedLang = pathLang;
+        } else if (locales.includes(queryLang)) {
+            detectedLang = queryLang;
+        } else if (cookieLang && locales.includes(cookieLang)) {
+            detectedLang = cookieLang;
+        }
+
+        if (detectedLang && translations[detectedLang]) {
+            setLangState(detectedLang);
+            localStorage.setItem('lang', detectedLang);
+        } else {
+            const savedLang = localStorage.getItem('lang') as Locale;
+            if (savedLang && translations[savedLang]) {
+                setLangState(savedLang);
+            }
         }
         setMounted(true);
-    }, []);
+    }, [pathname, searchParams]);
 
     const setLang = (newLang: Locale) => {
-        console.log('Setting language to:', newLang);
         setLangState(newLang);
         localStorage.setItem('lang', newLang);
+        if (typeof document !== 'undefined') {
+            document.cookie = `lang=${newLang}; path=/; max-age=31536000`;
+        }
     };
 
     if (!mounted) return null;
@@ -34,6 +64,16 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         <LanguageContext.Provider value={{ lang, setLang }}>
             {children}
         </LanguageContext.Provider>
+    );
+}
+
+export function LanguageProvider({ children }: { children: React.ReactNode }) {
+    return (
+        <Suspense fallback={null}>
+            <LanguageContent>
+                {children}
+            </LanguageContent>
+        </Suspense>
     );
 }
 
