@@ -11,23 +11,23 @@ This site is **heavily focused on the needs of students** of the **Bachelor's De
 - **Smart Locking System**: Subjects are automatically "locked" (🔒) until their prerequisites are completed, preventing planning errors.
 - **Objective-Based Progress**: Toggle between **Analista (Intermediate 📜)** and **Licenciatura (Full 🎓)** objectives. All statistics and dependency lists update in real-time.
 - **Reactive Search Engine**: A fast, accent-insensitive search bar to find subjects by name or ID instantly.
-- **Tri-State Subject Tracking**: Manage your semester with precision. Subjects now support three distinct states: **Pending** (⚪), **In Progress** (🔵), and **Completed** (🟢), allowing for dynamic career visualization.
+- **Tri-State Subject Tracking**: Manage your semester with precision. Subjects now support three distinct states: **Pending** (⚪), **In Progress** (🟡), and **Completed** (🟢), allowing for dynamic career visualization.
 
-## 📊 Student Dashboard (Academic Progress)
+## 📅 Academic Calendar & Security
 
-Beyond the curriculum roadmap, Ciberportero now features a **high-density tracking dashboard** to manage your daily performance:
+Ciberportero includes a centralized command center to keep you informed of critical dates and security status:
 
-- **Grid-Based Architecture**: A responsive, 3-column card layout (1/3 width) designed to maximize information density.
-- **Hierarchical Sorting**: Subjects are ordered numerically (e.g., [01], [02]...) to match the official academic sequence exactly.
-- **Activity Prioritization**: Within each subject, **Practical Works (TPs)** and **Self-Assessments** appear first, followed by Exams, keeping current tasks most visible.
-- **Unified Analytics**: A centered mission-control bar providing real-time totals of your academic milestones across the entire career.
-- **No-Friction Access**: Direct entry from the homepage with no mandatory sign-in. Your progress is yours, stored exclusively in **LocalStorage**.
+- **Interactive Timeline**: A modern, full-feature calendar interface to manage your academic year at a glance.
+- **Strategic Filtering**: Filter events by subject or academic period (e.g., *1st Semester / 1st Year*) to focus on what matters.
+- **Critical Security Alerts**: High-visibility (Red/Danger) notification system for urgent campus alerts, such as mandatory password resets or system outages.
+- **Real-Time Roadmap**: Synchronized dates for exams, deliverable announcements, and administrative periods (Enrollment, Classes Start).
+- **Feedback Loop**: Integrated direct-contact mechanism for reporting missing dates or data corrections.
 
 ## ✨ Technical Highlights
 
 - **Progress Persistence**: Track your degree progress without requiring an account. Data is securely saved in your browser's **LocalStorage**.
 - **Performance-First Design**: Built with a "Mission Control" aesthetic, optimized for information density and horizontal scanning. 
-- **Full Localization (ES / EN / PT)**: The entire platform—including the student dashboard and tracking logic—is localized across three languages.
+- **Full Localization (ES / EN / PT)**: The entire platform—including the academic plan and calendar—is localized across three languages.
 - **Regional Branding**: A clean, premium UI synchronized with the **Flag of Córdoba** color palette and UNDEF institutional aesthetics.
 - **Security-First Approach**: Built following strict Ciberdefense principles (see [BEST_PRACTICES.md](./BEST_PRACTICES.md)).
 

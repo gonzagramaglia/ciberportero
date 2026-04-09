@@ -151,7 +151,7 @@ export const translations = {
         },
         calendar: {
             title: "Calendario Académico",
-            description: "Planificá tu año, revisá las fechas clave y mantené el control de tu agenda de estudios.",
+            description: "<strong>Anticipá fechas críticas</strong>, planificá tu ciclo lectivo y mantené el control de tus estudios.",
             loading: "Cargando calendario...",
             months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
             days: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
