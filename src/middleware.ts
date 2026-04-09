@@ -7,27 +7,25 @@ export function middleware(request: NextRequest) {
   const segments = pathname.split('/');
   const urlLang = segments[1];
 
-  // 1. URL already has a locale
+  // 1. If URL has a locale prefix
   if (locales.includes(urlLang)) {
-    // Correctly rewrite internally to the base path
     const newPathname = '/' + segments.slice(2).join('/');
     const url = request.nextUrl.clone();
     url.pathname = newPathname || '/';
-    url.searchParams.set('lang', urlLang);
     
     const response = NextResponse.rewrite(url);
-    // Ensure cookie is in sync with URL
+    // Sync cookie
     response.cookies.set('lang', urlLang, { path: '/', maxAge: 31536000 });
     return response;
   }
 
-  // 2. URL does NOT have a locale. Check cookie.
-  const langCookie = request.cookies.get('lang')?.value;
-  if (langCookie && locales.includes(langCookie) && langCookie !== 'es') {
-    // Redirect to the localized version to keep URL consistency
+  // 2. If no locale, but we have a cookie, we rewrite INTERNALLY (invisible to user)
+  const cookieLang = request.cookies.get('lang')?.value;
+  if (cookieLang && locales.includes(cookieLang) && cookieLang !== 'es') {
     const url = request.nextUrl.clone();
-    url.pathname = `/${langCookie}${pathname === '/' ? '' : pathname}`;
-    return NextResponse.redirect(url);
+    // We don't redirect, just rewrite so the server knows the lang
+    // The client will also see the cookie
+    return NextResponse.rewrite(url);
   }
 
   return NextResponse.next();

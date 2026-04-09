@@ -11,8 +11,9 @@ type LanguageContextType = {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-function LanguageContent({ children }: { children: React.ReactNode }) {
-    const [lang, setLangState] = useState<Locale>('es');
+function LanguageContent({ children, initialLang }: { children: React.ReactNode, initialLang?: Locale }) {
+    // Initialize with server-provided lang to avoid flicker
+    const [lang, setLangState] = useState<Locale>(initialLang || 'es');
     const [mounted, setMounted] = useState(false);
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -20,10 +21,10 @@ function LanguageContent({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         const locales: Locale[] = ['en', 'pt', 'es'] as Locale[];
         
-        // Detection strategy: URL > SearchParams > Cookie > LocalStorage
+        // Detection strategy: URL > Cookie > LocalStorage
         const pathSegments = pathname.split('/');
         const pathLang = pathSegments[1] as Locale;
-        const queryLang = searchParams.get('lang') as Locale;
+        
         const cookieLang = typeof document !== 'undefined' 
             ? document.cookie.split('; ').find(row => row.startsWith('lang='))?.split('=')[1] as Locale
             : null;
@@ -32,8 +33,6 @@ function LanguageContent({ children }: { children: React.ReactNode }) {
 
         if (locales.includes(pathLang)) {
             detectedLang = pathLang;
-        } else if (locales.includes(queryLang)) {
-            detectedLang = queryLang;
         } else if (cookieLang && locales.includes(cookieLang)) {
             detectedLang = cookieLang;
         }
@@ -48,7 +47,7 @@ function LanguageContent({ children }: { children: React.ReactNode }) {
             }
         }
         setMounted(true);
-    }, [pathname, searchParams]);
+    }, [pathname]);
 
     const setLang = (newLang: Locale) => {
         setLangState(newLang);
@@ -58,19 +57,20 @@ function LanguageContent({ children }: { children: React.ReactNode }) {
         }
     };
 
-    if (!mounted) return null;
-
+    // We don't return null here to allow for initial server-side render
     return (
         <LanguageContext.Provider value={{ lang, setLang }}>
-            {children}
+            <div style={{ visibility: mounted ? 'visible' : 'hidden' }}>
+                {children}
+            </div>
         </LanguageContext.Provider>
     );
 }
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
+export function LanguageProvider({ children, initialLang }: { children: React.ReactNode, initialLang?: Locale }) {
     return (
         <Suspense fallback={null}>
-            <LanguageContent>
+            <LanguageContent initialLang={initialLang}>
                 {children}
             </LanguageContent>
         </Suspense>
