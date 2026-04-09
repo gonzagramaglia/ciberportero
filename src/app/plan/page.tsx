@@ -574,7 +574,7 @@ export default function PlanPage() {
         ))}
       </main>
 
-      <footer className="footer-main">
+      <footer className="footer-main footer-stacked">
         <a href="https://github.com/zzzNata/Mapa-Interactivo-CiberDefensa-UNDEF" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'var(--muted)', fontSize: '0.8rem', fontWeight: '500', transition: 'color 0.2s', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
           <Star size={14} style={{ color: '#fbbf24', fill: '#fbbf24', opacity: 0.9 }} />
           {translations[lang].credits}

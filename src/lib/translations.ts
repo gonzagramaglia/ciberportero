@@ -51,8 +51,8 @@ export const translations = {
             mateDesc: "La cursada comienza en Abril. Mantente atento a los avisos."
         },
         notification: {
-            title: "¡ALERTA DE SEGURIDAD! - Cambio de contraseñas",
-            desc: "Se han reportado accesos no autorizados. Tu <strong>usuario y contraseña es tu DNI</strong>. ¡Cambiá tu contraseña inmediatamente!"
+            title: "¡ALERTA DE SEGURIDAD! - Cambio de contraseñas en el Campus",
+            desc: "Se han reportado accesos no autorizados en el Campus. Tu <strong>usuario y contraseña es tu DNI</strong>. ¡Cambiá tu contraseña inmediatamente!"
         },
         notificationMate: {
             title: "Revisá tu acceso al SIU Guaraní",
@@ -151,10 +151,11 @@ export const translations = {
         },
         calendar: {
             title: "Calendario Académico",
-            description: "<strong>Planificá tu año</strong>, revisá las fechas clave y mantené el control de tu agenda estudiantil.",
+            description: "Planificá tu año, revisá las fechas clave y mantené el control de tu agenda de estudios.",
             loading: "Cargando calendario...",
             months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
             days: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
+            fullDays: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
             events: {
                 title: "Eventos",
                 empty: "No hay eventos para este día",
@@ -165,7 +166,7 @@ export const translations = {
                 holyWeek: "Semana Santa",
                 examWeek: "Semana de exámenes"
             },
-            notice: "A medida que se anuncien los primeros exámenes o entregables, el calendario se irá actualizando con las fechas clave."
+            notice: "A medida que se vayan anunciando los entregables y exámenes, el calendario se va a ir actualizando."
         }
     },
     en: {
@@ -220,8 +221,8 @@ export const translations = {
             mateDesc: "Courses start in April. Stay tuned for announcements."
         },
         notification: {
-            title: "SECURITY ALERT! - Password Change",
-            desc: "Unauthorized access reported. Your <strong>username and password is your DNI</strong>. Change your password immediately!"
+            title: "SECURITY ALERT! - Password Change on the Campus",
+            desc: "Unauthorized access reported on the Campus. Your <strong>username and password is your DNI</strong>. Change your password immediately!"
         },
         notificationMate: {
             title: "Check your SIU Guaraní access",
@@ -324,6 +325,7 @@ export const translations = {
             loading: "Loading calendar...",
             months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
             days: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+            fullDays: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
             events: {
                 title: "Events",
                 empty: "No events for this day",
@@ -389,8 +391,8 @@ export const translations = {
             mateDesc: "As aulas começam em Abril. Fique atento aos avisos."
         },
         notification: {
-            title: "ALERTA DE SEGURANÇA! - Mudança de senha",
-            desc: "Acessos não autorizados relatados. Seu <strong>usuário e senha é o seu DNI</strong>. Altere sua senha imediatamente!"
+            title: "ALERTA DE SEGURANÇA! - Mudança de senha no Campus",
+            desc: "Acessos não autorizados relatados no Campus. Seu <strong>usuário e senha é o seu DNI</strong>. Altere sua senha imediatamente!"
         },
         notificationMate: {
             title: "Verifique seu acesso ao SIU Guaraní",
@@ -493,6 +495,7 @@ export const translations = {
             loading: "Carregando calendário...",
             months: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
             days: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
+            fullDays: ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"],
             events: {
                 title: "Eventos",
                 empty: "Sem eventos para este dia.",

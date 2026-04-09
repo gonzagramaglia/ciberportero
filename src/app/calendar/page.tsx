@@ -209,7 +209,15 @@ export default function CalendarPage() {
             <div className="selection-card">
               <div className="selection-header">
                 <Clock size={16} />
-                <h3>{selectedDate.getDate()} {ct.months[selectedDate.getMonth()]}</h3>
+                <h3>
+                  {lang === 'es' ? (
+                    `${ct.fullDays[selectedDate.getDay()]} ${selectedDate.getDate()} de ${ct.months[selectedDate.getMonth()]}`
+                  ) : lang === 'pt' ? (
+                    `${ct.fullDays[selectedDate.getDay()]}, ${selectedDate.getDate()} de ${ct.months[selectedDate.getMonth()]}`
+                  ) : (
+                    `${ct.fullDays[selectedDate.getDay()]}, ${ct.months[selectedDate.getMonth()]} ${selectedDate.getDate()}`
+                  )}
+                </h3>
               </div>
               
               <div className="selection-content">

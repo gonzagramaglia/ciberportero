@@ -694,11 +694,15 @@ header p {
 
 @media (max-width: 768px) {
   .footer-main {
-    padding: 2rem 1.5rem;
-    font-size: 0.85rem;
+    padding: 1.5rem;
+    font-size: 0.8rem;
+  }
+
+  .footer-stacked {
     flex-direction: column;
     text-align: center;
     gap: 1.5rem;
+    padding: 2rem 1.5rem;
   }
 }
 
