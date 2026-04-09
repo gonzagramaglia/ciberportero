@@ -5,7 +5,7 @@ import Link from "next/link"
 import { useLanguage } from "@/context/LanguageContext"
 import { translations } from "@/lib/translations"
 import LanguageSwitcher from "@/components/LanguageSwitcher"
-import { ArrowLeft, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, Bell, Github, Youtube, Search, Filter, Copy, Check, Info } from "lucide-react"
+import { ArrowLeft, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, Bell, Github, Youtube, Search, Filter, Copy, Check, Info, Lock } from "lucide-react"
 import NotificationBanners from "@/components/NotificationBanners"
 
 interface AcademicEvent {
@@ -164,6 +164,25 @@ export default function CalendarPage() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
+          </div>
+          <div className="filter-box locked" title={ct.periodMessage} style={{ 
+              background: '#f1f5f9', 
+              borderColor: '#cbd5e1', 
+              opacity: 0.7, 
+              cursor: 'not-allowed',
+              position: 'relative'
+          }}>
+              <Lock size={16} color="#64748b" />
+              <select disabled style={{ 
+                  cursor: 'not-allowed', 
+                  color: '#64748b',
+                  fontWeight: '600',
+                  background: 'transparent',
+                  border: 'none',
+                  outline: 'none'
+              }}>
+                <option>{ct.firstPeriod}</option>
+              </select>
           </div>
           <div className="filter-box">
               <Filter size={18} />

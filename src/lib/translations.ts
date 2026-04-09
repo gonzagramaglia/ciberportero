@@ -166,7 +166,10 @@ export const translations = {
                 holyWeek: "Semana Santa",
                 examWeek: "Semana de exámenes"
             },
-            notice: "A medida que se vayan anunciando los entregables y exámenes, el calendario se va a ir actualizando."
+            notice: "A medida que se vayan anunciando los entregables y exámenes, el calendario se va a ir actualizando.",
+            periodFilter: "Cuatrimestre",
+            firstPeriod: "1er cuatrimestre de 1er año",
+            periodMessage: "Por ahora es la única opción"
         }
     },
     en: {
@@ -336,7 +339,10 @@ export const translations = {
                 holyWeek: "Holy Week",
                 examWeek: "Exam week"
             },
-            notice: "As soon as the first exams or deliverables are announced, the calendar will be updated with the key dates."
+            notice: "As soon as the first exams or deliverables are announced, the calendar will be updated with the key dates.",
+            periodFilter: "Semester",
+            firstPeriod: "1st semester of 1st year",
+            periodMessage: "This is currently the only option"
         }
     },
     pt: {
@@ -506,7 +512,10 @@ export const translations = {
                 holyWeek: "Semana Santa",
                 examWeek: "Semana de exames"
             },
-            notice: "À medida que os primeiros exames ou entregas forem anunciados, o calendário será atualizado com as datas principais."
+            notice: "À medida que os primeiros exames ou entregas forem anunciados, o calendário será atualizado com as datas principales.",
+            periodFilter: "Semestre",
+            firstPeriod: "1º semestre do 1º ano",
+            periodMessage: "Por enquanto esta é a única opção"
         }
     }
 };
