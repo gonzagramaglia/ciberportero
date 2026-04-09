@@ -50,7 +50,7 @@ export default function PlanPage() {
 
   useEffect(() => {
       const enrollmentTarget = new Date('2026-04-01T23:59:59-03:00').getTime();
-      const classesTarget = new Date('2026-04-13T09:00:00-03:00').getTime();
+      const classesTarget = new Date('2026-04-08T09:00:00-03:00').getTime();
       
       const updateCountdowns = () => {
           const now = new Date().getTime();
@@ -282,6 +282,7 @@ export default function PlanPage() {
       </div>
 
       <NotificationBanners />
+
 
       <header style={{ marginBottom: '3rem' }}>
         <div className="nav-header-row">

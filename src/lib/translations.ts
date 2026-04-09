@@ -35,28 +35,32 @@ export const translations = {
         countdown: {
             ivuTitle: "Inscripción a Materias",
             mateTitle: "Inicio de Cursada",
-            classesTitle: "Inicio de Clases",
+            classesTitle: "Clases Iniciadas",
             days: "días",
             hours: "hs",
             minutes: "min",
             seconds: "seg",
             available: "¡Inscripciones abiertas!",
             ivuDesc: "Disponible el <strong>martes 31/3</strong> a las <strong>12:00hs</strong>. Obligatorio para todos los alumnos.",
-            classesDesc: "Preparate para el primer día de clases. ¡Muchos éxitos!",
+            classesDesc: "Las clases comenzaron el 8 de abril exitosamente.",
             enrollmentClosed: "Inscripciones Cerradas",
             enrollmentClosedDesc: "El período de inscripción ha finalizado por SIU Guaraní.",
             classesStarted: "¡Clases Iniciadas!",
-            classesStartedDesc: "Éxitos en este nuevo periodo lectivo.",
+            classesStartedDesc: "Éxitos en este periodo lectivo.",
             mateDate: "Próximamente",
             mateDesc: "La cursada comienza en Abril. Mantente atento a los avisos."
         },
         notification: {
-            title: "Inscripción a las Materias de la Carrera en el SIU Guaraní",
-            desc: "Las inscripciones <strong>cierran hoy 1 de abril a medianoche</strong>. ¡No te quedes afuera!"
+            title: "¡ALERTA DE SEGURIDAD! - Cambio de contraseñas",
+            desc: "Se han reportado accesos no autorizados. Tu <strong>usuario y contraseña es tu DNI</strong>. ¡Cambiá tu contraseña inmediatamente!"
         },
         notificationMate: {
             title: "Revisá tu acceso al SIU Guaraní",
             desc: "Asegurate de tener tu usuario y contraseña activos antes del 31/3."
+        },
+        reporting: {
+            text: "¿Ves algo para corregir o que haya que agregar?",
+            cta: "Avisanos a: ciberportero@gmail.com"
         },
         share: {
             copy: "Copiar enlace del post",
@@ -144,6 +148,24 @@ export const translations = {
                 31: "Investigación Operativa", 32: "Criptografía Aplicada", 33: "Gestión de Proyectos", 34: "Instrumento Militar y Sistemas de Armas", 35: "Modelos y Simulación",
                 36: "Prospectiva Estratégica", 37: "Actores en el Quinto Dominio"
             }
+        },
+        calendar: {
+            title: "Calendario Académico",
+            description: "<strong>Planificá tu año</strong>, revisá las fechas clave y mantené el control de tu agenda estudiantil.",
+            loading: "Cargando calendario...",
+            months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+            days: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
+            events: {
+                title: "Eventos",
+                empty: "No hay eventos para este día",
+                upcoming: "Próximos eventos",
+                enrollment: "Inscripción a materias",
+                classesStart: "Inicio de clases",
+                ivanhoe: "IVU Inscripciones",
+                holyWeek: "Semana Santa",
+                examWeek: "Semana de exámenes"
+            },
+            notice: "A medida que se anuncien los primeros exámenes o entregables, el calendario se irá actualizando con las fechas clave."
         }
     },
     en: {
@@ -198,12 +220,16 @@ export const translations = {
             mateDesc: "Courses start in April. Stay tuned for announcements."
         },
         notification: {
-            title: "Subject Enrollment in SIU Guaraní",
-            desc: "Enrollment <strong>closes tonight April 1st at midnight</strong>. Don't miss out!"
+            title: "SECURITY ALERT! - Password Change",
+            desc: "Unauthorized access reported. Your <strong>username and password is your DNI</strong>. Change your password immediately!"
         },
         notificationMate: {
             title: "Check your SIU Guaraní access",
             desc: "Make sure your username and password are active before 3/31."
+        },
+        reporting: {
+            text: "See something to fix or add?",
+            cta: "Email: ciberportero@gmail.com"
         },
         share: {
             copy: "Copy post link",
@@ -287,10 +313,28 @@ export const translations = {
                 11: "Calculus II", 12: "Algebra II", 13: "Probability and Statistics", 14: "English II", 15: "Operational Technology",
                 16: "Secure Programming", 17: "Applied Cybersecurity", 18: "Remote Devices and IoT", 19: "Professional Ethics", 20: "Information Security Management",
                 21: "Critical Infrastructure Protection", 22: "Risk Analysis Methodologies", 23: "Scenario and Capability Analysis", 24: "Government and Public Policy", 25: "Forensic IT",
-                26: "International Relations", 27: "AI and Machine Learning", 28: "Geopolitics", 29: "National Defense Law", 30: "National Intelligence System",
+                26: "International Relations", 27: "AI and Machine Learning", 28: "Geopolítica", 29: "National Defense Law", 30: "National Intelligence System",
                 31: "Operations Research", 32: "Applied Cryptography", 33: "Project Management", 34: "Military Instrument and Weapon Systems", 35: "Models and Simulation",
                 36: "Strategic Foresight", 37: "Actors in the Fifth Domain"
             }
+        },
+        calendar: {
+            title: "Academic Calendar",
+            description: "<strong>Plan your year</strong>, check key dates and keep track of your student schedule.",
+            loading: "Loading calendar...",
+            months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+            days: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+            events: {
+                title: "Events",
+                empty: "No events for this day",
+                upcoming: "Upcoming events",
+                enrollment: "Subject enrollment",
+                classesStart: "Classes start",
+                ivanhoe: "IVU Enrollment",
+                holyWeek: "Holy Week",
+                examWeek: "Exam week"
+            },
+            notice: "As soon as the first exams or deliverables are announced, the calendar will be updated with the key dates."
         }
     },
     pt: {
@@ -345,12 +389,16 @@ export const translations = {
             mateDesc: "As aulas começam em Abril. Fique atento aos avisos."
         },
         notification: {
-            title: "Inscrição nas Matérias no SIU Guaraní",
-            desc: "As inscrições <strong>encerram hoje, 1º de abril, à meia-noite</strong>. Não se esqueça!"
+            title: "ALERTA DE SEGURANÇA! - Mudança de senha",
+            desc: "Acessos não autorizados relatados. Seu <strong>usuário e senha é o seu DNI</strong>. Altere sua senha imediatamente!"
         },
         notificationMate: {
             title: "Verifique seu acesso ao SIU Guaraní",
             desc: "Certifique-se de que seu usuário e senha estejam activos antes de 31/3."
+        },
+        reporting: {
+            text: "Vê algo para corrigir ou adicionar?",
+            cta: "Contate: ciberportero@gmail.com"
         },
         share: {
             copy: "Copiar link do post",
@@ -393,7 +441,7 @@ export const translations = {
                 all: "Todas"
             },
             list: {
-                empty: "Ainda não há atividades registradas.",
+                empty: "Ainda não há atividades registradas",
                 records: "Registros",
                 avances: "Avanços",
                 autoevaluacion: "Autoavaliação",
@@ -408,7 +456,7 @@ export const translations = {
         },
         plan: {
             title: "Plano de Estudos",
-            subtitle: "Licenciatura em Ciberdefesa - UNDEF",
+            subtitle: "Licenciatura em Ciberdefensa - UNDEF",
             description: "<strong>Visualize o seu progresso</strong>, as correlatividades e as matérias que você está desbloqueando.",
             completed: "Concluída",
             inProgress: "Em curso",
@@ -417,7 +465,7 @@ export const translations = {
             unlocks: "Habilita",
             year: "Ano",
             term: "Semestre",
-            totalHours: "Horas Totais",
+            totalHours: "Horas Totales",
             stats: {
                 completed: "Matérias Concluídas",
                 remaining: "Matérias Restantes",
@@ -430,14 +478,32 @@ export const translations = {
             storageNotice: "Seu progresso é salvo localmente neste navegador.",
             subjectNames: {
                 1: "Cálculo I", 2: "Álgebra I", 3: "Gestão de Serviços de Informação", 4: "Inglês I", 5: "Sistemas Operacionais I",
-                6: "Sistemas de Processamento de Dados", 7: "Infraestrutura de Telecomunicações", 8: "Sociedade e Estado", 9: "Sistemas Operacionais II", 10: "Linguagens de Programação",
+                6: "Sistemas de Processamento de Dados", 7: "Infraestrutura de Telecomunicações", 8: "Sociedade e Estado", 9: "Sistemas Operacionais II", 10: "Linguagens de Programación",
                 11: "Cálculo II", 12: "Álgebra II", 13: "Probabilidade e Estatística", 14: "Inglês II", 15: "Tecnologia Operacional",
-                16: "Programação Segura", 17: "Cibersegurança Aplicada", 18: "Dispositivos Remotos e IoT", 19: "Ética Profissional", 20: "Gestão de Segurança da Informação",
-                21: "Proteção de Infraestruturas Críticas", 22: "Metodologias de Análise de Riscos", 23: "Análise de Cenários e Capacidades", 24: "Governo e Políticas Públicas", 25: "Informática Forense",
+                16: "Programación Segura", 17: "Ciberseguridad Aplicada", 18: "Dispositivos Remotos e IoT", 19: "Ética Profissional", 20: "Gestão de Segurança da Informação",
+                21: "Protección de Infraestructuras Críticas", 22: "Metodologías de Análise de Riscos", 23: "Análise de Cenários e Capacidades", 24: "Governo e Políticas Públicas", 25: "Informática Forense",
                 26: "Relações Internacionais", 27: "IA e Aprendizado de Máquina", 28: "Geopolítica", 29: "Direito à Defesa Nacional", 30: "Sistema de Inteligência Nacional",
                 31: "Investigação Operativa", 32: "Criptografia Aplicada", 33: "Gestão de Projetos", 34: "Instrumento Militar e Sistemas de Armas", 35: "Modelos e Simulação",
                 36: "Prospectiva Estratégica", 37: "Atores no Quinto Domínio"
             }
+        },
+        calendar: {
+            title: "Calendário Acadêmico",
+            description: "<strong>Planeje seu ano</strong>, verifique datas importantes e mantenha o controle de sua agenda estudantil.",
+            loading: "Carregando calendário...",
+            months: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
+            days: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
+            events: {
+                title: "Eventos",
+                empty: "Sem eventos para este dia.",
+                upcoming: "Próximos eventos",
+                enrollment: "Inscrição em matérias",
+                classesStart: "Início das aulas",
+                ivanhoe: "IVU Inscrições",
+                holyWeek: "Semana Santa",
+                examWeek: "Semana de exames"
+            },
+            notice: "À medida que os primeiros exames ou entregas forem anunciados, o calendário será atualizado com as datas principais."
         }
     }
 };

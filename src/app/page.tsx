@@ -59,7 +59,7 @@ export default function Home() {
 
     useEffect(() => {
         const enrollmentTarget = new Date('2026-04-01T23:59:59-03:00').getTime();
-        const classesTarget = new Date('2026-04-13T09:00:00-03:00').getTime();
+        const classesTarget = new Date('2026-04-08T09:00:00-03:00').getTime();
         
         const updateCountdowns = () => {
             const now = new Date().getTime();
@@ -189,6 +189,7 @@ export default function Home() {
 
             <NotificationBanners />
 
+
             {selectedImage && (
                 <div className="lightbox-overlay" onClick={() => setSelectedImage(null)}>
                     <div className="lightbox-content">
@@ -247,21 +248,23 @@ export default function Home() {
                         </div>
                     </Link>
 
+
+
                     <Link 
-                        href="/dashboard" 
-                        className="post-item featured roadmap-block dashboard-card" 
-                        style={{ display: 'block', textDecoration: 'none', border: '1px solid var(--accent)', background: 'rgba(0,112,243,0.02)' }}
+                        href="/calendar" 
+                        className="post-item featured roadmap-block calendar-card" 
+                        style={{ display: 'block', textDecoration: 'none', border: '1px solid #eab308', background: 'rgba(234, 179, 8, 0.02)' }}
                     >
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                            <span className="featured-tag" style={{ background: 'var(--accent)', color: 'white' }}>{t.featured?.tag || 'Destaque'}</span>
+                            <span className="featured-tag" style={{ background: '#eab308', color: 'white' }}>{t.featured?.tag || 'Destaque'}</span>
                         </div>
 
-                        <span className="post-title" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: 'var(--accent)' }}>
-                            <CheckCircle size={28} className="bell-animation" />
-                            {t.studentPortal?.guestTitle}
+                        <span className="post-title" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: '#eab308' }}>
+                            <Calendar size={28} style={{ color: '#eab308' }} className="bell-animation" />
+                            {t.calendar?.title}
                         </span>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem' }}>
-                            <p className="post-description" dangerouslySetInnerHTML={{ __html: t.studentPortal?.guestDesc || '' }} style={{ margin: 0 }} />
+                            <p className="post-description" dangerouslySetInnerHTML={{ __html: t.calendar?.description || '' }} style={{ margin: 0 }} />
                         </div>
                     </Link>
                 </div>

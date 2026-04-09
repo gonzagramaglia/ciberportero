@@ -479,7 +479,7 @@ header p {
 @media (min-width: 900px) {
   .featured-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.25rem;
   }
   
@@ -490,7 +490,7 @@ header p {
 
   .plan-card { order: 1; }
   .links-card { order: 2; }
-  .dashboard-card { order: 3; }
+  .calendar-card { order: 3; }
 
   .arrow-portal {
     display: none;
@@ -694,8 +694,11 @@ header p {
 
 @media (max-width: 768px) {
   .footer-main {
-    padding: 1.5rem;
-    font-size: 0.8rem;
+    padding: 2rem 1.5rem;
+    font-size: 0.85rem;
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
   }
 }
 

@@ -25,7 +25,7 @@ export default function LinksPage() {
 
     useEffect(() => {
         const enrollmentTarget = new Date('2026-04-01T23:59:59-03:00').getTime();
-        const classesTarget = new Date('2026-04-13T09:00:00-03:00').getTime();
+        const classesTarget = new Date('2026-04-08T09:00:00-03:00').getTime();
         
         const updateCountdowns = () => {
             const now = new Date().getTime();
@@ -163,6 +163,7 @@ export default function LinksPage() {
             </div>
 
             <NotificationBanners limitTo="none" />
+
 
             <div className="nav-header-row">
                 <Link href="/" className="back-link">
