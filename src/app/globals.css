@@ -1512,3 +1512,15 @@ select {
   background: white;
   box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
 }
+
+.post-title-link:hover {
+  color: var(--accent) !important;
+  text-decoration: underline !important;
+}
+
+.edit-btn-hover:hover {
+  background: #eff6ff !important;
+  color: #2563eb !important;
+  border-color: #bfdbfe !important;
+  transform: translateY(-2px);
+}

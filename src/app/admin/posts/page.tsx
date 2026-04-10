@@ -46,8 +46,7 @@ export default async function AdminPostsPage() {
                       href={`/${post.slug}`} 
                       target="_blank" 
                       style={{ fontWeight: 600, color: 'inherit', textDecoration: 'none' }}
-                      onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--accent)')}
-                      onMouseLeave={(e) => (e.currentTarget.style.color = 'inherit')}
+                      className="post-title-link"
                     >
                       {post.title}
                     </Link>
