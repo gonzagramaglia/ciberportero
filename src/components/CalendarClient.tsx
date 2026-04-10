@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react"
 import { createPersonalEvent, deleteCalendarEvent } from "@/lib/actions"
 import { ArrowLeft, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, Bell, Github, Youtube, Search, Filter, Copy, Check, Info, Lock, Plus, Trash2, X as CloseIcon, GraduationCap } from "lucide-react"
 import NotificationBanners from "@/components/NotificationBanners"
+import SyncedBadge from "@/components/SyncedBadge"
 
 interface AcademicEvent {
   id: string;
@@ -112,13 +113,14 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
       const dateStr = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
       const dayEvents = filteredEvents.filter(e => e.date === dateStr)
       const hasEvent = dayEvents.length > 0
+      const hasPersonalEvent = dayEvents.some(e => e.userId)
       const isSelected = selectedDate && selectedDate.getFullYear() === year && selectedDate.getMonth() === month && selectedDate.getDate() === day
       const isToday = new Date().getFullYear() === year && new Date().getMonth() === month && new Date().getDate() === day
 
       days.push(
         <div 
           key={day} 
-          className={`calendar-day ${hasEvent ? `event-${dayEvents[0].type}` : ''} ${isSelected ? 'selected' : ''} ${isSelected && hasEvent ? `selected-${dayEvents[0].type}` : ''} ${isToday ? 'today' : ''} ${!hasEvent && (searchTerm || subjectFilter !== 'all') ? 'dimmed' : ''}`}
+          className={`calendar-day ${hasEvent ? `event-${dayEvents[0].type}` : ''} ${hasPersonalEvent ? 'has-personal' : ''} ${isSelected ? 'selected' : ''} ${isSelected && hasEvent ? `selected-${dayEvents[0].type}` : ''} ${isToday ? 'today' : ''} ${!hasEvent && (searchTerm || subjectFilter !== 'all') ? 'dimmed' : ''}`}
           onClick={() => setSelectedDate(new Date(year, month, day))}
         >
           <span className="day-number">{day}</span>
@@ -167,7 +169,10 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
         
         <div style={{ marginTop: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
-            <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em' }}>{ct.title}</h1>
+            <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em', display: 'flex', alignItems: 'center' }}>
+              {ct.title}
+              <SyncedBadge />
+            </h1>
             <p style={{ color: 'var(--muted)', fontSize: '1.2rem', marginTop: '0.5rem', fontWeight: '500' }} dangerouslySetInnerHTML={{ __html: ct.description }} />
           </div>
           {status === 'authenticated' && (
@@ -292,9 +297,9 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
                     <div key={idx} className={`event-detail-item type-${event.type}`}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                         <div className="event-type-tag">
-                            {ct.events[event.type as keyof typeof ct.events] || event.type}
-                            {event.subjectId && ` • ${(st as any)[event.subjectId]}`}
-                            {event.userId && (lang === 'es' ? ' • Personal' : ' • Personal')}
+                            {(ct.events[event.type as keyof typeof ct.events] || event.type)}
+                            {event.userId && ` (${lang === 'es' ? 'personal' : lang === 'pt' ? 'pessoal' : 'personal'})`}
+                            {event.subjectId && (event.subjectId !== 'all') && ` • ${(st as any)[event.subjectId]}`}
                         </div>
                         {(session?.user?.id === event.userId || session?.user?.email === 'ciberportero@gmail.com') && (
                           <button 
@@ -339,6 +344,7 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
                             <h4>{event.title[lang] || event.title['es']}</h4>
                             <span className={`upcoming-tag tag-${event.type}`}>
                                 {ct.events[event.type as keyof typeof ct.events] || event.type}
+                                {event.userId && ` (${lang === 'es' ? 'personal' : lang === 'pt' ? 'pessoal' : 'personal'})`}
                             </span>
                         </div>
                     </div>
@@ -456,6 +462,20 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
                   <option value="exam">{lang === 'es' ? 'Examen' : 'Exam'}</option>
                   <option value="enrollment">{lang === 'es' ? 'Tarea / Entrega' : 'Task / Assignment'}</option>
                   <option value="classes">{lang === 'es' ? 'Clase' : 'Class'}</option>
+                </select>
+              </div>
+              
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '800', marginBottom: '0.4rem', color: 'var(--muted)' }}>{lang === 'es' ? 'Materia (opcional)' : 'Subject (optional)'}</label>
+                <select 
+                  value={newEvent.subjectId} 
+                  onChange={(e) => setNewEvent({...newEvent, subjectId: e.target.value})}
+                  style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
+                >
+                  <option value="all">{lang === 'es' ? 'General / Todas' : 'General / All'}</option>
+                  {availableSubjects.map(sub => (
+                    <option key={sub.id} value={sub.id}>{sub.name as string}</option>
+                  ))}
                 </select>
               </div>
               
@@ -664,6 +684,22 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
           border-color: #eab308 !important;
           box-shadow: 0 8px 20px rgba(234, 179, 8, 0.15);
           z-index: 10;
+        }
+
+        :global(.calendar-day.has-personal) {
+          border-color: rgba(139, 92, 246, 0.4);
+          background: rgba(139, 92, 246, 0.03);
+        }
+
+        :global(.calendar-day.has-personal:hover) {
+          border-color: #8b5cf6;
+          background: rgba(139, 92, 246, 0.05);
+        }
+
+        :global(.calendar-day.selected.has-personal) {
+          background: #f5f3ff !important;
+          border-color: #8b5cf6 !important;
+          box-shadow: 0 8px 20px rgba(139, 92, 246, 0.15);
         }
 
         :global(.day-number) {

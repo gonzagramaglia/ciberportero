@@ -11,6 +11,7 @@ import NotificationBanners from "@/components/NotificationBanners"
 import { normalizeString } from "@/lib/string-utils"
 import { useSession } from "next-auth/react"
 import { getUserProgress, updateUserProgress } from "@/lib/actions"
+import SyncedBadge from "@/components/SyncedBadge"
 
 export default function PlanPage() {
   const { data: session } = useSession()
@@ -313,7 +314,10 @@ export default function PlanPage() {
         
         <div style={{ marginTop: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '2rem' }}>
           <div>
-            <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em' }}>{pt.title}</h1>
+            <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em', display: 'flex', alignItems: 'center' }}>
+              {pt.title}
+              <SyncedBadge />
+            </h1>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
               <p style={{ color: 'var(--muted)', fontSize: '1.2rem', margin: 0, fontWeight: '500' }}>{pt.subtitle}</p>
               <a 
