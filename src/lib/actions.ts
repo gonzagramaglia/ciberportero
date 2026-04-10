@@ -222,3 +222,44 @@ export async function upsertCountdown(data: any) {
   revalidatePath('/admin/notifications');
   revalidatePath('/');
 }
+
+/* --- CALENDAR ACTIONS --- */
+export async function deleteCalendarEvent(id: string) {
+  const event = await db.calendarEvent.findUnique({ where: { id } });
+  const title = (event?.title as any)?.es || 'Sin título';
+  
+  await db.calendarEvent.delete({ where: { id } });
+  await logAction('DELETE', 'event', `Eliminó el evento: ${title}`);
+  
+  revalidatePath('/admin/calendar');
+  revalidatePath('/calendar');
+}
+
+export async function upsertCalendarEvent(data: any) {
+  const isUpdate = !!data.id;
+  const titleEs = data.title.es || 'Sin título';
+
+  const eventData = {
+    title: data.title,
+    description: data.description,
+    date: new Date(data.date),
+    period: data.period,
+    type: data.type,
+  };
+
+  if (isUpdate) {
+    await db.calendarEvent.update({
+      where: { id: data.id },
+      data: eventData
+    });
+    await logAction('UPDATE', 'event', `Actualizó el evento: ${titleEs}`);
+  } else {
+    await db.calendarEvent.create({
+      data: eventData
+    });
+    await logAction('CREATE', 'event', `Creó un nuevo evento: ${titleEs}`);
+  }
+  
+  revalidatePath('/admin/calendar');
+  revalidatePath('/calendar');
+}

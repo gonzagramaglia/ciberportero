@@ -180,3 +180,62 @@
 .btn-primary:hover {
   opacity: 0.9;
 }
+
+.btn-secondary {
+  background: white;
+  color: #1a1a1a;
+  border: 1px solid #e2e8f0;
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.admin-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.admin-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  font-size: 1rem;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.admin-input:focus {
+  outline: none;
+  border-color: #1a1a1a;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
+}
+
+.edit-btn-hover:hover {
+  background: #f1f5f9 !important;
+  color: #1a1a1a !important;
+  border-color: #cbd5e1 !important;
+}
+
+.delete-btn-hover:hover {
+  background: #fef2f2 !important;
+  color: #ef4444 !important;
+  border-color: #fecdd3 !important;
+}

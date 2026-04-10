@@ -1,11 +1,11 @@
 'use client';
 
 import { Trash2 } from "lucide-react";
-import { deleteLink, deleteNotification, deletePost } from "@/lib/actions";
+import { deleteLink, deleteNotification, deletePost, deleteCalendarEvent } from "@/lib/actions";
 
 interface Props {
   id: string;
-  type: 'link' | 'notification' | 'post';
+  type: 'link' | 'notification' | 'post' | 'event';
 }
 
 export function DeleteButton({ id, type }: Props) {
@@ -14,16 +14,23 @@ export function DeleteButton({ id, type }: Props) {
       if (type === 'link') await deleteLink(id);
       if (type === 'notification') await deleteNotification(id);
       if (type === 'post') await deletePost(id);
+      if (type === 'event') await deleteCalendarEvent(id);
     }
   };
 
   return (
     <button 
       onClick={handleDelete}
-      style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: '0.5rem' }}
+      style={{ 
+        width: '36px', height: '36px', borderRadius: '50%', background: 'white', 
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        color: '#94a3b8', border: '1px solid #e2e8f0', cursor: 'pointer',
+        transition: 'all 0.2s'
+      }}
+      className="delete-btn-hover"
       title="Eliminar"
     >
-      <Trash2 size={18} />
+      <Trash2 size={16} />
     </button>
   );
 }
