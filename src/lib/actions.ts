@@ -28,6 +28,35 @@ export async function deleteLink(id: string) {
   revalidatePath('/links');
 }
 
+export async function createPersonalLink(data: { name: string, url: string, description?: string }) {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "Not authenticated" };
+
+  await db.link.create({
+    data: {
+      name: { es: data.name, en: data.name, pt: data.name },
+      url: data.url,
+      description: data.description ? { es: data.description, en: data.description, pt: data.description } : undefined,
+      userId: session.user.id
+    }
+  });
+
+  revalidatePath('/links');
+  return { success: true };
+}
+
+export async function deletePersonalLink(id: string) {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "Not authenticated" };
+
+  const link = await db.link.findUnique({ where: { id } });
+  if (!link || link.userId !== session.user.id) return { error: "Unauthorized" };
+
+  await db.link.delete({ where: { id } });
+  revalidatePath('/links');
+  return { success: true };
+}
+
 export async function upsertLink(data: any) {
   const isUpdate = !!data.id;
   const name = data.name.es || 'Sin nombre';
@@ -233,7 +262,7 @@ export async function deleteCalendarEvent(id: string) {
 
   // Only allow if user is admin OR the owner of the event
   const user = await db.user.findUnique({ where: { id: session.user.id } });
-  if (user?.role !== 'admin' && event.userId !== session.user.id) {
+  if ((user as any)?.role !== 'admin' && event.userId !== session.user.id) {
     return { error: "Unauthorized" };
   }
 
@@ -397,7 +426,7 @@ export async function deleteComment(commentId: string) {
   if (!comment) return { error: "Not found" };
 
   const user = await db.user.findUnique({ where: { id: session.user.id } });
-  if (user?.role !== 'admin' && comment.userId !== session.user.id) {
+  if ((user as any)?.role !== 'admin' && comment.userId !== session.user.id) {
     return { error: "Unauthorized" };
   }
 

@@ -9,6 +9,7 @@ import { createPersonalEvent, deleteCalendarEvent } from "@/lib/actions"
 import { ArrowLeft, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, Bell, Github, Youtube, Search, Filter, Copy, Check, Info, Lock, Plus, Trash2, X as CloseIcon, GraduationCap } from "lucide-react"
 import NotificationBanners from "@/components/NotificationBanners"
 import SyncedBadge from "@/components/SyncedBadge"
+import { SignInButton, SignOutButton } from "@/components/AuthButtons"
 
 interface AcademicEvent {
   id: string;
@@ -151,8 +152,11 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
   }).sort((a, b) => a.date.localeCompare(b.date)).slice(0, 5);
 
   const availableSubjects = useMemo(() => {
-      // Show all subjects for filtering
-      return Object.entries(st).map(([id, name]) => ({ id, name }));
+      // Show all subjects for filtering with [id] prefix
+      return Object.entries(st).map(([id, name]) => ({ 
+        id, 
+        name: `[${id.padStart(2, '0')}] ${name}` 
+      }));
   }, [st]);
 
   return (
@@ -169,8 +173,16 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
         
         <div style={{ marginTop: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
-            <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em', display: 'flex', alignItems: 'center' }}>
+            <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
               {ct.title}
+              <div style={{ 
+                  opacity: status === 'loading' ? 0 : 1,
+                  transition: 'opacity 0.2s',
+                  display: 'flex',
+                  alignItems: 'center'
+              }}>
+                  {status !== 'loading' && (session ? <SignOutButton /> : <SignInButton />)}
+              </div>
               <SyncedBadge />
             </h1>
             <p style={{ color: 'var(--muted)', fontSize: '1.2rem', marginTop: '0.5rem', fontWeight: '500' }} dangerouslySetInnerHTML={{ __html: ct.description }} />
@@ -195,7 +207,7 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
               }}
             >
               <Plus size={20} />
-              {lang === 'es' ? 'Añadir evento' : lang === 'pt' ? 'Adicionar evento' : 'Add event'}
+              {lang === 'es' ? 'Agregar evento personal' : lang === 'pt' ? 'Adicionar evento pessoal' : 'Add personal event'}
             </button>
           )}
         </div>
@@ -277,7 +289,7 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
 
         <div className="calendar-sidebar">
           {selectedDate && (
-            <div className="selection-card">
+            <div className={`selection-card ${selectedEvents.some(e => e.userId) ? 'is-personal' : ''}`}>
               <div className="selection-header">
                 <Clock size={16} />
                 <h3>
@@ -294,12 +306,12 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
               <div className="selection-content">
                 {selectedEvents.length > 0 ? (
                   selectedEvents.map((event, idx) => (
-                    <div key={idx} className={`event-detail-item type-${event.type}`}>
+                    <div key={idx} className={`event-detail-item type-${event.type} ${event.userId ? 'is-personal' : ''}`}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                         <div className="event-type-tag">
                             {(ct.events[event.type as keyof typeof ct.events] || event.type)}
                             {event.userId && ` (${lang === 'es' ? 'personal' : lang === 'pt' ? 'pessoal' : 'personal'})`}
-                            {event.subjectId && (event.subjectId !== 'all') && ` • ${(st as any)[event.subjectId]}`}
+                            {event.subjectId && (event.subjectId !== 'all') && ` • [${event.subjectId.padStart(2, '0')}] ${(st as any)[event.subjectId]}`}
                         </div>
                         {(session?.user?.id === event.userId || session?.user?.email === 'ciberportero@gmail.com') && (
                           <button 
@@ -431,75 +443,78 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
             </div>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-              <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '800', marginBottom: '0.4rem', color: 'var(--muted)' }}>{lang === 'es' ? 'Título' : 'Title'}</label>
-                <input 
-                  type="text" 
-                  value={newEvent.title} 
-                  onChange={(e) => setNewEvent({...newEvent, title: e.target.value})}
-                  placeholder="Ej: Entrega de TP1"
-                  style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
-                />
-              </div>
-              
-              <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '800', marginBottom: '0.4rem', color: 'var(--muted)' }}>{lang === 'es' ? 'Fecha' : 'Date'}</label>
-                <input 
-                  type="date" 
-                  value={newEvent.date} 
-                  onChange={(e) => setNewEvent({...newEvent, date: e.target.value})}
-                  style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
-                />
-              </div>
-              
-              <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '800', marginBottom: '0.4rem', color: 'var(--muted)' }}>{lang === 'es' ? 'Tipo' : 'Type'}</label>
-                <select 
-                  value={newEvent.type} 
-                  onChange={(e) => setNewEvent({...newEvent, type: e.target.value})}
-                  style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
+                <div className="form-group">
+                  <label>{lang === 'es' ? 'Título' : lang === 'pt' ? 'Título' : 'Title'}</label>
+                  <input 
+                    type="text" 
+                    value={newEvent.title} 
+                    onChange={(e) => setNewEvent({...newEvent, title: e.target.value})}
+                    placeholder={lang === 'es' ? 'Ej: Entrega de TP' : lang === 'pt' ? 'Ex: Entrega de TP' : 'e.g. Project Delivery'}
+                    style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
+                  />
+                </div>
+                
+                <div className="form-group" style={{ marginTop: '1rem' }}>
+                  <label>{lang === 'es' ? 'Fecha' : lang === 'pt' ? 'Data' : 'Date'}</label>
+                  <input 
+                    type="date" 
+                    value={newEvent.date} 
+                    onChange={(e) => setNewEvent({...newEvent, date: e.target.value})}
+                    style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
+                  />
+                </div>
+                
+                <div className="form-group" style={{ marginTop: '1rem' }}>
+                  <label>{lang === 'es' ? 'Tipo' : lang === 'pt' ? 'Tipo' : 'Type'}</label>
+                  <select 
+                    value={newEvent.type} 
+                    onChange={(e) => setNewEvent({...newEvent, type: e.target.value})}
+                    style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
+                  >
+                    <option value="exam">{ct.events.exam}</option>
+                    <option value="enrollment">{ct.events.enrollment}</option>
+                    <option value="classes">{ct.events.classes}</option>
+                    <option value="event">{lang === 'es' ? 'Otro' : lang === 'pt' ? 'Outro' : 'Other'}</option>
+                  </select>
+                </div>
+                
+                <div className="form-group" style={{ marginTop: '1rem' }}>
+                  <label>{lang === 'es' ? 'Materia (opcional)' : lang === 'pt' ? 'Matéria (opcional)' : 'Subject (optional)'}</label>
+                  <select 
+                    value={newEvent.subjectId} 
+                    onChange={(e) => setNewEvent({...newEvent, subjectId: e.target.value})}
+                    style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
+                  >
+                    <option value="all">{lang === 'es' ? 'General / Todas' : lang === 'pt' ? 'Geral / Todas' : 'General / All'}</option>
+                    {availableSubjects.map(sub => (
+                      <option key={sub.id} value={sub.id}>{sub.name as string}</option>
+                    ))}
+                  </select>
+                </div>
+                
+                <button 
+                  onClick={handleSaveEvent}
+                  disabled={isSaving}
+                  style={{
+                    width: '100%',
+                    background: '#000',
+                    color: '#fff',
+                    padding: '1rem',
+                    borderRadius: '14px',
+                    border: 'none',
+                    fontWeight: '800',
+                    marginTop: '1.5rem',
+                    cursor: 'pointer',
+                    opacity: isSaving ? 0.7 : 1,
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                  }}
                 >
-                  <option value="exam">{lang === 'es' ? 'Examen' : 'Exam'}</option>
-                  <option value="enrollment">{lang === 'es' ? 'Tarea / Entrega' : 'Task / Assignment'}</option>
-                  <option value="classes">{lang === 'es' ? 'Clase' : 'Class'}</option>
-                </select>
+                  {isSaving ? (lang === 'es' ? 'Guardando...' : lang === 'pt' ? 'Salvando...' : 'Saving...') : (lang === 'es' ? 'Guardar' : lang === 'pt' ? 'Salvar' : 'Save')}
+                </button>
               </div>
-              
-              <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '800', marginBottom: '0.4rem', color: 'var(--muted)' }}>{lang === 'es' ? 'Materia (opcional)' : 'Subject (optional)'}</label>
-                <select 
-                  value={newEvent.subjectId} 
-                  onChange={(e) => setNewEvent({...newEvent, subjectId: e.target.value})}
-                  style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
-                >
-                  <option value="all">{lang === 'es' ? 'General / Todas' : 'General / All'}</option>
-                  {availableSubjects.map(sub => (
-                    <option key={sub.id} value={sub.id}>{sub.name as string}</option>
-                  ))}
-                </select>
-              </div>
-              
-              <button 
-                onClick={handleSaveEvent}
-                disabled={isSaving}
-                style={{
-                  background: '#000',
-                  color: '#fff',
-                  padding: '1rem',
-                  borderRadius: '14px',
-                  border: 'none',
-                  fontWeight: '800',
-                  marginTop: '0.5rem',
-                  cursor: 'pointer',
-                  opacity: isSaving ? 0.7 : 1
-                }}
-              >
-                {isSaving ? (lang === 'es' ? 'Guardando...' : 'Saving...') : (lang === 'es' ? 'Guardar' : 'Save')}
-              </button>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
       <style jsx>{`
         .calendar-controls {
@@ -795,6 +810,16 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
           transition: all 0.3s ease;
         }
 
+        .selection-card.is-personal {
+          background: #f5f3ff;
+          border-color: #8b5cf6;
+          box-shadow: 0 8px 30px rgba(139, 92, 246, 0.08);
+        }
+
+        .selection-card.is-personal .selection-header {
+          color: #6d28d9;
+        }
+
         .upcoming-card {
           background: white;
           border-radius: 24px;
@@ -833,6 +858,7 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
         .event-detail-item.type-classes { border-left-color: #0070f3; }
         .event-detail-item.type-holiday { border-left-color: #ef4444; }
         .event-detail-item.type-exam { border-left-color: #8b5cf6; }
+        .event-detail-item.is-personal { border-left-color: #8b5cf6 !important; }
 
         .event-type-tag {
           font-size: 0.7rem;

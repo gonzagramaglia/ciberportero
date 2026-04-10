@@ -12,9 +12,10 @@ import { normalizeString } from "@/lib/string-utils"
 import { useSession } from "next-auth/react"
 import { getUserProgress, updateUserProgress } from "@/lib/actions"
 import SyncedBadge from "@/components/SyncedBadge"
+import { SignInButton, SignOutButton } from "@/components/AuthButtons"
 
 export default function PlanPage() {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
   const { lang } = useLanguage()
   const t = translations[lang]
   const pt = translations[lang].plan
@@ -221,6 +222,9 @@ export default function PlanPage() {
           <div className="countdown-header">
               <Calendar size={14} />
               <span>{t.countdown.ivuTitle}</span>
+              <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.5rem' }}>
+                  {status !== 'loading' && (session ? <SignOutButton /> : <SignInButton />)}
+              </div>
           </div>
           {!isFinished ? (
               <>
@@ -314,8 +318,16 @@ export default function PlanPage() {
         
         <div style={{ marginTop: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '2rem' }}>
           <div>
-            <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em', display: 'flex', alignItems: 'center' }}>
+            <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
               {pt.title}
+              <div style={{ 
+                  opacity: status === 'loading' ? 0 : 1,
+                  transition: 'opacity 0.2s',
+                  display: 'flex',
+                  alignItems: 'center'
+              }}>
+                  {status !== 'loading' && (session ? <SignOutButton /> : <SignInButton />)}
+              </div>
               <SyncedBadge />
             </h1>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>

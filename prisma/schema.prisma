@@ -27,6 +27,7 @@ model User {
   examProgress   ExamProgress[]
   calendarEvents CalendarEvent[]
   comments       Comment[]
+  links          Link[]
   auditLogs      AuditLog[]
 
   @@map("users")
@@ -117,6 +118,8 @@ model Link {
   description Json?    // { "es": "...", "en": "...", "pt": "..." }
   iconType    String?  // wsp, discord, drive, moodle, siu, youtube, external
   order       Int      @default(0)
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
