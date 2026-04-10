@@ -1,21 +1,25 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import { AlertTriangle, Bell, X } from 'lucide-react';
 import { translations } from '../lib/translations';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function NotificationBanners({ limitTo = 'all' }: { limitTo?: 'ivu' | 'mate' | 'none' | 'all' }) {
     const { lang } = useLanguage();
+    const { data: session } = useSession();
     const [dbNotifications, setDbNotifications] = useState<any[]>([]);
     const [isMounted, setIsMounted] = useState(false);
     const [hiddenIds, setHiddenIds] = useState<string[]>([]);
 
     useEffect(() => {
         setIsMounted(true);
-        // Load hidden notifications from localStorage
-        const hidden = localStorage.getItem('hidden_notifications');
+        // Load hidden notifications from localStorage based on session
+        const hiddenKey = session ? 'user_hidden_notifications' : 'hidden_notifications';
+        const hidden = localStorage.getItem(hiddenKey);
         if (hidden) setHiddenIds(JSON.parse(hidden));
+        else setHiddenIds([]); // Reset when session changes
 
         fetch('/api/notifications')
             .then(res => res.json())
@@ -23,12 +27,13 @@ export default function NotificationBanners({ limitTo = 'all' }: { limitTo?: 'iv
                 if (Array.isArray(data)) setDbNotifications(data);
             })
             .catch(console.error);
-    }, []);
+    }, [session]);
 
     const closeNotification = (id: string) => {
         const newHidden = [...hiddenIds, id];
         setHiddenIds(newHidden);
-        localStorage.setItem('hidden_notifications', JSON.stringify(newHidden));
+        const hiddenKey = session ? 'user_hidden_notifications' : 'hidden_notifications';
+        localStorage.setItem(hiddenKey, JSON.stringify(newHidden));
     };
 
     if (!isMounted) return null;

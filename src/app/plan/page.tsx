@@ -28,34 +28,46 @@ export default function PlanPage() {
 
   // Load from localStorage and Sync with Cloud
   useEffect(() => {
-    const savedCompleted = localStorage.getItem("ciberportero_completed_subjects")
+    const isGuest = status === 'unauthenticated' || !session;
+    const completedKey = isGuest ? "ciberportero_completed_subjects" : "ciberportero_user_completed_subjects";
+    const inProgressKey = isGuest ? "ciberportero_inprogress_subjects" : "ciberportero_user_inprogress_subjects";
+    const objectiveKey = isGuest ? "ciberportero_plan_objective" : "ciberportero_user_plan_objective";
+
+    const savedCompleted = localStorage.getItem(completedKey)
     if (savedCompleted) {
-      try { setCompleted(JSON.parse(savedCompleted)) } catch (e) {}
-    }
-    const savedInProgress = localStorage.getItem("ciberportero_inprogress_subjects")
-    if (savedInProgress) {
-      try { setInProgress(JSON.parse(savedInProgress)) } catch (e) {}
+      try { setCompleted(JSON.parse(savedCompleted)) } catch (e) { setCompleted([]) }
+    } else {
+      setCompleted([])
     }
 
-    const savedObj = localStorage.getItem("ciberportero_plan_objective")
+    const savedInProgress = localStorage.getItem(inProgressKey)
+    if (savedInProgress) {
+      try { setInProgress(JSON.parse(savedInProgress)) } catch (e) { setInProgress([]) }
+    } else {
+      setInProgress([])
+    }
+
+    const savedObj = localStorage.getItem(objectiveKey)
     if (savedObj === 'intermediate' || savedObj === 'degree') {
       setObjective(savedObj)
+    } else {
+      setObjective('degree')
     }
 
-    // Cloud Sync
+    // Cloud Sync ONLY for users
     if (session?.user?.id) {
        getUserProgress().then(data => {
          if (data) {
            setCompleted(data.completed)
            setInProgress(data.inProgress)
-           localStorage.setItem("ciberportero_completed_subjects", JSON.stringify(data.completed))
-           localStorage.setItem("ciberportero_inprogress_subjects", JSON.stringify(data.inProgress))
+           localStorage.setItem("ciberportero_user_completed_subjects", JSON.stringify(data.completed))
+           localStorage.setItem("ciberportero_user_inprogress_subjects", JSON.stringify(data.inProgress))
          }
        })
     }
 
     setIsLoaded(true)
-  }, [session])
+  }, [session, status])
 
   useEffect(() => {
     document.title = 'Ciberportero | Plan'
@@ -118,12 +130,16 @@ export default function PlanPage() {
 
     const isCompleted = completed.includes(id)
     const isInProgress = inProgress.includes(id)
+    
+    const isGuest = !session;
+    const completedKey = isGuest ? "ciberportero_completed_subjects" : "ciberportero_user_completed_subjects";
+    const inProgressKey = isGuest ? "ciberportero_inprogress_subjects" : "ciberportero_user_inprogress_subjects";
 
     if (!isInProgress && !isCompleted) {
       // Transition to In Progress
       const nextInProgress = [...inProgress, id]
       setInProgress(nextInProgress)
-      localStorage.setItem("ciberportero_inprogress_subjects", JSON.stringify(nextInProgress))
+      localStorage.setItem(inProgressKey, JSON.stringify(nextInProgress))
       if (session?.user?.id) updateUserProgress(completed, nextInProgress);
     } else if (isInProgress) {
       // Transition to Completed
@@ -131,21 +147,23 @@ export default function PlanPage() {
       const nextCompleted = [...completed, id]
       setInProgress(nextInProgress)
       setCompleted(nextCompleted)
-      localStorage.setItem("ciberportero_inprogress_subjects", JSON.stringify(nextInProgress))
-      localStorage.setItem("ciberportero_completed_subjects", JSON.stringify(nextCompleted))
+      localStorage.setItem(inProgressKey, JSON.stringify(nextInProgress))
+      localStorage.setItem(completedKey, JSON.stringify(nextCompleted))
       if (session?.user?.id) updateUserProgress(nextCompleted, nextInProgress);
     } else {
       // Transition to Pending
       const nextCompleted = completed.filter(c => c !== id)
       setCompleted(nextCompleted)
-      localStorage.setItem("ciberportero_completed_subjects", JSON.stringify(nextCompleted))
+      localStorage.setItem(completedKey, JSON.stringify(nextCompleted))
       if (session?.user?.id) updateUserProgress(nextCompleted, inProgress);
     }
   }
 
   const changeObjective = (obj: 'intermediate' | 'degree') => {
+    const isGuest = !session;
+    const objectiveKey = isGuest ? "ciberportero_plan_objective" : "ciberportero_user_plan_objective";
     setObjective(obj)
-    localStorage.setItem("ciberportero_plan_objective", obj)
+    localStorage.setItem(objectiveKey, obj)
   }
 
   // Filtering Logic
@@ -328,32 +346,10 @@ export default function PlanPage() {
             </h1>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
               <p style={{ color: 'var(--muted)', fontSize: '1.2rem', margin: 0, fontWeight: '500' }}>{pt.subtitle}</p>
-              <a 
-                href="https://undef.edu.ar/fadena/wp-content/uploads/2025/10/Plan-de-estudios-CIBERDEFENSA.pdf" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="pdf-link"
-                style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: '0.4rem', 
-                  fontSize: '0.85rem', 
-                  color: 'var(--accent)', 
-                  fontWeight: '700', 
-                  padding: '0.4rem 0.8rem', 
-                  background: 'rgba(0, 112, 243, 0.05)', 
-                  borderRadius: '10px',
-                  textDecoration: 'none',
-                  transition: 'all 0.2s'
-                }}
-              >
-                <ExternalLink size={16} />
-                Plan Oficial (PDF)
-              </a>
             </div>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'flex-end' }}>
+          <div style={{ display: 'flex', flexDirection: 'row', gap: '0.8rem', alignItems: 'center', flexWrap: 'wrap' }}>
             {/* Objective Selector */}
             <div style={{ 
               background: '#f1f5f9', 
@@ -398,6 +394,31 @@ export default function PlanPage() {
                 {pt.full}
               </button>
             </div>
+
+            {/* PDF Link — always next to the switch */}
+            <a 
+              href="https://undef.edu.ar/fadena/wp-content/uploads/2025/10/Plan-de-estudios-CIBERDEFENSA.pdf" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="pdf-link"
+              style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '0.4rem', 
+                fontSize: '0.85rem', 
+                color: 'var(--accent)', 
+                fontWeight: '700', 
+                padding: '0.4rem 0.8rem', 
+                background: 'rgba(0, 112, 243, 0.05)', 
+                borderRadius: '10px',
+                textDecoration: 'none',
+                transition: 'all 0.2s',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              <ExternalLink size={16} />
+              Plan Oficial (PDF)
+            </a>
           </div>
         </div>
 
@@ -438,7 +459,9 @@ export default function PlanPage() {
             </div>
             <div style={{ textAlign: 'center' }}>
               <span style={{ display: 'block', fontSize: '1.5rem', fontWeight: '900', color: 'var(--success)' }}>{completedInObjective.length}</span>
-              <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--muted)', textTransform: 'uppercase' }}>{pt.completed}</span>
+              <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--muted)', textTransform: 'uppercase' }}>
+                {completedInObjective.length === 1 ? pt.completed : (pt.completedPlural || pt.completed)}
+              </span>
             </div>
             <div style={{ textAlign: 'center' }}>
               <span style={{ display: 'block', fontSize: '1.5rem', fontWeight: '900' }}>{totalSubjects - completedInObjective.length}</span>

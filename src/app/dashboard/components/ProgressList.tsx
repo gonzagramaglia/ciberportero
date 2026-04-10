@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import { useSession } from "next-auth/react"
 import { Plus, Trash2, CheckCircle, Clock, Star, ExternalLink, Book, MessageSquare, Check, Zap, Search } from "lucide-react"
 import { useLanguage } from "@/context/LanguageContext"
 import { translations } from "@/lib/translations"
@@ -14,6 +15,7 @@ const ALL_TERMS = Array.from(new Set(DASHBOARD_CURRICULUM.map(s => `${s.year}.${
 export function ProgressList() {
   const { lang } = useLanguage()
   const t = translations[lang].dashboard
+  const { data: session } = useSession()
   
   const [examTitle, setExamTitle] = useState("")
   const [type, setType] = useState("autoevaluacion")
@@ -83,7 +85,9 @@ export function ProgressList() {
 
   // Load from localStorage on mount
   useEffect(() => {
-    const saved = localStorage.getItem("ciberportero_progress")
+    const isGuest = !session;
+    const progressKey = isGuest ? "ciberportero_progress" : "ciberportero_user_progress";
+    const saved = localStorage.getItem(progressKey)
     if (saved) {
       try {
         setProgress(JSON.parse(saved))
@@ -94,12 +98,14 @@ export function ProgressList() {
     } else {
       setProgress([])
     }
-  }, [])
+  }, [session])
 
   // Sync to localStorage
   const saveProgress = (newList: any[]) => {
+    const isGuest = !session;
+    const progressKey = isGuest ? "ciberportero_progress" : "ciberportero_user_progress";
     setProgress(newList)
-    localStorage.setItem("ciberportero_progress", JSON.stringify(newList))
+    localStorage.setItem(progressKey, JSON.stringify(newList))
   }
 
   // Handle Close Search Dropdown on Click Outside

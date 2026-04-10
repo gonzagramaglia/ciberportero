@@ -21,11 +21,12 @@ export default function DashboardPage() {
   const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
-    const guest = localStorage.getItem("ciberportero_guest") === "true"
-    setIsGuest(guest)
+    const isGuest = status === 'unauthenticated' || !session;
+    setIsGuest(isGuest)
     
-    // Load stats from localStorage for guest
-    const saved = localStorage.getItem("ciberportero_progress")
+    // Load stats from the correct localStorage key
+    const progressKey = isGuest ? "ciberportero_progress" : "ciberportero_user_progress";
+    const saved = localStorage.getItem(progressKey)
     if (saved) {
       try {
         const progress = JSON.parse(saved)
@@ -37,9 +38,11 @@ export default function DashboardPage() {
       } catch (e) {
         console.error(e)
       }
+    } else {
+      setStats({ autoevaluaciones: 0, parciales: 0, trabajosPracticos: 0 })
     }
     setIsLoaded(true)
-  }, [])
+  }, [session, status])
 
   useEffect(() => {
     document.title = 'Ciberportero | Dashboard'

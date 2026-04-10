@@ -379,9 +379,20 @@ export async function getComments(postSlug: string) {
     where: { slug: postSlug },
     include: {
       comments: {
+        where: { parentId: null }, // Only top-level comments
         include: { 
-          user: {
-            select: { id: true, name: true, image: true }
+          user: { select: { id: true, name: true, image: true } },
+          replies: {
+            include: {
+              user: { select: { id: true, name: true, image: true } },
+              replies: {
+                include: {
+                  user: { select: { id: true, name: true, image: true } }
+                },
+                orderBy: { createdAt: 'asc' }
+              }
+            },
+            orderBy: { createdAt: 'asc' }
           }
         },
         orderBy: { createdAt: 'desc' }
@@ -391,7 +402,7 @@ export async function getComments(postSlug: string) {
   return post?.comments || [];
 }
 
-export async function addComment(postSlug: string, content: string) {
+export async function addComment(postSlug: string, content: string, parentId?: string) {
   const session = await auth();
   if (!session?.user?.id) return { error: "Not authenticated" };
 
@@ -402,7 +413,7 @@ export async function addComment(postSlug: string, content: string) {
     post = await db.post.create({
       data: {
         slug: postSlug,
-        title: postSlug, // Fallback
+        title: postSlug,
         content: "Draft from markdown sync",
         published: true
       }
@@ -413,7 +424,8 @@ export async function addComment(postSlug: string, content: string) {
     data: {
       content,
       postId: post.id,
-      userId: session.user.id
+      userId: session.user.id,
+      ...(parentId ? { parentId } : {})
     }
   });
 

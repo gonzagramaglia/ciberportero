@@ -322,9 +322,8 @@ export default function LinksPage() {
                                                     {isPersonal && <span style={{ color: '#8b5cf6', marginRight: '0.5rem' }}>★</span>}
                                                     {name}
                                                 </span>
-                                                <p className="post-description" style={{ fontSize: '0.9rem' }}>{desc}</p>
+                                                </div>
                                             </div>
-                                        </div>
                                     ) : (
                                         <>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -336,7 +335,6 @@ export default function LinksPage() {
                                                     {name}
                                                 </span>
                                             </div>
-                                            <p className="post-description" style={{ fontSize: '0.9rem' }}>{desc}</p>
                                         </>
                                     )}
                                 </a>
@@ -444,16 +442,6 @@ export default function LinksPage() {
                                 />
                             </div>
                             
-                            <div>
-                                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '800', marginBottom: '0.4rem', color: 'var(--muted)' }}>{lang === 'es' ? 'Descripción (opcional)' : 'Description (optional)'}</label>
-                                <input 
-                                    type="text" 
-                                    value={newLink.description} 
-                                    onChange={(e) => setNewLink({...newLink, description: e.target.value})}
-                                    placeholder="..."
-                                    style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
-                                />
-                            </div>
                             
                             <button 
                                 onClick={handleSaveLink}
