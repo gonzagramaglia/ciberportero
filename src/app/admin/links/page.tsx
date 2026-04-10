@@ -1,5 +1,7 @@
 import { db } from "@/lib/db";
-import { Plus, Trash2, ExternalLink } from "lucide-react";
+import { Plus, ExternalLink, Edit } from "lucide-react";
+import Link from "next/link";
+import { DeleteButton } from "@/components/admin/DeleteButton";
 
 export default async function AdminLinksPage() {
   const links = await db.link.findMany({
@@ -13,17 +15,17 @@ export default async function AdminLinksPage() {
           <h2 className="admin-title">Administrar Links</h2>
           <p className="admin-subtitle">Gestiona los enlaces directos de la página de inicio /links.</p>
         </div>
-        <button className="btn-primary">
+        <Link href="/admin/links/new" className="btn-primary" style={{ textDecoration: 'none' }}>
           <Plus size={18} />
           <span>Nuevo Link</span>
-        </button>
+        </Link>
       </div>
 
       <div className="admin-card">
         <table className="admin-table">
           <thead>
             <tr>
-              <th>Nombre</th>
+              <th>Nombre (ES)</th>
               <th>URL</th>
               <th>Icono</th>
               <th>Orden</th>
@@ -35,16 +37,19 @@ export default async function AdminLinksPage() {
               <tr key={link.id}>
                 <td style={{ fontWeight: 600 }}>{(link.name as any)?.es || 'Sin nombre'}</td>
                 <td>
-                  <a href={link.url} target="_blank" rel="noreferrer" style={{ color: '#2563eb', textDecoration: 'none' }}>
-                    {link.url}
+                  <a href={link.url} target="_blank" rel="noreferrer" style={{ color: '#2563eb', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    {link.url} <ExternalLink size={12} />
                   </a>
                 </td>
                 <td style={{ textTransform: 'capitalize' }}>{link.iconType || '-'}</td>
                 <td>{link.order}</td>
                 <td style={{ textAlign: 'right' }}>
-                  <button style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer' }}>
-                    <Trash2 size={18} />
-                  </button>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.3rem' }}>
+                    <Link href={`/admin/links/${link.id}`} style={{ color: '#94a3b8', padding: '0.5rem' }}>
+                      <Edit size={18} />
+                    </Link>
+                    <DeleteButton id={link.id} type="link" />
+                  </div>
                 </td>
               </tr>
             )) : (
