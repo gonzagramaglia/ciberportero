@@ -111,23 +111,22 @@ export async function upsertNotification(data: any) {
   const isUpdate = !!data.id;
   const messageEs = data.message.es || 'Sin mensaje';
 
+  const notificationData = {
+    message: data.message,
+    description: data.description,
+    type: data.type,
+    active: data.active,
+  };
+
   if (isUpdate) {
     await db.notification.update({
       where: { id: data.id },
-      data: {
-        message: data.message,
-        type: data.type,
-        active: data.active,
-      }
+      data: notificationData
     });
     await logAction('UPDATE', 'notification', `Actualizó la alerta: ${messageEs}`);
   } else {
     await db.notification.create({
-      data: {
-        message: data.message,
-        type: data.type,
-        active: data.active,
-      }
+      data: notificationData
     });
     await logAction('CREATE', 'notification', `Creó una nueva alerta: ${messageEs}`);
   }

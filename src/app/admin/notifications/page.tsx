@@ -134,19 +134,20 @@ export default async function AdminNotificationsPage() {
                     <div style={{ fontSize: '0.85rem', color: '#475569', minHeight: '3em' }}>
                       {(c.description as any)?.es || 'Sin descripción'}
                     </div>
-                    <div style={{ 
-                      fontSize: '0.8rem', fontWeight: 700, padding: '0.75rem 1rem', 
-                      background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0',
-                      display: 'flex', justifyContent: 'space-between'
-                    }}>
-                      <span style={{ color: '#64748b' }}>Meta:</span>
-                      <span>{new Date(c.targetDate).toLocaleString('es-AR', { dateStyle: 'medium', timeStyle: 'short' })}</span>
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '0.5rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.5rem' }}>
+                      <div style={{ 
+                        flex: 1,
+                        fontSize: '0.8rem', fontWeight: 700, padding: '0.75rem 1rem', 
+                        background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0',
+                        display: 'flex', justifyContent: 'space-between'
+                      }}>
+                        <span style={{ color: '#64748b' }}>Meta:</span>
+                        <span>{new Date(c.targetDate).toLocaleString('es-AR', { dateStyle: 'medium', timeStyle: 'short' })}</span>
+                      </div>
                       <Link 
                         href={`/admin/countdowns/${c.id}`} 
                         className="btn-secondary"
-                        style={{ padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                        style={{ padding: '0.75rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', height: 'fit-content' }}
                       >
                         <Edit size={16} />
                         <span>Editar</span>

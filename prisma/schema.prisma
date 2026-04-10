@@ -149,13 +149,14 @@ model CalendarEvent {
 }
 
 model Notification {
-  id        String   @id @default(cuid())
-  message   Json     // { "es": "...", "en": "...", "pt": "..." }
-  type      String   @default("info") // info, warning, danger, success
-  active    Boolean  @default(true)
-  expiresAt DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(cuid())
+  message     Json     // { "es": "...", "en": "...", "pt": "..." }
+  description Json?    // { "es": "...", "en": "...", "pt": "..." }
+  type        String   @default("info") // info, warning, danger, success
+  active      Boolean  @default(true)
+  expiresAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@map("notifications")
 }
