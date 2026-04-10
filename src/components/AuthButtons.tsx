@@ -11,7 +11,7 @@ export function SignInButton() {
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>
         <button
-          onClick={() => signIn('google', { callbackUrl: window.location.href })}
+          onClick={() => { const returnTo = window.location.href; signIn('google', { callbackUrl: returnTo }) }}
           className="google-sign-in"
           style={{ 
             display: 'flex', 
@@ -51,9 +51,11 @@ export function SignInButton() {
 export function SignOutButton() {
   const { lang } = useLanguage()
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    const returnTo = window.location.href
     localStorage.removeItem("ciberportero_guest")
-    signOut({ callbackUrl: window.location.href })
+    await signOut({ redirect: false })
+    window.location.href = returnTo
   }
 
   return (

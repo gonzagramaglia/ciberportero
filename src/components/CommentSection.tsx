@@ -71,9 +71,6 @@ function ReplyForm({ onSubmit, onCancel, lang, userImage, userName }: {
           <button type="submit" disabled={submitting || !text.trim()} style={{ background: text.trim() ? '#000' : '#e5e7eb', color: '#fff', width: '34px', height: '34px', borderRadius: '10px', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s' }}>
             {submitting ? <Loader2 size={14} className="spin" /> : <Send size={14} />}
           </button>
-          <button type="button" onClick={onCancel} style={{ background: 'transparent', border: 'none', fontSize: '0.7rem', color: '#999', cursor: 'pointer', fontWeight: 600 }}>
-            {lang === 'es' ? 'Cancelar' : lang === 'pt' ? 'Cancelar' : 'Cancel'}
-          </button>
         </div>
       </div>
     </form>
@@ -117,11 +114,15 @@ function CommentCard({ comment, depth, lang, session, postSlug, onRefresh }: {
             {getFirstName(comment.user.name)}
           </span>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#bbb' }}>
-            <Calendar size={11} />
-            <span style={{ fontSize: '0.7rem', fontWeight: '600' }}>
-              {new Date(comment.createdAt).toLocaleDateString('es-AR', { day: 'numeric', month: 'short' })}
+            <span style={{ fontSize: '0.7rem', fontWeight: '600', textTransform: 'capitalize' }}>
+              {new Date(comment.createdAt).toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' })}
             </span>
           </div>
+          {session?.user?.id === comment.userId && (
+            <button onClick={handleDelete} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ff4d4d', opacity: 0.35, transition: 'opacity 0.2s', display: 'flex', alignItems: 'center', padding: 0 }} className="delete-comment-btn">
+              <Trash2 size={13} />
+            </button>
+          )}
         </div>
 
         {/* Bubble */}
@@ -130,19 +131,14 @@ function CommentCard({ comment, depth, lang, session, postSlug, onRefresh }: {
         </div>
 
         {/* Actions */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.4rem' }}>
-          {canReply && (
+        {canReply && (
+          <div style={{ marginTop: '0.4rem' }}>
             <button onClick={() => setShowReplyForm(!showReplyForm)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.75rem', fontWeight: '700', color: showReplyForm ? '#000' : '#999', display: 'flex', alignItems: 'center', gap: '0.3rem', transition: 'color 0.2s' }}>
               <CornerDownRight size={12} />
               {lang === 'es' ? 'Responder' : lang === 'pt' ? 'Responder' : 'Reply'}
             </button>
-          )}
-          {session?.user?.id === comment.userId && (
-            <button onClick={handleDelete} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ff4d4d', opacity: 0.4, transition: 'opacity 0.2s', display: 'flex', alignItems: 'center' }} className="delete-comment-btn">
-              <Trash2 size={13} />
-            </button>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Inline reply form */}
         {showReplyForm && (
