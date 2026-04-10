@@ -31,7 +31,7 @@ export default async function AdminCalendarPage() {
           <tbody className="divide-y divide-slate-200">
             {events.map((event) => (
               <tr key={event.id} className="hover:bg-slate-50 transition-colors">
-                <td className="p-4 font-medium text-slate-900">{event.title}</td>
+                <td className="p-4 font-medium text-slate-900">{(event.title as any)?.es || 'Sin título'}</td>
                 <td className="p-4 text-slate-500 text-sm">
                   <div className="flex items-center gap-2">
                     <CalendarIcon size={14} />
@@ -47,6 +47,7 @@ export default async function AdminCalendarPage() {
                     {event.type}
                   </span>
                 </td>
+                <td className="p-4 text-slate-500 text-sm">{(event.description as any)?.es || '-'}</td>
                 <td className="p-4 text-slate-500 text-sm">{event.period || '-'}</td>
                 <td className="p-4 text-right">
                   <button className="text-slate-400 hover:text-rose-600 p-2 transition-colors"><Trash2 size={18} /></button>

@@ -33,7 +33,7 @@ export default async function AdminLinksPage() {
           <tbody className="divide-y divide-slate-200">
             {links.length > 0 ? links.map((link) => (
               <tr key={link.id} className="hover:bg-slate-50 transition-colors">
-                <td className="p-4 font-medium text-slate-900">{link.name}</td>
+                <td className="p-4 font-medium text-slate-900">{(link.name as any)?.es || 'Sin nombre'}</td>
                 <td className="p-4 text-slate-500 text-sm max-w-xs truncate">
                   <a href={link.url} target="_blank" rel="noreferrer" className="flex items-center gap-1 hover:text-blue-600">
                     {link.url} <ExternalLink size={12} />

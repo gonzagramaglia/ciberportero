@@ -29,7 +29,7 @@ export default async function AdminNotificationsPage() {
             }`}>
               <div className="flex items-center gap-3">
                 <Bell size={18} />
-                <span className="font-medium">{n.message}</span>
+                <span className="font-medium">{(n.message as any)?.es || 'Sin mensaje'}</span>
                 {n.active ? (
                   <span className="text-[10px] uppercase font-bold px-2 py-0.5 bg-green-200 text-green-800 rounded-full">Activa</span>
                 ) : (
@@ -64,11 +64,11 @@ export default async function AdminNotificationsPage() {
               <div className="flex justify-between items-start">
                 <div className="flex items-center gap-2 text-slate-900 font-bold">
                   <Clock size={16} className="text-blue-500" />
-                  {c.title}
+                  {(c.title as any)?.es || 'Sin título'}
                 </div>
                 {c.isActive ? <ToggleRight className="text-green-500 cursor-pointer" /> : <ToggleLeft className="text-slate-300 cursor-pointer" />}
               </div>
-              <p className="text-sm text-slate-500">{c.description}</p>
+              <p className="text-sm text-slate-500">{(c.description as any)?.es || '-'}</p>
               <div className="text-xs font-mono bg-slate-50 p-2 rounded text-slate-600">
                 Meta: {c.targetDate.toLocaleString()}
               </div>
