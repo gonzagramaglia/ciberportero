@@ -222,9 +222,6 @@ export default function PlanPage() {
           <div className="countdown-header">
               <Calendar size={14} />
               <span>{t.countdown.ivuTitle}</span>
-              <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.5rem' }}>
-                  {status !== 'loading' && (session ? <SignOutButton /> : <SignInButton />)}
-              </div>
           </div>
           {!isFinished ? (
               <>
@@ -328,7 +325,6 @@ export default function PlanPage() {
               }}>
                   {status !== 'loading' && (session ? <SignOutButton /> : <SignInButton />)}
               </div>
-              <SyncedBadge />
             </h1>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
               <p style={{ color: 'var(--muted)', fontSize: '1.2rem', margin: 0, fontWeight: '500' }}>{pt.subtitle}</p>

@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react"
 import { MessageSquare, Send, Trash2, User as UserIcon, Loader2, Calendar } from "lucide-react"
 import { addComment, getComments, deleteComment } from "@/lib/actions"
 import Image from "next/image"
+import { SignInButton } from "@/components/AuthButtons"
 
 interface Comment {
   id: string
@@ -71,8 +72,8 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
       boxShadow: '0 20px 50px rgba(0,0,0,0.04)'
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '2.5rem' }}>
-        <div style={{ background: '#000', color: '#fff', padding: '0.5rem', borderRadius: '12px' }}>
-          <MessageSquare size={22} />
+        <div style={{ color: '#000', padding: '0.2rem' }}>
+          <MessageSquare size={28} style={{ strokeWidth: 2.5 }} />
         </div>
         <h2 style={{ margin: 0, fontSize: '1.8rem', fontWeight: '900', letterSpacing: '-0.02em' }}>
           Comentarios <span style={{ color: '#999', fontSize: '1.2rem', fontWeight: '500', marginLeft: '0.4rem' }}>({comments.length})</span>
@@ -144,15 +145,20 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
       ) : (
         <div style={{ 
           background: '#f8f9fa', 
-          padding: '2rem', 
+          padding: '2.5rem', 
           borderRadius: '24px', 
           textAlign: 'center', 
           marginBottom: '3rem',
-          border: '1px dashed #ddd'
+          border: '1px dashed #ddd',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '1.2rem'
         }}>
-          <p style={{ margin: 0, color: '#666', fontWeight: '600' }}>
+          <p style={{ margin: 0, color: '#666', fontWeight: '600', fontSize: '1.1rem' }}>
             {lang === 'es' ? "Inicia sesión para participar en la conversación" : lang === 'pt' ? "Inicie sessão para participar na conversa" : "Sign in to join the conversation"}
           </p>
+          <SignInButton />
         </div>
       )}
 

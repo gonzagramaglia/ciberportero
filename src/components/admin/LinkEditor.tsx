@@ -15,10 +15,15 @@ export function LinkEditor({ initialData }: Props) {
   const [loading, setLoading] = useState(false);
   
   // State for multilingual names
-  const [names, setNames] = useState({
-    es: initialData?.name?.es || '',
-    en: initialData?.name?.en || '',
-    pt: initialData?.name?.pt || '',
+  const [names, setNames] = useState(() => {
+    if (typeof initialData?.name === 'string') {
+      return { es: initialData.name, en: initialData.name, pt: initialData.name };
+    }
+    return {
+      es: initialData?.name?.es || '',
+      en: initialData?.name?.en || '',
+      pt: initialData?.name?.pt || '',
+    };
   });
 
   const [url, setUrl] = useState(initialData?.url || '');

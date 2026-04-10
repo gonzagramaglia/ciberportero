@@ -90,26 +90,32 @@ export async function upsertLink(data: any) {
 }
 
 export async function reorderLink(id: string, direction: 'up' | 'down') {
-  const currentLink = await db.link.findUnique({ where: { id } });
-  if (!currentLink) return;
+  try {
+    const currentLink = await db.link.findUnique({ where: { id } });
+    if (!currentLink) return;
 
-  const allLinks = await db.link.findMany({ orderBy: { order: 'asc' } });
-  const currentIndex = allLinks.findIndex(l => l.id === id);
-  const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+    const allLinks = await db.link.findMany({ orderBy: { order: 'asc' } });
+    const currentIndex = allLinks.findIndex(l => l.id === id);
+    const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
 
-  if (targetIndex >= 0 && targetIndex < allLinks.length) {
-    const targetLink = allLinks[targetIndex];
-    
-    // Swap orders
-    const currentOrder = currentLink.order;
-    const targetOrder = targetLink.order;
+    if (targetIndex >= 0 && targetIndex < allLinks.length) {
+      const targetLink = allLinks[targetIndex];
+      
+      // Swap orders
+      const currentOrder = currentLink.order;
+      const targetOrder = targetLink.order;
 
-    await db.link.update({ where: { id: currentLink.id }, data: { order: targetOrder } });
-    await db.link.update({ where: { id: targetLink.id }, data: { order: currentOrder } });
+      await db.link.update({ where: { id: currentLink.id }, data: { order: targetOrder } });
+      await db.link.update({ where: { id: targetLink.id }, data: { order: currentOrder } });
+    }
+
+    revalidatePath('/admin/links');
+    revalidatePath('/links');
+  } catch (error) {
+    console.error("Reorder failed, likely missing column:", error);
+    // Fallback refresh
+    revalidatePath('/admin/links');
   }
-
-  revalidatePath('/admin/links');
-  revalidatePath('/links');
 }
 
 /* --- NOTIFICATIONS ACTIONS --- */

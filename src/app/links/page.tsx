@@ -243,7 +243,6 @@ export default function LinksPage() {
                             }}>
                                 {status !== 'loading' && (session ? <SignOutButton /> : <SignInButton />)}
                             </div>
-                            <SyncedBadge />
                         </h1>
                         <p style={{ color: 'var(--muted)', fontSize: '1.2rem', marginTop: '0.5rem', fontWeight: '500' }} dangerouslySetInnerHTML={{ __html: t.featured?.description || '' }} />
                     </div>
