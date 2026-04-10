@@ -4,10 +4,15 @@ export default function CalendarLoading() {
   return (
     <div className="container" style={{ paddingTop: '12vh' }}>
       <div className="space-y-12">
-        <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+        <div style={{ marginBottom: '4rem' }}>
           <div style={{ 
-            height: '3.5rem', width: '350px', background: '#f1f5f9', 
-            borderRadius: '12px', margin: '0 auto 1rem',
+            height: '3.5rem', width: '250px', background: '#f1f5f9', 
+            borderRadius: '12px', marginBottom: '1rem',
+            animation: 'pulse 2.5s infinite'
+          }} />
+          <div style={{ 
+            height: '1.2rem', width: '400px', background: '#f8fafc', 
+            borderRadius: '8px',
             animation: 'pulse 2.5s infinite'
           }} />
         </div>
@@ -22,7 +27,7 @@ export default function CalendarLoading() {
               height: '180px', background: 'white', borderRadius: '24px',
               border: '1px solid #f1f5f9', padding: '1.5rem',
               animation: 'pulse 2.5s infinite',
-              animationDelay: `${i * 0.1}s`
+              animationDelay: `${i * 0.15}s`
             }}>
               <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem' }}>
                 <div style={{ width: '50px', height: '50px', borderRadius: '12px', background: '#f1f5f9', flexShrink: 0 }} />

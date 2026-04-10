@@ -6,12 +6,12 @@ export default function DashboardLoading() {
       <div className="space-y-12">
         <div style={{ marginBottom: '4rem' }}>
           <div style={{ 
-            height: '3.5rem', width: '300px', background: '#f1f5f9', 
+            height: '3.5rem', width: '250px', background: '#f1f5f9', 
             borderRadius: '12px', marginBottom: '1rem',
             animation: 'pulse 2.5s infinite'
           }} />
           <div style={{ 
-            height: '1.2rem', width: '450px', background: '#f8fafc', 
+            height: '1.2rem', width: '400px', background: '#f8fafc', 
             borderRadius: '8px',
             animation: 'pulse 2.5s infinite'
           }} />
@@ -19,23 +19,23 @@ export default function DashboardLoading() {
 
         <div style={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', 
-          gap: '2.5rem' 
+          gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', 
+          gap: '2rem' 
         }}>
-          {[1, 2, 3].map((i) => (
+          {[1, 2, 3, 4].map((i) => (
             <div key={i} style={{ 
-              height: '300px', background: 'white', borderRadius: '30px',
-              border: '1px solid #f1f5f9', padding: '2.5rem',
+              height: '250px', background: 'white', borderRadius: '24px',
+              border: '1px solid #f1f5f9', padding: '2rem',
               animation: 'pulse 2.5s infinite',
-              animationDelay: `${i * 0.15}s`,
-              boxShadow: '0 4px 20px rgba(0,0,0,0.01)'
+              animationDelay: `${i * 0.15}s`
             }}>
-              <div style={{ height: '24px', width: '150px', background: '#f1f5f9', borderRadius: '6px', marginBottom: '2rem' }} />
-              <div style={{ display: 'grid', gap: '1.2rem' }}>
-                <div style={{ height: '45px', width: '100%', background: '#f8fafc', borderRadius: '12px' }} />
-                <div style={{ height: '45px', width: '100%', background: '#f8fafc', borderRadius: '12px' }} />
-                <div style={{ height: '45px', width: '100%', background: '#f8fafc', borderRadius: '12px' }} />
+              <div style={{ height: '32px', width: '120px', background: '#f1f5f9', borderRadius: '8px', marginBottom: '1.5rem' }} />
+              <div className="space-y-4">
+                <div style={{ height: '14px', width: '90%', background: '#f8fafc', borderRadius: '4px' }} />
+                <div style={{ height: '14px', width: '85%', background: '#f8fafc', borderRadius: '4px' }} />
+                <div style={{ height: '14px', width: '70%', background: '#f8fafc', borderRadius: '4px' }} />
               </div>
+              <div style={{ marginTop: '2.5rem', height: '40px', width: '100%', background: '#f1f5f9', borderRadius: '12px' }} />
             </div>
           ))}
         </div>
