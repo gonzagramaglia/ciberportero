@@ -73,7 +73,21 @@ export default function LinksPage() {
         setTimeout(() => setCopied(false), 1500);
     };
 
-    const links = t.links || [];
+    const linksOld = t.links || [];
+    const [dbLinks, setDbLinks] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        fetch('/api/links')
+            .then(res => res.json())
+            .then(data => {
+                if (Array.isArray(data)) setDbLinks(data);
+                setIsLoading(false);
+            })
+            .catch(() => setIsLoading(false));
+    }, []);
+
+    const linksToRender = dbLinks.length > 0 ? dbLinks : (isLoading ? [] : linksOld);
 
     return (
         <div className="container fade-in page-container">
@@ -180,52 +194,59 @@ export default function LinksPage() {
 
             <main>
                 <ul className="post-list links-grid">
-                    {links.map((link) => {
-                        const isWhatsApp = link.url.includes('chat.whatsapp.com');
-                        const isDiscord = link.url.includes('discord.gg');
-                        const isDrive = link.url.includes('drive.google.com');
-                        const isYoutube = link.url.includes('youtube.com');
-                        const isMoodle = link.url.includes('campus.fadena');
-                        const isSIU = link.url.includes('autogestion.fadena');
-                        const hasIcon = isWhatsApp || isDiscord || isDrive || isMoodle || isSIU || isYoutube;
+                    {linksToRender.map((link) => {
+                        // Data handles both static (link.name is string) and DB (link.name is obj)
+                        const name = typeof link.name === 'object' ? (link.name[lang] || link.name.es) : link.name;
+                        const desc = typeof link.description === 'object' ? (link.description?.[lang] || link.description?.es) : link.desc;
+                        
+                        // Icon Logic: URL or Legacy Keyword
+                        const iconData = link.iconType || '';
+                        const isExternal = !iconData || iconData === 'external';
+                        
+                        let iconSrc = iconData;
+                        if (iconData === 'whatsapp') iconSrc = '/wsp.png';
+                        if (iconData === 'discord') iconSrc = '/discord.png';
+                        if (iconData === 'drive') iconSrc = '/drive.webp';
+                        if (iconData === 'moodle') iconSrc = '/moodle.png';
+                        if (iconData === 'youtube') iconSrc = '/youtube.png';
+                        if (iconData === 'siu') iconSrc = '/siu-guarani.png';
 
-                        const iconSrc = isWhatsApp ? '/wsp.png' : isDiscord ? '/discord.png' : isDrive ? '/drive.webp' : isMoodle ? '/moodle.png' : isYoutube ? '/youtube.png' : '/siu-guarani.png';
-                        const iconAlt = isWhatsApp ? 'WhatsApp' : isDiscord ? 'Discord' : isDrive ? 'Google Drive' : isMoodle ? 'Moodle' : isYoutube ? 'YouTube' : 'SIU Guaraní';
-                        const iconW = isDiscord ? 34 : isDrive ? 46 : isYoutube ? 44 : 40;
-                        const iconH = isDrive ? 38 : isYoutube ? 44 : 40;
+                        const iconW = iconData === 'discord' ? 34 : iconData === 'drive' ? 46 : iconData === 'youtube' ? 44 : 40;
+                        const iconH = iconData === 'drive' ? 38 : iconData === 'youtube' ? 44 : 40;
 
                         return (
-                            <li key={link.url} className="post-item" style={{ marginBottom: 0 }}>
+                            <li key={link.id || link.url} className="post-item" style={{ marginBottom: 0 }}>
                                 <a href={link.url} target="_blank" rel="noopener noreferrer" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                                    {hasIcon ? (
+                                    {!isExternal ? (
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                                             <div style={{ width: 46, flexShrink: 0, display: 'flex', justifyContent: 'center' }}>
                                                 <Image
                                                     src={iconSrc}
-                                                    alt={iconAlt}
+                                                    alt="link icon"
                                                     width={iconW}
                                                     height={iconH}
-                                                    style={{ flexShrink: 0, borderRadius: '8px' }}
+                                                    style={{ flexShrink: 0, borderRadius: '8px', objectFit: 'contain' }}
                                                 />
                                             </div>
                                             <div>
-                                                <span className="post-title" style={{ marginBottom: 0, fontSize: '1.2rem' }}>{link.name}</span>
-                                                <p className="post-description" style={{ fontSize: '0.9rem' }}>{link.desc}</p>
+                                                <span className="post-title" style={{ marginBottom: 0, fontSize: '1.2rem' }}>{name}</span>
+                                                <p className="post-description" style={{ fontSize: '0.9rem' }}>{desc}</p>
                                             </div>
                                         </div>
                                     ) : (
                                         <>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                                                 <ExternalLink size={20} color="var(--accent)" />
-                                                <span className="post-title" style={{ marginBottom: 0, fontSize: '1.2rem' }}>{link.name}</span>
+                                                <span className="post-title" style={{ marginBottom: 0, fontSize: '1.2rem' }}>{name}</span>
                                             </div>
-                                            <p className="post-description" style={{ fontSize: '0.9rem' }}>{link.desc}</p>
+                                            <p className="post-description" style={{ fontSize: '0.9rem' }}>{desc}</p>
                                         </>
                                     )}
                                 </a>
                             </li>
                         );
                     })}
+                    {isLoading && <p style={{ textAlign: 'center', gridColumn: '1/-1', padding: '2rem', opacity: 0.5 }}>Actualizando enlaces...</p>}
                 </ul>
 
                 <div className="contact-container" style={{ marginTop: '4rem', marginBottom: '1.25rem', padding: '2.5rem', background: 'rgba(16, 185, 129, 0.05)', borderRadius: '24px', border: '1px solid rgba(16, 185, 129, 0.1)', borderLeft: '4px solid var(--success)' }}>

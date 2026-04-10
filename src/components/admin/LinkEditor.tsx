@@ -101,20 +101,14 @@ export function LinkEditor({ initialData }: Props) {
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#64748b' }}>Tipo de Icono</label>
-            <select 
+            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#64748b' }}>URL del Icono (Opcional)</label>
+            <input 
+              placeholder="Ej: /wsp.png o https://..."
               value={iconType}
               onChange={e => setIconType(e.target.value)}
               style={{ width: '100%', padding: '0.75rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}
-            >
-              <option value="external">Externo (Flecha)</option>
-              <option value="moodle">Campus / Moodle</option>
-              <option value="siu">SIU Guaraní</option>
-              <option value="drive">Google Drive</option>
-              <option value="whatsapp">WhatsApp</option>
-              <option value="discord">Discord</option>
-              <option value="youtube">YouTube</option>
-            </select>
+            />
+            <p style={{ fontSize: '0.7rem', color: '#94a3b8', marginTop: '0.25rem' }}>Si se deja vacío, se usará el icono de flecha por defecto.</p>
           </div>
           <div>
             <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#64748b' }}>Orden de Aparición</label>

@@ -24,6 +24,7 @@ model User {
 
   // Student progress
   examProgress ExamProgress[]
+  auditLogs    AuditLog[]
 
   @@map("users")
 }
@@ -169,4 +170,17 @@ model Countdown {
   updatedAt   DateTime @updatedAt
 
   @@map("countdowns")
+}
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String   // "CREATE", "UPDATE", "DELETE", "TOGGLE"
+  target    String   // "link", "notification", "post", "event"
+  details   String?  // e.g., "Updated link Google Drive"
+  ip        String?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("audit_logs")
 }

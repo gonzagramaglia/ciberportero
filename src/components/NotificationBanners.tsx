@@ -7,57 +7,73 @@ import { useLanguage } from '../context/LanguageContext';
 
 export default function NotificationBanners({ limitTo = 'all' }: { limitTo?: 'ivu' | 'mate' | 'none' | 'all' }) {
     const { lang } = useLanguage();
-    const t = translations[lang];
-    const [showNotification, setShowNotification] = useState(false);
+    const [dbNotifications, setDbNotifications] = useState<any[]>([]);
     const [isMounted, setIsMounted] = useState(false);
+    const [hiddenIds, setHiddenIds] = useState<string[]>([]);
 
     useEffect(() => {
         setIsMounted(true);
-        if (limitTo === 'none') return;
+        // Load hidden notifications from localStorage
+        const hidden = localStorage.getItem('hidden_notifications');
+        if (hidden) setHiddenIds(JSON.parse(hidden));
 
-        const hiddenNotification = localStorage.getItem('hide_notification_security_v1');
-        if (!hiddenNotification) setShowNotification(true);
-    }, [limitTo]);
+        fetch('/api/notifications')
+            .then(res => res.json())
+            .then(data => {
+                if (Array.isArray(data)) setDbNotifications(data);
+            })
+            .catch(console.error);
+    }, []);
 
-    const closeNotification = (e: React.MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setShowNotification(false);
-        localStorage.setItem('hide_notification_security_v1', 'true');
+    const closeNotification = (id: string) => {
+        const newHidden = [...hiddenIds, id];
+        setHiddenIds(newHidden);
+        localStorage.setItem('hidden_notifications', JSON.stringify(newHidden));
     };
 
     if (!isMounted) return null;
 
+    // Filter out hidden ones
+    const activeNotifications = dbNotifications.filter(n => !hiddenIds.includes(n.id));
+
     return (
-        <>
-            {showNotification && (
-                <a
-                    href="https://campus.fadena.undef.edu.ar/my/courses.php"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="notification-banner danger"
-                    style={{ 
-                        marginTop: '0.5rem',
-                        background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+        <div style={{ display: 'grid', gap: '0.75rem', marginBottom: '1.5rem' }}>
+            {activeNotifications.map(notification => {
+                const message = typeof notification.message === 'object' ? (notification.message[lang] || notification.message.es) : notification.message;
+                const type = notification.type || 'info';
+                
+                // Color mapping based on type
+                const styles = {
+                    danger: { bg: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', border: '#b91c1c', icon: <AlertTriangle size={18} /> },
+                    warning: { bg: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)', border: '#b45309', icon: <AlertTriangle size={18} /> },
+                    success: { bg: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', border: '#047857', icon: <Bell size={18} /> },
+                    info: { bg: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', border: '#1d4ed8', icon: <Bell size={18} /> }
+                }[type as 'danger' | 'warning' | 'success' | 'info'];
+
+                return (
+                    <div key={notification.id} className={`notification-banner ${type}`} style={{ 
+                        background: styles.bg,
                         color: 'white',
-                        border: '1px solid #b91c1c',
-                        boxShadow: '0 4px 12px rgba(220, 38, 38, 0.2)'
-                    }}
-                >
-                    <div className="notification-content">
-                        <div className="notification-icon" style={{ background: 'rgba(255,255,255,0.2)' }}>
-                            <AlertTriangle size={18} />
+                        border: `1px solid ${styles.border}`,
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                        position: 'relative',
+                        borderRadius: '16px',
+                        overflow: 'hidden'
+                    }}>
+                        <div className="notification-content">
+                            <div className="notification-icon" style={{ background: 'rgba(255,255,255,0.2)' }}>
+                                {styles.icon}
+                            </div>
+                            <div className="notification-text">
+                                <span dangerouslySetInnerHTML={{ __html: message }} />
+                            </div>
+                            <button className="notification-close" onClick={() => closeNotification(notification.id)}>
+                                <X size={16} />
+                            </button>
                         </div>
-                        <div className="notification-text">
-                            <strong>{t.notification?.title}</strong>
-                            <span dangerouslySetInnerHTML={{ __html: t.notification?.desc || '' }} />
-                        </div>
-                        <button className="notification-close" onClick={closeNotification}>
-                            <X size={16} />
-                        </button>
                     </div>
-                </a>
-            )}
-        </>
+                );
+            })}
+        </div>
     );
 }
