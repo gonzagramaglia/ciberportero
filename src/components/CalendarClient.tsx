@@ -4,15 +4,19 @@ import { useState, useEffect, useMemo } from "react"
 import Link from "next/link"
 import { translations } from "@/lib/translations"
 import LanguageSwitcher from "@/components/LanguageSwitcher"
-import { ArrowLeft, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, Bell, Github, Youtube, Search, Filter, Copy, Check, Info, Lock } from "lucide-react"
+import { useSession } from "next-auth/react"
+import { createPersonalEvent, deleteCalendarEvent } from "@/lib/actions"
+import { ArrowLeft, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, Bell, Github, Youtube, Search, Filter, Copy, Check, Info, Lock, Plus, Trash2, X as CloseIcon } from "lucide-react"
 import NotificationBanners from "@/components/NotificationBanners"
 
 interface AcademicEvent {
+  id: string;
   date: string; // ISO format (YYYY-MM-DD)
   title: Record<string, string>;
   type: string;
   desc: Record<string, string>;
   subjectId?: string;
+  userId?: string | null;
 }
 
 interface CalendarClientProps {
@@ -21,15 +25,42 @@ interface CalendarClientProps {
 }
 
 export default function CalendarClient({ initialEvents, lang }: CalendarClientProps) {
+  const { data: session } = useSession()
   const t = translations[lang as keyof typeof translations]
   const ct = t.calendar
   const st = t.plan.subjectNames
   
+  const [allEvents, setAllEvents] = useState(initialEvents)
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+  const [newEvent, setNewEvent] = useState({ title: '', date: '', type: 'exam' })
+  const [isSaving, setIsSaving] = useState(false)
+
+  useEffect(() => {
+    setAllEvents(initialEvents)
+  }, [initialEvents])
+
   const [currentDate, setCurrentDate] = useState(new Date())
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
   const [searchTerm, setSearchTerm] = useState('')
   const [subjectFilter, setSubjectFilter] = useState('all')
   const [emailCopied, setEmailCopied] = useState(false)
+
+  const handleSaveEvent = async () => {
+    if (!newEvent.title || !newEvent.date) return;
+    setIsSaving(true);
+    const res = await createPersonalEvent(newEvent);
+    if (res.success) {
+      setIsAddModalOpen(false);
+      setNewEvent({ title: '', date: '', type: 'exam' });
+      // The page will revalidate and refresh initialEvents because it's a server action
+    }
+    setIsSaving(false);
+  };
+
+  const handleDeleteEvent = async (id: string) => {
+    if (!confirm(lang === 'es' ? '¿Eliminar este evento?' : 'Delete this event?')) return;
+    await deleteCalendarEvent(id);
+  };
 
   const handleCopyEmail = () => {
       const email = "ciberportero@gmail.com";
@@ -39,7 +70,7 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
   };
 
   const filteredEvents = useMemo(() => {
-    return initialEvents.filter(event => {
+    return allEvents.filter(event => {
       const title = event.title[lang] || event.title['es'] || '';
       const desc = event.desc[lang] || event.desc['es'] || '';
       const matchesSearch = title.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -47,7 +78,7 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
       const matchesSubject = subjectFilter === 'all' || event.subjectId === subjectFilter;
       return matchesSearch && matchesSubject;
     });
-  }, [initialEvents, lang, searchTerm, subjectFilter]);
+  }, [allEvents, lang, searchTerm, subjectFilter]);
 
   const nextMonth = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))
@@ -134,9 +165,34 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
           <LanguageSwitcher />
         </div>
         
-        <div style={{ marginTop: '0.5rem' }}>
-          <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em' }}>{ct.title}</h1>
-          <p style={{ color: 'var(--muted)', fontSize: '1.2rem', marginTop: '0.5rem', fontWeight: '500' }} dangerouslySetInnerHTML={{ __html: ct.description }} />
+        <div style={{ marginTop: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1rem' }}>
+          <div>
+            <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em' }}>{ct.title}</h1>
+            <p style={{ color: 'var(--muted)', fontSize: '1.2rem', marginTop: '0.5rem', fontWeight: '500' }} dangerouslySetInnerHTML={{ __html: ct.description }} />
+          </div>
+          {session && (
+            <button 
+              onClick={() => setIsAddModalOpen(true)}
+              className="add-event-btn"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                background: '#000',
+                color: '#fff',
+                padding: '0.8rem 1.5rem',
+                borderRadius: '14px',
+                border: 'none',
+                fontWeight: '700',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+              }}
+            >
+              <Plus size={20} />
+              {lang === 'es' ? 'Añadir evento' : lang === 'pt' ? 'Adicionar evento' : 'Add event'}
+            </button>
+          )}
         </div>
       </header>
 
@@ -234,9 +290,20 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
                 {selectedEvents.length > 0 ? (
                   selectedEvents.map((event, idx) => (
                     <div key={idx} className={`event-detail-item type-${event.type}`}>
-                      <div className="event-type-tag">
-                          {ct.events[event.type as keyof typeof ct.events] || event.type}
-                          {event.subjectId && ` • ${(st as any)[event.subjectId]}`}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <div className="event-type-tag">
+                            {ct.events[event.type as keyof typeof ct.events] || event.type}
+                            {event.subjectId && ` • ${(st as any)[event.subjectId]}`}
+                            {event.userId && (lang === 'es' ? ' • Personal' : ' • Personal')}
+                        </div>
+                        {(session?.user?.id === event.userId || session?.user?.email === 'ciberportero@gmail.com') && (
+                          <button 
+                            onClick={() => handleDeleteEvent(event.id)}
+                            style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: '#ef4444', opacity: 0.6, padding: '4px' }}
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        )}
                       </div>
                       <h4>{event.title[lang] || event.title['es']}</h4>
                       <p>{event.desc[lang] || event.desc['es']}</p>
@@ -330,6 +397,89 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
               <Youtube size={22} />
           </a>
       </footer>
+
+      {isAddModalOpen && (
+        <div className="modal-overlay" style={{
+          position: 'fixed',
+          top: 0, left: 0, right: 0, bottom: 0,
+          background: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+          backdropFilter: 'blur(4px)'
+        }}>
+          <div className="modal-content" style={{
+            background: 'white',
+            padding: '2rem',
+            borderRadius: '24px',
+            width: '100%',
+            maxWidth: '400px',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.2)'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h3 style={{ margin: 0, fontWeight: '900' }}>{lang === 'es' ? 'Nuevo evento personal' : 'New personal event'}</h3>
+              <button onClick={() => setIsAddModalOpen(false)} style={{ border: 'none', background: 'transparent', cursor: 'pointer' }}>
+                <CloseIcon size={24} />
+              </button>
+            </div>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '800', marginBottom: '0.4rem', color: 'var(--muted)' }}>{lang === 'es' ? 'Título' : 'Title'}</label>
+                <input 
+                  type="text" 
+                  value={newEvent.title} 
+                  onChange={(e) => setNewEvent({...newEvent, title: e.target.value})}
+                  placeholder="Ej: Entrega de TP1"
+                  style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
+                />
+              </div>
+              
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '800', marginBottom: '0.4rem', color: 'var(--muted)' }}>{lang === 'es' ? 'Fecha' : 'Date'}</label>
+                <input 
+                  type="date" 
+                  value={newEvent.date} 
+                  onChange={(e) => setNewEvent({...newEvent, date: e.target.value})}
+                  style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
+                />
+              </div>
+              
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '800', marginBottom: '0.4rem', color: 'var(--muted)' }}>{lang === 'es' ? 'Tipo' : 'Type'}</label>
+                <select 
+                  value={newEvent.type} 
+                  onChange={(e) => setNewEvent({...newEvent, type: e.target.value})}
+                  style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
+                >
+                  <option value="exam">{lang === 'es' ? 'Examen' : 'Exam'}</option>
+                  <option value="enrollment">{lang === 'es' ? 'Tarea / Entrega' : 'Task / Assignment'}</option>
+                  <option value="classes">{lang === 'es' ? 'Clase' : 'Class'}</option>
+                </select>
+              </div>
+              
+              <button 
+                onClick={handleSaveEvent}
+                disabled={isSaving}
+                style={{
+                  background: '#000',
+                  color: '#fff',
+                  padding: '1rem',
+                  borderRadius: '14px',
+                  border: 'none',
+                  fontWeight: '800',
+                  marginTop: '0.5rem',
+                  cursor: 'pointer',
+                  opacity: isSaving ? 0.7 : 1
+                }}
+              >
+                {isSaving ? (lang === 'es' ? 'Guardando...' : 'Saving...') : (lang === 'es' ? 'Guardar' : 'Save')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <style jsx>{`
         .calendar-controls {

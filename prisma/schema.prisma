@@ -23,9 +23,11 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Student progress
-  examProgress ExamProgress[]
-  auditLogs    AuditLog[]
+  // Personal data
+  examProgress   ExamProgress[]
+  calendarEvents CalendarEvent[]
+  comments       Comment[]
+  auditLogs      AuditLog[]
 
   @@map("users")
 }
@@ -132,8 +134,23 @@ model Post {
   lang        String   @default("es") // "es", "en", "pt"
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  comments    Comment[]
 
   @@map("posts")
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  postId    String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("comments")
 }
 
 model CalendarEvent {
@@ -144,6 +161,8 @@ model CalendarEvent {
   period      String?  // e.g., "1st Semester", "Full Year"
   type        String   @default("event") // "exam", "class", "admin", "event"
   subjectId   String?  // ID related to subjectNames in translations
+  userId      String?  // Personal event for a user
+  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

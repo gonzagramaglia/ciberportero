@@ -4,7 +4,7 @@ import { db } from "@/lib/db"
 import authConfig from "./auth.config"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  adapter: PrismaAdapter(db),
+  adapter: PrismaAdapter(db) as any,
   session: { strategy: "jwt" },
   trustHost: true,
   ...authConfig,

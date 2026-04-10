@@ -9,8 +9,11 @@ import LanguageSwitcher from "@/components/LanguageSwitcher"
 import { CheckCircle, Info, Lock, ArrowLeft, Layers, Star, Zap, Github, Youtube, Search, X, Calendar, ExternalLink } from "lucide-react"
 import NotificationBanners from "@/components/NotificationBanners"
 import { normalizeString } from "@/lib/string-utils"
+import { useSession } from "next-auth/react"
+import { getUserProgress, updateUserProgress } from "@/lib/actions"
 
 export default function PlanPage() {
+  const { data: session } = useSession()
   const { lang } = useLanguage()
   const t = translations[lang]
   const pt = translations[lang].plan
@@ -21,7 +24,7 @@ export default function PlanPage() {
   const [hoveredId, setHoveredId] = useState<number | null>(null)
   const [isLoaded, setIsLoaded] = useState(false)
 
-  // Load from localStorage
+  // Load from localStorage and Sync with Cloud
   useEffect(() => {
     const savedCompleted = localStorage.getItem("ciberportero_completed_subjects")
     if (savedCompleted) {
@@ -36,8 +39,21 @@ export default function PlanPage() {
     if (savedObj === 'intermediate' || savedObj === 'degree') {
       setObjective(savedObj)
     }
+
+    // Cloud Sync
+    if (session?.user?.id) {
+       getUserProgress().then(data => {
+         if (data) {
+           setCompleted(data.completed)
+           setInProgress(data.inProgress)
+           localStorage.setItem("ciberportero_completed_subjects", JSON.stringify(data.completed))
+           localStorage.setItem("ciberportero_inprogress_subjects", JSON.stringify(data.inProgress))
+         }
+       })
+    }
+
     setIsLoaded(true)
-  }, [])
+  }, [session])
 
   useEffect(() => {
     document.title = 'Ciberportero | Plan'
@@ -106,6 +122,7 @@ export default function PlanPage() {
       const nextInProgress = [...inProgress, id]
       setInProgress(nextInProgress)
       localStorage.setItem("ciberportero_inprogress_subjects", JSON.stringify(nextInProgress))
+      if (session?.user?.id) updateUserProgress(completed, nextInProgress);
     } else if (isInProgress) {
       // Transition to Completed
       const nextInProgress = inProgress.filter(i => i !== id)
@@ -114,11 +131,13 @@ export default function PlanPage() {
       setCompleted(nextCompleted)
       localStorage.setItem("ciberportero_inprogress_subjects", JSON.stringify(nextInProgress))
       localStorage.setItem("ciberportero_completed_subjects", JSON.stringify(nextCompleted))
+      if (session?.user?.id) updateUserProgress(nextCompleted, nextInProgress);
     } else {
       // Transition to Pending
       const nextCompleted = completed.filter(c => c !== id)
       setCompleted(nextCompleted)
       localStorage.setItem("ciberportero_completed_subjects", JSON.stringify(nextCompleted))
+      if (session?.user?.id) updateUserProgress(nextCompleted, inProgress);
     }
   }
 

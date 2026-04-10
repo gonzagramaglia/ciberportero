@@ -225,14 +225,25 @@ export async function upsertCountdown(data: any) {
 
 /* --- CALENDAR ACTIONS --- */
 export async function deleteCalendarEvent(id: string) {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "Not authenticated" };
+
   const event = await db.calendarEvent.findUnique({ where: { id } });
+  if (!event) return { error: "Not found" };
+
+  // Only allow if user is admin OR the owner of the event
+  const user = await db.user.findUnique({ where: { id: session.user.id } });
+  if (user?.role !== 'admin' && event.userId !== session.user.id) {
+    return { error: "Unauthorized" };
+  }
+
   const title = (event?.title as any)?.es || 'Sin título';
-  
   await db.calendarEvent.delete({ where: { id } });
   await logAction('DELETE', 'event', `Eliminó el evento: ${title}`);
   
-  revalidatePath('/admin/calendar');
   revalidatePath('/calendar');
+  revalidatePath('/admin/calendar');
+  return { success: true };
 }
 
 export async function upsertCalendarEvent(data: any) {
@@ -263,4 +274,133 @@ export async function upsertCalendarEvent(data: any) {
   
   revalidatePath('/admin/calendar');
   revalidatePath('/calendar');
+}
+
+export async function getUserProgress() {
+  const session = await auth();
+  if (!session?.user?.id) return null;
+
+  const progress = await db.examProgress.findMany({
+    where: { userId: session.user.id }
+  });
+
+  return {
+    completed: progress.filter(p => p.completed).map(p => parseInt(p.examTitle)),
+    inProgress: progress.filter(p => !p.completed).map(p => parseInt(p.examTitle))
+  };
+}
+
+export async function updateUserProgress(completed: number[], inProgress: number[]) {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "Not authenticated" };
+
+  await db.examProgress.deleteMany({
+    where: { userId: session.user.id }
+  });
+
+  const data = [
+    ...completed.map(id => ({
+      userId: session.user.id as string,
+      examTitle: id.toString(),
+      type: "subject",
+      completed: true
+    })),
+    ...inProgress.map(id => ({
+      userId: session.user.id as string,
+      examTitle: id.toString(),
+      type: "subject",
+      completed: false
+    }))
+  ];
+
+  if (data.length > 0) {
+    await db.examProgress.createMany({ data });
+  }
+
+  return { success: true };
+}
+
+export async function createPersonalEvent(data: { title: string, date: string, type: string }) {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "Not authenticated" };
+
+  await db.calendarEvent.create({
+    data: {
+      title: { es: data.title, en: data.title, pt: data.title },
+      date: new Date(data.date),
+      type: data.type,
+      userId: session.user.id
+    }
+  });
+
+  revalidatePath('/calendar');
+  return { success: true };
+}
+
+
+export async function getComments(postSlug: string) {
+  const post = await db.post.findUnique({
+    where: { slug: postSlug },
+    include: {
+      comments: {
+        include: { 
+          user: {
+            select: { id: true, name: true, image: true }
+          }
+        },
+        orderBy: { createdAt: 'desc' }
+      }
+    }
+  });
+  return post?.comments || [];
+}
+
+export async function addComment(postSlug: string, content: string) {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "Not authenticated" };
+
+  // Find or create post in DB to link comments
+  let post = await db.post.findUnique({ where: { slug: postSlug } });
+  
+  if (!post) {
+    post = await db.post.create({
+      data: {
+        slug: postSlug,
+        title: postSlug, // Fallback
+        content: "Draft from markdown sync",
+        published: true
+      }
+    });
+  }
+
+  await db.comment.create({
+    data: {
+      content,
+      postId: post.id,
+      userId: session.user.id
+    }
+  });
+
+  revalidatePath(`/${postSlug}`);
+  return { success: true };
+}
+
+export async function deleteComment(commentId: string) {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "Not authenticated" };
+
+  const comment = await db.comment.findUnique({ 
+    where: { id: commentId },
+    include: { post: true }
+  });
+  if (!comment) return { error: "Not found" };
+
+  const user = await db.user.findUnique({ where: { id: session.user.id } });
+  if (user?.role !== 'admin' && comment.userId !== session.user.id) {
+    return { error: "Unauthorized" };
+  }
+
+  await db.comment.delete({ where: { id: commentId } });
+  revalidatePath(`/${comment.post.slug}`);
+  return { success: true };
 }

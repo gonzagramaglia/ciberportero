@@ -12,6 +12,7 @@ import { useParams, notFound } from 'next/navigation';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 
 import NotificationBanners from '../../components/NotificationBanners';
+import CommentSection from '../../components/CommentSection';
 
 export default function Post() {
     const { slug } = useParams();
@@ -157,6 +158,8 @@ export default function Post() {
                         <span>{copied ? t.share.copied : t.share.copy}</span>
                     </button>
                 </div>
+
+                <CommentSection postSlug={slug as string} lang={lang} />
 
                 <footer className="footer-main">
                     <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
