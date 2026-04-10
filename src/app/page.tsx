@@ -15,6 +15,7 @@ export default function Home() {
     const { lang } = useLanguage();
     const { data: session, status } = useSession();
     const [posts, setPosts] = useState<Omit<PostData, 'content'>[]>([]);
+    const [isLoadingPosts, setIsLoadingPosts] = useState(true);
     const [isGuest, setIsGuest] = useState(false);
     const t = translations[lang];
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -30,9 +31,14 @@ export default function Home() {
     useEffect(() => {
         setIsGuest(localStorage.getItem("ciberportero_guest") === "true");
         const fetchPosts = async () => {
-            const response = await fetch(`/api/posts?lang=${lang}`);
-            const data = await response.json();
-            setPosts(data);
+            setIsLoadingPosts(true);
+            try {
+                const response = await fetch(`/api/posts?lang=${lang}`);
+                const data = await response.json();
+                setPosts(data);
+            } finally {
+                setIsLoadingPosts(false);
+            }
         };
         fetchPosts();
     }, [lang]);
@@ -290,7 +296,18 @@ export default function Home() {
                 </div>
 
                 <ul className="post-list">
-                    {posts.map((post) => (
+                    {isLoadingPosts ? (
+                        // Skeleton loader
+                        [1, 2, 3].map(i => (
+                            <li key={i} className="post-item" style={{ pointerEvents: 'none' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                                    <div style={{ width: '120px', height: '14px', borderRadius: '8px', background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.4s infinite' }} />
+                                    <div style={{ width: `${60 + i * 10}%`, height: '20px', borderRadius: '8px', background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.4s infinite', animationDelay: `${i * 0.15}s` }} />
+                                    <div style={{ width: '90%', height: '14px', borderRadius: '8px', background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.4s infinite', animationDelay: `${i * 0.2}s` }} />
+                                </div>
+                            </li>
+                        ))
+                    ) : posts.map((post) => (
                         <li key={post.slug} className="post-item">
                             <Link href={`/${post.slug}`}>
                                 <span className="post-date">{new Date(post.date).toLocaleDateString(lang, {
@@ -305,6 +322,13 @@ export default function Home() {
                         </li>
                     ))}
                 </ul>
+
+                <style jsx>{`
+                    @keyframes shimmer {
+                        0% { background-position: 200% 0; }
+                        100% { background-position: -200% 0; }
+                    }
+                `}</style>
 
                 {lang === 'es' && (
                     <>

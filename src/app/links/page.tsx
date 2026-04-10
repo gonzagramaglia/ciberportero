@@ -331,13 +331,7 @@ export default function LinksPage() {
                                         {userLinks.map(renderLink)}
                                     </ul>
                                     {adminLinks.length > 0 && (
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', margin: '1.5rem 0', opacity: 0.3 }}>
-                                            <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
-                                            <span style={{ fontSize: '0.7rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--muted)' }}>
-                                                {lang === 'es' ? 'Links del campus' : lang === 'pt' ? 'Links do campus' : 'Campus links'}
-                                            </span>
-                                            <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
-                                        </div>
+                                        <div style={{ height: '1px', background: 'var(--border)', margin: '1.5rem 0', opacity: 0.4 }} />
                                     )}
                                 </>
                             )}
