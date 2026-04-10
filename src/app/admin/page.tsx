@@ -13,11 +13,11 @@ export default async function AdminPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-3xl font-extrabold tracking-tight text-slate-900">Dashboard</h2>
-        <p className="text-slate-500 mt-2">Visión general de la plataforma.</p>
+        <h2 className="admin-title">Panel de Control</h2>
+        <p className="admin-subtitle">Visión general de la plataforma y estadísticas.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="stats-grid">
         <StatCard title="Links" count={counts.links} icon={<LinkIcon className="text-blue-500" />} />
         <StatCard title="Posts" count={counts.posts} icon={<FileText className="text-emerald-500" />} />
         <StatCard title="Eventos" count={counts.events} icon={<Calendar className="text-purple-500" />} />
@@ -25,13 +25,13 @@ export default async function AdminPage() {
         <StatCard title="Cuentas Regresivas" count={counts.countdowns} icon={<Clock className="text-rose-500" />} />
       </div>
 
-      <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
-        <h3 className="text-lg font-bold mb-4">Mantenimiento</h3>
-        <p className="text-sm text-slate-600 mb-6">
-          Asegúrate de que la base de datos de Supabase esté sincronizada con Prisma.
+      <div className="admin-card" style={{ padding: '2rem' }}>
+        <h3 className="text-lg font-bold mb-4" style={{ margin: '0 0 1rem 0' }}>Mantenimiento</h3>
+        <p className="text-sm text-slate-600 mb-6" style={{ color: '#64748b', marginBottom: '1.5rem' }}>
+          La base de datos de Supabase está sincronizada con Prisma.
         </p>
-        <div className="flex gap-4">
-          <code className="bg-slate-100 p-3 rounded text-sm flex-1">npx prisma db push</code>
+        <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', fontFamily: 'monospace', fontSize: '0.9rem' }}>
+          npx prisma db push
         </div>
       </div>
     </div>
@@ -40,13 +40,13 @@ export default async function AdminPage() {
 
 function StatCard({ title, count, icon }: { title: string; count: number; icon: React.ReactNode }) {
   return (
-    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
-      <div className="p-3 bg-slate-50 rounded-xl">
+    <div className="stat-card">
+      <div className="stat-icon">
         {icon}
       </div>
-      <div>
-        <p className="text-sm font-medium text-slate-500">{title}</p>
-        <p className="text-2xl font-bold text-slate-900">{count}</p>
+      <div className="stat-info">
+        <p>{title}</p>
+        <p>{count}</p>
       </div>
     </div>
   );

@@ -7,7 +7,7 @@ const { auth } = NextAuth(authConfig);
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  
+
   // 1. Auth Protection for /admin
   if (pathname.startsWith('/admin')) {
     const session = await auth();
@@ -27,7 +27,7 @@ export async function middleware(request: NextRequest) {
     const newPathname = '/' + segments.slice(2).join('/');
     const url = request.nextUrl.clone();
     url.pathname = newPathname || '/';
-    
+
     const response = NextResponse.rewrite(url);
     response.cookies.set('lang', urlLang, { path: '/', maxAge: 31536000 });
     return response;
