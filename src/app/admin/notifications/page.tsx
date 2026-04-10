@@ -3,6 +3,8 @@ import { Plus, Bell, Clock, Edit } from "lucide-react";
 import Link from "next/link";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 import { NotificationToggle } from "@/components/admin/NotificationToggle";
+import { CountdownToggle } from "@/components/admin/CountdownToggle";
+import { deleteNotification } from "@/lib/actions";
 
 export default async function AdminNotificationsPage() {
   const notifications = await db.notification.findMany({ orderBy: { createdAt: 'desc' } });
@@ -75,40 +77,94 @@ export default async function AdminNotificationsPage() {
 
       <div style={{ height: '2rem' }} /> {/* Espaciador extra solicitado */}
 
+      <div style={{ height: '3rem' }} />
+
       <section className="space-y-8">
         <div className="admin-header">
           <div>
             <h2 className="admin-title">Cuentas Regresivas</h2>
-            <p className="admin-subtitle">Widgets laterales con cuenta atrás para fechas importantes.</p>
+            <p className="admin-subtitle">Configura los dos contadores globales (Izquierda y Derecha).</p>
           </div>
-          <Link href="/admin/countdowns/new" className="btn-primary" style={{ textDecoration: 'none' }}>
-            <Plus size={18} />
-            <span>Nuevo Contador</span>
-          </Link>
+          {countdowns.length < 2 && (
+            <Link href="/admin/countdowns/new" className="btn-primary" style={{ textDecoration: 'none' }}>
+              <Plus size={18} />
+              <span>Inicializar Slot</span>
+            </Link>
+          )}
         </div>
 
-        <div className="stats-grid">
-          {countdowns.map(c => (
-            <div key={c.id} className="admin-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700 }}>
-                  <Clock size={16} style={{ color: '#2563eb' }} />
-                  {(c.title as any)?.es || 'Sin título'}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '2rem' }}>
+          {[0, 1].map((index) => {
+            const c = countdowns[index];
+            const slotName = index === 0 ? "Slot Izquierdo" : "Slot Derecho";
+            
+            return (
+              <div key={index} className="admin-card" style={{ 
+                padding: '2rem', 
+                display: 'flex', 
+                flexDirection: 'column', 
+                gap: '1.5rem',
+                border: c ? '1px solid #e2e8f0' : '2px dashed #e2e8f0',
+                background: c ? 'white' : 'rgba(248, 250, 252, 0.5)'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <div style={{ 
+                      width: '40px', height: '40px', borderRadius: '12px', 
+                      background: c?.isActive ? '#eff6ff' : '#f1f5f9', 
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      color: c?.isActive ? '#2563eb' : '#94a3b8'
+                    }}>
+                      <Clock size={20} />
+                    </div>
+                    <div>
+                      <h4 style={{ margin: 0, fontWeight: 800, fontSize: '1.1rem' }}>
+                        {c ? (c.title as any)?.es : slotName}
+                      </h4>
+                      <p style={{ margin: 0, fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>
+                        {c ? 'Configurado' : 'Sin configurar'}
+                      </p>
+                    </div>
+                  </div>
+                  {c && <CountdownToggle id={c.id} initialActive={c.isActive} />}
                 </div>
-                {/* Aquí también podríamos poner un toggle */}
+
+                {c ? (
+                  <>
+                    <div style={{ fontSize: '0.85rem', color: '#475569', minHeight: '3em' }}>
+                      {(c.description as any)?.es || 'Sin descripción'}
+                    </div>
+                    <div style={{ 
+                      fontSize: '0.8rem', fontWeight: 700, padding: '0.75rem 1rem', 
+                      background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0',
+                      display: 'flex', justifyContent: 'space-between'
+                    }}>
+                      <span style={{ color: '#64748b' }}>Meta:</span>
+                      <span>{new Date(c.targetDate).toLocaleString('es-AR', { dateStyle: 'medium', timeStyle: 'short' })}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '0.5rem' }}>
+                      <Link 
+                        href={`/admin/countdowns/${c.id}`} 
+                        className="btn-secondary"
+                        style={{ padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                      >
+                        <Edit size={16} />
+                        <span>Editar</span>
+                      </Link>
+                    </div>
+                  </>
+                ) : (
+                  <Link href="/admin/countdowns/new" style={{ 
+                    height: '150px', display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                    color: '#94a3b8', textDecoration: 'none', flexDirection: 'column', gap: '0.5rem' 
+                  }}>
+                    <Plus size={24} />
+                    <span>Configurar este slot</span>
+                  </Link>
+                )}
               </div>
-              <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0 }}>{(c.description as any)?.es || '-'}</p>
-              <div style={{ fontSize: '0.75rem', background: '#f8fafc', padding: '0.5rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                Meta: {c.targetDate.toLocaleString()}
-              </div>
-              <div style={{ marginTop: '0.5rem', display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
-                <Link href={`/admin/countdowns/${c.id}`} style={{ color: '#94a3b8', padding: '0.5rem' }}>
-                  <Edit size={18} />
-                </Link>
-                {/* Reutilizaremos DeleteButton cuando lo extendamos */}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
     </div>

@@ -82,6 +82,35 @@ export async function deleteNotification(id: string) {
   revalidatePath('/');
 }
 
+export async function upsertNotification(data: any) {
+  const isUpdate = !!data.id;
+  const messageEs = data.message.es || 'Sin mensaje';
+
+  if (isUpdate) {
+    await db.notification.update({
+      where: { id: data.id },
+      data: {
+        message: data.message,
+        type: data.type,
+        active: data.active,
+      }
+    });
+    await logAction('UPDATE', 'notification', `Actualizó la alerta: ${messageEs}`);
+  } else {
+    await db.notification.create({
+      data: {
+        message: data.message,
+        type: data.type,
+        active: data.active,
+      }
+    });
+    await logAction('CREATE', 'notification', `Creó una nueva alerta: ${messageEs}`);
+  }
+  
+  revalidatePath('/admin/notifications');
+  revalidatePath('/');
+}
+
 /* --- POSTS ACTIONS --- */
 export async function deletePost(id: string) {
   const post = await db.post.findUnique({ where: { id } });
@@ -125,4 +154,46 @@ export async function upsertPost(data: any) {
   revalidatePath('/admin/posts');
   revalidatePath('/');
   revalidatePath(`/${data.slug}`);
+}
+
+/* --- COUNTDOWN ACTIONS --- */
+export async function toggleCountdown(id: string, isActive: boolean) {
+  await db.countdown.update({
+    where: { id },
+    data: { isActive }
+  });
+  await logAction('TOGGLE', 'countdown', `${isActive ? 'Activó' : 'Desactivó'} el contador`);
+  revalidatePath('/admin/notifications');
+  revalidatePath('/');
+}
+
+export async function upsertCountdown(data: any) {
+  const isUpdate = !!data.id;
+  const titleEs = data.title.es || 'Sin título';
+
+  if (isUpdate) {
+    await db.countdown.update({
+      where: { id: data.id },
+      data: {
+        title: data.title,
+        description: data.description,
+        targetDate: new Date(data.targetDate),
+        isActive: data.isActive,
+      }
+    });
+    await logAction('UPDATE', 'countdown', `Actualizó el contador: ${titleEs}`);
+  } else {
+    await db.countdown.create({
+      data: {
+        title: data.title,
+        description: data.description,
+        targetDate: new Date(data.targetDate),
+        isActive: data.isActive,
+      }
+    });
+    await logAction('CREATE', 'countdown', `Creó un nuevo contador: ${titleEs}`);
+  }
+  
+  revalidatePath('/admin/notifications');
+  revalidatePath('/');
 }

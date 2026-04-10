@@ -162,6 +162,7 @@ model Notification {
 
 model Countdown {
   id          String   @id @default(cuid())
+  slot        String?  @unique // "left" or "right"
   title       Json     // { "es": "...", "en": "...", "pt": "..." }
   targetDate  DateTime
   description Json?    // { "es": "...", "en": "...", "pt": "..." }
