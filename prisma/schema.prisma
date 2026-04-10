@@ -1,6 +1,7 @@
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 generator client {
@@ -142,6 +143,7 @@ model CalendarEvent {
   date        DateTime
   period      String?  // e.g., "1st Semester", "Full Year"
   type        String   @default("event") // "exam", "class", "admin", "event"
+  subjectId   String?  // ID related to subjectNames in translations
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

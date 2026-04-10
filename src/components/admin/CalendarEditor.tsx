@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, X, Calendar as CalendarIcon, Info, Tag } from 'lucide-react';
+import { Save, X, Calendar as CalendarIcon, Info, Tag, Book } from 'lucide-react';
 import { upsertCalendarEvent } from '@/lib/actions';
+import { translations } from '@/lib/translations';
 
 interface CalendarEditorProps {
   event?: any;
@@ -32,8 +33,9 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
       : new Date().toISOString().split('T')[0]
   );
   
-  const [period, setPeriod] = useState(event?.period || '');
+  const [period, setPeriod] = useState(event?.period || '1er cuatrimestre de 1er año');
   const [type, setType] = useState(event?.type || 'event');
+  const [subjectId, setSubjectId] = useState<string | null>(event?.subjectId || null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,7 +47,8 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
         description: descriptions,
         date,
         period,
-        type
+        type,
+        subjectId
       });
       router.push('/admin/calendar');
       router.refresh();
@@ -58,10 +61,10 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
   };
 
   const eventTypes = [
-    { id: 'event', label: 'Evento General', color: '#64748b', bg: '#f1f5f9' },
-    { id: 'exam', label: 'Examen / Parcial', color: '#be123c', bg: '#fff1f2' },
-    { id: 'class', label: 'Clase / Inscripción', color: '#1d4ed8', bg: '#eff6ff' },
-    { id: 'admin', label: 'Administrativo', color: '#b45309', bg: '#fffbeb' },
+    { id: 'exam', label: 'Examen / Parcial', color: '#ef4444', bg: '#fef2f2' },
+    { id: 'class', label: 'Entrega de Tarea o TP', color: '#2563eb', bg: '#eff6ff' },
+    { id: 'admin', label: 'Administrativo', color: '#8b5cf6', bg: '#f5f3ff' },
+    { id: 'event', label: 'Evento / Otro', color: '#10b981', bg: '#ecfdf5' },
   ];
 
   return (
@@ -90,54 +93,81 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
             <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 800 }}>Información del Evento</h3>
           </div>
 
-          <div style={{ display: 'grid', gap: '2rem' }}>
-            <div className="space-y-4">
-              <label className="admin-label" style={{ color: '#1a1a1a' }}>Título del Evento</label>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
-                <div style={{ position: 'relative' }}>
-                  <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', fontSize: '1.2rem' }}>🇦🇷</span>
-                  <input className="admin-input" value={titles.es} onChange={e => setTitles({...titles, es: e.target.value})} placeholder="Final de Álgebra" style={{ paddingLeft: '3rem' }} required />
-                </div>
-                <div style={{ position: 'relative' }}>
-                  <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', fontSize: '1.2rem' }}>🇺🇸</span>
-                  <input className="admin-input" value={titles.en} onChange={e => setTitles({...titles, en: e.target.value})} placeholder="Algebra Final Exam" style={{ paddingLeft: '3rem' }} />
-                </div>
-                <div style={{ position: 'relative' }}>
-                  <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', fontSize: '1.2rem' }}>🇧🇷</span>
-                  <input className="admin-input" value={titles.pt} onChange={e => setTitles({...titles, pt: e.target.value})} placeholder="Final de Álgebra" style={{ paddingLeft: '3rem' }} />
+            <div style={{ display: 'grid', gap: '2.5rem' }}>
+              <div style={{ display: 'grid', gap: '1rem' }}>
+                <label className="admin-label" style={{ color: '#1a1a1a' }}>Título del Evento</label>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
+                  <div style={{ position: 'relative' }}>
+                    <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', fontSize: '1.2rem' }}>🇦🇷</span>
+                    <input className="admin-input" value={titles.es} onChange={e => setTitles({...titles, es: e.target.value})} placeholder="Final de Álgebra" style={{ paddingLeft: '3rem' }} required />
+                  </div>
+                  <div style={{ position: 'relative' }}>
+                    <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', fontSize: '1.2rem' }}>🇺🇸</span>
+                    <input className="admin-input" value={titles.en} onChange={e => setTitles({...titles, en: e.target.value})} placeholder="Algebra Final Exam" style={{ paddingLeft: '3rem' }} />
+                  </div>
+                  <div style={{ position: 'relative' }}>
+                    <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', fontSize: '1.2rem' }}>🇧🇷</span>
+                    <input className="admin-input" value={titles.pt} onChange={e => setTitles({...titles, pt: e.target.value})} placeholder="Final de Álgebra" style={{ paddingLeft: '3rem' }} />
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="space-y-4">
-              <label className="admin-label" style={{ color: '#1a1a1a' }}>Descripción (Opcional)</label>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
-                <div style={{ position: 'relative' }}>
-                  <span style={{ position: 'absolute', left: '1rem', top: '1rem', fontSize: '1.2rem' }}>🇦🇷</span>
-                  <textarea className="admin-input" value={descriptions.es} onChange={e => setDescriptions({...descriptions, es: e.target.value})} placeholder="Detalles en español..." rows={3} style={{ paddingLeft: '3rem' }} />
-                </div>
-                <div style={{ position: 'relative' }}>
-                  <span style={{ position: 'absolute', left: '1rem', top: '1rem', fontSize: '1.2rem' }}>🇺🇸</span>
-                  <textarea className="admin-input" value={descriptions.en} onChange={e => setDescriptions({...descriptions, en: e.target.value})} placeholder="English details..." rows={3} style={{ paddingLeft: '3rem' }} />
-                </div>
-                <div style={{ position: 'relative' }}>
-                  <span style={{ position: 'absolute', left: '1rem', top: '1rem', fontSize: '1.2rem' }}>🇧🇷</span>
-                  <textarea className="admin-input" value={descriptions.pt} onChange={e => setDescriptions({...descriptions, pt: e.target.value})} placeholder="Detalhes em português..." rows={3} style={{ paddingLeft: '3rem' }} />
+              <div style={{ display: 'grid', gap: '1rem' }}>
+                <label className="admin-label" style={{ color: '#1a1a1a' }}>Descripción (Opcional)</label>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
+                  <div style={{ position: 'relative' }}>
+                    <span style={{ position: 'absolute', left: '1rem', top: '1rem', fontSize: '1.2rem' }}>🇦🇷</span>
+                    <textarea className="admin-input" value={descriptions.es} onChange={e => setDescriptions({...descriptions, es: e.target.value})} placeholder="Detalles en español..." rows={3} style={{ paddingLeft: '3rem' }} />
+                  </div>
+                  <div style={{ position: 'relative' }}>
+                    <span style={{ position: 'absolute', left: '1rem', top: '1rem', fontSize: '1.2rem' }}>🇺🇸</span>
+                    <textarea className="admin-input" value={descriptions.en} onChange={e => setDescriptions({...descriptions, en: e.target.value})} placeholder="English details..." rows={3} style={{ paddingLeft: '3rem' }} />
+                  </div>
+                  <div style={{ position: 'relative' }}>
+                    <span style={{ position: 'absolute', left: '1rem', top: '1rem', fontSize: '1.2rem' }}>🇧🇷</span>
+                    <textarea className="admin-input" value={descriptions.pt} onChange={e => setDescriptions({...descriptions, pt: e.target.value})} placeholder="Detalhes em português..." rows={3} style={{ paddingLeft: '3rem' }} />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
         </section>
 
         {/* Sección: Configuración Técnica */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
           <section className="admin-card" style={{ padding: '2rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+              <Book size={20} color="#1a1a1a" />
+              <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800 }}>Materia Vinculada</h3>
+            </div>
+            
+            <div>
+              <label className="admin-label">Seleccionar Materia (Opcional)</label>
+              <select 
+                className="admin-input" 
+                value={subjectId || ''} 
+                onChange={e => setSubjectId(e.target.value || null)}
+                style={{ cursor: 'pointer', appearance: 'none', backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2364748b\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1.2rem' }}
+              >
+                <option value="">Ninguna (Evento General)</option>
+                {Object.entries(translations.es.plan.subjectNames).map(([id, name]) => (
+                  <option key={id} value={id}>
+                    [{id.padStart(2, '0')}] {name}
+                  </option>
+                ))}
+              </select>
+              <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.5rem' }}>
+                Esto permite que el evento aparezca cuando se filtra por esta materia.
+              </p>
+            </div>
+          </section>
+
+          <section className="admin-card" style={{ padding: '2rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
               <CalendarIcon size={20} color="#1a1a1a" />
               <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800 }}>Fecha y Periodo</h3>
             </div>
             
-            <div className="space-y-4">
+            <div style={{ display: 'grid', gap: '1.75rem' }}>
               <div>
                 <label className="admin-label">Fecha del Evento</label>
                 <input 
@@ -149,13 +179,19 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
                 />
               </div>
               <div>
-                <label className="admin-label">Periodo (Ej: 1er Cuatrimestre)</label>
-                <input 
+                <label className="admin-label">Periodo Académico</label>
+                <select 
                   className="admin-input" 
                   value={period} 
-                  onChange={e => setPeriod(e.target.value)} 
-                  placeholder="2024 - 1er Cuatrimestre"
-                />
+                  onChange={e => setPeriod(e.target.value)}
+                  style={{ cursor: 'pointer', appearance: 'none', backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2364748b\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1.2rem' }}
+                >
+                  <option value="1er cuatrimestre de 1er año">1er cuatrimestre de 1er año</option>
+                  {/* Futuros periodos aquí */}
+                </select>
+                <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.5rem' }}>
+                  Este campo define en qué filtro de la web aparecerá el evento.
+                </p>
               </div>
             </div>
           </section>

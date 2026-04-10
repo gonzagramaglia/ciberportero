@@ -245,6 +245,7 @@ export async function upsertCalendarEvent(data: any) {
     date: new Date(data.date),
     period: data.period,
     type: data.type,
+    subjectId: data.subjectId,
   };
 
   if (isUpdate) {
