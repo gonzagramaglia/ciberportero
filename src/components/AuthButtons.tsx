@@ -7,15 +7,9 @@ import { signIn, signOut } from "next-auth/react"
 
 export function SignInButton() {
   const { lang } = useLanguage()
-  const t = translations[lang]
-
-  const handleGuestLogin = () => {
-    localStorage.setItem("ciberportero_guest", "true")
-    window.location.href = "/dashboard"
-  }
 
   return (
-    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginTop: '0.4rem' }}>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
         <button
           onClick={() => signIn('google')}
           className="google-sign-in"
@@ -44,36 +38,10 @@ export function SignInButton() {
           <span>{lang === 'es' ? 'Iniciar sesión' : 'Sign in'}</span>
         </button>
 
-        <button
-          onClick={handleGuestLogin}
-          className="guest-sign-in"
-          style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '0.5rem',
-            background: 'transparent',
-            color: '#666',
-            padding: '0.6rem 1.2rem',
-            borderRadius: '100px',
-            border: 'none',
-            cursor: 'pointer',
-            fontWeight: '600',
-            fontSize: '0.9rem',
-            transition: 'all 0.2s'
-          }}
-        >
-          <LogIn size={18} strokeWidth={2.5} />
-          <span>{lang === 'es' ? 'Invitado' : 'Guest'}</span>
-        </button>
-        
         <style jsx>{`
           .google-sign-in:hover {
             background: #f8f9fa !important;
             box-shadow: 0 1px 3px rgba(60,64,67,0.3) !important;
-          }
-          .guest-sign-in:hover {
-            background: #f0f0f0 !important;
-            color: #000 !important;
           }
         `}</style>
     </div>

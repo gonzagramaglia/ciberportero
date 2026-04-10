@@ -13,7 +13,7 @@ import { SignInButton, SignOutButton } from '../components/AuthButtons';
 
 export default function Home() {
     const { lang } = useLanguage();
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
     const [posts, setPosts] = useState<Omit<PostData, 'content'>[]>([]);
     const [isGuest, setIsGuest] = useState(false);
     const t = translations[lang];
@@ -206,12 +206,17 @@ export default function Home() {
             </div>
 
             <header style={{ marginBottom: '3rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', marginBottom: '0.5rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                        <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em' }}>{t.title}</h1>
-                    </div>
-                    <div style={{ marginTop: '0.6rem' }}>
-                        {session ? <SignOutButton /> : <SignInButton />}
+                <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '1.2rem', marginBottom: '0.5rem' }}>
+                    <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em' }}>{t.title}</h1>
+                    <div style={{ 
+                        marginTop: '0.6rem', 
+                        minHeight: '45px', 
+                        display: 'flex', 
+                        alignItems: 'center',
+                        opacity: status === 'loading' ? 0 : 1,
+                        transition: 'opacity 0.2s ease-in-out'
+                    }}>
+                        {status !== 'loading' && (session ? <SignOutButton /> : <SignInButton />)}
                     </div>
                 </div>
                 <p style={{ color: 'var(--muted)', fontSize: '1.1rem', marginTop: '0.2rem', fontWeight: '500' }}>{t.description}</p>

@@ -93,7 +93,9 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
           }} className="input-wrapper">
             <div style={{ padding: '0.5rem' }}>
                {session.user.image ? (
-                 <Image src={session.user.image} alt="User" width={40} height={40} style={{ borderRadius: '12px', objectFit: 'cover' }} />
+                 <img src={session.user.image} alt="User" width={40} height={40} style={{ borderRadius: '12px', objectFit: 'cover' }} onError={(e) => {
+                   (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${session.user.name}&background=random`
+                 }} />
                ) : (
                  <div style={{ width: 40, height: 40, background: '#eee', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                    <UserIcon size={20} color="#999" />
@@ -173,7 +175,9 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
             }}>
               <div style={{ flexShrink: 0 }}>
                 {comment.user.image ? (
-                  <Image src={comment.user.image} alt="User" width={48} height={48} style={{ borderRadius: '16px', objectFit: 'cover', boxShadow: '0 4px 10px rgba(0,0,0,0.05)' }} />
+                  <img src={comment.user.image} alt="User" width={48} height={48} style={{ borderRadius: '16px', objectFit: 'cover', boxShadow: '0 4px 10px rgba(0,0,0,0.05)' }} onError={(e) => {
+                    (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${comment.user.name}&background=random`
+                  }} />
                 ) : (
                   <div style={{ width: 48, height: 48, background: '#f0f0f0', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <UserIcon size={24} color="#ccc" />

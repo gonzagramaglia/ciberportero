@@ -21,9 +21,9 @@ export default function SyncStatus() {
       className="sync-status-badge fade-in"
       style={{
         position: 'fixed',
-        bottom: '2rem',
-        right: '2rem',
-        zIndex: 100,
+        bottom: '1.5rem',
+        right: '1.5rem',
+        zIndex: 9999,
         display: 'flex',
         alignItems: 'center',
         gap: '0.6rem',
