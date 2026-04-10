@@ -9,7 +9,7 @@ import LanguageSwitcher from '../components/LanguageSwitcher';
 import { Github, Youtube, CheckCircle, BookOpen, Calendar, Info, Link as LinkIcon, X, ArrowRight, Layers, Star, Zap } from 'lucide-react';
 import NotificationBanners from '../components/NotificationBanners';
 import { useSession } from 'next-auth/react';
-import { SignInButton } from '../components/AuthButtons';
+import { SignInButton, SignOutButton } from '../components/AuthButtons';
 
 export default function Home() {
     const { lang } = useLanguage();
@@ -206,9 +206,13 @@ export default function Home() {
             </div>
 
             <header style={{ marginBottom: '3rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
-                    <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em' }}>{t.title}</h1>
-                    <SignInButton />
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', marginBottom: '0.5rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em' }}>{t.title}</h1>
+                    </div>
+                    <div style={{ marginTop: '0.6rem' }}>
+                        {session ? <SignOutButton /> : <SignInButton />}
+                    </div>
                 </div>
                 <p style={{ color: 'var(--muted)', fontSize: '1.1rem', marginTop: '0.2rem', fontWeight: '500' }}>{t.description}</p>
             </header>

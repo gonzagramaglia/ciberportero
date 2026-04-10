@@ -320,7 +320,7 @@ export async function updateUserProgress(completed: number[], inProgress: number
   return { success: true };
 }
 
-export async function createPersonalEvent(data: { title: string, date: string, type: string }) {
+export async function createPersonalEvent(data: { title: string, date: string, type: string, subjectId?: string }) {
   const session = await auth();
   if (!session?.user?.id) return { error: "Not authenticated" };
 
@@ -329,6 +329,7 @@ export async function createPersonalEvent(data: { title: string, date: string, t
       title: { es: data.title, en: data.title, pt: data.title },
       date: new Date(data.date),
       type: data.type,
+      subjectId: data.subjectId === 'all' ? null : data.subjectId,
       userId: session.user.id
     }
   });

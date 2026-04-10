@@ -51,7 +51,7 @@ export default async function AdminCommentsPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: '#f0f0f0', padding: '0.4rem 0.8rem', borderRadius: '10px' }}>
                     <UserIcon size={14} />
-                    <span style={{ fontSize: '0.85rem', fontWeight: '700' }}>{comment.user.name || 'Usuario'}</span>
+                    <span style={{ fontSize: '0.85rem', fontWeight: '700' }}>{comment.user.name?.split(' ')[0] || 'Usuario'}</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#666' }}>
                     <CalendarIcon size={14} />

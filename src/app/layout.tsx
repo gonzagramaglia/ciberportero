@@ -3,6 +3,7 @@ import { LanguageProvider } from "@/context/LanguageContext";
 import { AuthProvider } from "@/context/AuthProvider";
 import { cookies } from "next/headers";
 import { Locale } from "@/lib/translations";
+import SyncStatus from "@/components/SyncStatus";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -25,6 +26,7 @@ export default async function RootLayout({
         <AuthProvider>
           <LanguageProvider initialLang={initialLang}>
             {children}
+            <SyncStatus />
           </LanguageProvider>
         </AuthProvider>
       </body>

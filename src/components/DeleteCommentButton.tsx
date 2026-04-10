@@ -1,42 +1,48 @@
-'use client';
+"use client"
 
-import { deleteComment } from "@/lib/actions";
-import { Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useState } from "react"
+import { Trash2, Loader2 } from "lucide-react"
+import { deleteComment } from "@/lib/actions"
+import { useRouter } from "next/navigation"
 
 export default function DeleteCommentButton({ commentId }: { commentId: string }) {
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false)
+  const router = useRouter()
 
   const handleDelete = async () => {
-    if (!confirm('¿Seguro quieres eliminar este comentario?')) return;
-    setIsDeleting(true);
-    await deleteComment(commentId);
-    // The page will revalidate automatically
-    setIsDeleting(false);
-  };
+    if (!confirm("¿Seguro que quieres eliminar este comentario?")) return
+    
+    setIsDeleting(true)
+    const res = await deleteComment(commentId)
+    if (res.success) {
+      router.refresh()
+    } else {
+      alert("Error al eliminar comentario")
+      setIsDeleting(false)
+    }
+  }
 
   return (
-    <button 
+    <button
       onClick={handleDelete}
       disabled={isDeleting}
-      style={{ 
-        background: '#fff5f5', 
-        color: '#ff4d4d', 
-        border: '1px solid #ffebeb', 
-        padding: '0.8rem', 
-        borderRadius: '12px', 
-        cursor: 'pointer',
+      style={{
+        background: '#fff5f5',
+        color: '#ff4d4d',
+        width: '40px',
+        height: '40px',
+        borderRadius: '12px',
+        border: '1px solid #ffebeb',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        cursor: isDeleting ? 'not-allowed' : 'pointer',
         transition: 'all 0.2s',
-        opacity: isDeleting ? 0.5 : 1
+        flexShrink: 0
       }}
-      onMouseOver={(e) => {
-        (e.currentTarget as any).style.background = '#ffebeb';
-      }}
-      onMouseOut={(e) => {
-        (e.currentTarget as any).style.background = '#fff5f5';
-      }}
+      title="Eliminar comentario"
     >
-      <Trash2 size={20} />
+      {isDeleting ? <Loader2 size={18} className="animate-spin" /> : <Trash2 size={18} />}
     </button>
-  );
+  )
 }

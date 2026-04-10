@@ -6,7 +6,7 @@ import { translations } from "@/lib/translations"
 import LanguageSwitcher from "@/components/LanguageSwitcher"
 import { useSession } from "next-auth/react"
 import { createPersonalEvent, deleteCalendarEvent } from "@/lib/actions"
-import { ArrowLeft, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, Bell, Github, Youtube, Search, Filter, Copy, Check, Info, Lock, Plus, Trash2, X as CloseIcon } from "lucide-react"
+import { ArrowLeft, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, Bell, Github, Youtube, Search, Filter, Copy, Check, Info, Lock, Plus, Trash2, X as CloseIcon, GraduationCap } from "lucide-react"
 import NotificationBanners from "@/components/NotificationBanners"
 
 interface AcademicEvent {
@@ -25,14 +25,14 @@ interface CalendarClientProps {
 }
 
 export default function CalendarClient({ initialEvents, lang }: CalendarClientProps) {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
   const t = translations[lang as keyof typeof translations]
   const ct = t.calendar
   const st = t.plan.subjectNames
   
   const [allEvents, setAllEvents] = useState(initialEvents)
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
-  const [newEvent, setNewEvent] = useState({ title: '', date: '', type: 'exam' })
+  const [newEvent, setNewEvent] = useState({ title: '', date: '', type: 'exam', subjectId: 'all' })
   const [isSaving, setIsSaving] = useState(false)
 
   useEffect(() => {
@@ -51,7 +51,7 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
     const res = await createPersonalEvent(newEvent);
     if (res.success) {
       setIsAddModalOpen(false);
-      setNewEvent({ title: '', date: '', type: 'exam' });
+      setNewEvent({ title: '', date: '', type: 'exam', subjectId: 'all' });
       // The page will revalidate and refresh initialEvents because it's a server action
     }
     setIsSaving(false);
@@ -170,7 +170,7 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
             <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em' }}>{ct.title}</h1>
             <p style={{ color: 'var(--muted)', fontSize: '1.2rem', marginTop: '0.5rem', fontWeight: '500' }} dangerouslySetInnerHTML={{ __html: ct.description }} />
           </div>
-          {session && (
+          {status === 'authenticated' && (
             <button 
               onClick={() => setIsAddModalOpen(true)}
               className="add-event-btn"
