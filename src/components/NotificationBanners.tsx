@@ -65,7 +65,16 @@ export default function NotificationBanners({ limitTo = 'all' }: { limitTo?: 'iv
                                 {styles.icon}
                             </div>
                             <div className="notification-text">
-                                <span dangerouslySetInnerHTML={{ __html: message }} />
+                                <p 
+                                    style={{ margin: 0, fontWeight: 800, fontSize: '0.95rem', letterSpacing: '-0.01em' }} 
+                                    dangerouslySetInnerHTML={{ __html: message }} 
+                                />
+                                {notification.description && (
+                                    <p 
+                                        style={{ margin: '0.1rem 0 0', opacity: 0.9, fontSize: '0.85rem', fontWeight: 500 }} 
+                                        dangerouslySetInnerHTML={{ __html: typeof notification.description === 'object' ? (notification.description[lang] || notification.description.es) : notification.description }} 
+                                    />
+                                )}
                             </div>
                             <button className="notification-close" onClick={() => closeNotification(notification.id)}>
                                 <X size={16} />

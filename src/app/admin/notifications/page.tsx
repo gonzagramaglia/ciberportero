@@ -121,8 +121,8 @@ export default async function AdminNotificationsPage() {
                       <h4 style={{ margin: 0, fontWeight: 800, fontSize: '1.1rem' }}>
                         {c ? (c.title as any)?.es : slotName}
                       </h4>
-                      <p style={{ margin: 0, fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>
-                        {c ? 'Configurado' : 'Sin configurar'}
+                      <p style={{ margin: 0, fontSize: '0.8rem', color: c?.isActive ? '#22c55e' : '#64748b', fontWeight: 700 }}>
+                        {c ? (c.isActive ? 'Habilitado' : 'No Habilitado') : 'Sin configurar'}
                       </p>
                     </div>
                   </div>
@@ -131,10 +131,10 @@ export default async function AdminNotificationsPage() {
 
                 {c ? (
                   <>
-                    <div style={{ fontSize: '0.85rem', color: '#475569', minHeight: '3em' }}>
+                    <div style={{ fontSize: '0.85rem', color: '#475569', minHeight: '1.2em', marginBottom: '0.75rem' }}>
                       {(c.description as any)?.es || 'Sin descripción'}
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.5rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                       <div style={{ 
                         flex: 1,
                         fontSize: '0.8rem', fontWeight: 700, padding: '0.75rem 1rem', 

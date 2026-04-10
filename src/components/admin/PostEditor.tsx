@@ -74,122 +74,177 @@ export default function PostEditor({ post }: PostEditorProps) {
         </div>
       </div>
 
-      <div className="grid-2" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem', alignItems: 'start' }}>
-        {/* Main Content */}
-        <div className="admin-card space-y-6">
-          <div>
-            <label className="admin-label">Título del Post</label>
-            <input 
-              required
-              className="admin-input"
-              value={title}
-              onChange={e => {
-                setTitle(e.target.value);
-                if (!post) setSlug(e.target.value.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''));
-              }}
-              placeholder="Ej: Cómo aprobar IVU"
-            />
+      <div style={{ display: 'grid', gap: '2rem' }}>
+        {/* Sección Principal: Escritura */}
+        <div className="admin-card" style={{ padding: '2.5rem' }}>
+          <div style={{ marginBottom: '2rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '1rem' }}>
+            <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 800 }}>Contenido del Post</h3>
+            <p style={{ margin: '0.25rem 0 0', fontSize: '0.9rem', color: '#64748b' }}>Usa Markdown para darle formato a tu texto.</p>
           </div>
 
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-              <label className="admin-label" style={{ marginBottom: 0 }}>Contenido (Markdown)</label>
-              <button 
-                type="button"
-                onClick={() => setPreviewMode(!previewMode)}
-                style={{ background: '#f1f5f9', border: 'none', padding: '0.3rem 0.6rem', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem' }}
-              >
-                {previewMode ? <Edit3 size={14} /> : <Eye size={14} />}
-                {previewMode ? 'Editar' : 'Previsualizar'}
-              </button>
-            </div>
-            
-            {!previewMode ? (
-              <textarea 
+          <div className="space-y-6">
+            <div>
+              <label className="admin-label" style={{ color: '#1a1a1a' }}>Título del Post</label>
+              <input 
                 required
                 className="admin-input"
-                style={{ minHeight: '400px', fontFamily: 'monospace', fontSize: '0.9rem', lineHeight: '1.6' }}
-                value={content}
-                onChange={e => setContent(e.target.value)}
-                placeholder="Escribe aquí el contenido en Markdown..."
+                style={{ fontSize: '1.25rem', fontWeight: 700, padding: '1.25rem' }}
+                value={title}
+                onChange={e => {
+                  setTitle(e.target.value);
+                  if (!post) setSlug(e.target.value.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''));
+                }}
+                placeholder="Ej: Cómo aprobar IVU"
               />
-            ) : (
-              <div 
-                className="admin-input"
-                style={{ minHeight: '400px', background: '#f8fafc', overflowY: 'auto', padding: '1.5rem' }}
-              >
-                {/* Fallback simple preview for now */}
-                <div style={{ whiteSpace: 'pre-wrap' }}>{content || 'Nada para previsualizar...'}</div>
+            </div>
+
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                <label className="admin-label" style={{ marginBottom: 0, color: '#1a1a1a' }}>Cuerpo del Post</label>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <button 
+                    type="button"
+                    onClick={() => setPreviewMode(!previewMode)}
+                    style={{ 
+                      background: previewMode ? '#1a1a1a' : '#f1f5f9', 
+                      color: previewMode ? 'white' : '#64748b',
+                      border: 'none', padding: '0.4rem 0.8rem', borderRadius: '8px', 
+                      fontSize: '0.75rem', fontWeight: 800, cursor: 'pointer', 
+                      display: 'flex', alignItems: 'center', gap: '0.4rem',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    {previewMode ? <Edit3 size={14} /> : <Eye size={14} />}
+                    {previewMode ? 'EDITAR' : 'VISTA PREVIA'}
+                  </button>
+                </div>
               </div>
-            )}
+              
+              {!previewMode ? (
+                <textarea 
+                  required
+                  className="admin-input"
+                  style={{ 
+                    minHeight: '450px', 
+                    fontFamily: 'SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace', 
+                    fontSize: '1rem', 
+                    lineHeight: '1.7',
+                    padding: '1.5rem',
+                    background: '#fcfcfc'
+                  }}
+                  value={content}
+                  onChange={e => setContent(e.target.value)}
+                  placeholder="Escribe aquí en Markdown..."
+                />
+              ) : (
+                <div 
+                  className="admin-input"
+                  style={{ 
+                    minHeight: '450px', 
+                    background: '#f8fafc', 
+                    overflowY: 'auto', 
+                    padding: '2rem',
+                    borderStyle: 'dashed'
+                  }}
+                >
+                  <div style={{ whiteSpace: 'pre-wrap', lineHeight: '1.7' }}>
+                    {content || <span style={{ color: '#94a3b8' }}>Nada para previsualizar...</span>}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Sidebar Settings */}
-        <div className="space-y-6">
-          <div className="admin-card space-y-4">
-            <h4 style={{ margin: 0, fontSize: '0.9rem', fontWeight: 800 }}>Configuración</h4>
-            
-            <div>
-              <label className="admin-label">Slug (URL)</label>
-              <input 
-                required
-                className="admin-input"
-                value={slug}
-                onChange={e => setSlug(e.target.value)}
-                placeholder="ej-mi-post"
-              />
+        {/* Sección: Configuración y SEO */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+          <div className="admin-card" style={{ padding: '2.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+              <Globe size={20} color="#1a1a1a" />
+              <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800 }}>Configuración de Publicación</h3>
             </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="admin-label">Slug (URL del Post)</label>
+                <input 
+                  required
+                  className="admin-input"
+                  value={slug}
+                  onChange={e => setSlug(e.target.value)}
+                  placeholder="ej-mi-post"
+                />
+              </div>
 
-            <div>
-              <label className="admin-label">Idioma</label>
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
-                {['es', 'en', 'pt'].map(l => (
-                  <button
-                    key={l}
-                    type="button"
-                    onClick={() => setLang(l)}
-                    style={{
-                      flex: 1,
-                      padding: '0.5rem',
-                      borderRadius: '8px',
-                      border: '1px solid',
-                      borderColor: lang === l ? 'var(--accent)' : '#e2e8f0',
-                      background: lang === l ? 'rgba(59, 130, 246, 0.1)' : 'white',
-                      color: lang === l ? 'var(--accent)' : '#64748b',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      textTransform: 'uppercase',
-                      fontSize: '0.7rem'
-                    }}
-                  >
-                    {l}
-                  </button>
-                ))}
+              <div>
+                <label className="admin-label">Idioma de este Post</label>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  {['es', 'en', 'pt'].map(l => (
+                    <button
+                      key={l}
+                      type="button"
+                      onClick={() => setLang(l)}
+                      style={{
+                        flex: 1,
+                        padding: '0.75rem',
+                        borderRadius: '10px',
+                        border: '2px solid',
+                        borderColor: lang === l ? '#1a1a1a' : '#e2e8f0',
+                        background: lang === l ? '#1a1a1a' : 'white',
+                        color: lang === l ? 'white' : '#64748b',
+                        fontWeight: 800,
+                        cursor: 'pointer',
+                        textTransform: 'uppercase',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      {l}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div 
+                onClick={() => setPublished(!published)}
+                style={{ 
+                  cursor: 'pointer',
+                  padding: '1.25rem',
+                  borderRadius: '12px',
+                  background: published ? '#f0fdf4' : '#fff1f2',
+                  border: `2px solid ${published ? '#22c55e' : '#fecdd3'}`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '1rem',
+                  marginTop: '1rem',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <div style={{ 
+                  width: '20px', height: '20px', borderRadius: '50%', 
+                  background: published ? '#22c55e' : '#e11d48',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center'
+                }}>
+                  {published && <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'white' }} />}
+                </div>
+                <span style={{ fontWeight: 800, color: published ? '#166534' : '#9f1239' }}>
+                  {published ? 'Post Público' : 'Guardar como Borrador'}
+                </span>
               </div>
             </div>
+          </div>
 
-            <div>
-              <label className="admin-label">Descripción corta (SEO)</label>
-              <textarea 
-                className="admin-input"
-                style={{ minHeight: '80px' }}
-                value={description}
-                onChange={e => setDescription(e.target.value)}
-                placeholder="Un breve resumen del post..."
-              />
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '1rem' }}>
-              <input 
-                type="checkbox"
-                id="published"
-                checked={published}
-                onChange={e => setPublished(e.target.checked)}
-                style={{ width: '18px', height: '18px', cursor: 'pointer' }}
-              />
-              <label htmlFor="published" style={{ fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem' }}>Publicar inmediatamente</label>
-            </div>
+          <div className="admin-card" style={{ padding: '2.5rem' }}>
+            <h3 style={{ margin: '0 0 1.5rem', fontSize: '1.1rem', fontWeight: 800 }}>Descripción (SEO)</h3>
+            <textarea 
+              className="admin-input"
+              style={{ minHeight: '140px', padding: '1rem' }}
+              value={description}
+              onChange={e => setDescription(e.target.value)}
+              placeholder="Escribe un breve resumen de lo que trata este post para los motores de búsqueda..."
+            />
+            <p style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '1rem' }}>
+              Este texto aparecerá en los resultados de Google y en las tarjetas de redes sociales.
+            </p>
           </div>
         </div>
       </div>

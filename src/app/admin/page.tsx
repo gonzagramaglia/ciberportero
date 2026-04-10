@@ -35,8 +35,8 @@ export default async function AdminPage() {
         <StatCard href="/admin/notifications" title="Cuentas Regresivas" count={counts.countdowns} icon={<Clock className="text-rose-500" />} />
       </div>
 
-      <section className="space-y-6">
-        <h3 style={{ fontSize: '1.25rem', fontWeight: 800 }}>Actividad Reciente</h3>
+      <section>
+        <h3 style={{ fontSize: '1.5rem', fontWeight: 900, marginBottom: '2rem', letterSpacing: '-0.02em' }}>Actividad Reciente</h3>
         <div className="admin-card">
           <table className="admin-table">
             <thead>

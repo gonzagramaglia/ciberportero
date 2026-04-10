@@ -235,8 +235,10 @@ export default function LinksPage() {
                                         </div>
                                     ) : (
                                         <>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                                <ExternalLink size={20} color="var(--accent)" />
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                                <div style={{ width: 46, flexShrink: 0, display: 'flex', justifyContent: 'center' }}>
+                                                    <ExternalLink size={28} color="var(--accent)" />
+                                                </div>
                                                 <span className="post-title" style={{ marginBottom: 0, fontSize: '1.2rem' }}>{name}</span>
                                             </div>
                                             <p className="post-description" style={{ fontSize: '0.9rem' }}>{desc}</p>

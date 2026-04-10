@@ -86,27 +86,29 @@ export function LinkEditor({ initialData }: Props) {
           </div>
         </div>
 
-        <div>
-          <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '1.5rem', color: '#64748b' }}>URL del Enlace</label>
-          <input 
-            required
-            type="url"
-            className="admin-input"
-            value={url}
-            onChange={e => setUrl(e.target.value)}
-            placeholder="https://su-enlace-aqui.com"
-          />
-        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#64748b' }}>URL del Enlace</label>
+            <input 
+              required
+              type="url"
+              className="admin-input"
+              value={url}
+              onChange={e => setUrl(e.target.value)}
+              placeholder="https://su-enlace-aqui.com"
+            />
+          </div>
 
-        <div>
-          <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#64748b' }}>URL del Icono (Opcional)</label>
-          <input 
-            className="admin-input"
-            placeholder="Ej: /wsp.png o https://..."
-            value={iconType}
-            onChange={e => setIconType(e.target.value)}
-          />
-          <p style={{ fontSize: '0.7rem', color: '#94a3b8', marginTop: '0.5rem' }}>Si se deja vacío, se usará el icono de flecha por defecto.</p>
+          <div>
+            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#64748b' }}>URL del Icono (Opcional)</label>
+            <input 
+              className="admin-input"
+              placeholder="Ej: /wsp.png o moodle"
+              value={iconType}
+              onChange={e => setIconType(e.target.value)}
+            />
+            <p style={{ fontSize: '0.7rem', color: '#94a3b8', marginTop: '0.5rem', marginBottom: 0 }}>Icono flecha por defecto si está vacío.</p>
+          </div>
         </div>
 
         <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>

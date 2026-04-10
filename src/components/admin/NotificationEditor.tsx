@@ -169,8 +169,16 @@ export default function NotificationEditor({ notification }: NotificationEditorP
               }}>
                 <Bell size={28} style={{ flexShrink: 0 }} />
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', overflow: 'hidden' }}>
-                  <span style={{ fontWeight: 900, fontSize: '1.25rem', letterSpacing: '-0.02em', lineHeight: 1.1 }}>{prev.msg}</span>
-                  {prev.desc && <span style={{ fontSize: '0.9rem', opacity: 0.8, fontWeight: 600 }}>{prev.desc}</span>}
+                  <span 
+                    style={{ fontWeight: 900, fontSize: '1.25rem', letterSpacing: '-0.02em', lineHeight: 1.1 }}
+                    dangerouslySetInnerHTML={{ __html: prev.msg || '' }}
+                  />
+                  {prev.desc && (
+                    <span 
+                      style={{ fontSize: '0.9rem', opacity: 0.8, fontWeight: 600 }}
+                      dangerouslySetInnerHTML={{ __html: prev.desc }}
+                    />
+                  )}
                 </div>
               </div>
             </div>

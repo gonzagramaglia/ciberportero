@@ -182,11 +182,12 @@ export async function upsertPost(data: any) {
 
 /* --- COUNTDOWN ACTIONS --- */
 export async function toggleCountdown(id: string, isActive: boolean) {
-  await db.countdown.update({
+  const c = await db.countdown.update({
     where: { id },
     data: { isActive }
   });
-  await logAction('TOGGLE', 'countdown', `${isActive ? 'Activó' : 'Desactivó'} el contador`);
+  const title = (c.title as any)?.es || 'Sin título';
+  await logAction('TOGGLE', 'countdown', `${isActive ? 'Activó' : 'Desactivó'} el contador: ${title}`);
   revalidatePath('/admin/notifications');
   revalidatePath('/');
 }
