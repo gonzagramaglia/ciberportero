@@ -32,28 +32,53 @@ export async function upsertLink(data: any) {
   const isUpdate = !!data.id;
   const name = data.name.es || 'Sin nombre';
 
+  const linkData = {
+    name: data.name,
+    url: data.url,
+    iconType: data.iconType,
+    order: data.order !== undefined ? parseInt(data.order) : undefined,
+  };
+
   if (isUpdate) {
     await db.link.update({
       where: { id: data.id },
-      data: {
-        name: data.name,
-        url: data.url,
-        iconType: data.iconType,
-        order: parseInt(data.order) || 0,
-      }
+      data: linkData
     });
     await logAction('UPDATE', 'link', `Actualizó el link: ${name}`);
   } else {
+    // For new links, put them at the end if no order specified
+    if (linkData.order === undefined) {
+      const lastLink = await db.link.findFirst({ orderBy: { order: 'desc' } });
+      linkData.order = (lastLink?.order || 0) + 1;
+    }
     await db.link.create({
-      data: {
-        name: data.name,
-        url: data.url,
-        iconType: data.iconType,
-        order: parseInt(data.order) || 0,
-      }
+      data: linkData as any
     });
     await logAction('CREATE', 'link', `Creó un nuevo link: ${name}`);
   }
+  revalidatePath('/admin/links');
+  revalidatePath('/links');
+}
+
+export async function reorderLink(id: string, direction: 'up' | 'down') {
+  const currentLink = await db.link.findUnique({ where: { id } });
+  if (!currentLink) return;
+
+  const allLinks = await db.link.findMany({ orderBy: { order: 'asc' } });
+  const currentIndex = allLinks.findIndex(l => l.id === id);
+  const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+
+  if (targetIndex >= 0 && targetIndex < allLinks.length) {
+    const targetLink = allLinks[targetIndex];
+    
+    // Swap orders
+    const currentOrder = currentLink.order;
+    const targetOrder = targetLink.order;
+
+    await db.link.update({ where: { id: currentLink.id }, data: { order: targetOrder } });
+    await db.link.update({ where: { id: targetLink.id }, data: { order: currentOrder } });
+  }
+
   revalidatePath('/admin/links');
   revalidatePath('/links');
 }

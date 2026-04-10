@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { Plus, ExternalLink, Edit } from "lucide-react";
 import Link from "next/link";
 import { DeleteButton } from "@/components/admin/DeleteButton";
+import { ReorderButtons } from "@/components/admin/ReorderButtons";
 
 export default async function AdminLinksPage() {
   const links = await db.link.findMany({
@@ -33,8 +34,8 @@ export default async function AdminLinksPage() {
               <th>Nombre (ES)</th>
               <th>URL</th>
               <th>Icono</th>
-              <th>Orden</th>
-              <th style={{ textAlign: 'right' }}>Acciones</th>
+              <th style={{ textAlign: 'center' }}>Orden</th>
+              <th style={{ textAlign: 'right', paddingRight: '2.5rem' }}>Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -43,14 +44,31 @@ export default async function AdminLinksPage() {
                 <td style={{ fontWeight: 600 }}>{(link.name as any)?.es || 'Sin nombre'}</td>
                 <td>
                   <a href={link.url} target="_blank" rel="noreferrer" style={{ color: '#2563eb', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                    {link.url} <ExternalLink size={12} />
+                    {link.url.length > 30 ? link.url.substring(0, 30) + '...' : link.url} <ExternalLink size={12} />
                   </a>
                 </td>
                 <td style={{ textTransform: 'capitalize' }}>{link.iconType || '-'}</td>
-                <td>{link.order}</td>
+                <td style={{ textAlign: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.8rem' }}>
+                    <span style={{ fontWeight: 800, color: '#64748b', fontSize: '1.2rem', minWidth: '1.5rem' }}>{link.order}</span>
+                    <ReorderButtons id={link.id} />
+                  </div>
+                </td>
                 <td style={{ textAlign: 'right' }}>
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.3rem' }}>
-                    <Link href={`/admin/links/${link.id}`} style={{ color: '#94a3b8', padding: '0.5rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '1rem', paddingRight: '1rem' }}>
+                    <Link 
+                      href={`/admin/links/${link.id}`} 
+                      style={{ 
+                        color: '#64748b', 
+                        padding: '0.6rem',
+                        borderRadius: '10px',
+                        background: '#f8fafc',
+                        display: 'flex',
+                        transition: 'all 0.2s',
+                        border: '1px solid #e2e8f0'
+                      }}
+                      className="edit-btn-hover"
+                    >
                       <Edit size={18} />
                     </Link>
                     <DeleteButton id={link.id} type="link" />

@@ -23,7 +23,6 @@ export function LinkEditor({ initialData }: Props) {
 
   const [url, setUrl] = useState(initialData?.url || '');
   const [iconType, setIconType] = useState(initialData?.iconType || 'external');
-  const [order, setOrder] = useState(initialData?.order || 0);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +33,6 @@ export function LinkEditor({ initialData }: Props) {
         name: names,
         url,
         iconType,
-        order,
       });
       router.push('/admin/links');
       router.refresh();
@@ -89,36 +87,26 @@ export function LinkEditor({ initialData }: Props) {
         </div>
 
         <div>
-          <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#64748b' }}>URL del Enlace</label>
+          <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '1.5rem', color: '#64748b' }}>URL del Enlace</label>
           <input 
             required
             type="url"
+            className="admin-input"
             value={url}
             onChange={e => setUrl(e.target.value)}
-            style={{ width: '100%', padding: '0.75rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}
+            placeholder="https://su-enlace-aqui.com"
           />
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-          <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#64748b' }}>URL del Icono (Opcional)</label>
-            <input 
-              placeholder="Ej: /wsp.png o https://..."
-              value={iconType}
-              onChange={e => setIconType(e.target.value)}
-              style={{ width: '100%', padding: '0.75rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}
-            />
-            <p style={{ fontSize: '0.7rem', color: '#94a3b8', marginTop: '0.25rem' }}>Si se deja vacío, se usará el icono de flecha por defecto.</p>
-          </div>
-          <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#64748b' }}>Orden de Aparición</label>
-            <input 
-              type="number"
-              value={order}
-              onChange={e => setOrder(parseInt(e.target.value))}
-              style={{ width: '100%', padding: '0.75rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}
-            />
-          </div>
+        <div>
+          <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#64748b' }}>URL del Icono (Opcional)</label>
+          <input 
+            className="admin-input"
+            placeholder="Ej: /wsp.png o https://..."
+            value={iconType}
+            onChange={e => setIconType(e.target.value)}
+          />
+          <p style={{ fontSize: '0.7rem', color: '#94a3b8', marginTop: '0.5rem' }}>Si se deja vacío, se usará el icono de flecha por defecto.</p>
         </div>
 
         <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
