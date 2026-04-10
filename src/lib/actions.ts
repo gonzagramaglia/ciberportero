@@ -82,5 +82,47 @@ export async function deleteNotification(id: string) {
   revalidatePath('/');
 }
 
-/* -- POSTS -- */
-// Aquí irían las de posts cuando las necesitemos
+/* --- POSTS ACTIONS --- */
+export async function deletePost(id: string) {
+  const post = await db.post.findUnique({ where: { id } });
+  const title = post?.title || 'Sin título';
+  
+  await db.post.delete({ where: { id } });
+  await logAction('DELETE', 'post', `Eliminó el post: ${title}`);
+  
+  revalidatePath('/admin/posts');
+  revalidatePath('/');
+  revalidatePath(`/${post?.slug}`);
+}
+
+export async function upsertPost(data: any) {
+  const isUpdate = !!data.id;
+  const title = data.title || 'Sin título';
+
+  const postData = {
+    title: data.title,
+    content: data.content,
+    slug: data.slug,
+    lang: data.lang,
+    description: data.description,
+    published: data.published,
+    tags: Array.isArray(data.tags) ? data.tags : data.tags ? data.tags.split(',').map((t: string) => t.trim()) : [],
+  };
+
+  if (isUpdate) {
+    await db.post.update({
+      where: { id: data.id },
+      data: postData
+    });
+    await logAction('UPDATE', 'post', `Actualizó el post: ${title}`);
+  } else {
+    await db.post.create({
+      data: postData
+    });
+    await logAction('CREATE', 'post', `Creó un nuevo post: ${title}`);
+  }
+  
+  revalidatePath('/admin/posts');
+  revalidatePath('/');
+  revalidatePath(`/${data.slug}`);
+}

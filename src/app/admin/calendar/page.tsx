@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { Plus, Calendar as CalendarIcon, Trash2 } from "lucide-react";
+import Link from "next/link";
 
 export default async function AdminCalendarPage() {
   const events = await db.calendarEvent.findMany({ orderBy: { date: 'asc' } });
@@ -9,7 +10,12 @@ export default async function AdminCalendarPage() {
       <div className="admin-header">
         <div>
           <h2 className="admin-title">Calendario Académico</h2>
-          <p className="admin-subtitle">Gestiona fechas de exámenes, inscripciones y eventos.</p>
+          <p className="admin-subtitle">
+            Gestiona fechas de exámenes, inscripciones y eventos. Ver{" "}
+            <Link href="/calendar" target="_blank" style={{ color: 'var(--accent)', fontWeight: 700, textDecoration: 'underline' }}>
+              /calendar
+            </Link>.
+          </p>
         </div>
         <button className="btn-primary">
           <Plus size={18} />

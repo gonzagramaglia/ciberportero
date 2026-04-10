@@ -1,5 +1,8 @@
 import { db } from "@/lib/db";
 import { Plus, FileText, Globe, Trash2, Edit } from "lucide-react";
+import Link from "next/link";
+import { DeleteButton } from "@/components/admin/DeleteButton";
+import { deletePost } from "@/lib/actions";
 
 export default async function AdminPostsPage() {
   const posts = await db.post.findMany({ orderBy: { date: 'desc' } });
@@ -9,12 +12,17 @@ export default async function AdminPostsPage() {
       <div className="admin-header">
         <div>
           <h2 className="admin-title">Posts y Notas</h2>
-          <p className="admin-subtitle">Administra el contenido del portal por idioma.</p>
+          <p className="admin-subtitle">
+            Administra el contenido del portal por idioma. Ver{" "}
+            <Link href="/" target="_blank" style={{ color: 'var(--accent)', fontWeight: 700, textDecoration: 'underline' }}>
+              Página de Inicio
+            </Link>.
+          </p>
         </div>
-        <button className="btn-primary">
+        <Link href="/admin/posts/new" className="btn-primary" style={{ textDecoration: 'none' }}>
           <Plus size={18} />
           <span>Nuevo Post</span>
-        </button>
+        </Link>
       </div>
 
       <div className="admin-card">
@@ -34,7 +42,15 @@ export default async function AdminPostsPage() {
                 <td>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                     <FileText size={18} style={{ color: '#94a3b8' }} />
-                    <span style={{ fontWeight: 600 }}>{post.title}</span>
+                    <Link 
+                      href={`/${post.slug}`} 
+                      target="_blank" 
+                      style={{ fontWeight: 600, color: 'inherit', textDecoration: 'none' }}
+                      onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--accent)')}
+                      onMouseLeave={(e) => (e.currentTarget.style.color = 'inherit')}
+                    >
+                      {post.title}
+                    </Link>
                   </div>
                 </td>
                 <td>
@@ -50,11 +66,11 @@ export default async function AdminPostsPage() {
                     <span style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', padding: '0.2rem 0.5rem', background: '#fef3c7', color: '#92400e', borderRadius: '6px' }}>Borrador</span>
                   )}
                 </td>
-                <td style={{ color: '#64748b' }}>{new Date(post.date).toLocaleDateString()}</td>
+                <td style={{ color: '#64748b' }}>{new Date(post.date || post.createdAt).toLocaleDateString()}</td>
                 <td style={{ textAlign: 'right' }}>
                   <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
-                    <button style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer' }}><Edit size={18} /></button>
-                    <button style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer' }}><Trash2 size={18} /></button>
+                    <Link href={`/admin/posts/${post.id}`} style={{ color: '#94a3b8' }}><Edit size={18} /></Link>
+                    <DeleteButton id={post.id} type="post" />
                   </div>
                 </td>
               </tr>

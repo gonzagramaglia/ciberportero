@@ -13,7 +13,12 @@ export default async function AdminLinksPage() {
       <div className="admin-header">
         <div>
           <h2 className="admin-title">Administrar Links</h2>
-          <p className="admin-subtitle">Gestiona los enlaces directos de la página de inicio /links.</p>
+          <p className="admin-subtitle">
+            Gestiona los enlaces directos de la página de inicio{" "}
+            <Link href="/links" target="_blank" style={{ color: 'var(--accent)', fontWeight: 700, textDecoration: 'underline' }}>
+              /links
+            </Link>.
+          </p>
         </div>
         <Link href="/admin/links/new" className="btn-primary" style={{ textDecoration: 'none' }}>
           <Plus size={18} />
