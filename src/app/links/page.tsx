@@ -273,17 +273,14 @@ export default function LinksPage() {
             </header>
 
             <main>
-                <ul className="post-list links-grid">
-                    {linksToRender.map((link) => {
-                        // Data handles both static (link.name is string) and DB (link.name is obj)
+                {/* Helper to render a single link card */}
+                {(() => {
+                    const renderLink = (link: any) => {
                         const name = typeof link.name === 'object' ? (link.name[lang] || link.name.es) : link.name;
-                        const desc = typeof link.description === 'object' ? (link.description?.[lang] || link.description?.es) : link.desc;
                         const isPersonal = !!link.userId;
-                        
-                        // Icon Logic: URL or Legacy Keyword
                         const iconData = link.iconType || '';
                         const isExternal = !iconData || iconData === 'external';
-                        
+
                         let iconSrc = iconData;
                         if (iconData === 'whatsapp') iconSrc = '/wsp.png';
                         if (iconData === 'discord') iconSrc = '/discord.png';
@@ -296,55 +293,67 @@ export default function LinksPage() {
                         const iconH = iconData === 'drive' ? 38 : iconData === 'youtube' ? 44 : 40;
 
                         return (
-                            <li key={link.id || link.url} className={`post-item ${isPersonal ? 'is-personal' : ''}`} style={{ marginBottom: 0, position: 'relative' }}>
-                                {isPersonal && (
-                                    <button 
-                                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleDeleteLink(link.id); }}
-                                        style={{ position: 'absolute', top: '10px', right: '10px', border: 'none', background: 'transparent', cursor: 'pointer', color: '#ef4444', zIndex: 10, padding: '5px' }}
-                                    >
-                                        <Trash2 size={16} />
-                                    </button>
-                                )}
-                                <a href={link.url} target="_blank" rel="noopener noreferrer" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                                    {!isExternal ? (
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                            <div style={{ width: 46, flexShrink: 0, display: 'flex', justifyContent: 'center' }}>
-                                                <Image
-                                                    src={iconSrc}
-                                                    alt="link icon"
-                                                    width={iconW}
-                                                    height={iconH}
-                                                    style={{ flexShrink: 0, borderRadius: '8px', objectFit: 'contain' }}
-                                                />
-                                            </div>
-                                            <div>
-                                                <span className="post-title" style={{ marginBottom: 0, fontSize: '1.2rem' }}>
-                                                    {isPersonal && <span style={{ color: '#8b5cf6', marginRight: '0.5rem' }}>★</span>}
-                                                    {name}
-                                                </span>
-                                                </div>
-                                            </div>
-                                    ) : (
-                                        <>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                                <div style={{ width: 46, flexShrink: 0, display: 'flex', justifyContent: 'center' }}>
-                                                    <ExternalLink size={28} color={isPersonal ? "#8b5cf6" : "var(--accent)"} />
-                                                </div>
-                                                <span className="post-title" style={{ marginBottom: 0, fontSize: '1.2rem' }}>
-                                                    {isPersonal && <span style={{ color: '#8b5cf6', marginRight: '0.5rem' }}>★</span>}
-                                                    {name}
-                                                </span>
-                                            </div>
-                                        </>
+                            <li key={link.id || link.url} className={`post-item ${isPersonal ? 'is-personal' : ''}`} style={{ marginBottom: 0 }}>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem' }}>
+                                    <a href={link.url} target="_blank" rel="noopener noreferrer" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '1rem', minWidth: 0 }}>
+                                        <div style={{ width: 46, flexShrink: 0, display: 'flex', justifyContent: 'center' }}>
+                                            {!isExternal ? (
+                                                <Image src={iconSrc} alt="link icon" width={iconW} height={iconH} style={{ flexShrink: 0, borderRadius: '8px', objectFit: 'contain' }} />
+                                            ) : (
+                                                <ExternalLink size={28} color={isPersonal ? "#8b5cf6" : "var(--accent)"} />
+                                            )}
+                                        </div>
+                                        <span className="post-title" style={{ marginBottom: 0, fontSize: '1.2rem', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                            {isPersonal && <span style={{ color: '#8b5cf6', marginRight: '0.5rem' }}>★</span>}
+                                            {name}
+                                        </span>
+                                    </a>
+                                    {isPersonal && (
+                                        <button
+                                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleDeleteLink(link.id); }}
+                                            style={{ flexShrink: 0, border: 'none', background: 'transparent', cursor: 'pointer', color: '#ef4444', opacity: 0.5, padding: '4px', transition: 'opacity 0.2s' }}
+                                            className="delete-link-btn"
+                                        >
+                                            <Trash2 size={15} />
+                                        </button>
                                     )}
-                                </a>
+                                </div>
                             </li>
                         );
-                    })}
-                    {isLoading && <p style={{ textAlign: 'center', gridColumn: '1/-1', padding: '2rem', opacity: 0.5 }}>
-                        {lang === 'es' ? 'Actualizando enlaces...' : lang === 'pt' ? 'Atualizando links...' : 'Updating links...'}
-                    </p>}
-                </ul>
+                    };
+
+                    return (
+                        <>
+                            {/* Personal links section */}
+                            {userLinks.length > 0 && (
+                                <>
+                                    <ul className="post-list links-grid" style={{ marginBottom: '1.5rem' }}>
+                                        {userLinks.map(renderLink)}
+                                    </ul>
+                                    {adminLinks.length > 0 && (
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', margin: '1.5rem 0', opacity: 0.3 }}>
+                                            <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
+                                            <span style={{ fontSize: '0.7rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--muted)' }}>
+                                                {lang === 'es' ? 'Links del campus' : lang === 'pt' ? 'Links do campus' : 'Campus links'}
+                                            </span>
+                                            <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
+                                        </div>
+                                    )}
+                                </>
+                            )}
+
+                            {/* Admin links section */}
+                            <ul className="post-list links-grid">
+                                {(userLinks.length > 0 ? adminLinks : linksToRender).map(renderLink)}
+                                {isLoading && (
+                                    <p style={{ textAlign: 'center', gridColumn: '1/-1', padding: '2rem', opacity: 0.5 }}>
+                                        {lang === 'es' ? 'Actualizando enlaces...' : lang === 'pt' ? 'Atualizando links...' : 'Updating links...'}
+                                    </p>
+                                )}
+                            </ul>
+                        </>
+                    );
+                })()}
 
                 <div className="contact-container" style={{ marginTop: '4rem', marginBottom: '1.25rem', padding: '2.5rem', background: 'rgba(16, 185, 129, 0.05)', borderRadius: '24px', border: '1px solid rgba(16, 185, 129, 0.1)', borderLeft: '4px solid var(--success)' }}>
                     <div className="contact-container-inner">

@@ -281,6 +281,31 @@ export default function Home() {
                     </Link>
                 </div>
 
+                <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+                    <span className="featured-tag" style={{ background: '#f8fafc', color: 'var(--muted)', border: '1px solid var(--border)', marginBottom: '1rem' }}>Feed</span>
+                    <h2 style={{ fontSize: '1.8rem', fontWeight: '700', color: '#000', display: 'flex', alignItems: 'center', gap: '0.8rem', margin: 0 }}>
+                        <BookOpen size={26} style={{ color: 'var(--muted)' }} />
+                        Blog
+                    </h2>
+                </div>
+
+                <ul className="post-list">
+                    {posts.map((post) => (
+                        <li key={post.slug} className="post-item">
+                            <Link href={`/${post.slug}`}>
+                                <span className="post-date">{new Date(post.date).toLocaleDateString(lang, {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    timeZone: 'UTC'
+                                })}</span>
+                                <span className="post-title">{post.title}</span>
+                                <p className="post-description">{post.description}</p>
+                            </Link>
+                        </li>
+                    ))}
+                </ul>
+
                 {lang === 'es' && (
                     <>
                         <div style={{ marginTop: '1.5rem', marginBottom: '0.8rem' }}>
@@ -330,31 +355,6 @@ export default function Home() {
                         </div>
                     </>
                 )}
-
-                <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
-                    <span className="featured-tag" style={{ background: '#f8fafc', color: 'var(--muted)', border: '1px solid var(--border)', marginBottom: '1rem' }}>Feed</span>
-                    <h2 style={{ fontSize: '1.8rem', fontWeight: '700', color: '#000', display: 'flex', alignItems: 'center', gap: '0.8rem', margin: 0 }}>
-                        <BookOpen size={26} style={{ color: 'var(--muted)' }} />
-                        Blog
-                    </h2>
-                </div>
-
-                <ul className="post-list">
-                    {posts.map((post) => (
-                        <li key={post.slug} className="post-item">
-                            <Link href={`/${post.slug}`}>
-                                <span className="post-date">{new Date(post.date).toLocaleDateString(lang, {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric',
-                                    timeZone: 'UTC'
-                                })}</span>
-                                <span className="post-title">{post.title}</span>
-                                <p className="post-description">{post.description}</p>
-                            </Link>
-                        </li>
-                    ))}
-                </ul>
             </main>
 
             <div className="home-cover">
