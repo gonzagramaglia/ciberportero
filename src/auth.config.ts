@@ -18,5 +18,14 @@ export default {
       }
       return session
     },
+    redirect({ url, baseUrl }) {
+      // Allow relative URLs
+      if (url.startsWith('/')) return `${baseUrl}${url}`
+      // Allow same-origin URLs
+      try {
+        if (new URL(url).origin === baseUrl) return url
+      } catch {}
+      return baseUrl
+    },
   },
 } satisfies NextAuthConfig
