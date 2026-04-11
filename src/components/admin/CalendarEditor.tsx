@@ -175,7 +175,7 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
             </div>
             
             <div style={{ display: 'grid', gap: '1.75rem' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div style={{ display: 'grid', gap: '1.75rem' }}>
                 <div>
                   <label className="admin-label">Fecha de Inicio</label>
                   <input 

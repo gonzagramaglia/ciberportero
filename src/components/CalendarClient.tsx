@@ -140,6 +140,13 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
     });
   }, [allEvents, lang, searchTerm, subjectFilter]);
 
+  const formatEventDate = (dateStr: string) => {
+    if (!dateStr) return '';
+    const parts = dateStr.split('-');
+    if (parts.length !== 3) return dateStr;
+    return `${parts[2]}-${parts[1]}-${parts[0]}`;
+  };
+
   const nextMonth = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))
   }
@@ -478,24 +485,28 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
                 {selectedEvents.length > 0 ? (
                   selectedEvents.map((event, idx) => (
                     <div key={idx} className={`event-detail-item type-${event.type} ${event.userId ? 'is-personal' : ''}`}>
-                      <div className="event-date-range" style={{ fontSize: '0.8rem', fontWeight: 700, opacity: 0.6, marginBottom: '0.2rem' }}>
-                          {event.startDate} {event.endDate && `- ${event.endDate}`}
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                        <div className="event-type-tag">
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: '0.85rem', fontWeight: 800, opacity: 0.7 }}>
+                          {formatEventDate(event.startDate)}{event.endDate && ` - ${formatEventDate(event.endDate)}`}:
+                        </span>
+                        <div className={`upcoming-tag tag-${event.type}`} style={{ margin: 0, padding: '0.1rem 0.4rem' }}>
                             {(ct.events[event.type as keyof typeof ct.events] || event.type)}
                             {event.userId && ` (${lang === 'es' ? 'personal' : lang === 'pt' ? 'pessoal' : 'personal'})`}
-                            {event.subjectId && (event.subjectId !== 'all') && ` • [${event.subjectId.padStart(2, '0')}] ${(st as any)[event.subjectId]}`}
                         </div>
                         {(session?.user?.id === event.userId || session?.user?.email === 'ciberportero@gmail.com') && (
                           <button 
                             onClick={() => handleDeleteEvent(event.id)}
-                            style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: '#ef4444', opacity: 0.6, padding: '4px' }}
+                            style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: '#ef4444', opacity: 0.6, padding: '4px', marginLeft: 'auto' }}
                           >
                             <Trash2 size={16} />
                           </button>
                         )}
                       </div>
+                      {event.subjectId && (event.subjectId !== 'all') && (
+                        <div style={{ fontSize: '0.7rem', opacity: 0.6, fontWeight: 800, marginBottom: '0.5rem', color: 'var(--accent)' }}>
+                           [{event.subjectId.padStart(2, '0')}] {(st as any)[event.subjectId]}
+                        </div>
+                      )}
                       <h4>{event.title[lang] || event.title['es']}</h4>
                       <p>{event.desc[lang] || event.desc['es']}</p>
                     </div>
@@ -888,19 +899,19 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
         }
 
         :global(.calendar-day.has-personal) {
-          border-color: rgba(139, 92, 246, 0.4);
-          background: rgba(139, 92, 246, 0.03);
+          border-color: rgba(37, 99, 235, 0.4);
+          background: rgba(37, 99, 235, 0.03);
         }
 
         :global(.calendar-day.has-personal:hover) {
-          border-color: #8b5cf6;
-          background: rgba(139, 92, 246, 0.05);
+          border-color: #2563eb;
+          background: rgba(37, 99, 235, 0.05);
         }
 
         :global(.calendar-day.selected.has-personal) {
-          background: #f5f3ff !important;
-          border-color: #8b5cf6 !important;
-          box-shadow: 0 8px 20px rgba(139, 92, 246, 0.15);
+          background: #f0f9ff !important;
+          border-color: #2563eb !important;
+          box-shadow: 0 8px 20px rgba(37, 99, 235, 0.15);
         }
 
         :global(.day-number) {
@@ -937,7 +948,7 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
         :global(.event-enrollment .preview-dot) { background: #eab308; }
         :global(.event-classes .preview-dot) { background: #0070f3; }
         :global(.event-holiday .preview-dot) { background: #ef4444; }
-        :global(.event-exam .preview-dot) { background: #8b5cf6; }
+        :global(.event-exam .preview-dot) { background: #2563eb; }
 
         :global(.preview-text) {
             font-size: 0.6rem;
@@ -976,7 +987,7 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
         .legend-dot.enrollment { background: #eab308; }
         .legend-dot.classes { background: #0070f3; }
         .legend-dot.holiday { background: #ef4444; }
-        .legend-dot.exam { background: #8b5cf6; }
+        .legend-dot.exam { background: #2563eb; }
 
         .calendar-sidebar {
           display: grid;
@@ -997,13 +1008,13 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
         }
 
         .selection-card.is-personal {
-          background: #f5f3ff;
-          border-color: #8b5cf6;
-          box-shadow: 0 8px 30px rgba(139, 92, 246, 0.08);
+          background: #f0f9ff;
+          border-color: #2563eb;
+          box-shadow: 0 8px 30px rgba(37, 99, 235, 0.08);
         }
 
         .selection-card.is-personal .selection-header {
-          color: #6d28d9;
+          color: #1d4ed8;
         }
 
         .upcoming-card {
@@ -1041,10 +1052,10 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
         }
 
         .event-detail-item.type-enrollment { border-left-color: #eab308; }
-        .event-detail-item.type-classes { border-left-color: #0070f3; }
+        .event-detail-item.type-classes { border-left-color: #3b82f6; }
         .event-detail-item.type-holiday { border-left-color: #ef4444; }
-        .event-detail-item.type-exam { border-left-color: #8b5cf6; }
-        .event-detail-item.is-personal { border-left-color: #8b5cf6 !important; }
+        .event-detail-item.type-exam { border-left-color: #2563eb; }
+        .event-detail-item.is-personal { border-left-color: #0ea5e9 !important; }
 
         .event-type-tag {
           font-size: 0.7rem;
@@ -1149,9 +1160,9 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
         }
 
         .tag-enrollment { background: #fef08a; color: #854d0e; }
-        .tag-classes { background: #bfdbfe; color: #1e40af; }
+        .tag-classes { background: #dbeafe; color: #1e40af; }
         .tag-holiday { background: #fecaca; color: #991b1b; }
-        .tag-exam { background: #ddd6fe; color: #5b21b6; }
+        .tag-exam { background: #bfdbfe; color: #1e3a8a; }
 
         .feedback-email-btn:hover {
             background: rgba(234, 179, 8, 0.05);

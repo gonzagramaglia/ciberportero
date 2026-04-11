@@ -150,7 +150,7 @@ header {
 }
 
 .lang-switcher .active {
-  color: var(--accent);
+  color: var(--success);
   opacity: 1 !important;
 }
 
@@ -164,7 +164,7 @@ header {
 }
 
 .lang-switcher button.active {
-  color: var(--accent);
+  color: var(--success);
   opacity: 1;
 }
 
