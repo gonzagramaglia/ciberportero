@@ -12,8 +12,8 @@ export const translations = {
         credits: "Inspirado en el trabajo de zzzNata",
         langName: "Español",
         featured: {
-            title: "Enlaces Útiles",
-            description: "Para los estudiantes de la <strong>Licenciatura en Ciberdefensa de la UNDEF</strong>.",
+            title: "Links Útiles",
+            description: "Para los estudiantes de la <strong>Lic. en Ciberdefensa de la UNDEF</strong>.",
             tag: "Destacado"
         },
         contact: {
