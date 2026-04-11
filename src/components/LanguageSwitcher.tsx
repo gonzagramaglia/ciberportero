@@ -13,10 +13,20 @@ export default function LanguageSwitcher() {
         // 1. Update the context and cookie immediately
         setLang(newLang);
 
-        // 2. Identify current segments
+        // 2. Identify current segments and search params
         const segments = pathname.split('/');
         const currentLang = segments[1];
         const isLocalized = ['en', 'pt', 'es'].includes(currentLang);
+        
+        // Handle search params
+        const params = new URLSearchParams(window.location.search);
+        if (params.has('lang')) {
+            if (newLang === 'es') {
+                params.delete('lang');
+            } else {
+                params.set('lang', newLang);
+            }
+        }
 
         // 3. Build the base path (without locale)
         const basePath = isLocalized 
@@ -32,8 +42,12 @@ export default function LanguageSwitcher() {
             targetPath = targetPath.slice(0, -1);
         }
 
-        // 5. Navigate
-        router.push(targetPath || '/');
+        // 5. Append params if any
+        const queryString = params.toString();
+        const finalPath = queryString ? `${targetPath}?${queryString}` : targetPath;
+
+        // 6. Navigate
+        router.push(finalPath || '/');
     };
 
     return (
