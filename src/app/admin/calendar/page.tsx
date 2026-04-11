@@ -4,7 +4,7 @@ import Link from "next/link";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 
 export default async function AdminCalendarPage() {
-  const events = await db.calendarEvent.findMany({ orderBy: { date: 'asc' } });
+  const events = await db.calendarEvent.findMany({ orderBy: { startDate: 'asc' } });
 
   return (
     <div className="space-y-6">
@@ -61,7 +61,8 @@ export default async function AdminCalendarPage() {
                 </td>
                 <td>
                   <span style={{ fontWeight: 600, color: '#1e293b' }}>
-                    {new Date(event.date).toLocaleDateString('es-AR', { day: '2-digit', month: 'short', year: 'numeric' })}
+                    {new Date(event.startDate).toLocaleDateString('es-AR', { day: '2-digit', month: 'short' })}
+                    {event.endDate && ` - ${new Date(event.endDate).toLocaleDateString('es-AR', { day: '2-digit', month: 'short' })}`}
                   </span>
                 </td>
                 <td>

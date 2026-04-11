@@ -163,7 +163,8 @@ model CalendarEvent {
   id          String   @id @default(cuid())
   title       Json     // { "es": "...", "en": "...", "pt": "..." }
   description Json?
-  date        DateTime
+  startDate   DateTime
+  endDate     DateTime?
   period      String?  // e.g., "1st Semester", "Full Year"
   type        String   @default("event") // "exam", "class", "admin", "event"
   subjectId   String?  // ID related to subjectNames in translations

@@ -288,7 +288,8 @@ export async function upsertCalendarEvent(data: any) {
   const eventData = {
     title: data.title,
     description: data.description,
-    date: new Date(data.date),
+    startDate: new Date(data.startDate),
+    endDate: data.endDate ? new Date(data.endDate) : null,
     period: data.period,
     type: data.type,
     subjectId: data.subjectId,
@@ -355,14 +356,15 @@ export async function updateUserProgress(completed: number[], inProgress: number
   return { success: true };
 }
 
-export async function createPersonalEvent(data: { title: string, date: string, type: string, subjectId?: string }) {
+export async function createPersonalEvent(data: { title: string, startDate: string, endDate?: string, type: string, subjectId?: string }) {
   const session = await auth();
   if (!session?.user?.id) return { error: "Not authenticated" };
 
   await db.calendarEvent.create({
     data: {
       title: { es: data.title, en: data.title, pt: data.title },
-      date: new Date(data.date),
+      startDate: new Date(data.startDate),
+      endDate: data.endDate ? new Date(data.endDate) : null,
       type: data.type,
       subjectId: data.subjectId === 'all' ? null : data.subjectId,
       userId: session.user.id

@@ -27,10 +27,16 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
     pt: event?.description?.pt || '',
   });
 
-  const [date, setDate] = useState(
-    event?.date 
-      ? new Date(event.date).toISOString().split('T')[0] 
+  const [startDate, setStartDate] = useState(
+    event?.startDate 
+      ? new Date(event.startDate).toISOString().split('T')[0] 
       : new Date().toISOString().split('T')[0]
+  );
+  
+  const [endDate, setEndDate] = useState(
+    event?.endDate 
+      ? new Date(event.endDate).toISOString().split('T')[0] 
+      : ''
   );
   
   const [period, setPeriod] = useState(event?.period || '1er cuatrimestre de 1er año');
@@ -45,7 +51,8 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
         id: event?.id,
         title: titles,
         description: descriptions,
-        date,
+        startDate,
+        endDate: endDate || null,
         period,
         type,
         subjectId
@@ -168,15 +175,27 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
             </div>
             
             <div style={{ display: 'grid', gap: '1.75rem' }}>
-              <div>
-                <label className="admin-label">Fecha del Evento</label>
-                <input 
-                  type="date" 
-                  className="admin-input" 
-                  value={date} 
-                  onChange={e => setDate(e.target.value)} 
-                  required 
-                />
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div>
+                  <label className="admin-label">Fecha de Inicio</label>
+                  <input 
+                    type="date" 
+                    className="admin-input" 
+                    value={startDate} 
+                    onChange={e => setStartDate(e.target.value)} 
+                    required 
+                  />
+                </div>
+                <div>
+                  <label className="admin-label">Fecha de Fin (Opcional)</label>
+                  <input 
+                    type="date" 
+                    className="admin-input" 
+                    value={endDate} 
+                    onChange={e => setEndDate(e.target.value)} 
+                    min={startDate}
+                  />
+                </div>
               </div>
               <div>
                 <label className="admin-label">Periodo Académico</label>

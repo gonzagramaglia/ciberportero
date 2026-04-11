@@ -13,7 +13,8 @@ import { SignInButton, SignOutButton } from "@/components/AuthButtons"
 
 interface AcademicEvent {
   id: string;
-  date: string; // ISO format (YYYY-MM-DD)
+  startDate: string; // ISO format (YYYY-MM-DD)
+  endDate?: string | null;
   title: Record<string, string>;
   type: string;
   desc: Record<string, string>;
@@ -34,7 +35,7 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
   
   const [allEvents, setAllEvents] = useState(initialEvents)
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
-  const [newEvent, setNewEvent] = useState({ title: '', date: '', type: 'exam', subjectId: 'all' })
+  const [newEvent, setNewEvent] = useState({ title: '', startDate: '', endDate: '', type: 'exam', subjectId: 'all' })
   const [isSaving, setIsSaving] = useState(false)
   
   const [isFinished, setIsFinished] = useState(false);
@@ -96,12 +97,12 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
   const [emailCopied, setEmailCopied] = useState(false)
 
   const handleSaveEvent = async () => {
-    if (!newEvent.title || !newEvent.date) return;
+    if (!newEvent.title || !newEvent.startDate) return;
     setIsSaving(true);
     const res = await createPersonalEvent(newEvent);
     if (res.success) {
       setIsAddModalOpen(false);
-      setNewEvent({ title: '', date: '', type: 'exam', subjectId: 'all' });
+      setNewEvent({ title: '', startDate: '', endDate: '', type: 'exam', subjectId: 'all' });
       // The page will revalidate and refresh initialEvents because it's a server action
     }
     setIsSaving(false);
@@ -160,7 +161,13 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
     
     for (let day = 1; day <= daysInMonth; day++) {
       const dateStr = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
-      const dayEvents = filteredEvents.filter(e => e.date === dateStr)
+      const dayEvents = filteredEvents.filter(e => {
+        if (e.startDate === dateStr) return true;
+        if (e.endDate) {
+          return dateStr >= e.startDate && dateStr <= e.endDate;
+        }
+        return false;
+      })
       const hasEvent = dayEvents.length > 0
       const hasPersonalEvent = dayEvents.some(e => e.userId)
       const isSelected = selectedDate && selectedDate.getFullYear() === year && selectedDate.getMonth() === month && selectedDate.getDate() === day
@@ -188,16 +195,19 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
 
   const selectedEvents = filteredEvents.filter(e => {
     if (!selectedDate) return false
-    const d = new Date(e.date + 'T00:00:00')
-    return d.getFullYear() === selectedDate.getFullYear() && 
-           d.getMonth() === selectedDate.getMonth() && 
-           d.getDate() === selectedDate.getDate()
+    const dateStr = `${selectedDate.getFullYear()}-${(selectedDate.getMonth() + 1).toString().padStart(2, '0')}-${selectedDate.getDate().toString().padStart(2, '0')}`
+    
+    if (e.startDate === dateStr) return true;
+    if (e.endDate) {
+      return dateStr >= e.startDate && dateStr <= e.endDate;
+    }
+    return false;
   })
 
   const upcomingEvents = filteredEvents.filter(e => {
-      const d = new Date(e.date + 'T00:00:00');
+      const d = new Date(e.startDate + 'T00:00:00');
       return d >= new Date();
-  }).sort((a, b) => a.date.localeCompare(b.date)).slice(0, 5);
+  }).sort((a, b) => a.startDate.localeCompare(b.startDate)).slice(0, 5);
 
   const availableSubjects = useMemo(() => {
       // Show all subjects for filtering with [id] prefix
@@ -442,6 +452,9 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
                 {selectedEvents.length > 0 ? (
                   selectedEvents.map((event, idx) => (
                     <div key={idx} className={`event-detail-item type-${event.type} ${event.userId ? 'is-personal' : ''}`}>
+                      <div className="event-date-range" style={{ fontSize: '0.8rem', fontWeight: 700, opacity: 0.6, marginBottom: '0.2rem' }}>
+                          {event.startDate} {event.endDate && `- ${event.endDate}`}
+                      </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                         <div className="event-type-tag">
                             {(ct.events[event.type as keyof typeof ct.events] || event.type)}
@@ -477,7 +490,7 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
             </div>
             <div className="upcoming-list">
               {upcomingEvents.length > 0 ? upcomingEvents.map((event, idx) => {
-                  const d = new Date(event.date + 'T00:00:00');
+                  const d = new Date(event.startDate + 'T00:00:00');
                   return (
                     <div key={idx} className="upcoming-item" onClick={() => {
                         setCurrentDate(new Date(d.getFullYear(), d.getMonth(), 1));
@@ -589,14 +602,26 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
                   />
                 </div>
                 
-                <div className="form-group" style={{ marginTop: '1rem' }}>
-                  <label>{lang === 'es' ? 'Fecha' : lang === 'pt' ? 'Data' : 'Date'}</label>
-                  <input 
-                    type="date" 
-                    value={newEvent.date} 
-                    onChange={(e) => setNewEvent({...newEvent, date: e.target.value})}
-                    style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
-                  />
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div className="form-group">
+                    <label>{lang === 'es' ? 'Desde' : lang === 'pt' ? 'Início' : 'From'}</label>
+                    <input 
+                      type="date" 
+                      value={newEvent.startDate} 
+                      onChange={(e) => setNewEvent({...newEvent, startDate: e.target.value})}
+                      style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>{lang === 'es' ? 'Hasta (Opc)' : lang === 'pt' ? 'Fim (Opc)' : 'To (Opt)'}</label>
+                    <input 
+                      type="date" 
+                      value={newEvent.endDate} 
+                      onChange={(e) => setNewEvent({...newEvent, endDate: e.target.value})}
+                      min={newEvent.startDate}
+                      style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
+                    />
+                  </div>
                 </div>
                 
                 <div className="form-group" style={{ marginTop: '1rem' }}>
@@ -1024,12 +1049,12 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
         }
 
         .selection-content {
-          justify-content: center;
+          justify-content: flex-start;
         }
 
         .empty-selection {
-          text-align: center;
-          padding: 1rem 0;
+          text-align: left;
+          padding: 1rem 0 1rem 1.6rem;
           color: var(--muted);
           font-size: 1rem;
           font-weight: 500;

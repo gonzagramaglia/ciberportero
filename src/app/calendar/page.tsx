@@ -18,12 +18,13 @@ export default async function CalendarPage({ searchParams }: { searchParams: Pro
         { userId: session?.user?.id || 'no-session' }
       ]
     },
-    orderBy: { date: 'asc' }
+    orderBy: { startDate: 'asc' }
   });
 
   const mappedEvents = events.map(event => ({
     id: event.id,
-    date: event.date.toISOString().split('T')[0],
+    startDate: event.startDate.toISOString().split('T')[0],
+    endDate: event.endDate ? event.endDate.toISOString().split('T')[0] : null,
     title: event.title as Record<string, string>,
     desc: (event.description || { es: '', en: '', pt: '' }) as Record<string, string>,
     type: event.type,
