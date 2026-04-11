@@ -152,7 +152,7 @@ export const translations = {
         },
         calendar: {
             title: "Calendario Académico",
-            description: "<strong>Anticipá fechas críticas</strong>, planificá tu ciclo lectivo y mantené el control de tus estudios.",
+            description: "<strong>Anticipá fechas críticas</strong> y mantené el control de tus estudios.",
             loading: "Cargando calendario...",
             months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
             days: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
@@ -345,7 +345,7 @@ export const translations = {
         },
         calendar: {
             title: "Academic Calendar",
-            description: "<strong>Anticipate critical dates</strong>, plan your academic cycle, and maintain control of your studies.",
+            description: "<strong>Anticipate critical dates</strong> and maintain control of your studies.",
             loading: "Loading calendar...",
             months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
             days: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
@@ -538,7 +538,7 @@ export const translations = {
         },
         calendar: {
             title: "Calendário Acadêmico",
-            description: "<strong>Antecipe datas críticas</strong>, planeje seu ciclo letivo e mantenha o controle de seus estudos.",
+            description: "<strong>Antecipe datas críticas</strong> e mantenha o controle de seus estudos.",
             loading: "Carregando calendário...",
             months: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
             days: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
