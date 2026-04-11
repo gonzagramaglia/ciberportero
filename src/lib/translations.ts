@@ -119,7 +119,7 @@ export const translations = {
         plan: {
             title: "Plan de Estudios",
             subtitle: "Licenciatura en Ciberdefensa - UNDEF",
-            description: "<strong>Visualizá tu progreso</strong>, las correlatividades y las materias que vas desbloqueando.",
+            description: "<strong>Visualizá tu progreso</strong> y las materias que vas desbloqueando.",
             completed: "Completada",
             completedPlural: "Completadas",
             inProgress: "En curso",
@@ -312,7 +312,7 @@ export const translations = {
         plan: {
             title: "Study Plan",
             subtitle: "Bachelor's in Cyberdefense - UNDEF",
-            description: "<strong>Visualize your progress</strong>, prerequisites, and the subjects you are unlocking.",
+            description: "<strong>Visualize your progress</strong> and the subjects you are unlocking.",
             completed: "Completed",
             completedPlural: "Completed",
             inProgress: "In progress",
@@ -505,7 +505,7 @@ export const translations = {
         plan: {
             title: "Plano de Estudos",
             subtitle: "Licenciatura em Ciberdefensa - UNDEF",
-            description: "<strong>Visualize o seu progresso</strong>, as correlatividades e as matérias que você está desbloqueando.",
+            description: "<strong>Visualize o seu progresso</strong> e as matérias que você está desbloqueando.",
             completed: "Concluída",
             completedPlural: "Concluídas",
             inProgress: "Em curso",

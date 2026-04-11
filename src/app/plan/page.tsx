@@ -361,8 +361,8 @@ export default function PlanPage() {
           <LanguageSwitcher />
         </div>
         
-        <div style={{ marginTop: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '2rem' }}>
-          <div>
+        <div style={{ marginTop: '0.5rem', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '1.5rem' }}>
+          <div style={{ width: '100%' }}>
             <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
               {pt.title}
               <div style={{ 
@@ -379,10 +379,10 @@ export default function PlanPage() {
                 {session?.user ? (
                   <>
                     <span style={{ color: 'var(--accent)', fontWeight: '700' }}>{t.dashboard.welcome}, {session.user.name?.split(' ')[0] || 'Estudiante'}!</span>{' '}
-                    {pt.subtitle}
+                    <span dangerouslySetInnerHTML={{ __html: pt.description }} />
                   </>
                 ) : (
-                  pt.subtitle
+                  <span dangerouslySetInnerHTML={{ __html: pt.description }} />
                 )}
               </p>
             </div>
