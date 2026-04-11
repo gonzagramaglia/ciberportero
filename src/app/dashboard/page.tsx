@@ -286,14 +286,16 @@ export default function DashboardPage() {
         </div>
       </main>
       
-      <footer className="footer-main" style={{ marginTop: '5rem', padding: '2.5rem 0', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
-            <Github size={20} />
-        </a>
+      <footer className="footer-main">
+        <div className="footer-icons">
+          <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
+              <Github size={20} />
+          </a>
+          <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
+              <Youtube size={22} />
+          </a>
+        </div>
         <span style={{ fontSize: '0.9rem', opacity: 0.6, color: 'var(--muted)', fontWeight: '500' }}>{translations[lang].footer}</span>
-        <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
-            <Youtube size={22} />
-        </a>
       </footer>
     </div>
   )

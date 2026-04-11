@@ -698,6 +698,19 @@ header p {
     font-size: 0.8rem;
   }
 
+  .footer-main:not(.footer-stacked) {
+    flex-direction: column-reverse;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .footer-icons {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    align-items: center;
+  }
+
   .footer-stacked {
     flex-direction: column;
     text-align: center;
