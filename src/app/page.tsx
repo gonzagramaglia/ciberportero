@@ -232,8 +232,6 @@ export default function Home() {
                         <>
                             <span style={{ color: 'var(--accent)', fontWeight: '700' }}>{t.dashboard.welcome} {session.user.name?.split(' ')[0] || 'Estudiante'}!</span>{' '}
                             <span style={{ opacity: 0.9, fontStyle: 'italic' }}>{motivation}</span>
-                            <br />
-                            {t.description}
                         </>
                     ) : (
                         <span style={{ fontStyle: 'italic', opacity: 0.9 }}>{motivation || t.description}</span>
