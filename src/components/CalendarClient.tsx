@@ -219,11 +219,13 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
   }).sort((a, b) => a.startDate.localeCompare(b.startDate)).slice(0, 5);
 
   const availableSubjects = useMemo(() => {
-      // Show all subjects for filtering with [id] prefix
-      return Object.entries(st).map(([id, name]) => ({ 
-        id, 
-        name: `[${id.padStart(2, '0')}] ${name}` 
-      }));
+      // Show only current taught subjects (up to ID 20) with [id] prefix
+      return Object.entries(st)
+        .filter(([id]) => parseInt(id) <= 20)
+        .map(([id, name]) => ({ 
+          id, 
+          name: `[${id.padStart(2, '0')}] ${name}` 
+        }));
   }, [st]);
 
   return (
@@ -637,7 +639,7 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
                     />
                   </div>
                   <div className="form-group">
-                    <label>{lang === 'es' ? 'Hasta (Opc)' : lang === 'pt' ? 'Fim (Opc)' : 'To (Opt)'}</label>
+                    <label>{lang === 'es' ? 'Hasta (Opcional)' : lang === 'pt' ? 'Fim (Opcional)' : 'To (Optional)'}</label>
                     <input 
                       type="date" 
                       value={newEvent.endDate} 

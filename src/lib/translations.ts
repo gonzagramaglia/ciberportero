@@ -8,7 +8,7 @@ export const translations = {
         langName: "Español",
         featured: {
             title: "Enlaces Útiles",
-            description: "Para los estudiantes de la <strong>Licenciatura en Ciberdefensa de la UNDEF</strong>",
+            description: "Para los estudiantes de la <strong>Licenciatura en Ciberdefensa de la UNDEF</strong>.",
             tag: "Destacado"
         },
         contact: {
@@ -202,7 +202,7 @@ export const translations = {
         langName: "English",
         featured: {
             title: "Useful Links",
-            description: "For students of the <strong>Bachelor's Degree in Cyberdefense at UNDEF</strong>",
+            description: "For students of the <strong>Bachelor's Degree in Cyberdefense at UNDEF</strong>.",
             tag: "Featured"
         },
         contact: {
@@ -396,7 +396,7 @@ export const translations = {
         langName: "Português",
         featured: {
             title: "Links Úteis",
-            description: "Pensados para os estudantes de <strong>Ciberdefesa da UNDEF</strong>",
+            description: "Pensados para os estudantes de <strong>Ciberdefesa da UNDEF</strong>.",
             tag: "Destaque"
         },
         contact: {
