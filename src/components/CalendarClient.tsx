@@ -487,7 +487,19 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
                     <div key={idx} className={`event-detail-item type-${event.type} ${event.userId ? 'is-personal' : ''}`}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
                         <span style={{ fontSize: '0.85rem', fontWeight: 800, opacity: 0.7 }}>
-                          {formatEventDate(event.startDate)}{event.endDate && ` - ${formatEventDate(event.endDate)}`}:
+                          {lang === 'es' ? (
+                            event.endDate 
+                              ? `Del ${formatEventDate(event.startDate)} al ${formatEventDate(event.endDate)}:`
+                              : `El ${formatEventDate(event.startDate)}:`
+                          ) : lang === 'pt' ? (
+                            event.endDate 
+                              ? `De ${formatEventDate(event.startDate)} a ${formatEventDate(event.endDate)}:`
+                              : `Em ${formatEventDate(event.startDate)}:`
+                          ) : (
+                            event.endDate 
+                              ? `From ${formatEventDate(event.startDate)} to ${formatEventDate(event.endDate)}:`
+                              : `On ${formatEventDate(event.startDate)}:`
+                          )}
                         </span>
                         <div className={`upcoming-tag tag-${event.type}`} style={{ margin: 0, padding: '0.1rem 0.4rem' }}>
                             {(ct.events[event.type as keyof typeof ct.events] || event.type)}
@@ -1170,12 +1182,31 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
         }
 
         @media (max-width: 900px) {
+          .calendar-controls { 
+            flex-direction: column; 
+            gap: 0.8rem;
+            padding: 1rem;
+          }
+          .calendar-main-card { 
+            padding: 1.25rem; 
+            border-radius: 20px;
+          }
+          .calendar-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+          }
           .calendar-layout { gap: 1rem; }
           .calendar-sidebar { grid-template-columns: 1fr; }
-          .calendar-day { aspect-ratio: 1; }
+          .calendar-grid { gap: 0.4rem; }
+          :global(.calendar-day) { aspect-ratio: 1; padding: 0.4rem; border-radius: 12px; }
+          :global(.day-number) { font-size: 0.75rem; }
+          .weekday { font-size: 0.65rem; }
           .preview-text { display: none; }
           .day-event-preview { width: fit-content; background: transparent; border: none; padding: 0; margin: 0; }
           .preview-dot { width: 8px; height: 8px; }
+          .calendar-legend { gap: 1rem; padding-top: 1rem; }
         }
       `}</style>
     </div>

@@ -4,6 +4,11 @@ export const translations = {
         description: "Ciberdefensa y seguridad digital desde la primera línea",
         back: "Volver al inicio",
         footer: "© 2026 | Mens secura in corpore tuto",
+        auth: {
+            signIn: "Iniciar sesión",
+            signInConcise: "Iniciar",
+            signOut: "Cerrar sesión"
+        },
         credits: "Inspirado en el trabajo de zzzNata",
         langName: "Español",
         featured: {
@@ -151,7 +156,7 @@ export const translations = {
             }
         },
         calendar: {
-            title: "Calendario Académico",
+            title: "Calendario",
             shortTitle: "Calendario",
             description: "<strong>Anticipá fechas críticas</strong> y mantené el control de tus estudios.",
             loading: "Cargando calendario...",
@@ -198,6 +203,11 @@ export const translations = {
         description: "Cyberdefense and digital security from the front lines",
         back: "Back to home",
         footer: "© 2026 | Mens secura in corpore tuto",
+        auth: {
+            signIn: "Sign in",
+            signInConcise: "Sign In",
+            signOut: "Sign Out"
+        },
         credits: "Inspired by zzzNata's project",
         langName: "English",
         featured: {
@@ -345,7 +355,7 @@ export const translations = {
             }
         },
         calendar: {
-            title: "Academic Calendar",
+            title: "Calendar",
             shortTitle: "Calendar",
             description: "<strong>Anticipate critical dates</strong> and maintain control of your studies.",
             loading: "Loading calendar...",
@@ -392,6 +402,11 @@ export const translations = {
         description: "Ciberdefesa e segurança digital na línea de frente",
         back: "Voltar ao início",
         footer: "© 2026 | Mens secura in corpore tuto",
+        auth: {
+            signIn: "Fazer login",
+            signInConcise: "Entrar",
+            signOut: "Sair"
+        },
         credits: "Inspirado no trabalho de zzzNata",
         langName: "Português",
         featured: {
@@ -539,7 +554,7 @@ export const translations = {
             }
         },
         calendar: {
-            title: "Calendário Acadêmico",
+            title: "Calendário",
             shortTitle: "Calendário",
             description: "<strong>Antecipe datas críticas</strong> e mantenha o controle de seus estudos.",
             loading: "Carregando calendário...",

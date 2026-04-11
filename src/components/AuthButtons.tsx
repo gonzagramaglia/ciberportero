@@ -35,7 +35,12 @@ export function SignInButton() {
             <path d="M3.964 10.712c-.18-.54-.282-1.117-.282-1.712s.102-1.173.282-1.712V4.956H.957a8.996 8.996 0 0 0 0 8.088l3.007-2.332z" fill="#fbbc05"/>
             <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.956l3.007 2.332C4.672 5.164 6.656 3.58 9 3.58z" fill="#ea4335"/>
           </svg>
-          <span>{lang === 'es' ? 'Iniciar sesión' : 'Sign in'}</span>
+          <span className="mobile-hide">
+            {(translations[lang] as any).auth.signIn}
+          </span>
+          <span className="mobile-only">
+            {(translations[lang] as any).auth.signInConcise}
+          </span>
         </button>
 
         <style jsx>{`
@@ -79,7 +84,7 @@ export function SignOutButton() {
       }}
     >
       <LogIn size={18} strokeWidth={2.5} style={{ transform: 'rotate(180deg)' }} />
-      <span>{lang === 'es' ? 'Cerrar sesión' : lang === 'pt' ? 'Sair' : 'Sign Out'}</span>
+      <span>{(translations[lang] as any).auth.signOut}</span>
       
       <style jsx>{`
         .sign-out-btn:hover {

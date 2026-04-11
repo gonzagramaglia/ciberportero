@@ -25,7 +25,7 @@ export default async function CalendarPage({ searchParams }: { searchParams: Pro
   const lang = resolvedParams.lang || cookieStore.get('lang')?.value || 'es';
 
   // Fetch real events from database (admin events + user private events)
-  const events = await db.calendarEvent.findMany({
+  const events = (await db.calendarEvent.findMany({
     where: {
       OR: [
         { userId: null },
@@ -33,7 +33,7 @@ export default async function CalendarPage({ searchParams }: { searchParams: Pro
       ]
     },
     orderBy: { startDate: 'asc' }
-  });
+  })) as any[];
 
   const mappedEvents = events.map(event => ({
     id: event.id,
