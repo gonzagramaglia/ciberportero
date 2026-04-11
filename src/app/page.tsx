@@ -209,7 +209,7 @@ export default function Home() {
                 </div>
             )}
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '1.5rem' }}>
+            <div className="home-lang-container">
                 <LanguageSwitcher />
             </div>
 
@@ -403,15 +403,13 @@ export default function Home() {
             </div>
 
             <footer className="footer-main">
-                <div className="footer-icons">
-                    <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
-                        <Github size={18} />
-                    </a>
-                    <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
-                        <Youtube size={22} />
-                    </a>
-                </div>
+                <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+                    <Github size={18} />
+                </a>
                 <span>{t.footer}</span>
+                <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+                    <Youtube size={22} />
+                </a>
             </footer>
         </div>
     );

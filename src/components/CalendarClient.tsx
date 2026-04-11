@@ -604,15 +604,13 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
       </div>
 
       <footer className="footer-main">
-          <div className="footer-icons">
-              <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
-                  <Github size={18} />
-              </a>
-              <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
-                  <Youtube size={22} />
-              </a>
-          </div>
+          <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+              <Github size={18} />
+          </a>
           <span>{t.footer}</span>
+          <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+              <Youtube size={22} />
+          </a>
       </footer>
 
       {isAddModalOpen && (
