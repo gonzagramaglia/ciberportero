@@ -7,12 +7,23 @@ import { cookies } from "next/headers";
 
 export const dynamic = 'force-dynamic';
 
+export async function generateMetadata({ searchParams }: { searchParams: Promise<{ lang?: string }> }) {
+  const resolvedParams = await searchParams;
+  const cookieStore = await cookies();
+  const lang = resolvedParams.lang || cookieStore.get('lang')?.value || 'es';
+  const t = translations[lang as keyof typeof translations];
+
+  return {
+    title: `Ciberportero | ${t.calendar.shortTitle}`,
+  };
+}
+
 export default async function CalendarPage({ searchParams }: { searchParams: Promise<{ lang?: string }> }) {
   const session = await auth();
   const resolvedParams = await searchParams;
   const cookieStore = await cookies();
   const lang = resolvedParams.lang || cookieStore.get('lang')?.value || 'es';
-  
+
   // Fetch real events from database (admin events + user private events)
   const events = await db.calendarEvent.findMany({
     where: {

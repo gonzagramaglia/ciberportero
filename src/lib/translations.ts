@@ -152,6 +152,7 @@ export const translations = {
         },
         calendar: {
             title: "Calendario Académico",
+            shortTitle: "Calendario",
             description: "<strong>Anticipá fechas críticas</strong> y mantené el control de tus estudios.",
             loading: "Cargando calendario...",
             months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
@@ -345,6 +346,7 @@ export const translations = {
         },
         calendar: {
             title: "Academic Calendar",
+            shortTitle: "Calendar",
             description: "<strong>Anticipate critical dates</strong> and maintain control of your studies.",
             loading: "Loading calendar...",
             months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
@@ -538,6 +540,7 @@ export const translations = {
         },
         calendar: {
             title: "Calendário Acadêmico",
+            shortTitle: "Calendário",
             description: "<strong>Antecipe datas críticas</strong> e mantenha o controle de seus estudos.",
             loading: "Carregando calendário...",
             months: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
