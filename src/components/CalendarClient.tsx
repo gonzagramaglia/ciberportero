@@ -93,6 +93,12 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
     setAllEvents(initialEvents)
   }, [initialEvents])
 
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.title = `Ciberportero | ${t.calendar.shortTitle}`;
+    }
+  }, [lang, t.calendar.shortTitle]);
+
   const [currentDate, setCurrentDate] = useState(new Date())
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
   const [searchTerm, setSearchTerm] = useState('')
