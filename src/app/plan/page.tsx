@@ -15,8 +15,8 @@ import SyncedBadge from "@/components/SyncedBadge"
 import { SignInButton, SignOutButton } from "@/components/AuthButtons"
 
 export default function PlanPage() {
-  const { data: session, status } = useSession()
   const { lang } = useLanguage()
+  const { data: session, status } = useSession()
   const t = translations[lang]
   const pt = translations[lang].plan
   const [completed, setCompleted] = useState<number[]>([])
@@ -231,7 +231,37 @@ export default function PlanPage() {
   const progressPercent = Math.round((completedInObjective.length / totalSubjects) * 100)
   const inProgressPercent = Math.round((inProgressInObjective.length / totalSubjects) * 100)
 
-  if (!isLoaded) return null
+  if (!isLoaded) {
+    return (
+      <div className="container" style={{ paddingTop: '12vh' }}>
+        <div className="space-y-12">
+          <div style={{ marginBottom: '4rem' }}>
+            <div style={{ height: '3.5rem', width: '250px', background: '#f1f5f9', borderRadius: '12px', marginBottom: '1rem', animation: 'pulse 2.5s infinite' }} />
+            <div style={{ height: '1.2rem', width: '400px', background: '#f8fafc', borderRadius: '8px', animation: 'pulse 2.5s infinite' }} />
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '2rem' }}>
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={i} style={{ height: '180px', background: 'white', borderRadius: '24px', border: '1px solid #f1f5f9', padding: '1.5rem', animation: 'pulse 2.5s infinite', animationDelay: `${i * 0.15}s` }}>
+                <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem' }}>
+                  <div style={{ width: '50px', height: '50px', borderRadius: '12px', background: '#f1f5f9', flexShrink: 0 }} />
+                  <div style={{ flex: 1, paddingTop: '0.25rem' }}>
+                    <div style={{ height: '1.2rem', width: '80%', background: '#f1f5f9', borderRadius: '4px', marginBottom: '0.5rem' }} />
+                    <div style={{ height: '0.8rem', width: '40%', background: '#f8fafc', borderRadius: '4px' }} />
+                  </div>
+                </div>
+                <div style={{ height: '12px', width: '100%', background: '#f8fafc', borderRadius: '4px', marginBottom: '0.75rem' }} />
+                <div style={{ height: '12px', width: '90%', background: '#f8fafc', borderRadius: '4px' }} />
+              </div>
+            ))}
+          </div>
+        </div>
+        <style jsx>{`
+          @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .6; } }
+          .space-y-12 > * + * { margin-top: 3rem; }
+        `}</style>
+      </div>
+    );
+  }
 
   return (
     <div className="container fade-in page-container">
@@ -345,7 +375,16 @@ export default function PlanPage() {
               </div>
             </h1>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
-              <p style={{ color: 'var(--muted)', fontSize: '1.2rem', margin: 0, fontWeight: '500' }}>{pt.subtitle}</p>
+              <p style={{ color: 'var(--muted)', fontSize: '1.2rem', margin: 0, fontWeight: '500' }}>
+                {session?.user ? (
+                  <>
+                    <span style={{ color: 'var(--accent)', fontWeight: '700' }}>{t.dashboard.welcome}, {session.user.name?.split(' ')[0] || 'Estudiante'}!</span>{' '}
+                    {pt.subtitle}
+                  </>
+                ) : (
+                  pt.subtitle
+                )}
+              </p>
             </div>
           </div>
 

@@ -169,11 +169,28 @@ export const translations = {
                 holyWeek: "Semana Santa",
                 examWeek: "Semana de exámenes"
             },
-            notice: "A medida que se vayan anunciando los entregables y exámenes, el calendario se va a ir actualizando.",
+            notice: "a medida que se anuncien las fechas de exámenes y entregas, el calendario se irá actualizando.",
             periodFilter: "Cuatrimestre",
             firstPeriod: "1er cuatrimestre de 1er año",
             periodMessage: "Por ahora es la única opción"
-        }
+        },
+        comments: {
+            title: "Comentarios",
+            dateLocale: "es-AR"
+        },
+        motivations: [
+            "Recordá que la persistencia es la clave del éxito académico.",
+            "Recordá que cada materia superada es un paso más hacia tu meta.",
+            "Recordá que vas a estar protegiendo el futuro, un examen a la vez.",
+            "Recordá que tu esfuerzo de hoy es tu seguridad de mañana.",
+            "Recordá que la excelencia no es un acto, sino un hábito.",
+            "Recordá que tenés que mantener el foco, el objetivo está cada vez más cerca.",
+            "Recordá que el conocimiento es la mejor defensa.",
+            "Recordá que tenés que seguir adelante, tu progreso es imparable.",
+            "Recordá que la disciplina y la constancia son las bases de un gran profesional.",
+            "Recordá que no debés detenerte hasta sentirte orgulloso.",
+            "Recordá que la educación es el arma más poderosa para proteger la nación."
+        ]
     },
     en: {
         title: "Ciberportero",
@@ -345,11 +362,28 @@ export const translations = {
                 holyWeek: "Holy Week",
                 examWeek: "Exam week"
             },
-            notice: "As exams and deliverables are announced, the calendar will be updated accordingly.",
+            notice: "as exam dates and deliverables are announced, the calendar will be updated.",
             periodFilter: "Semester",
             firstPeriod: "1st semester of 1st year",
             periodMessage: "This is currently the only option"
-        }
+        },
+        comments: {
+            title: "Comments",
+            dateLocale: "en-US"
+        },
+        motivations: [
+            "Remember that persistence is the key to academic success.",
+            "Remember that each passed subject is one step closer to your goal.",
+            "Remember that you are protecting the future, one exam at a time.",
+            "Remember that your effort today is your security tomorrow.",
+            "Remember that excellence is not an act, but a habit.",
+            "Remember that you must stay focused, the goal is getting closer.",
+            "Remember that knowledge is the best defense.",
+            "Remember that you must keep going, your progress is unstoppable.",
+            "Remember that discipline and perseverance are the foundation of a great professional.",
+            "Remember that you should not stop until you're proud.",
+            "Remember that education is the most powerful weapon to protect the nation."
+        ]
     },
     pt: {
         title: "Ciberportero",
@@ -521,11 +555,28 @@ export const translations = {
                 holyWeek: "Semana Santa",
                 examWeek: "Semana de exames"
             },
-            notice: "O calendário será atualizado à medida que as entregas e exames forem anunciados.",
+            notice: "à medida que as datas de exames e entregas forem anunciadas, o calendário será atualizado.",
             periodFilter: "Semestre",
             firstPeriod: "1º semestre do 1º ano",
             periodMessage: "Por enquanto esta é a única opção"
-        }
+        },
+        comments: {
+            title: "Comentários",
+            dateLocale: "pt-BR"
+        },
+        motivations: [
+            "Lembre-se que a persistência é a chave do sucesso acadêmico.",
+            "Lembre-se que cada matéria superada é um passo a mais rumo à sua meta.",
+            "Lembre-se que você está protegendo o futuro, um exame de cada vez.",
+            "Lembre-se que seu esforço hoje é sua segurança amanhã.",
+            "Lembre-se que a excelência não é um ato, mas um hábito.",
+            "Lembre-se que você deve manter o foco, o objetivo está cada vez mais perto.",
+            "Lembre-se que o conhecimento é a melhor defesa.",
+            "Lembre-se que você deve seguir em frente, seu progresso é imparável.",
+            "Lembre-se que a disciplina e a constância são as bases de um grande profissional.",
+            "Lembre-se que você não deve parar até se sentir orgulhoso.",
+            "Lembre-se que a educação é a arma mais poderosa para proteger a nação."
+        ]
     }
 };
 

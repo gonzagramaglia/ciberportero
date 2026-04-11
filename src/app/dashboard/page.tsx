@@ -97,7 +97,26 @@ export default function DashboardPage() {
   }, []);
 
   if (status === "loading" || !isLoaded) {
-    return <div className="container" style={{ padding: '2rem', textAlign: 'center' }}>{dt.loading}</div>
+    return (
+      <div className="container" style={{ paddingTop: '12vh' }}>
+        <div style={{ marginBottom: '4rem' }}>
+          <div style={{ height: '3.5rem', width: '250px', background: '#f1f5f9', borderRadius: '12px', marginBottom: '1rem', animation: 'pulse 2.5s infinite' }} />
+          <div style={{ height: '1.2rem', width: '400px', background: '#f8fafc', borderRadius: '8px', animation: 'pulse 2.5s infinite' }} />
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '2rem' }}>
+          {[1, 2, 3].map((i) => (
+            <div key={i} style={{ height: '150px', background: 'white', borderRadius: '24px', border: '1px solid #f1f5f9', padding: '1.5rem', animation: 'pulse 2.5s infinite', animationDelay: `${i * 0.15}s` }}>
+              <div style={{ height: '1.2rem', width: '60%', background: '#f1f5f9', borderRadius: '4px', marginBottom: '1rem' }} />
+              <div style={{ height: '0.8rem', width: '100%', background: '#f8fafc', borderRadius: '4px', marginBottom: '0.5rem' }} />
+              <div style={{ height: '0.8rem', width: '80%', background: '#f8fafc', borderRadius: '4px' }} />
+            </div>
+          ))}
+        </div>
+        <style jsx>{`
+          @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .6; } }
+        `}</style>
+      </div>
+    );
   }
 
   const userName = session?.user?.name || dt.guestUser

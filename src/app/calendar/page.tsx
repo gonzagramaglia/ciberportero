@@ -3,12 +3,15 @@ import { db } from "@/lib/db";
 import { auth } from "@/auth";
 import { translations } from "@/lib/translations";
 
+import { cookies } from "next/headers";
+
 export const dynamic = 'force-dynamic';
 
 export default async function CalendarPage({ searchParams }: { searchParams: Promise<{ lang?: string }> }) {
   const session = await auth();
   const resolvedParams = await searchParams;
-  const lang = resolvedParams.lang || 'es';
+  const cookieStore = await cookies();
+  const lang = resolvedParams.lang || cookieStore.get('lang')?.value || 'es';
   
   // Fetch real events from database (admin events + user private events)
   const events = await db.calendarEvent.findMany({

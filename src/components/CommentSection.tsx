@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react"
 import { MessageSquare, Send, Trash2, User as UserIcon, Loader2, Calendar, CornerDownRight } from "lucide-react"
 import { addComment, getComments, deleteComment } from "@/lib/actions"
 import { SignInButton } from "@/components/AuthButtons"
+import { translations } from "@/lib/translations"
 
 interface Reply {
   id: string
@@ -115,7 +116,7 @@ function CommentCard({ comment, depth, lang, session, postSlug, onRefresh }: {
           </span>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#bbb' }}>
             <span style={{ fontSize: '0.7rem', fontWeight: '600', textTransform: 'capitalize' }}>
-              {new Date(comment.createdAt).toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' })}
+              {new Date(comment.createdAt).toLocaleDateString((translations[lang as keyof typeof translations] as any).comments.dateLocale, { weekday: 'long', day: 'numeric', month: 'long' })}
             </span>
           </div>
           {session?.user?.id === comment.userId && (
@@ -196,7 +197,7 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '2.5rem' }}>
         <MessageSquare size={28} style={{ strokeWidth: 2.5 }} />
         <h2 style={{ margin: 0, fontSize: '1.8rem', fontWeight: '900', letterSpacing: '-0.02em' }}>
-          Comentarios <span style={{ color: '#999', fontSize: '1.2rem', fontWeight: '500', marginLeft: '0.4rem' }}>({totalCount})</span>
+          {(translations[lang as keyof typeof translations] as any).comments.title} <span style={{ color: '#999', fontSize: '1.2rem', fontWeight: '500', marginLeft: '0.4rem' }}>({totalCount})</span>
         </h2>
       </div>
 

@@ -10,10 +10,12 @@ import { Github, Youtube, CheckCircle, BookOpen, Calendar, Info, Link as LinkIco
 import NotificationBanners from '../components/NotificationBanners';
 import { useSession } from 'next-auth/react';
 import { SignInButton, SignOutButton } from '../components/AuthButtons';
+import { useMotivation } from '../hooks/useMotivation';
 
 export default function Home() {
     const { lang } = useLanguage();
     const { data: session, status } = useSession();
+    const motivation = useMotivation(lang);
     const [posts, setPosts] = useState<Omit<PostData, 'content'>[]>([]);
     const [isLoadingPosts, setIsLoadingPosts] = useState(true);
     const [isGuest, setIsGuest] = useState(false);
@@ -66,10 +68,10 @@ export default function Home() {
     useEffect(() => {
         const enrollmentTarget = new Date('2026-04-01T23:59:59-03:00').getTime();
         const classesTarget = new Date('2026-04-08T09:00:00-03:00').getTime();
-        
+
         const updateCountdowns = () => {
             const now = new Date().getTime();
-            
+
             // Enrollment Countdown
             const eDistance = enrollmentTarget - now;
             if (eDistance < 0) {
@@ -100,7 +102,7 @@ export default function Home() {
                 setIsClassesFinished(false);
             }
         };
-        
+
         const timer = setInterval(updateCountdowns, 1000);
         updateCountdowns();
         return () => clearInterval(timer);
@@ -145,7 +147,7 @@ export default function Home() {
             </div>
 
             {/* Widget de Inicio de Clases (Derecha) */}
-            <div className={`sidebar-widget sidebar-widget-right`} style={{ 
+            <div className={`sidebar-widget sidebar-widget-right`} style={{
                 background: 'linear-gradient(135deg, #1a4a6e 0%, #103253 100%)',
                 boxShadow: '0 8px 24px rgba(16, 50, 83, 0.35)',
                 padding: '1.1rem'
@@ -214,10 +216,10 @@ export default function Home() {
             <header style={{ marginBottom: '3rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '1.2rem', marginBottom: '0.5rem' }}>
                     <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em' }}>{t.title}</h1>
-                    <div style={{ 
-                        marginTop: '0.6rem', 
-                        minHeight: '45px', 
-                        display: 'flex', 
+                    <div style={{
+                        marginTop: '0.6rem',
+                        minHeight: '45px',
+                        display: 'flex',
                         alignItems: 'center',
                         opacity: status === 'loading' ? 0 : 1,
                         transition: 'opacity 0.2s ease-in-out'
@@ -225,14 +227,25 @@ export default function Home() {
                         {status !== 'loading' && (session ? <SignOutButton /> : <SignInButton />)}
                     </div>
                 </div>
-                <p style={{ color: 'var(--muted)', fontSize: '1.1rem', marginTop: '0.2rem', fontWeight: '500' }}>{t.description}</p>
+                <p style={{ color: 'var(--muted)', fontSize: '1.1rem', marginTop: '0.2rem', fontWeight: '500' }}>
+                    {session ? (
+                        <>
+                            <span style={{ color: 'var(--accent)', fontWeight: '700' }}>{t.dashboard.welcome} {session.user.name?.split(' ')[0] || 'Estudiante'}!</span>{' '}
+                            <span style={{ opacity: 0.9, fontStyle: 'italic' }}>{motivation}</span>
+                            <br />
+                            {t.description}
+                        </>
+                    ) : (
+                        <span style={{ fontStyle: 'italic', opacity: 0.9 }}>{motivation || t.description}</span>
+                    )}
+                </p>
             </header>
 
             <main style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <div className="featured-grid">
-                    <Link 
-                        href="/links" 
-                        className="post-item featured roadmap-block links-card" 
+                    <Link
+                        href="/links"
+                        className="post-item featured roadmap-block links-card"
                         style={{ display: 'block', textDecoration: 'none', border: '1px solid var(--success)', background: 'rgba(16, 185, 129, 0.03)' }}
                     >
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -248,9 +261,9 @@ export default function Home() {
                         </div>
                     </Link>
 
-                    <Link 
-                        href="/plan" 
-                        className="post-item featured roadmap-block plan-card" 
+                    <Link
+                        href="/plan"
+                        className="post-item featured roadmap-block plan-card"
                         style={{ display: 'block', textDecoration: 'none', border: '1px solid var(--accent)', background: 'rgba(0,112,243,0.02)' }}
                     >
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -268,9 +281,9 @@ export default function Home() {
 
 
 
-                    <Link 
-                        href="/calendar" 
-                        className="post-item featured roadmap-block calendar-card" 
+                    <Link
+                        href="/calendar"
+                        className="post-item featured roadmap-block calendar-card"
                         style={{ display: 'block', textDecoration: 'none', border: '1px solid #eab308', background: 'rgba(234, 179, 8, 0.02)' }}
                     >
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -341,10 +354,10 @@ export default function Home() {
                             </h2>
                         </div>
 
-                        <a 
-                            href="https://undef.edu.ar/fadena/carreras-de-grado/licciberdefensa/" 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
+                        <a
+                            href="https://undef.edu.ar/fadena/carreras-de-grado/licciberdefensa/"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="intro-cover"
                         >
                             <img

@@ -340,9 +340,24 @@ export default function LinksPage() {
                             <ul className="post-list links-grid">
                                 {(userLinks.length > 0 ? adminLinks : linksToRender).map(renderLink)}
                                 {isLoading && (
-                                    <p style={{ textAlign: 'center', gridColumn: '1/-1', padding: '2rem', opacity: 0.5 }}>
-                                        {lang === 'es' ? 'Actualizando enlaces...' : lang === 'pt' ? 'Atualizando links...' : 'Updating links...'}
-                                    </p>
+                                    <>
+                                        {[1, 2, 3, 4].map((i) => (
+                                            <div key={i} style={{ 
+                                                height: '100px', background: 'white', borderRadius: '24px',
+                                                border: '1px solid #f1f5f9', padding: '1.5rem',
+                                                display: 'flex', alignItems: 'center', gap: '1.5rem',
+                                                animation: 'pulse 2.5s infinite',
+                                                animationDelay: `${i * 0.15}s`,
+                                                gridColumn: 'span 1'
+                                            }}>
+                                                <div style={{ width: '46px', height: '46px', borderRadius: '12px', background: '#f1f5f9', flexShrink: 0 }} />
+                                                <div style={{ flex: 1 }}>
+                                                    <div style={{ height: '1.2rem', width: '70%', background: '#f1f5f9', borderRadius: '4px', marginBottom: '0.5rem' }} />
+                                                    <div style={{ height: '0.8rem', width: '40%', background: '#f8fafc', borderRadius: '4px' }} />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </>
                                 )}
                             </ul>
                         </>
@@ -476,6 +491,10 @@ export default function LinksPage() {
                 :global(.post-item.is-personal:hover) {
                     border-color: #8b5cf6;
                     box-shadow: 0 8px 30px rgba(139, 92, 246, 0.1);
+                }
+                @keyframes pulse {
+                    0%, 100% { opacity: 1; }
+                    50% { opacity: .6; }
                 }
             `}</style>
         </div>

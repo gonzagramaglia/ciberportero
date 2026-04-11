@@ -330,7 +330,16 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
                   {status !== 'loading' && (session ? <SignOutButton /> : <SignInButton />)}
               </div>
             </h1>
-            <p style={{ color: 'var(--muted)', fontSize: '1.2rem', marginTop: '0.5rem', fontWeight: '500' }} dangerouslySetInnerHTML={{ __html: ct.description }} />
+            <p style={{ color: 'var(--muted)', fontSize: '1.2rem', marginTop: '0.5rem', fontWeight: '500' }}>
+              {session?.user ? (
+                <>
+                  <span style={{ color: 'var(--accent)', fontWeight: '700' }}>{t.dashboard.welcome}, {session.user.name?.split(' ')[0] || 'Estudiante'}!</span>{' '}
+                  <span dangerouslySetInnerHTML={{ __html: ct.description }} />
+                </>
+              ) : (
+                <span dangerouslySetInnerHTML={{ __html: ct.description }} />
+              )}
+            </p>
           </div>
           {status === 'authenticated' && (
             <button 
@@ -360,7 +369,13 @@ export default function CalendarClient({ initialEvents, lang }: CalendarClientPr
 
       <div className="calendar-notice">
           <Info size={18} color="#eab308" />
-          <p>{ct.notice}</p>
+          <p>
+            {session?.user ? (
+              <>
+                <span style={{ fontWeight: 700 }}>{session.user.name?.split(' ')[0] || 'Estudiante'},</span> {ct.notice}
+              </>
+            ) : ct.notice.charAt(0).toUpperCase() + ct.notice.slice(1)}
+          </p>
       </div>
 
       <div className="calendar-controls">
