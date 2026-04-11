@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useMemo } from "react"
 import Link from "next/link"
-import { translations } from "@/lib/translations"
+import { translations, Locale } from "@/lib/translations"
 import LanguageSwitcher from "@/components/LanguageSwitcher"
+import { useLanguage } from "@/context/LanguageContext"
 import { useSession } from "next-auth/react"
 import { createPersonalEvent, deleteCalendarEvent } from "@/lib/actions"
 import { ArrowLeft, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, Bell, Github, Youtube, Search, Filter, Copy, Check, Info, Lock, Plus, Trash2, X as CloseIcon, GraduationCap, Zap } from "lucide-react"
@@ -27,9 +28,11 @@ interface CalendarClientProps {
   lang: string;
 }
 
-export default function CalendarClient({ initialEvents, lang }: CalendarClientProps) {
+export default function CalendarClient({ initialEvents, lang: langProp }: CalendarClientProps) {
   const { data: session, status } = useSession()
-  const t = translations[lang as keyof typeof translations]
+  const { lang: contextLang } = useLanguage()
+  const lang = (contextLang || langProp || 'es') as Locale;
+  const t = translations[lang]
   const ct = t.calendar
   const st = t.plan.subjectNames
   
