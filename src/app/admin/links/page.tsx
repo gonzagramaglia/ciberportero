@@ -25,7 +25,7 @@ export default async function AdminLinksPage() {
         </Link>
       </div>
 
-      <div className="admin-card">
+      <div className="admin-card table-container">
         <table className="admin-table">
           <thead>
             <tr>
@@ -47,15 +47,15 @@ export default async function AdminLinksPage() {
 
               return (
                 <tr key={link.id}>
-                  <td style={{ fontWeight: 600 }}>{name}</td>
+                  <td style={{ fontWeight: 600, whiteSpace: 'nowrap' }}>{name}</td>
                   <td>
-                    <a href={url} target="_blank" rel="noreferrer" style={{ color: '#2563eb', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <a href={url} target="_blank" rel="noreferrer" style={{ color: '#2563eb', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.4rem', whiteSpace: 'nowrap' }}>
                       {displayUrl} <ExternalLink size={12} />
                     </a>
                   </td>
-                  <td style={{ textTransform: 'capitalize' }}>{link.iconType || '-'}</td>
+                  <td style={{ textTransform: 'capitalize', whiteSpace: 'nowrap' }}>{link.iconType || '-'}</td>
                   <td style={{ textAlign: 'center' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.8rem' }}>
+                    <div className="admin-flex-center" style={{ justifyContent: 'center', gap: '0.8rem' }}>
                       <span style={{ fontWeight: 800, color: '#64748b', fontSize: '1.2rem', minWidth: '1.5rem' }}>{link.order}</span>
                       <ReorderButtons id={link.id} />
                     </div>

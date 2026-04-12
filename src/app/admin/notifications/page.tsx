@@ -24,25 +24,23 @@ export default async function AdminNotificationsPage() {
           </Link>
         </div>
 
-        <div style={{ display: 'grid', gap: '1rem' }}>
+        <div className="space-y-8">
           {notifications.map(n => (
-            <div key={n.id} style={{ 
+            <div key={n.id} className="admin-flex-between admin-responsive-stack" style={{ 
               padding: '1.25rem 1.75rem', 
               borderRadius: '24px', 
               border: '1px solid',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
               background: n.type === 'danger' ? '#fff1f2' : n.type === 'warning' ? '#fffbeb' : '#eff6ff',
               borderColor: n.type === 'danger' ? '#fecdd3' : n.type === 'warning' ? '#fde68a' : '#bfdbfe',
               color: n.type === 'danger' ? '#9f1239' : n.type === 'warning' ? '#92400e' : '#1e40af'
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-                <Bell size={22} style={{ color: n.type === 'danger' ? '#9f1239' : 'inherit' }} />
+              <div className="admin-flex-center">
+                <Bell size={22} style={{ color: n.type === 'danger' ? '#9f1239' : 'inherit', flexShrink: 0 }} />
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem' }}>
                   <span style={{ 
                     fontWeight: 900, 
                     fontSize: '1rem', 
+                    lineHeight: '1.2',
                     letterSpacing: '-0.01em',
                     color: n.type === 'danger' ? '#9f1239' : 'inherit' 
                   }}>
@@ -51,7 +49,7 @@ export default async function AdminNotificationsPage() {
                   <span style={{ fontSize: '11px', opacity: 0.7, fontWeight: 700, textTransform: 'uppercase' }}>Tipo: {n.type}</span>
                 </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <div className="admin-flex-center" style={{ width: '100%', justifyContent: 'flex-end' }}>
                 <div style={{ background: 'white', padding: '0.4rem 0.6rem', borderRadius: '12px', display: 'flex', alignItems: 'center', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
                   <NotificationToggle id={n.id} initialActive={n.active} />
                 </div>
@@ -75,8 +73,6 @@ export default async function AdminNotificationsPage() {
         </div>
       </section>
 
-      <div style={{ height: '2rem' }} /> {/* Espaciador extra solicitado */}
-
       <div style={{ height: '3rem' }} />
 
       <section className="space-y-8">
@@ -93,7 +89,7 @@ export default async function AdminNotificationsPage() {
           )}
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
           {[0, 1].map((index) => {
             const c = countdowns[index];
             const slotName = index === 0 ? "Slot Izquierdo" : "Slot Derecho";
@@ -107,8 +103,8 @@ export default async function AdminNotificationsPage() {
                 border: c ? '1px solid #e2e8f0' : '2px dashed #e2e8f0',
                 background: c ? 'white' : 'rgba(248, 250, 252, 0.5)'
               }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <div className="admin-flex-between">
+                  <div className="admin-flex-center">
                     <div style={{ 
                       width: '40px', height: '40px', borderRadius: '12px', 
                       background: c?.isActive ? '#eff6ff' : '#f1f5f9', 
@@ -134,15 +130,17 @@ export default async function AdminNotificationsPage() {
                     <div style={{ fontSize: '0.85rem', color: '#475569', minHeight: '1.2em', marginBottom: '0.75rem' }}>
                       {(c.description as any)?.es || 'Sin descripción'}
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <div className="admin-flex-between">
                       <div style={{ 
                         flex: 1,
                         fontSize: '0.8rem', fontWeight: 700, padding: '0.75rem 1rem', 
                         background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0',
-                        display: 'flex', justifyContent: 'space-between'
+                        display: 'flex', justifyContent: 'space-between', minWidth: 0
                       }}>
                         <span style={{ color: '#64748b' }}>Meta:</span>
-                        <span>{new Date(c.targetDate).toLocaleString('es-AR', { dateStyle: 'medium', timeStyle: 'short' })}</span>
+                        <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginLeft: '0.5rem' }}>
+                          {new Date(c.targetDate).toLocaleString('es-AR', { dateStyle: 'medium', timeStyle: 'short' })}
+                        </span>
                       </div>
                       <Link 
                         href={`/admin/countdowns/${c.id}`} 

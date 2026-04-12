@@ -25,7 +25,7 @@ export default async function AdminPostsPage() {
         </Link>
       </div>
 
-      <div className="admin-card">
+      <div className="admin-card table-container">
         <table className="admin-table">
           <thead>
             <tr>
@@ -40,12 +40,12 @@ export default async function AdminPostsPage() {
             {posts.map((post) => (
               <tr key={post.id}>
                 <td>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <FileText size={18} style={{ color: '#94a3b8' }} />
+                  <div className="admin-flex-center">
+                    <FileText size={18} style={{ color: '#94a3b8', flexShrink: 0 }} />
                     <Link 
                       href={`/${post.slug}`} 
                       target="_blank" 
-                      style={{ fontWeight: 600, color: 'inherit', textDecoration: 'none' }}
+                      style={{ fontWeight: 600, color: 'inherit', textDecoration: 'none', whiteSpace: 'nowrap' }}
                       className="post-title-link"
                     >
                       {post.title}
@@ -53,22 +53,22 @@ export default async function AdminPostsPage() {
                   </div>
                 </td>
                 <td>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: '#64748b' }}>
+                  <div className="admin-flex-center" style={{ gap: '0.4rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: '#64748b' }}>
                     <Globe size={14} />
                     {post.lang}
                   </div>
                 </td>
                 <td>
                   {post.published ? (
-                    <span style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', padding: '0.2rem 0.5rem', background: '#dcfce7', color: '#166534', borderRadius: '6px' }}>Publicado</span>
+                    <span style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', padding: '0.2rem 0.5rem', background: '#dcfce7', color: '#166534', borderRadius: '6px', whiteSpace: 'nowrap' }}>Publicado</span>
                   ) : (
-                    <span style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', padding: '0.2rem 0.5rem', background: '#fef3c7', color: '#92400e', borderRadius: '6px' }}>Borrador</span>
+                    <span style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', padding: '0.2rem 0.5rem', background: '#fef3c7', color: '#92400e', borderRadius: '6px', whiteSpace: 'nowrap' }}>Borrador</span>
                   )}
                 </td>
-                <td style={{ color: '#64748b' }}>{new Date(post.date || post.createdAt).toLocaleDateString()}</td>
+                <td style={{ color: '#64748b', whiteSpace: 'nowrap' }}>{new Date(post.date || post.createdAt).toLocaleDateString()}</td>
                 <td style={{ textAlign: 'right' }}>
                   <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
-                    <Link href={`/admin/posts/${post.id}`} style={{ color: '#94a3b8' }}><Edit size={18} /></Link>
+                    <Link href={`/admin/posts/${post.id}`} style={{ color: '#64748b' }}><Edit size={18} /></Link>
                     <DeleteButton id={post.id} type="post" />
                   </div>
                 </td>

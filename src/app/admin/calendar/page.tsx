@@ -4,7 +4,7 @@ import Link from "next/link";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 
 export default async function AdminCalendarPage() {
-  const events = await db.calendarEvent.findMany({ orderBy: { startDate: 'asc' } });
+  const events = (await db.calendarEvent.findMany({ orderBy: { startDate: 'asc' } as any })) as any[];
 
   return (
     <div className="space-y-6">
@@ -24,7 +24,7 @@ export default async function AdminCalendarPage() {
         </Link>
       </div>
 
-      <div className="admin-card">
+      <div className="admin-card table-container">
         <table className="admin-table">
           <thead>
             <tr>
@@ -40,15 +40,15 @@ export default async function AdminCalendarPage() {
             {events.map((event) => (
               <tr key={event.id}>
                 <td>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <div className="admin-flex-center">
                     <div style={{ 
                       width: '32px', height: '32px', borderRadius: '8px', 
                       background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      color: '#64748b'
+                      color: '#64748b', flexShrink: 0
                     }}>
                       <CalendarIcon size={16} />
                     </div>
-                    <span style={{ fontWeight: 700 }}>{(event.title as any)?.es || 'Sin título'}</span>
+                    <span style={{ fontWeight: 700, whiteSpace: 'nowrap' }}>{(event.title as any)?.es || 'Sin título'}</span>
                   </div>
                 </td>
                 <td>
@@ -60,7 +60,7 @@ export default async function AdminCalendarPage() {
                   </p>
                 </td>
                 <td>
-                  <span style={{ fontWeight: 600, color: '#1e293b' }}>
+                  <span style={{ fontWeight: 600, color: '#1e293b', whiteSpace: 'nowrap' }}>
                     {new Date(event.startDate).toLocaleDateString('es-AR', { day: '2-digit', month: 'short' })}
                     {event.endDate && ` - ${new Date(event.endDate).toLocaleDateString('es-AR', { day: '2-digit', month: 'short' })}`}
                   </span>
@@ -72,6 +72,7 @@ export default async function AdminCalendarPage() {
                     fontSize: '10px', 
                     fontWeight: 900, 
                     textTransform: 'uppercase',
+                    whiteSpace: 'nowrap',
                     background: event.type === 'exam' ? '#fff1f2' : event.type === 'class' ? '#eff6ff' : event.type === 'admin' ? '#fffbeb' : '#f1f5f9',
                     color: event.type === 'exam' ? '#be123c' : event.type === 'class' ? '#1d4ed8' : event.type === 'admin' ? '#b45309' : '#475569',
                     border: `1px solid ${event.type === 'exam' ? '#fecdd3' : event.type === 'class' ? '#bfdbfe' : event.type === 'admin' ? '#fde68a' : '#e2e8f0'}`
@@ -79,7 +80,7 @@ export default async function AdminCalendarPage() {
                     {event.type}
                   </span>
                 </td>
-                <td style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: 600 }}>{event.period || '-'}</td>
+                <td style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: 600, whiteSpace: 'nowrap' }}>{event.period || '-'}</td>
                 <td style={{ textAlign: 'right' }}>
                   <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '0.75rem', paddingRight: '0.5rem' }}>
                     <Link 

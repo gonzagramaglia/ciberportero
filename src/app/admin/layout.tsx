@@ -46,7 +46,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <NavLink href="/admin/comments" icon={<MessageSquare size={20} />} label="Comentarios" />
         </nav>
 
-        <div style={{ marginTop: 'auto', borderTop: '1px solid #f1f5f9', paddingTop: '1rem' }}>
+        <div className="sidebar-footer" style={{ marginTop: 'auto', borderTop: '1px solid #f1f5f9', paddingTop: '1rem' }}>
           <Link href="/api/auth/signout" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem', textDecoration: 'none', color: '#ef4444', fontSize: '0.9rem', fontWeight: 700 }}>
             <LogOut size={20} /> Cerrar Sesión
           </Link>

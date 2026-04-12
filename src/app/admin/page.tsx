@@ -37,7 +37,7 @@ export default async function AdminPage() {
 
       <section>
         <h3 style={{ fontSize: '1.5rem', fontWeight: 900, marginBottom: '2rem', letterSpacing: '-0.02em' }}>Actividad Reciente</h3>
-        <div className="admin-card">
+        <div className="admin-card table-container">
           <table className="admin-table">
             <thead>
               <tr>
@@ -51,11 +51,11 @@ export default async function AdminPage() {
               {logs.map(log => (
                 <tr key={log.id}>
                   <td>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <div style={{ width: 24, height: 24, borderRadius: '50%', background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div className="admin-flex-center">
+                      <div style={{ width: 24, height: 24, borderRadius: '50%', background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                         <UserIcon size={12} />
                       </div>
-                      <span style={{ fontSize: '0.85rem' }}>{log.user?.name || log.user?.email || 'Sistema'}</span>
+                      <span style={{ fontSize: '0.85rem', whiteSpace: 'nowrap' }}>{log.user?.name || log.user?.email || 'Sistema'}</span>
                     </div>
                   </td>
                   <td>
@@ -71,7 +71,7 @@ export default async function AdminPage() {
                     </span>
                   </td>
                   <td style={{ fontSize: '0.85rem' }}>{log.details}</td>
-                  <td style={{ textAlign: 'right', fontSize: '0.8rem', color: '#94a3b8' }}>
+                  <td style={{ textAlign: 'right', fontSize: '0.8rem', color: '#94a3b8', whiteSpace: 'nowrap' }}>
                     {log.createdAt.toLocaleString()}
                   </td>
                 </tr>
