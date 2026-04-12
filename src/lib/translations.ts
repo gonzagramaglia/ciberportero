@@ -7,7 +7,8 @@ export const translations = {
         auth: {
             signIn: "Iniciar sesión",
             signInConcise: "Iniciar",
-            signOut: "Cerrar sesión"
+            signOut: "Cerrar sesión",
+            signOutConcise: "Cerrar"
         },
         credits: "Inspirado en el trabajo de zzzNata",
         langName: "Español",
@@ -36,6 +37,7 @@ export const translations = {
             { name: 'Ciberdefensa FADENA (Discord)', url: 'https://discord.gg/AxqkVzYPeN', desc: 'Server oficial de la comunidad de estudiantes de FADENA' },
             { name: 'Comunidad Ciberdefensa Argentina (Discord)', url: 'https://discord.gg/zPWRAfUR82', desc: 'Espacio de estudio y networking de la comunidad nacional' },
         ],
+        addPersonalized: "Agregar link personalizado",
         feedback: "¿Por qué elegimos Ciberdefensa?",
         countdown: {
             ivuTitle: "Inscripción a Materias",
@@ -178,7 +180,8 @@ export const translations = {
             notice: "a medida que se anuncien las fechas de exámenes y entregas, el calendario se irá actualizando.",
             periodFilter: "Cuatrimestre",
             firstPeriod: "1er cuatrimestre de 1er año",
-            periodMessage: "Por ahora es la única opción"
+            periodMessage: "Por ahora es la única opción",
+            addPersonalized: "Agregar evento personalizado"
         },
         comments: {
             title: "Comentarios",
@@ -206,7 +209,8 @@ export const translations = {
         auth: {
             signIn: "Sign in",
             signInConcise: "Sign In",
-            signOut: "Sign Out"
+            signOut: "Sign Out",
+            signOutConcise: "Sign Out"
         },
         credits: "Inspired by zzzNata's project",
         langName: "English",
@@ -235,6 +239,7 @@ export const translations = {
             { name: 'Cyberdefense FADENA (Discord)', url: 'https://discord.gg/AxqkVzYPeN', desc: 'Official server for the FADENA student community' },
             { name: 'Argentina Cyberdefense Community (Discord)', url: 'https://discord.gg/zPWRAfUR82', desc: 'Study and networking space for the national community' },
         ],
+        addPersonalized: "Add personalized link",
         feedback: "Why did we choose Cyberdefense?",
         countdown: {
             ivuTitle: "Subject Enrollment",
@@ -377,7 +382,8 @@ export const translations = {
             notice: "as exam dates and deliverables are announced, the calendar will be updated.",
             periodFilter: "Semester",
             firstPeriod: "1st semester of 1st year",
-            periodMessage: "This is currently the only option"
+            periodMessage: "This is currently the only option",
+            addPersonalized: "Add personalized event"
         },
         comments: {
             title: "Comments",
@@ -405,7 +411,8 @@ export const translations = {
         auth: {
             signIn: "Fazer login",
             signInConcise: "Entrar",
-            signOut: "Sair"
+            signOut: "Sair",
+            signOutConcise: "Sair"
         },
         credits: "Inspirado no trabalho de zzzNata",
         langName: "Português",
@@ -434,6 +441,7 @@ export const translations = {
             { name: 'Ciberdefesa FADENA (Discord)', url: 'https://discord.gg/AxqkVzYPeN', desc: 'Servidor oficial da comunidade de estudantes da FADENA' },
             { name: 'Comunidade Ciberdefesa Argentina (Discord)', url: 'https://discord.gg/zPWRAfUR82', desc: 'Espaço de estudio e networking da comunidade nacional' },
         ],
+        addPersonalized: "Adicionar link personalizado",
         feedback: "Por que escolhemos a Ciberdefesa?",
         countdown: {
             ivuTitle: "Inscrição em Matérias",
@@ -576,7 +584,8 @@ export const translations = {
             notice: "à medida que as datas de exames e entregas forem anunciadas, o calendário será atualizado.",
             periodFilter: "Semestre",
             firstPeriod: "1º semestre do 1º ano",
-            periodMessage: "Por enquanto esta é a única opção"
+            periodMessage: "Por enquanto esta é a única opção",
+            addPersonalized: "Adicionar evento personalizado"
         },
         comments: {
             title: "Comentários",

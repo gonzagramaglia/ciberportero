@@ -83,8 +83,13 @@ export function SignOutButton() {
         boxShadow: '0 1px 2px rgba(60,64,67,0.1)'
       }}
     >
-      <LogIn size={18} strokeWidth={2.5} style={{ transform: 'rotate(180deg)' }} />
-      <span>{(translations[lang] as any).auth.signOut}</span>
+      <LogIn size={18} strokeWidth={2.5} style={{ transform: 'rotate(180deg)', flexShrink: 0 }} />
+      <span className="mobile-hide">
+        {(translations[lang] as any).auth.signOut}
+      </span>
+      <span className="mobile-only">
+        {(translations[lang] as any).auth.signOutConcise}
+      </span>
       
       <style jsx>{`
         .sign-out-btn:hover {

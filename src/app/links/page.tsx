@@ -266,7 +266,7 @@ export default function LinksPage() {
                             }}
                         >
                             <Plus size={20} />
-                            {lang === 'es' ? 'Agregar link personal' : lang === 'pt' ? 'Adicionar link pessoal' : 'Add personal link'}
+                            {(translations[lang] as any).addPersonalized}
                         </button>
                     )}
                 </div>

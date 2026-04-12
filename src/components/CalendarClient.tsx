@@ -379,7 +379,7 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
               }}
             >
               <Plus size={20} />
-              {lang === 'es' ? 'Agregar evento personal' : lang === 'pt' ? 'Adicionar evento pessoal' : 'Add personal event'}
+              {(translations[lang] as any).calendar.addPersonalized}
             </button>
           )}
         </div>
