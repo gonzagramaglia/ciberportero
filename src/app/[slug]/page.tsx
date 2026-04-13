@@ -179,7 +179,11 @@ export default function Post() {
                             del: ({ node, ...props }) => <span style={{ color: '#ca8a04', fontWeight: '800' }} {...props} />
                         }}
                     >
-                        {post.content}
+                        {(() => {
+                            const trimmed = post.content.trim();
+                            if (trimmed.startsWith('# ')) return post.content;
+                            return `# ${post.title}\n\n${post.content}`;
+                        })()}
                     </ReactMarkdown>
                 </article>
 

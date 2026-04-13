@@ -288,7 +288,11 @@ export default function PostEditor({ post }: PostEditorProps) {
                   <div className="markdown-preview" style={{ lineHeight: '1.8', color: '#334155' }}>
                     {contents[activeLang] ? (
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                        {contents[activeLang]}
+                        {(() => {
+                          const content = contents[activeLang].trim();
+                          if (content.startsWith('# ')) return contents[activeLang];
+                          return `# ${titles[activeLang]}\n\n${contents[activeLang]}`;
+                        })()}
                       </ReactMarkdown>
                     ) : (
                       <span style={{ color: '#94a3b8', fontStyle: 'italic' }}>Nada para previsualizar en este idioma...</span>
