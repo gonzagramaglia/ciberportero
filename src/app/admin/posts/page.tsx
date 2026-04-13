@@ -98,9 +98,18 @@ export default async function AdminPostsPage() {
                   </td>
                   <td style={{ color: '#64748b', whiteSpace: 'nowrap', fontSize: '0.85rem' }}>{new Date(post.date || post.createdAt).toLocaleDateString()}</td>
                   <td style={{ textAlign: 'right' }}>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
-                      <Link href={`/admin/posts/${post.id}`} style={{ color: '#64748b', transition: 'color 0.2s' }} className="hover-text-accent">
-                        <Edit size={20} />
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
+                      <Link 
+                        href={`/admin/posts/${post.id}`} 
+                        className="admin-edit-btn"
+                        style={{ 
+                          width: '36px', height: '36px', borderRadius: '50%', background: 'white', 
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          color: '#94a3b8', border: '1px solid #e2e8f0', transition: 'all 0.2s'
+                        }}
+                        title="Editar"
+                      >
+                        <Edit size={16} />
                       </Link>
                       <DeleteButton id={post.id} type="post" />
                     </div>

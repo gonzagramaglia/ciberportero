@@ -59,7 +59,7 @@ export default async function AdminCommentsPage() {
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#666' }}>
                     <FileText size={14} />
-                    <span style={{ fontSize: '0.85rem', fontWeight: '600' }}>Post: {comment.post.title || comment.post.slug}</span>
+                    <span style={{ fontSize: '0.85rem', fontWeight: '600' }}>Post: {(comment.post.title as any)?.es || comment.post.slug}</span>
                   </div>
                 </div>
                 

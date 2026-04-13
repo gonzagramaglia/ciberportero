@@ -56,12 +56,13 @@ export default async function AdminNotificationsPage() {
                 <Link 
                   href={`/admin/notifications/${n.id}`} 
                   style={{ 
-                    width: '38px', height: '38px', borderRadius: '50%', background: 'white', 
+                    width: '36px', height: '36px', borderRadius: '50%', background: 'white', 
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color: '#64748b', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', transition: 'all 0.2s'
+                    color: '#94a3b8', border: '1px solid #e2e8f0', transition: 'all 0.2s'
                   }}
+                  title="Editar"
                 >
-                  <Edit size={18} />
+                  <Edit size={16} />
                 </Link>
                 <div style={{ boxShadow: '0 2px 4px rgba(0,0,0,0.05)', borderRadius: '50%', background: 'white' }}>
                   <DeleteButton id={n.id} type="notification" />
@@ -144,11 +145,15 @@ export default async function AdminNotificationsPage() {
                       </div>
                       <Link 
                         href={`/admin/countdowns/${c.id}`} 
-                        className="btn-secondary"
-                        style={{ padding: '0.75rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', height: 'fit-content' }}
+                        className="admin-edit-btn"
+                        style={{ 
+                          width: '36px', height: '36px', borderRadius: '50%', background: 'white', 
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          color: '#94a3b8', border: '1px solid #e2e8f0', transition: 'all 0.2s'
+                        }}
+                        title="Editar"
                       >
                         <Edit size={16} />
-                        <span>Editar</span>
                       </Link>
                     </div>
                   </>

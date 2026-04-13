@@ -27,12 +27,12 @@ export default function DeleteCommentButton({ commentId }: { commentId: string }
       onClick={handleDelete}
       disabled={isDeleting}
       style={{
-        background: '#fff5f5',
-        color: '#ff4d4d',
-        width: '40px',
-        height: '40px',
-        borderRadius: '12px',
-        border: '1px solid #ffebeb',
+        background: 'white',
+        color: '#94a3b8',
+        width: '36px',
+        height: '36px',
+        borderRadius: '50%',
+        border: '1px solid #e2e8f0',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -40,9 +40,10 @@ export default function DeleteCommentButton({ commentId }: { commentId: string }
         transition: 'all 0.2s',
         flexShrink: 0
       }}
+      className="delete-btn-hover"
       title="Eliminar comentario"
     >
-      {isDeleting ? <Loader2 size={18} className="animate-spin" /> : <Trash2 size={18} />}
+      {isDeleting ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
     </button>
   )
 }

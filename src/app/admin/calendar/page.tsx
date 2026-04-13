@@ -88,7 +88,7 @@ export default async function AdminCalendarPage() {
                       style={{ 
                         width: '36px', height: '36px', borderRadius: '50%', background: 'white', 
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        color: '#64748b', border: '1px solid #e2e8f0', transition: 'all 0.2s'
+                        color: '#94a3b8', border: '1px solid #e2e8f0', transition: 'all 0.2s'
                       }}
                       className="edit-btn-hover"
                     >

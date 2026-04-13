@@ -65,17 +65,18 @@ export default async function AdminLinksPage() {
                       <Link 
                         href={`/admin/links/${link.id}`} 
                         style={{ 
-                          color: '#64748b', 
-                          padding: '0.6rem',
-                          borderRadius: '10px',
-                          background: '#f8fafc',
-                          display: 'flex',
+                          color: '#94a3b8', 
+                          width: '36px', height: '36px',
+                          borderRadius: '50%',
+                          background: 'white',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
                           transition: 'all 0.2s',
                           border: '1px solid #e2e8f0'
                         }}
-                        className="edit-btn-hover"
+                        className="admin-edit-btn"
+                        title="Editar"
                       >
-                        <Edit size={18} />
+                        <Edit size={16} />
                       </Link>
                       <DeleteButton id={link.id} type="link" />
                     </div>
