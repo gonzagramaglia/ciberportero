@@ -38,37 +38,39 @@ export default async function AdminCommentsPage() {
           </div>
         ) : (
           comments.map((comment) => (
-            <div key={comment.id} style={{ 
+            <div key={comment.id} className="admin-card-row" style={{ 
               background: '#fff', 
               padding: '1.5rem', 
-              borderRadius: '20px', 
-              border: '1px solid #eee',
-              display: 'flex',
-              gap: '1.5rem',
+              borderRadius: '24px', 
+              border: '1px solid #e2e8f0',
               alignItems: 'flex-start'
             }}>
-              <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: '#f0f0f0', padding: '0.4rem 0.8rem', borderRadius: '10px' }}>
-                    <UserIcon size={14} />
-                    <span style={{ fontSize: '0.85rem', fontWeight: '700' }}>{comment.user.name?.split(' ')[0] || 'Usuario'}</span>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: '#f8fafc', padding: '0.3rem 0.6rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                    <UserIcon size={12} className="text-accent" />
+                    <span style={{ fontSize: '0.75rem', fontWeight: '800' }}>{comment.user.name?.split(' ')[0] || 'Usuario'}</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#666' }}>
-                    <CalendarIcon size={14} />
-                    <span style={{ fontSize: '0.85rem' }}>{new Date(comment.createdAt).toLocaleString('es-AR')}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#94a3b8' }}>
+                    <CalendarIcon size={12} />
+                    <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>{new Date(comment.createdAt).toLocaleDateString()}</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#666' }}>
-                    <FileText size={14} />
-                    <span style={{ fontSize: '0.85rem', fontWeight: '600' }}>Post: {(comment.post.title as any)?.es || comment.post.slug}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#64748b' }}>
+                    <FileText size={12} />
+                    <span style={{ fontSize: '0.75rem', fontWeight: '700', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px' }}>
+                      {(comment.post.title as any)?.es || comment.post.slug}
+                    </span>
                   </div>
                 </div>
                 
-                <p style={{ margin: 0, fontSize: '1rem', lineHeight: '1.6', color: '#333' }}>
+                <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: '1.5', color: '#334155', fontWeight: 500 }}>
                   {comment.content}
                 </p>
               </div>
 
-              <DeleteCommentButton commentId={comment.id} />
+              <div className="admin-card-actions">
+                <DeleteCommentButton commentId={comment.id} />
+              </div>
             </div>
           ))
         )}

@@ -262,10 +262,24 @@
   gap: 0.75rem;
 }
 
-.admin-card-header {
+/* Row-based Layouts for Cards (avoid vertical stack on mobile) */
+.admin-card-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
+}
+
+.admin-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   margin-bottom: 2rem;
 }
 
@@ -333,8 +347,27 @@
   }
 
   .stats-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .stat-card {
+    padding: 1rem;
+    border-radius: 16px;
+    gap: 0.75rem;
+  }
+
+  .stat-icon {
+    padding: 0.5rem;
+  }
+
+  .stat-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .stat-info p:last-child {
+    font-size: 1.25rem;
   }
 
   .admin-card {

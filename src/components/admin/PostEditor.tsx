@@ -182,11 +182,11 @@ export default function PostEditor({ post }: PostEditorProps) {
             </div>
           </div>
 
-          <div className="space-y-10">
+          <div className="space-y-12">
             {/* 1. Configuración Global (Slug y Estado) */}
-            <div style={{ padding: '1.5rem', background: '#f8fafc', borderRadius: '16px', border: '1px solid #e2e8f0', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', alignItems: 'flex-end' }}>
+            <div style={{ padding: '2rem', background: '#f8fafc', borderRadius: '16px', border: '1px solid #e2e8f0', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem', alignItems: 'flex-end', marginBottom: '1rem' }}>
               <div>
-                <label className="admin-label" style={{ fontSize: '0.75rem', marginBottom: '0.5rem' }}>Slug (URL Compartida)</label>
+                <label className="admin-label" style={{ fontSize: '0.75rem', marginBottom: '0.75rem', display: 'block' }}>Slug (URL Compartida)</label>
                 <input 
                   required
                   className="admin-input"
@@ -195,22 +195,22 @@ export default function PostEditor({ post }: PostEditorProps) {
                   onChange={e => setSlug(e.target.value)}
                   placeholder="ej-mi-post-unico"
                 />
-                <p style={{ fontSize: '0.65rem', color: '#94a3b8', marginTop: '0.5rem' }}>Único para todos los idiomas.</p>
               </div>
               <div>
-                <label className="admin-label" style={{ fontSize: '0.75rem', marginBottom: '0.5rem' }}>Estado de Publicación</label>
+                <label className="admin-label" style={{ fontSize: '0.75rem', marginBottom: '0.75rem', display: 'block' }}>Estado de Publicación</label>
                 <div 
                   onClick={() => setPublished(!published)}
                   style={{ 
                     cursor: 'pointer',
-                    padding: '0.75rem 1rem',
+                    padding: '0.75rem 1.25rem',
                     borderRadius: '12px',
                     background: published ? '#f0fdf4' : '#fff1f2',
                     border: `2px solid ${published ? '#22c55e' : '#fecdd3'}`,
                     display: 'flex',
                     alignItems: 'center',
                     gap: '0.75rem',
-                    transition: 'all 0.2s'
+                    transition: 'all 0.2s',
+                    height: '46px'
                   }}
                 >
                   {published ? <CheckCircle size={16} color="#22c55e" /> : <AlertCircle size={16} color="#e11d48" />}
@@ -223,11 +223,11 @@ export default function PostEditor({ post }: PostEditorProps) {
 
             {/* 2. Título */}
             <div>
-              <label className="admin-label" style={{ color: '#475569', fontSize: '0.75rem' }}>Título del Post ({activeLang})</label>
+              <label className="admin-label" style={{ color: '#475569', fontSize: '0.75rem', marginBottom: '1rem', display: 'block' }}>Título del Post ({activeLang})</label>
               <input 
                 required={activeLang === 'es'}
                 className="admin-input"
-                style={{ fontSize: '1.5rem', fontWeight: 800, padding: '1.25rem', borderRadius: '14px', border: '2px solid #e2e8f0' }}
+                style={{ fontSize: '1.5rem', fontWeight: 800, padding: '1.5rem', borderRadius: '16px', border: '2px solid #e2e8f0' }}
                 value={titles[activeLang]}
                 onChange={e => handleTitleChange(e.target.value)}
                 placeholder={`Ej: Cómo aprobar ${activeLang === 'es' ? 'Álgebra I' : 'Algebra I'}`}
@@ -236,19 +236,19 @@ export default function PostEditor({ post }: PostEditorProps) {
 
             {/* 3. Contenido Principal */}
             <div>
-              <label className="admin-label" style={{ color: '#475569', fontSize: '0.75rem' }}>Cuerpo del Post ({activeLang})</label>
+              <label className="admin-label" style={{ color: '#475569', fontSize: '0.75rem', marginBottom: '1rem', display: 'block' }}>Cuerpo del Post ({activeLang})</label>
               {!previewMode ? (
                 <textarea 
                   required={activeLang === 'es'}
                   className="admin-input"
                   style={{ 
-                    minHeight: '500px', 
+                    minHeight: '600px', 
                     fontFamily: 'SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace', 
                     fontSize: '1rem', 
                     lineHeight: '1.7',
-                    padding: '1.5rem',
+                    padding: '2rem',
                     background: '#fcfcfc',
-                    borderRadius: '14px',
+                    borderRadius: '16px',
                     border: '2px solid #e2e8f0'
                   }}
                   value={contents[activeLang]}
@@ -259,12 +259,12 @@ export default function PostEditor({ post }: PostEditorProps) {
                 <div 
                   className="admin-input"
                   style={{ 
-                    minHeight: '500px', 
+                    minHeight: '600px', 
                     background: '#f8fafc', 
                     overflowY: 'auto', 
-                    padding: '2.5rem',
+                    padding: '3rem',
                     border: '2px dashed #cbd5e1',
-                    borderRadius: '14px'
+                    borderRadius: '16px'
                   }}
                 >
                   <div className="markdown-preview" style={{ lineHeight: '1.8', color: '#334155' }}>
@@ -281,19 +281,19 @@ export default function PostEditor({ post }: PostEditorProps) {
             </div>
 
             {/* 4. SEO */}
-            <div style={{ padding: '1.5rem', background: '#f8fafc', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+            <div style={{ padding: '2rem', background: '#f8fafc', borderRadius: '20px', border: '1px solid #e2e8f0', marginTop: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
                 <Info size={16} className="text-accent" />
                 <h3 style={{ margin: 0, fontSize: '0.9rem', fontWeight: 900 }}>Descripción SEO ({activeLang})</h3>
               </div>
               <textarea 
                 className="admin-input"
-                style={{ minHeight: '80px', padding: '1rem', borderRadius: '12px', fontSize: '0.9rem', border: '1px solid #e2e8f0', background: 'white' }}
+                style={{ minHeight: '100px', padding: '1.25rem', borderRadius: '14px', fontSize: '0.95rem', border: '1px solid #e2e8f0', background: 'white' }}
                 value={descriptions[activeLang]}
                 onChange={e => handleDescChange(e.target.value)}
                 placeholder="Resumen para Google y redes sociales..."
               />
-              <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.75rem' }}>Específico para la versión en {langNames[activeLang]}.</p>
+              <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '1rem' }}>Específico para la versión en {langNames[activeLang]}.</p>
             </div>
           </div>
         </div>
