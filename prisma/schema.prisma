@@ -128,13 +128,12 @@ model Link {
 
 model Post {
   id          String   @id @default(cuid())
-  title       String
+  title       Json     // { "es": "...", "en": "...", "pt": "..." }
   slug        String   @unique
-  content     String   @db.Text
-  description String?
+  content     Json     // { "es": "...", "en": "...", "pt": "..." }
+  description Json?    // { "es": "...", "en": "...", "pt": "..." }
   published   Boolean  @default(false)
   date        DateTime @default(now())
-  lang        String   @default("es") // "es", "en", "pt"
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   comments    Comment[]

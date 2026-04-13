@@ -173,7 +173,7 @@ export async function upsertNotification(data: any) {
 /* --- POSTS ACTIONS --- */
 export async function deletePost(id: string) {
   const post = await db.post.findUnique({ where: { id } });
-  const title = post?.title || 'Sin título';
+  const title = (post?.title as any)?.es || 'Sin título';
   
   await db.post.delete({ where: { id } });
   await logAction('DELETE', 'post', `Eliminó el post: ${title}`);
@@ -185,27 +185,25 @@ export async function deletePost(id: string) {
 
 export async function upsertPost(data: any) {
   const isUpdate = !!data.id;
-  const title = data.title || 'Sin título';
+  const title = data.title.es || 'Sin título';
 
   const postData = {
     title: data.title,
     content: data.content,
     slug: data.slug,
-    lang: data.lang,
     description: data.description,
     published: data.published,
-    tags: Array.isArray(data.tags) ? data.tags : data.tags ? data.tags.split(',').map((t: string) => t.trim()) : [],
   };
 
   if (isUpdate) {
     await db.post.update({
       where: { id: data.id },
-      data: postData
+      data: postData as any
     });
     await logAction('UPDATE', 'post', `Actualizó el post: ${title}`);
   } else {
     await db.post.create({
-      data: postData
+      data: postData as any
     });
     await logAction('CREATE', 'post', `Creó un nuevo post: ${title}`);
   }
@@ -416,10 +414,10 @@ export async function addComment(postSlug: string, content: string, parentId?: s
     post = await db.post.create({
       data: {
         slug: postSlug,
-        title: postSlug,
-        content: "Draft from markdown sync",
+        title: { es: postSlug, en: postSlug, pt: postSlug },
+        content: { es: "Draft from markdown sync", en: "Draft from markdown sync", pt: "Draft from markdown sync" },
         published: true
-      }
+      } as any
     });
   }
 
