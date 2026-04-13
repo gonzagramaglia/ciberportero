@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Save, X, Eye, Edit3, Globe, Languages, Info, CheckCircle, AlertCircle, ExternalLink } from 'lucide-react';
 import { upsertPost } from '@/lib/actions';
@@ -25,6 +25,40 @@ export default function PostEditor({ post }: PostEditorProps) {
   const [descriptions, setDescriptions] = useState<Record<Lang, string>>(post?.description || { es: '', en: '', pt: '' });
   const [slug, setSlug] = useState(post?.slug || '');
   const [published, setPublished] = useState(post?.published ?? true);
+  const isDirty = useMemo(() => {
+    const initialTitles = post?.title || { es: '', en: '', pt: '' };
+    const initialContents = post?.content || { es: '', en: '', pt: '' };
+    const initialDescriptions = post?.description || { es: '', en: '', pt: '' };
+    const initialSlug = post?.slug || '';
+    const initialPublished = post?.published ?? true;
+
+    return JSON.stringify(titles) !== JSON.stringify(initialTitles) ||
+           JSON.stringify(contents) !== JSON.stringify(initialContents) ||
+           JSON.stringify(descriptions) !== JSON.stringify(initialDescriptions) ||
+           slug !== initialSlug ||
+           published !== initialPublished;
+  }, [titles, contents, descriptions, slug, published, post]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isDirty) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isDirty]);
+
+  const handleBack = () => {
+    if (isDirty) {
+      if (window.confirm('Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?')) {
+        router.back();
+      }
+    } else {
+      router.back();
+    }
+  };
 
   const handleTitleChange = (val: string) => {
     setTitles({ ...titles, [activeLang]: val });
@@ -111,7 +145,7 @@ export default function PostEditor({ post }: PostEditorProps) {
         <div style={{ display: 'flex', gap: '0.75rem' }}>
           <button 
             type="button" 
-            onClick={() => router.back()}
+            onClick={handleBack}
             className="btn-secondary"
             style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.2rem' }}
           >
@@ -287,7 +321,12 @@ export default function PostEditor({ post }: PostEditorProps) {
                 >
                   <div className="markdown-preview" style={{ lineHeight: '1.8', color: '#334155' }}>
                     {contents[activeLang] ? (
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      <ReactMarkdown 
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          a: ({ node, ...props }) => <a {...props} target="_blank" rel="noopener noreferrer" />,
+                        }}
+                      >
                         {(() => {
                           const content = contents[activeLang].trim();
                           if (content.startsWith('# ')) return contents[activeLang];
