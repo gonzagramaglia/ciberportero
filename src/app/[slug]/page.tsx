@@ -3,12 +3,13 @@
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { ChevronLeft, Github, Youtube, ArrowUp, ArrowDown, X, Link2, Check } from 'lucide-react';
+import { ChevronLeft, Github, Youtube, ArrowUp, ArrowDown, X, Link2, Check, Edit } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { translations } from '../../lib/translations';
 import { useState, useEffect } from 'react';
 import { PostData } from '../../lib/posts-client';
 import { useParams, notFound } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 
 import NotificationBanners from '../../components/NotificationBanners';
@@ -23,6 +24,7 @@ export default function Post() {
     const [showBottom, setShowBottom] = useState(true);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [copied, setCopied] = useState(false);
+    const { data: session } = useSession();
     const t = translations[lang];
 
     const handleCopy = () => {
@@ -122,16 +124,46 @@ export default function Post() {
                 </div>
 
                 <article className="post-content">
-                    <span className="post-date">{new Date(post.date).toLocaleDateString(lang, {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        timeZone: 'UTC'
-                    })}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+                        <span className="post-date" style={{ margin: 0 }}>{new Date(post.date).toLocaleDateString(lang, {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            timeZone: 'UTC'
+                        })}</span>
+                        {session?.user?.role === 'admin' && post.id && (
+                            <Link 
+                                href={`/admin/posts/${post.id}`}
+                                className="admin-edit-badge"
+                                style={{ 
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    gap: '0.4rem', 
+                                    fontSize: '0.7rem', 
+                                    fontWeight: 800, 
+                                    textTransform: 'uppercase',
+                                    background: '#f8fafc',
+                                    color: '#64748b',
+                                    padding: '0.2rem 0.6rem',
+                                    borderRadius: '6px',
+                                    border: '1px solid #e2e8f0',
+                                    textDecoration: 'none'
+                                }}
+                            >
+                                <Edit size={12} />
+                                <span>Editar</span>
+                            </Link>
+                        )}
+                    </div>
                     <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         components={{
                             a: ({ node, ...props }) => <a {...props} target="_blank" rel="noopener noreferrer" />,
+                            h1: ({ node, ...props }) => (
+                                <h1 {...props} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                                    {props.children}
+                                </h1>
+                            ),
                             img: ({ node, ...props }) => {
                                 const src = props.src as string;
                                 return (

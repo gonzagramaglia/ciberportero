@@ -6,7 +6,7 @@ import { translations } from '../lib/translations';
 import { useState, useEffect } from 'react';
 import { PostData } from '../lib/posts-client';
 import LanguageSwitcher from '../components/LanguageSwitcher';
-import { Github, Youtube, CheckCircle, BookOpen, Calendar, Info, Link as LinkIcon, X, ArrowRight, Layers, Star, Zap } from 'lucide-react';
+import { Github, Youtube, CheckCircle, BookOpen, Calendar, Info, Link as LinkIcon, X, ArrowRight, Layers, Star, Zap, Edit, ExternalLink } from 'lucide-react';
 import NotificationBanners from '../components/NotificationBanners';
 import { useSession } from 'next-auth/react';
 import { SignInButton, SignOutButton } from '../components/AuthButtons';
@@ -57,8 +57,6 @@ export default function Home() {
         }
         return () => document.body.classList.remove('lightbox-open');
     }, [selectedImage]);
-
-    const isAuthenticated = !!session || isGuest;
 
     const [isFinished, setIsFinished] = useState(false);
     const [isClassesFinished, setIsClassesFinished] = useState(false);
@@ -321,12 +319,25 @@ export default function Home() {
                     ) : posts.map((post) => (
                         <li key={post.slug} className="post-item">
                             <Link href={`/${post.slug}`}>
-                                <span className="post-date">{new Date(post.date).toLocaleDateString(lang, {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric',
-                                    timeZone: 'UTC'
-                                })}</span>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
+                                    <span className="post-date" style={{ margin: 0 }}>{new Date(post.date).toLocaleDateString(lang, {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric',
+                                        timeZone: 'UTC'
+                                    })}</span>
+                                    {session?.user?.role === 'admin' && post.id && (
+                                        <Link 
+                                            href={`/admin/posts/${post.id}`}
+                                            onClick={(e) => e.stopPropagation()}
+                                            className="admin-edit-icon"
+                                            title="Editar post"
+                                            style={{ color: '#94a3b8', transition: 'color 0.2s', display: 'flex', alignItems: 'center' }}
+                                        >
+                                            <Edit size={14} />
+                                        </Link>
+                                    )}
+                                </div>
                                 <span className="post-title">{post.title}</span>
                                 <p className="post-description">{post.description}</p>
                             </Link>

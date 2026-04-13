@@ -17,6 +17,7 @@ export async function GET(request: Request) {
                 const descObj = dbPost.description as any;
 
                 return NextResponse.json({
+                    id: dbPost.id,
                     slug: dbPost.slug,
                     title: titleObj[lang] || titleObj['es'] || titleObj['en'] || '',
                     content: contentObj[lang] || contentObj['es'] || contentObj['en'] || '',
@@ -62,6 +63,7 @@ export async function GET(request: Request) {
                 const titleObj = p.title as any;
                 const descObj = p.description as any;
                 return {
+                    id: p.id,
                     slug: p.slug,
                     title: titleObj[lang],
                     description: descObj?.[lang] || '',
