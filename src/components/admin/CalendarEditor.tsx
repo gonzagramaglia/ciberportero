@@ -69,6 +69,7 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
 
   const eventTypes = [
     { id: 'exam', label: 'Examen / Parcial', color: '#ef4444', bg: '#fef2f2' },
+    { id: 'quiz', label: 'Autoevaluación', color: '#f59e0b', bg: '#fffbeb' },
     { id: 'class', label: 'Entrega de Tarea o TP', color: '#2563eb', bg: '#eff6ff' },
     { id: 'admin', label: 'Administrativo', color: '#8b5cf6', bg: '#f5f3ff' },
     { id: 'event', label: 'Evento / Otro', color: '#10b981', bg: '#ecfdf5' },

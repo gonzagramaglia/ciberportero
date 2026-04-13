@@ -73,9 +73,9 @@ export default async function AdminCalendarPage() {
                     fontWeight: 900, 
                     textTransform: 'uppercase',
                     whiteSpace: 'nowrap',
-                    background: event.type === 'exam' ? '#fff1f2' : event.type === 'class' ? '#eff6ff' : event.type === 'admin' ? '#fffbeb' : '#f1f5f9',
-                    color: event.type === 'exam' ? '#be123c' : event.type === 'class' ? '#1d4ed8' : event.type === 'admin' ? '#b45309' : '#475569',
-                    border: `1px solid ${event.type === 'exam' ? '#fecdd3' : event.type === 'class' ? '#bfdbfe' : event.type === 'admin' ? '#fde68a' : '#e2e8f0'}`
+                    background: event.type === 'exam' ? '#fff1f2' : event.type === 'quiz' ? '#fffbeb' : event.type === 'class' ? '#eff6ff' : event.type === 'admin' ? '#f5f3ff' : '#f1f5f9',
+                    color: event.type === 'exam' ? '#be123c' : event.type === 'quiz' ? '#b45309' : event.type === 'class' ? '#1d4ed8' : event.type === 'admin' ? '#7c3aed' : '#475569',
+                    border: `1px solid ${event.type === 'exam' ? '#fecdd3' : event.type === 'quiz' ? '#fde68a' : event.type === 'class' ? '#bfdbfe' : event.type === 'admin' ? '#ddd6fe' : '#e2e8f0'}`
                   }}>
                     {event.type}
                   </span>

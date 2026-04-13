@@ -7,7 +7,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher"
 import { useLanguage } from "@/context/LanguageContext"
 import { useSession } from "next-auth/react"
 import { createPersonalEvent, deleteCalendarEvent } from "@/lib/actions"
-import { ArrowLeft, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, Bell, Github, Youtube, Search, Filter, Copy, Check, Info, Lock, Plus, Trash2, X as CloseIcon, GraduationCap, Zap } from "lucide-react"
+import { ArrowLeft, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, Bell, Github, Youtube, Search, Filter, Copy, Check, Info, Lock, Plus, Trash2, X as CloseIcon, GraduationCap, Zap, Tag } from "lucide-react"
 import NotificationBanners from "@/components/NotificationBanners"
 import SyncedBadge from "@/components/SyncedBadge"
 import { SignInButton, SignOutButton } from "@/components/AuthButtons"
@@ -18,8 +18,9 @@ interface AcademicEvent {
   endDate?: string | null;
   title: Record<string, string>;
   type: string;
+  period?: string | null;
+  subjectId?: string | null;
   desc: Record<string, string>;
-  subjectId?: string;
   userId?: string | null;
 }
 
@@ -103,6 +104,8 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
   const [searchTerm, setSearchTerm] = useState('')
   const [subjectFilter, setSubjectFilter] = useState('all')
+  const [typeFilter, setTypeFilter] = useState('all')
+  const [periodFilter, setPeriodFilter] = useState('all')
   const [emailCopied, setEmailCopied] = useState(false)
 
   const handleSaveEvent = async () => {
@@ -136,9 +139,11 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
       const matchesSearch = title.toLowerCase().includes(searchTerm.toLowerCase()) || 
                             desc.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesSubject = subjectFilter === 'all' || event.subjectId === subjectFilter;
-      return matchesSearch && matchesSubject;
+      const matchesType = typeFilter === 'all' || event.type === typeFilter;
+      const matchesPeriod = periodFilter === 'all' || event.period === periodFilter;
+      return matchesSearch && matchesSubject && matchesType && matchesPeriod;
     });
-  }, [allEvents, lang, searchTerm, subjectFilter]);
+  }, [allEvents, lang, searchTerm, subjectFilter, typeFilter, periodFilter]);
 
   const formatEventDate = (dateStr: string) => {
     if (!dateStr) return '';
@@ -226,14 +231,35 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
   }).sort((a, b) => a.startDate.localeCompare(b.startDate)).slice(0, 5);
 
   const availableSubjects = useMemo(() => {
-      // Show only current taught subjects (up to ID 20) with [id] prefix
-      return Object.entries(st)
-        .filter(([id]) => parseInt(id) <= 20)
-        .map(([id, name]) => ({ 
-          id, 
-          name: `[${id.padStart(2, '0')}] ${name}` 
-        }));
-  }, [st]);
+    // Mapping periods to subject ID ranges
+    const rangeMap: Record<string, { start: number; end: number }> = {
+      '1.1': { start: 1, end: 5 },
+      '1.2': { start: 6, end: 10 },
+      '2.1': { start: 11, end: 15 },
+      '2.2': { start: 16, end: 20 },
+      'all': { start: 1, end: 37 }
+    };
+
+    // Map the localized period string or ID to the range keys
+    let rangeKey = 'all';
+    if (periodFilter === ct.firstPeriod) rangeKey = '1.1';
+    else if (periodFilter === ct.secondPeriod) rangeKey = '1.2';
+    else if (periodFilter === ct.thirdPeriod) rangeKey = '2.1';
+    else if (periodFilter === ct.fourthPeriod) rangeKey = '2.2';
+    else if (periodFilter === 'all') rangeKey = 'all';
+
+    const { start, end } = rangeMap[rangeKey] || rangeMap['all'];
+
+    return Object.entries(st)
+      .filter(([id]) => {
+        const numId = parseInt(id);
+        return numId >= start && numId <= end;
+      })
+      .map(([id, name]) => ({ 
+        id, 
+        name: `[${id.padStart(2, '0')}] ${name}` 
+      }));
+  }, [st, periodFilter, ct]);
 
   return (
     <div className="container fade-in page-container">
@@ -397,42 +423,70 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
       </div>
 
       <div className="calendar-controls">
-          <div className="search-box">
-              <Search size={18} />
-              <input 
-                type="text" 
-                placeholder={lang === 'es' ? 'Buscar evento...' : lang === 'pt' ? 'Procurar evento...' : 'Search event...'} 
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+          <div className="calendar-search-row">
+              <div className="search-box">
+                  <Search size={18} />
+                  <input 
+                    type="text" 
+                    placeholder={lang === 'es' ? 'Buscar por título o materia...' : lang === 'pt' ? 'Procurar por título ou matéria...' : 'Search by title or subject...'} 
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+              </div>
           </div>
-          <div className="filter-box locked" title={ct.periodMessage} style={{ 
-              background: '#f1f5f9', 
-              borderColor: '#cbd5e1', 
-              opacity: 0.7, 
-              cursor: 'not-allowed',
-              position: 'relative'
-          }}>
-              <Lock size={16} color="#64748b" />
-              <select disabled style={{ 
-                  cursor: 'not-allowed', 
-                  color: '#64748b',
-                  fontWeight: '600',
-                  background: 'transparent',
-                  border: 'none',
-                  outline: 'none'
-              }}>
-                <option>{ct.firstPeriod}</option>
-              </select>
-          </div>
-          <div className="filter-box">
-              <Filter size={18} />
-              <select value={subjectFilter} onChange={(e) => setSubjectFilter(e.target.value)}>
-                <option value="all">{lang === 'es' ? 'Todas las materias' : lang === 'pt' ? 'Todas as matérias' : 'All subjects'}</option>
-                {availableSubjects.map(sub => (
-                    <option key={sub.id} value={sub.id}>{sub.name as string}</option>
-                ))}
-              </select>
+          <div className="calendar-filters-row">
+              <div className="filter-box" title={ct.periodMessage}>
+                  <Lock size={16} color="#64748b" />
+                  <select 
+                    value={periodFilter} 
+                    onChange={(e) => {
+                      setPeriodFilter(e.target.value);
+                      setSubjectFilter('all'); // Reset subject filter when period changes
+                    }}
+                    style={{ 
+                      fontWeight: periodFilter === 'all' ? '800' : '500',
+                      background: 'transparent',
+                      border: 'none',
+                      outline: 'none',
+                      width: '100%',
+                      color: '#1e293b'
+                    }}
+                  >
+                    <option value="all">{ct.allPeriods}</option>
+                    <option value={ct.firstPeriod}>{ct.firstPeriod}</option>
+                    <option value={ct.secondPeriod}>{ct.secondPeriod}</option>
+                    <option value={ct.thirdPeriod}>{ct.thirdPeriod}</option>
+                    <option value={ct.fourthPeriod}>{ct.fourthPeriod}</option>
+                  </select>
+              </div>
+              <div className="filter-box">
+                  <Filter size={18} />
+                  <select 
+                value={subjectFilter} 
+                onChange={(e) => setSubjectFilter(e.target.value)}
+                style={{ fontWeight: subjectFilter === 'all' ? '800' : '500' }}
+              >
+                    <option value="all">{periodFilter === 'all' ? ct.allSubjects : ct.allSubjectsOfPeriod}</option>
+                    {availableSubjects.map(sub => (
+                        <option key={sub.id} value={sub.id}>{sub.name as string}</option>
+                    ))}
+                  </select>
+              </div>
+              <div className="filter-box">
+                  <Tag size={18} />
+                  <select 
+                value={typeFilter} 
+                onChange={(e) => setTypeFilter(e.target.value)}
+                style={{ fontWeight: typeFilter === 'all' ? '800' : '500' }}
+              >
+                    <option value="all">{ct.allTypes}</option>
+                    <option value="exam">{ct.events.exam}</option>
+                    <option value="quiz">{ct.events.quiz || 'Autoevaluación'}</option>
+                    <option value="class">{ct.events.enrollment || ct.events.classes}</option>
+                    <option value="admin">{ct.events.ivanhoe || 'Administrativo'}</option>
+                    <option value="event">{lang === 'es' ? 'Evento / Otro' : lang === 'pt' ? 'Evento / Outro' : 'Event / Other'}</option>
+                  </select>
+              </div>
           </div>
       </div>
 
@@ -728,13 +782,24 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
       <style jsx>{`
         .calendar-controls {
             display: flex;
-            gap: 1.5rem;
+            flex-direction: column;
+            gap: 1.25rem;
             margin-bottom: 2.5rem;
             background: white;
-            padding: 1rem 1.5rem;
+            padding: 1.5rem;
             border-radius: 20px;
             border: 1px solid var(--border);
             box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        }
+
+        .calendar-search-row {
+            width: 100%;
+        }
+
+        .calendar-filters-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
         }
 
         .search-box, .filter-box {
@@ -1175,6 +1240,10 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
         .tag-classes { background: #dbeafe; color: #1e40af; }
         .tag-holiday { background: #fecaca; color: #991b1b; }
         .tag-exam { background: #bfdbfe; color: #1e3a8a; }
+        .tag-quiz { background: #fffbeb; color: #b45309; }
+        .tag-class { background: #dcfce7; color: #166534; }
+        .tag-admin { background: #fef2f2; color: #991b1b; }
+        .tag-event { background: #f1f5f9; color: #475569; }
 
         .feedback-email-btn:hover {
             background: rgba(234, 179, 8, 0.05);
@@ -1183,9 +1252,16 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
 
         @media (max-width: 900px) {
           .calendar-controls { 
-            flex-direction: column; 
-            gap: 0.8rem;
-            padding: 1rem;
+              padding: 1rem;
+              gap: 1rem;
+          }
+          .calendar-filters-row {
+              flex-direction: column;
+              gap: 0.75rem;
+          }
+          .filter-box, .search-box {
+              width: 100%;
+              flex: none;
           }
           .calendar-main-card { 
             padding: 1.25rem; 
