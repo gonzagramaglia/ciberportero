@@ -169,10 +169,12 @@ export const translations = {
                 title: "Eventos",
                 empty: "No hay eventos para este día",
                 upcoming: "Próximos eventos",
+                exam: "Examen / Parcial",
+                quiz: "Autoevaluación",
                 enrollment: "Tarea / Entrega",
                 classes: "Clase",
-                exam: "Examen",
-                quiz: "Autoevaluación",
+                admin: "Administrativo",
+                others: "Otro",
                 classesStart: "Inicio de clases",
                 ivanhoe: "IVU Inscripciones",
                 holyWeek: "Semana Santa",
@@ -189,7 +191,8 @@ export const translations = {
             thirdPeriod: "1er cuatrimestre de 2do año",
             fourthPeriod: "2do cuatrimestre de 2do año",
             periodMessage: "Seleccioná tu periodo académico",
-            addPersonalized: "Agregar evento personalizado"
+            addPersonalized: "Agregar evento personalizado",
+            addPersonalizedTitle: "Nuevo evento personalizado"
         },
         comments: {
             title: "Comentarios",
@@ -379,10 +382,12 @@ export const translations = {
                 title: "Events",
                 empty: "No events for this day",
                 upcoming: "Upcoming events",
+                exam: "Exam / Midterm",
+                quiz: "Quiz",
                 enrollment: "Task / Assignment",
                 classes: "Class",
-                exam: "Exam",
-                quiz: "Self-Assessment",
+                admin: "Administrative",
+                others: "Other",
                 classesStart: "Classes start",
                 ivanhoe: "IVU Enrollment",
                 holyWeek: "Holy Week",
@@ -399,7 +404,8 @@ export const translations = {
             thirdPeriod: "1st semester of 2nd year",
             fourthPeriod: "2nd semester of 2nd year",
             periodMessage: "Select your academic period",
-            addPersonalized: "Add personalized event"
+            addPersonalized: "Add personalized event",
+            addPersonalizedTitle: "New personalized event"
         },
         comments: {
             title: "Comments",
@@ -589,10 +595,12 @@ export const translations = {
                 title: "Eventos",
                 empty: "Sem eventos para este día.",
                 upcoming: "Próximos eventos",
+                exam: "Exame / Parcial",
+                quiz: "Autoavaliação",
                 enrollment: "Tarefa / Entrega",
                 classes: "Aula",
-                exam: "Exame",
-                quiz: "Autoavaliação",
+                admin: "Administrativo",
+                others: "Outro",
                 classesStart: "Início das aulas",
                 ivanhoe: "IVU Inscrições",
                 holyWeek: "Semana Santa",
@@ -609,7 +617,8 @@ export const translations = {
             thirdPeriod: "1º semestre do 2º ano",
             fourthPeriod: "2º semestre do 2º ano",
             periodMessage: "Selecione seu período acadêmico",
-            addPersonalized: "Adicionar evento personalizado"
+            addPersonalized: "Adicionar evento personalizado",
+            addPersonalizedTitle: "Novo evento personalizado"
         },
         comments: {
             title: "Comentários",

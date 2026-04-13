@@ -39,7 +39,7 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
   
   const [allEvents, setAllEvents] = useState(initialEvents)
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
-  const [newEvent, setNewEvent] = useState({ title: '', startDate: '', endDate: '', type: 'exam', subjectId: 'all' })
+  const [newEvent, setNewEvent] = useState({ title: '', startDate: '', endDate: '', type: 'exam', subjectId: 'all', period: 'all' })
   const [isSaving, setIsSaving] = useState(false)
   
   const [isFinished, setIsFinished] = useState(false);
@@ -114,7 +114,7 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
     const res = await createPersonalEvent(newEvent);
     if (res.success) {
       setIsAddModalOpen(false);
-      setNewEvent({ title: '', startDate: '', endDate: '', type: 'exam', subjectId: 'all' });
+      setNewEvent({ title: '', startDate: '', endDate: '', type: 'exam', subjectId: 'all', period: 'all' });
       // The page will revalidate and refresh initialEvents because it's a server action
     }
     setIsSaving(false);
@@ -240,26 +240,32 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
       'all': { start: 1, end: 37 }
     };
 
-    // Map the localized period string or ID to the range keys
-    let rangeKey = 'all';
-    if (periodFilter === ct.firstPeriod) rangeKey = '1.1';
-    else if (periodFilter === ct.secondPeriod) rangeKey = '1.2';
-    else if (periodFilter === ct.thirdPeriod) rangeKey = '2.1';
-    else if (periodFilter === ct.fourthPeriod) rangeKey = '2.2';
-    else if (periodFilter === 'all') rangeKey = 'all';
+    const getSubjectsForPeriod = (p: string) => {
+        let rangeKey = 'all';
+        if (p === ct.firstPeriod) rangeKey = '1.1';
+        else if (p === ct.secondPeriod) rangeKey = '1.2';
+        else if (p === ct.thirdPeriod) rangeKey = '2.1';
+        else if (p === ct.fourthPeriod) rangeKey = '2.2';
+        else if (p === 'all') rangeKey = 'all';
 
-    const { start, end } = rangeMap[rangeKey] || rangeMap['all'];
+        const { start, end } = rangeMap[rangeKey] || rangeMap['all'];
 
-    return Object.entries(st)
-      .filter(([id]) => {
-        const numId = parseInt(id);
-        return numId >= start && numId <= end;
-      })
-      .map(([id, name]) => ({ 
-        id, 
-        name: `[${id.padStart(2, '0')}] ${name}` 
-      }));
-  }, [st, periodFilter, ct]);
+        return Object.entries(st)
+          .filter(([id]) => {
+            const numId = parseInt(id);
+            return numId >= start && numId <= end;
+          })
+          .map(([id, name]) => ({ 
+            id, 
+            name: `[${id.padStart(2, '0')}] ${name}` 
+          }));
+    };
+
+    return {
+        main: getSubjectsForPeriod(periodFilter),
+        modal: getSubjectsForPeriod(newEvent.period)
+    };
+  }, [st, periodFilter, ct, newEvent.period]);
 
   return (
     <div className="container fade-in page-container">
@@ -467,7 +473,7 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
                 style={{ fontWeight: subjectFilter === 'all' ? '800' : '500' }}
               >
                     <option value="all">{periodFilter === 'all' ? ct.allSubjects : ct.allSubjectsOfPeriod}</option>
-                    {availableSubjects.map(sub => (
+                    {availableSubjects.main.map(sub => (
                         <option key={sub.id} value={sub.id}>{sub.name as string}</option>
                     ))}
                   </select>
@@ -475,16 +481,16 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
               <div className="filter-box">
                   <Tag size={18} />
                   <select 
-                value={typeFilter} 
-                onChange={(e) => setTypeFilter(e.target.value)}
-                style={{ fontWeight: typeFilter === 'all' ? '800' : '500' }}
-              >
+                    value={typeFilter} 
+                    onChange={(e) => setTypeFilter(e.target.value)}
+                    style={{ fontWeight: typeFilter === 'all' ? '800' : '500' }}
+                  >
                     <option value="all">{ct.allTypes}</option>
                     <option value="exam">{ct.events.exam}</option>
-                    <option value="quiz">{ct.events.quiz || 'Autoevaluación'}</option>
-                    <option value="class">{ct.events.enrollment || ct.events.classes}</option>
-                    <option value="admin">{ct.events.ivanhoe || 'Administrativo'}</option>
-                    <option value="event">{lang === 'es' ? 'Evento / Otro' : lang === 'pt' ? 'Evento / Outro' : 'Event / Other'}</option>
+                    <option value="quiz">{ct.events.quiz}</option>
+                    <option value="enrollment">{ct.events.enrollment}</option>
+                    <option value="classes">{ct.events.classes}</option>
+                    <option value="event">{ct.events.others}</option>
                   </select>
               </div>
           </div>
@@ -687,7 +693,9 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
             boxShadow: '0 20px 40px rgba(0,0,0,0.2)'
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h3 style={{ margin: 0, fontWeight: '900' }}>{lang === 'es' ? 'Nuevo evento personal' : 'New personal event'}</h3>
+              <h2 className="modal-title" style={{ fontWeight: 800 }}>
+                {t.calendar.addPersonalizedTitle}
+              </h2>
               <button onClick={() => setIsAddModalOpen(false)} style={{ border: 'none', background: 'transparent', cursor: 'pointer' }}>
                 <CloseIcon size={24} />
               </button>
@@ -742,14 +750,29 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
                 </div>
                 
                 <div className="form-group" style={{ marginTop: '1rem' }}>
+                  <label>{ct.periodFilter || 'Cuatrimestre'}</label>
+                  <select 
+                    value={newEvent.period} 
+                    onChange={(e) => setNewEvent({...newEvent, period: e.target.value, subjectId: 'all'})}
+                    style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
+                  >
+                    <option value="all">{ct.allPeriods}</option>
+                    <option value={ct.firstPeriod}>{ct.firstPeriod}</option>
+                    <option value={ct.secondPeriod}>{ct.secondPeriod}</option>
+                    <option value={ct.thirdPeriod}>{ct.thirdPeriod}</option>
+                    <option value={ct.fourthPeriod}>{ct.fourthPeriod}</option>
+                  </select>
+                </div>
+                
+                <div className="form-group" style={{ marginTop: '1rem' }}>
                   <label>{lang === 'es' ? 'Materia (opcional)' : lang === 'pt' ? 'Matéria (opcional)' : 'Subject (optional)'}</label>
                   <select 
                     value={newEvent.subjectId} 
                     onChange={(e) => setNewEvent({...newEvent, subjectId: e.target.value})}
                     style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
                   >
-                    <option value="all">{lang === 'es' ? 'General / Todas' : lang === 'pt' ? 'Geral / Todas' : 'General / All'}</option>
-                    {availableSubjects.map(sub => (
+                    <option value="all">{newEvent.period === 'all' ? ct.allSubjects : ct.allSubjectsOfPeriod}</option>
+                    {availableSubjects.modal.map(sub => (
                       <option key={sub.id} value={sub.id}>{sub.name as string}</option>
                     ))}
                   </select>

@@ -70,9 +70,9 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
   const eventTypes = [
     { id: 'exam', label: 'Examen / Parcial', color: '#ef4444', bg: '#fef2f2' },
     { id: 'quiz', label: 'Autoevaluación', color: '#f59e0b', bg: '#fffbeb' },
-    { id: 'class', label: 'Entrega de Tarea o TP', color: '#2563eb', bg: '#eff6ff' },
-    { id: 'admin', label: 'Administrativo', color: '#8b5cf6', bg: '#f5f3ff' },
-    { id: 'event', label: 'Evento / Otro', color: '#10b981', bg: '#ecfdf5' },
+    { id: 'enrollment', label: 'Tarea / Entrega', color: '#2563eb', bg: '#eff6ff' },
+    { id: 'classes', label: 'Clase', color: '#8b5cf6', bg: '#f5f3ff' },
+    { id: 'event', label: 'Otro', color: '#10b981', bg: '#ecfdf5' },
   ];
 
   return (
@@ -148,31 +148,59 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
               <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800 }}>Materia Vinculada</h3>
             </div>
             
-            <div>
-              <label className="admin-label">Seleccionar Materia (Opcional)</label>
-              <select 
-                className="admin-input" 
-                value={subjectId || ''} 
-                onChange={e => setSubjectId(e.target.value || null)}
-                style={{ cursor: 'pointer', appearance: 'none', backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2364748b\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1.2rem' }}
-              >
-                <option value="">Ninguna (Evento General)</option>
-                {Object.entries(translations.es.plan.subjectNames).map(([id, name]) => (
-                  <option key={id} value={id}>
-                    [{id.padStart(2, '0')}] {name}
-                  </option>
-                ))}
-              </select>
-              <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.5rem' }}>
-                Esto permite que el evento aparezca cuando se filtra por esta materia.
-              </p>
+            <div style={{ display: 'grid', gap: '1.5rem' }}>
+              <div>
+                <label className="admin-label">1. Seleccionar Cuatrimestre</label>
+                <select 
+                  className="admin-input" 
+                  value={period} 
+                  onChange={e => {
+                    setPeriod(e.target.value);
+                    setSubjectId(null);
+                  }}
+                  style={{ cursor: 'pointer', appearance: 'none', backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2364748b\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1.2rem' }}
+                >
+                  <option value="all">Todos los cuatrimestres</option>
+                  <option value="1er cuatrimestre de 1er año">1er cuatrimestre de 1er año</option>
+                  <option value="2do cuatrimestre de 1er año">2do cuatrimestre de 1er año</option>
+                  <option value="1er cuatrimestre de 2do año">1er cuatrimestre de 2do año</option>
+                  <option value="2do cuatrimestre de 2do año">2do cuatrimestre de 2do año</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="admin-label">2. Seleccionar Materia (Opcional)</label>
+                <select 
+                  className="admin-input" 
+                  value={subjectId || ''} 
+                  onChange={e => setSubjectId(e.target.value || null)}
+                  style={{ cursor: 'pointer', appearance: 'none', backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2364748b\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1.2rem' }}
+                >
+                  <option value="">Ninguna (Evento General)</option>
+                  {Object.entries(translations.es.plan.subjectNames)
+                    .filter(([id]) => {
+                      const numId = parseInt(id);
+                      if (period === '1er cuatrimestre de 1er año') return numId >= 1 && numId <= 5;
+                      if (period === '2do cuatrimestre de 1er año') return numId >= 6 && numId <= 10;
+                      if (period === '1er cuatrimestre de 2do año') return numId >= 11 && numId <= 15;
+                      if (period === '2do cuatrimestre de 2do año') return numId >= 16 && numId <= 20;
+                      return numId >= 1 && numId <= 37;
+                    })
+                    .map(([id, name]) => (
+                      <option key={id} value={id}>[{id.padStart(2, '0')}] {name as string}</option>
+                  ))}
+                </select>
+                <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.5rem' }}>
+                  Esto permite que el evento aparezca cuando se filtra por esta materia.
+                </p>
+              </div>
             </div>
           </section>
 
           <section className="admin-card" style={{ padding: '2rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
               <CalendarIcon size={20} color="#1a1a1a" />
-              <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800 }}>Fecha y Periodo</h3>
+              <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800 }}>Fecha</h3>
             </div>
             
             <div style={{ display: 'grid', gap: '1.75rem' }}>
@@ -197,21 +225,6 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
                     min={startDate}
                   />
                 </div>
-              </div>
-              <div>
-                <label className="admin-label">Periodo Académico</label>
-                <select 
-                  className="admin-input" 
-                  value={period} 
-                  onChange={e => setPeriod(e.target.value)}
-                  style={{ cursor: 'pointer', appearance: 'none', backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2364748b\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1.2rem' }}
-                >
-                  <option value="1er cuatrimestre de 1er año">1er cuatrimestre de 1er año</option>
-                  {/* Futuros periodos aquí */}
-                </select>
-                <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.5rem' }}>
-                  Este campo define en qué filtro de la web aparecerá el evento.
-                </p>
               </div>
             </div>
           </section>
