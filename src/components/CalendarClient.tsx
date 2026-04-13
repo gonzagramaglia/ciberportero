@@ -7,7 +7,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher"
 import { useLanguage } from "@/context/LanguageContext"
 import { useSession } from "next-auth/react"
 import { createPersonalEvent, deleteCalendarEvent } from "@/lib/actions"
-import { ArrowLeft, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, Bell, Github, Youtube, Search, Filter, Copy, Check, Info, Lock, Plus, Trash2, X as CloseIcon, GraduationCap, Zap, Tag } from "lucide-react"
+import { ArrowLeft, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, Bell, Github, Youtube, Search, Filter, Copy, Check, Info, Lock, Plus, Trash2, X as CloseIcon, GraduationCap, Zap, Tag, ExternalLink, FileText } from "lucide-react"
 import NotificationBanners from "@/components/NotificationBanners"
 import SyncedBadge from "@/components/SyncedBadge"
 import { SignInButton, SignOutButton } from "@/components/AuthButtons"
@@ -487,6 +487,7 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
                   >
                     <option value="all">{ct.allTypes}</option>
                     <option value="exam">{ct.events.exam}</option>
+                    <option value="quiz_mandatory">{ct.events.quizMandatory}</option>
                     <option value="quiz">{ct.events.quiz}</option>
                     <option value="enrollment">{ct.events.enrollment}</option>
                     <option value="classes">{ct.events.classes}</option>
@@ -628,7 +629,43 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
         </div>
       </main>
 
-      <div className="feedback-section" style={{ textAlign: 'center', marginTop: '4rem', marginBottom: '1.5rem', opacity: 0.8, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem' }}>
+      <div className="cronogramas-section" style={{ 
+          margin: '3rem 0 3rem 0', 
+          width: '100%'
+      }}>
+          <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(2, 1fr)', 
+              gap: '1rem',
+              background: 'rgba(0,0,0,0.02)',
+              padding: '1.5rem',
+              borderRadius: '24px',
+              border: '1px dashed var(--border)'
+          }}>
+              <a href="https://drive.google.com/file/d/1u18VHM9XDm9j-SedtkJkHy2vi_fv_rsK/view?usp=sharing" target="_blank" className="cronograma-link">
+                  <FileText size={18} />
+                  <span>Cronograma de [01] Análisis Matemático I</span>
+                  <ExternalLink size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
+              </a>
+              <a href="https://drive.google.com/file/d/1uW0lIVUwM6ElxiWtH3MR6xPxJY9AeQZg/view?usp=sharing" target="_blank" className="cronograma-link">
+                  <FileText size={18} />
+                  <span>Cronograma de [02] Álgebra I</span>
+                  <ExternalLink size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
+              </a>
+              <a href="https://drive.google.com/file/d/195obq3YIJTYLhF__E_tscoEhzU-rNZ_j/view?usp=sharing" target="_blank" className="cronograma-link">
+                  <FileText size={18} />
+                  <span>Cronograma de [03] Gestión de Sist. de Inf.</span>
+                  <ExternalLink size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
+              </a>
+              <a href="https://drive.google.com/file/d/1jUHLjjbVx1_D5UMWaCZszFIc25-00JSk/view?usp=sharing" target="_blank" className="cronograma-link">
+                  <FileText size={18} />
+                  <span>Cronograma de [05] Sistemas Operativos I</span>
+                  <ExternalLink size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
+              </a>
+          </div>
+      </div>
+
+      <div className="feedback-section" style={{ textAlign: 'center', marginTop: '2rem', marginBottom: '1.5rem', opacity: 0.8, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem' }}>
           <p style={{ margin: 0, fontSize: '0.9rem', fontWeight: 500, color: 'var(--muted)' }}>
               {t.reporting?.text}
           </p>
@@ -743,9 +780,11 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
                     style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
                   >
                     <option value="exam">{ct.events.exam}</option>
+                    <option value="quiz_mandatory">{ct.events.quizMandatory}</option>
+                    <option value="quiz">{ct.events.quiz}</option>
                     <option value="enrollment">{ct.events.enrollment}</option>
                     <option value="classes">{ct.events.classes}</option>
-                    <option value="event">{lang === 'es' ? 'Otro' : lang === 'pt' ? 'Outro' : 'Other'}</option>
+                    <option value="event">{ct.events.others}</option>
                   </select>
                 </div>
                 
@@ -1273,6 +1312,33 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
             transform: translateY(-1px);
         }
 
+        .cronograma-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            color: var(--foreground);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .cronograma-link:hover {
+            border-color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .cronograma-link span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         @media (max-width: 900px) {
           .calendar-controls { 
               padding: 1rem;
@@ -1299,6 +1365,7 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
           .calendar-layout { gap: 1rem; }
           .calendar-sidebar { grid-template-columns: 1fr; }
           .calendar-grid { gap: 0.4rem; }
+          .cronogramas-section > div { grid-template-columns: 1fr !important; }
           :global(.calendar-day) { aspect-ratio: 1; padding: 0.4rem; border-radius: 12px; }
           :global(.day-number) { font-size: 0.75rem; }
           .weekday { font-size: 0.65rem; }

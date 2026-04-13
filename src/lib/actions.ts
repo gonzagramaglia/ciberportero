@@ -303,7 +303,7 @@ export async function upsertCalendarEvent(data: any) {
     await logAction('UPDATE', 'event', `Actualizó el evento: ${titleEs}`);
   } else {
     await db.calendarEvent.create({
-      data: eventData
+      data: eventData as any
     });
     await logAction('CREATE', 'event', `Creó un nuevo evento: ${titleEs}`);
   }
@@ -369,7 +369,7 @@ export async function createPersonalEvent(data: { title: string, startDate: stri
       subjectId: data.subjectId === 'all' ? null : data.subjectId,
       period: data.period || 'all',
       userId: session.user.id
-    }
+    } as any
   });
 
   revalidatePath('/calendar');

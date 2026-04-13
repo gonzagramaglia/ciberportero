@@ -170,6 +170,7 @@ export const translations = {
                 empty: "No hay eventos para este día",
                 upcoming: "Próximos eventos",
                 exam: "Examen / Parcial",
+                quizMandatory: "Autoevaluación Obligatoria",
                 quiz: "Autoevaluación",
                 enrollment: "Tarea / Entrega",
                 classes: "Clase",
@@ -192,7 +193,7 @@ export const translations = {
             fourthPeriod: "2do cuatrimestre de 2do año",
             periodMessage: "Seleccioná tu periodo académico",
             addPersonalized: "Agregar evento personalizado",
-            addPersonalizedTitle: "Nuevo evento personalizado"
+            addPersonalizedTitle: "Agregar evento"
         },
         comments: {
             title: "Comentarios",
@@ -383,6 +384,7 @@ export const translations = {
                 empty: "No events for this day",
                 upcoming: "Upcoming events",
                 exam: "Exam / Midterm",
+                quizMandatory: "Mandatory Quiz",
                 quiz: "Quiz",
                 enrollment: "Task / Assignment",
                 classes: "Class",
@@ -405,7 +407,7 @@ export const translations = {
             fourthPeriod: "2nd semester of 2nd year",
             periodMessage: "Select your academic period",
             addPersonalized: "Add personalized event",
-            addPersonalizedTitle: "New personalized event"
+            addPersonalizedTitle: "Add event"
         },
         comments: {
             title: "Comments",
@@ -596,6 +598,7 @@ export const translations = {
                 empty: "Sem eventos para este día.",
                 upcoming: "Próximos eventos",
                 exam: "Exame / Parcial",
+                quizMandatory: "Autoavaliação Obrigatória",
                 quiz: "Autoavaliação",
                 enrollment: "Tarefa / Entrega",
                 classes: "Aula",
@@ -618,7 +621,7 @@ export const translations = {
             fourthPeriod: "2º semestre do 2º ano",
             periodMessage: "Selecione seu período acadêmico",
             addPersonalized: "Adicionar evento personalizado",
-            addPersonalizedTitle: "Novo evento personalizado"
+            addPersonalizedTitle: "Adicionar evento"
         },
         comments: {
             title: "Comentários",
