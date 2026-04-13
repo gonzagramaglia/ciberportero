@@ -134,6 +134,8 @@ export default function Post() {
                         {session?.user?.role === 'admin' && post.id && (
                             <Link 
                                 href={`/admin/posts/${post.id}`}
+                                target="_blank"
+                                rel="noreferrer"
                                 className="admin-edit-badge"
                                 style={{ 
                                     display: 'flex', 

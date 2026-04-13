@@ -326,17 +326,6 @@ export default function Home() {
                                         day: 'numeric',
                                         timeZone: 'UTC'
                                     })}</span>
-                                    {session?.user?.role === 'admin' && post.id && (
-                                        <Link 
-                                            href={`/admin/posts/${post.id}`}
-                                            onClick={(e) => e.stopPropagation()}
-                                            className="admin-edit-icon"
-                                            title="Editar post"
-                                            style={{ color: '#94a3b8', transition: 'color 0.2s', display: 'flex', alignItems: 'center' }}
-                                        >
-                                            <Edit size={14} />
-                                        </Link>
-                                    )}
                                 </div>
                                 <span className="post-title">{post.title}</span>
                                 <p className="post-description">{post.description}</p>

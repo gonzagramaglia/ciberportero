@@ -73,10 +73,12 @@ export default function LanguageSwitcher({ availableLangs }: LanguageSwitcherPro
                     cursor: isAvailable ? 'pointer' : 'not-allowed', 
                     font: 'inherit', 
                     padding: '0.2rem 0.5rem',
-                    opacity: isActive ? 1 : (isAvailable ? 0.6 : 0.2),
-                    fontWeight: isActive ? 'bold' : 'normal',
-                    color: !isAvailable ? '#94a3b8' : 'inherit',
-                    transition: 'all 0.2s'
+                    opacity: isActive ? 1 : (isAvailable ? 0.5 : 0.2),
+                    fontWeight: isActive ? '900' : '600',
+                    color: !isAvailable ? '#94a3b8' : '#000',
+                    transition: 'all 0.2s',
+                    fontSize: '0.8rem',
+                    letterSpacing: '0.02em'
                 }}
             >
                 {label}

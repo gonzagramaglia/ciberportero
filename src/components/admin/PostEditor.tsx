@@ -88,7 +88,25 @@ export default function PostEditor({ post }: PostEditorProps) {
             <Languages size={24} className="text-accent" />
             <h2 className="admin-title">{post ? 'Editar Post Multilingüe' : 'Nuevo Post Multilingüe'}</h2>
           </div>
-          <p className="admin-subtitle">Las tres versiones (ES, EN, PT) se guardan en un mismo slug.</p>
+          {slug && (
+            <a 
+              href={`/${slug}`} 
+              target="_blank" 
+              rel="noreferrer"
+              style={{ 
+                fontSize: '0.85rem', 
+                fontWeight: 800, 
+                color: 'var(--accent)', 
+                textDecoration: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.3rem',
+                marginTop: '0.2rem'
+              }}
+            >
+              Ver post <ExternalLink size={14} />
+            </a>
+          )}
         </div>
         <div style={{ display: 'flex', gap: '0.75rem' }}>
           <button 
@@ -186,27 +204,7 @@ export default function PostEditor({ post }: PostEditorProps) {
             {/* 1. Configuración Global (Slug y Estado) */}
             <div style={{ padding: '2rem', background: '#f8fafc', borderRadius: '16px', border: '1px solid #e2e8f0', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem', alignItems: 'flex-end', marginBottom: '1rem' }}>
               <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem' }}>
-                  <label className="admin-label" style={{ fontSize: '0.75rem', marginBottom: '0.75rem', display: 'block' }}>Slug (URL Compartida)</label>
-                  <a 
-                    href={`/${slug}`} 
-                    target="_blank" 
-                    rel="noreferrer"
-                    style={{ 
-                      fontSize: '0.7rem', 
-                      fontWeight: 800, 
-                      color: 'var(--accent)', 
-                      textDecoration: 'none',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.3rem',
-                      opacity: slug ? 1 : 0.5,
-                      pointerEvents: slug ? 'auto' : 'none'
-                    }}
-                  >
-                    Ver post <ExternalLink size={12} />
-                  </a>
-                </div>
+                <label className="admin-label" style={{ fontSize: '0.75rem', marginBottom: '0.75rem', display: 'block' }}>Slug (URL Compartida)</label>
                 <input 
                   required
                   className="admin-input"
@@ -215,9 +213,6 @@ export default function PostEditor({ post }: PostEditorProps) {
                   onChange={e => setSlug(e.target.value)}
                   placeholder="ej-mi-post-unico"
                 />
-                <p style={{ fontSize: '0.65rem', color: '#94a3b8', marginTop: '0.75rem', fontWeight: 500 }}>
-                  Las tres versiones (ES, EN, PT) se guardan en un mismo slug.
-                </p>
               </div>
               <div>
                 <label className="admin-label" style={{ fontSize: '0.75rem', marginBottom: '0.75rem', display: 'block' }}>Estado de Publicación</label>
