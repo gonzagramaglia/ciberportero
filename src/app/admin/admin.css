@@ -398,3 +398,17 @@
   background: #cbd5e1;
   border-radius: 3px;
 }
+
+/* Editor Grid Layout */
+.editor-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .editor-grid {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+    gap: 2rem;
+  }
+}

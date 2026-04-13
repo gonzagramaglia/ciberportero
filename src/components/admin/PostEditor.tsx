@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Save, X, Eye, Edit3, Globe, Languages, Info, CheckCircle, AlertCircle } from 'lucide-react';
 import { upsertPost } from '@/lib/actions';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface PostEditorProps {
   post?: any;
@@ -149,7 +151,7 @@ export default function PostEditor({ post }: PostEditorProps) {
         ))}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 3fr) minmax(0, 1fr)', gap: '2rem' }}>
+      <div className="editor-grid">
         {/* Sección Principal: Escritura */}
         <div className="space-y-6">
           <div className="admin-card" style={{ padding: '2.5rem', borderRadius: '24px' }}>
@@ -226,8 +228,14 @@ export default function PostEditor({ post }: PostEditorProps) {
                       borderRadius: '14px'
                     }}
                   >
-                    <div className="markdown-preview" style={{ whiteSpace: 'pre-wrap', lineHeight: '1.8', color: '#334155' }}>
-                      {contents[activeLang] || <span style={{ color: '#94a3b8', fontStyle: 'italic' }}>Nada para previsualizar en este idioma...</span>}
+                    <div className="markdown-preview" style={{ lineHeight: '1.8', color: '#334155' }}>
+                      {contents[activeLang] ? (
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {contents[activeLang]}
+                        </ReactMarkdown>
+                      ) : (
+                        <span style={{ color: '#94a3b8', fontStyle: 'italic' }}>Nada para previsualizar en este idioma...</span>
+                      )}
                     </div>
                   </div>
                 )}
