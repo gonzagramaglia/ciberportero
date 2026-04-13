@@ -461,81 +461,87 @@ export default function PlanPage() {
           </div>
         </div>
 
-        {/* Stats Bar */}
+        {/* Combined Stats & Search Card */}
         <div style={{ 
           marginTop: '2rem', 
-          padding: '1.5rem', 
           background: 'white', 
           borderRadius: '24px', 
           border: '1px solid var(--border)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '2rem',
-          flexWrap: 'wrap'
+          overflow: 'hidden'
         }}>
-          <div style={{ flex: 1, minWidth: '200px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '0.8rem' }}>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.6rem', flexWrap: 'wrap' }}>
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.6rem' }}>
-                  <span style={{ fontWeight: '700', fontSize: '1rem', color: '#000', opacity: 0.8 }}>{pt.stats.progress}:</span>
-                  <span style={{ fontWeight: '900', fontSize: '1.25rem', color: '#000' }}>{progressPercent}%</span>
-                </div>
-                <div className="storage-notice-wrapper" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: 'var(--muted)', fontSize: '0.7rem', fontWeight: '500', opacity: 0.6 }}>
-                  <Info size={11} />
-                  <span>{pt.storageNotice}</span>
+          {/* Stats Bar */}
+          <div style={{ 
+            padding: '1.5rem', 
+            display: 'flex',
+            alignItems: 'center',
+            gap: '2rem',
+            flexWrap: 'wrap',
+            borderBottom: '1px solid var(--border)'
+          }}>
+            <div style={{ flex: 1, minWidth: '200px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '0.8rem' }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.6rem', flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.6rem' }}>
+                    <span style={{ fontWeight: '700', fontSize: '1rem', color: '#000', opacity: 0.8 }}>{pt.stats.progress}:</span>
+                    <span style={{ fontWeight: '900', fontSize: '1.25rem', color: '#000' }}>{progressPercent}%</span>
+                  </div>
+                  <div className="storage-notice-wrapper" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: 'var(--muted)', fontSize: '0.7rem', fontWeight: '500', opacity: 0.6 }}>
+                    <Info size={11} />
+                    <span>{pt.storageNotice}</span>
+                  </div>
                 </div>
               </div>
+              <div style={{ height: '10px', background: '#f1f5f9', borderRadius: '10px', overflow: 'hidden', display: 'flex' }}>
+                <div style={{ width: `${progressPercent}%`, height: '100%', background: 'var(--success)', transition: 'width 0.5s' }}></div>
+                <div style={{ width: `${inProgressPercent}%`, height: '100%', background: '#fbbf24', transition: 'width 0.5s' }}></div>
+              </div>
             </div>
-            <div style={{ height: '10px', background: '#f1f5f9', borderRadius: '10px', overflow: 'hidden', display: 'flex' }}>
-              <div style={{ width: `${progressPercent}%`, height: '100%', background: 'var(--success)', transition: 'width 0.5s' }}></div>
-              <div style={{ width: `${inProgressPercent}%`, height: '100%', background: '#fbbf24', transition: 'width 0.5s' }}></div>
+            <div style={{ display: 'flex', gap: '2rem' }}>
+              <div style={{ textAlign: 'center' }}>
+                <span style={{ display: 'block', fontSize: '1.5rem', fontWeight: '900', color: '#fbbf24' }}>{inProgressInObjective.length}</span>
+                <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--muted)', textTransform: 'uppercase' }}>{pt.inProgress}</span>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <span style={{ display: 'block', fontSize: '1.5rem', fontWeight: '900', color: 'var(--success)' }}>{completedInObjective.length}</span>
+                <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--muted)', textTransform: 'uppercase' }}>
+                  {completedInObjective.length === 1 ? pt.completed : (pt.completedPlural || pt.completed)}
+                </span>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <span style={{ display: 'block', fontSize: '1.5rem', fontWeight: '900' }}>{totalSubjects - completedInObjective.length}</span>
+                <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--muted)', textTransform: 'uppercase' }}>{pt.stats.remaining}</span>
+              </div>
             </div>
           </div>
-          <div style={{ display: 'flex', gap: '2rem' }}>
-            <div style={{ textAlign: 'center' }}>
-              <span style={{ display: 'block', fontSize: '1.5rem', fontWeight: '900', color: '#fbbf24' }}>{inProgressInObjective.length}</span>
-              <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--muted)', textTransform: 'uppercase' }}>{pt.inProgress}</span>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <span style={{ display: 'block', fontSize: '1.5rem', fontWeight: '900', color: 'var(--success)' }}>{completedInObjective.length}</span>
-              <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--muted)', textTransform: 'uppercase' }}>
-                {completedInObjective.length === 1 ? pt.completed : (pt.completedPlural || pt.completed)}
-              </span>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <span style={{ display: 'block', fontSize: '1.5rem', fontWeight: '900' }}>{totalSubjects - completedInObjective.length}</span>
-              <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--muted)', textTransform: 'uppercase' }}>{pt.stats.remaining}</span>
-            </div>
-          </div>
-        </div>
 
-        {/* Search Input - Relocated below stats */}
-        <div style={{ position: 'relative', width: '100%', marginTop: '1.5rem' }}>
-          <input 
-            type="text"
-            placeholder={pt.search}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '1rem 1rem 1rem 3rem',
-              borderRadius: '16px',
-              border: '1px solid var(--border)',
-              fontSize: '1rem',
-              background: 'white',
-              transition: 'all 0.2s',
-              boxShadow: '0 4px 6px rgba(0,0,0,0.02)'
-            }}
-          />
-          <Search size={22} style={{ position: 'absolute', left: '1.2rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--muted)', opacity: 0.5 }} />
-          {search && (
-            <button 
-              onClick={() => setSearch('')}
-              style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', border: 'none', background: 'transparent', cursor: 'pointer', color: 'var(--muted)' }}
-            >
-              <X size={20} />
-            </button>
-          )}
+          {/* Integrated Search Input */}
+          <div style={{ position: 'relative', width: '100%' }}>
+            <input 
+              type="text"
+              placeholder={pt.search}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '1.25rem 1rem 1.25rem 3.5rem',
+                border: 'none',
+                outline: 'none',
+                fontSize: '1rem',
+                background: '#f8fafc',
+                transition: 'all 0.2s',
+                fontWeight: '600'
+              }}
+            />
+            <Search size={20} style={{ position: 'absolute', left: '1.5rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--muted)', opacity: 0.6 }} />
+            {search && (
+              <button 
+                onClick={() => setSearch('')}
+                style={{ position: 'absolute', right: '1.5rem', top: '50%', transform: 'translateY(-50%)', border: 'none', background: 'transparent', cursor: 'pointer', color: 'var(--muted)' }}
+              >
+                <X size={20} />
+              </button>
+            )}
+          </div>
         </div>
 
       </header>

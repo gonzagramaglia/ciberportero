@@ -488,7 +488,6 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
                     <option value="all">{ct.allTypes}</option>
                     <option value="exam">{ct.events.exam}</option>
                     <option value="quiz_mandatory">{ct.events.quizMandatory}</option>
-                    <option value="quiz">{ct.events.quiz}</option>
                     <option value="enrollment">{ct.events.enrollment}</option>
                     <option value="classes">{ct.events.classes}</option>
                     <option value="event">{ct.events.others}</option>
@@ -630,7 +629,7 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
       </main>
 
       <div className="cronogramas-section" style={{ 
-          margin: '3rem 0 3rem 0', 
+          margin: '2rem 0 3rem 0', 
           width: '100%'
       }}>
           <div style={{ 
@@ -644,28 +643,28 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
           }}>
               <a href="https://drive.google.com/file/d/1u18VHM9XDm9j-SedtkJkHy2vi_fv_rsK/view?usp=sharing" target="_blank" className="cronograma-link">
                   <FileText size={18} />
-                  <span>Cronograma de [01] Análisis Matemático I</span>
+                  <span>{ct.schedules.math1}</span>
                   <ExternalLink size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
               </a>
               <a href="https://drive.google.com/file/d/1uW0lIVUwM6ElxiWtH3MR6xPxJY9AeQZg/view?usp=sharing" target="_blank" className="cronograma-link">
                   <FileText size={18} />
-                  <span>Cronograma de [02] Álgebra I</span>
+                  <span>{ct.schedules.algebra1}</span>
                   <ExternalLink size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
               </a>
               <a href="https://drive.google.com/file/d/195obq3YIJTYLhF__E_tscoEhzU-rNZ_j/view?usp=sharing" target="_blank" className="cronograma-link">
                   <FileText size={18} />
-                  <span>Cronograma de [03] Gestión de Sist. de Inf.</span>
+                  <span>{ct.schedules.management1}</span>
                   <ExternalLink size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
               </a>
               <a href="https://drive.google.com/file/d/1jUHLjjbVx1_D5UMWaCZszFIc25-00JSk/view?usp=sharing" target="_blank" className="cronograma-link">
                   <FileText size={18} />
-                  <span>Cronograma de [05] Sistemas Operativos I</span>
+                  <span>{ct.schedules.os1}</span>
                   <ExternalLink size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
               </a>
           </div>
       </div>
 
-      <div className="feedback-section" style={{ textAlign: 'center', marginTop: '2rem', marginBottom: '1.5rem', opacity: 0.8, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem' }}>
+      <div className="feedback-section" style={{ textAlign: 'center', marginTop: '2rem', marginBottom: '1rem', opacity: 0.8, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem' }}>
           <p style={{ margin: 0, fontSize: '0.9rem', fontWeight: 500, color: 'var(--muted)' }}>
               {t.reporting?.text}
           </p>
@@ -700,7 +699,7 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
           </button>
       </div>
 
-      <footer className="footer-main">
+      <footer className="footer-main" style={{ marginTop: '3rem' }}>
           <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
               <Github size={18} />
           </a>
@@ -781,7 +780,6 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
                   >
                     <option value="exam">{ct.events.exam}</option>
                     <option value="quiz_mandatory">{ct.events.quizMandatory}</option>
-                    <option value="quiz">{ct.events.quiz}</option>
                     <option value="enrollment">{ct.events.enrollment}</option>
                     <option value="classes">{ct.events.classes}</option>
                     <option value="event">{ct.events.others}</option>
@@ -1298,11 +1296,8 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
           margin-top: 0.3rem;
         }
 
-        .tag-enrollment { background: #fef08a; color: #854d0e; }
-        .tag-classes { background: #dbeafe; color: #1e40af; }
-        .tag-holiday { background: #fecaca; color: #991b1b; }
         .tag-exam { background: #bfdbfe; color: #1e3a8a; }
-        .tag-quiz { background: #fffbeb; color: #b45309; }
+        .tag-quiz_mandatory { background: #ffedd5; color: #c2410c; }
         .tag-class { background: #dcfce7; color: #166534; }
         .tag-admin { background: #fef2f2; color: #991b1b; }
         .tag-event { background: #f1f5f9; color: #475569; }

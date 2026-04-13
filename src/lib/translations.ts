@@ -171,7 +171,6 @@ export const translations = {
                 upcoming: "Próximos eventos",
                 exam: "Examen / Parcial",
                 quizMandatory: "Autoevaluación Obligatoria",
-                quiz: "Autoevaluación",
                 enrollment: "Tarea / Entrega",
                 classes: "Clase",
                 admin: "Administrativo",
@@ -193,7 +192,13 @@ export const translations = {
             fourthPeriod: "2do cuatrimestre de 2do año",
             periodMessage: "Seleccioná tu periodo académico",
             addPersonalized: "Agregar evento personalizado",
-            addPersonalizedTitle: "Agregar evento"
+            addPersonalizedTitle: "Agregar evento",
+            schedules: {
+                math1: "Cronograma de [01] Análisis Matemático I",
+                algebra1: "Cronograma de [02] Álgebra I",
+                management1: "Cronograma de [03] Gestión de Sist. de Inf.",
+                os1: "Cronograma de [05] Sistemas Operativos I"
+            }
         },
         comments: {
             title: "Comentarios",
@@ -385,7 +390,6 @@ export const translations = {
                 upcoming: "Upcoming events",
                 exam: "Exam / Midterm",
                 quizMandatory: "Mandatory Quiz",
-                quiz: "Quiz",
                 enrollment: "Task / Assignment",
                 classes: "Class",
                 admin: "Administrative",
@@ -407,7 +411,13 @@ export const translations = {
             fourthPeriod: "2nd semester of 2nd year",
             periodMessage: "Select your academic period",
             addPersonalized: "Add personalized event",
-            addPersonalizedTitle: "Add event"
+            addPersonalizedTitle: "Add event",
+            schedules: {
+                math1: "Schedule for [01] Mathematics I",
+                algebra1: "Schedule for [02] Algebra I",
+                management1: "Schedule for [03] Management of Info Systems",
+                os1: "Schedule for [05] Operating Systems I"
+            }
         },
         comments: {
             title: "Comments",
@@ -599,7 +609,6 @@ export const translations = {
                 upcoming: "Próximos eventos",
                 exam: "Exame / Parcial",
                 quizMandatory: "Autoavaliação Obrigatória",
-                quiz: "Autoavaliação",
                 enrollment: "Tarefa / Entrega",
                 classes: "Aula",
                 admin: "Administrativo",
@@ -621,7 +630,13 @@ export const translations = {
             fourthPeriod: "2º semestre do 2º ano",
             periodMessage: "Selecione seu período acadêmico",
             addPersonalized: "Adicionar evento personalizado",
-            addPersonalizedTitle: "Adicionar evento"
+            addPersonalizedTitle: "Adicionar evento",
+            schedules: {
+                math1: "Cronograma de [01] Análise Matemática I",
+                algebra1: "Cronograma de [02] Álgebra I",
+                management1: "Cronograma de [03] Gestão de Sist. de Inf.",
+                os1: "Cronograma de [05] Sistemas Operativos I"
+            }
         },
         comments: {
             title: "Comentários",
