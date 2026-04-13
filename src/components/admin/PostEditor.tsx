@@ -53,10 +53,10 @@ export default function PostEditor({ post }: PostEditorProps) {
   const handleBack = () => {
     if (isDirty) {
       if (window.confirm('Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?')) {
-        router.back();
+        router.push('/admin/posts');
       }
     } else {
-      router.back();
+      router.push('/admin/posts');
     }
   };
 
@@ -123,23 +123,25 @@ export default function PostEditor({ post }: PostEditorProps) {
             <h2 className="admin-title">{post ? 'Editar Post Multilingüe' : 'Nuevo Post Multilingüe'}</h2>
           </div>
           {slug && (
-            <a 
-              href={`/${slug}`} 
-              target="_blank" 
-              rel="noreferrer"
-              style={{ 
-                fontSize: '0.85rem', 
-                fontWeight: 800, 
-                color: 'var(--accent)', 
-                textDecoration: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.3rem',
-                marginTop: '0.2rem'
-              }}
-            >
-              Ver post <ExternalLink size={14} />
-            </a>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.4rem' }}>
+              <span style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 600 }}>Acceso al post público:</span>
+              <a 
+                href={`/${slug}`} 
+                target="_blank" 
+                rel="noreferrer"
+                style={{ 
+                  fontSize: '0.85rem', 
+                  fontWeight: 800, 
+                  color: 'var(--accent)', 
+                  textDecoration: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.3rem'
+                }}
+              >
+                Ver post <ExternalLink size={14} />
+              </a>
+            </div>
           )}
         </div>
         <div style={{ display: 'flex', gap: '0.75rem' }}>
@@ -287,7 +289,7 @@ export default function PostEditor({ post }: PostEditorProps) {
             </div>
 
             {/* 3. Contenido Principal */}
-            <div>
+            <div style={{ marginTop: '2.5rem' }}>
               <label className="admin-label" style={{ color: '#475569', fontSize: '0.75rem', marginBottom: '1rem', display: 'block' }}>Cuerpo del Post ({activeLang})</label>
               {!previewMode ? (
                 <textarea 
