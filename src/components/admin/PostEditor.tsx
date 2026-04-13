@@ -151,131 +151,60 @@ export default function PostEditor({ post }: PostEditorProps) {
         ))}
       </div>
 
-      <div className="editor-grid">
-        {/* Sección Principal: Escritura */}
-        <div className="space-y-6">
-          <div className="admin-card" style={{ padding: '2.5rem', borderRadius: '24px' }}>
-            <div style={{ marginBottom: '2rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 900, color: '#0f172a' }}>
-                  Contenido en {langNames[activeLang]}
-                </h3>
-                <p style={{ margin: '0.25rem 0 0', fontSize: '0.9rem', color: '#64748b' }}>Edita la versión localizada del artículo.</p>
-              </div>
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
-                <button 
-                  type="button"
-                  onClick={() => setPreviewMode(!previewMode)}
-                  style={{ 
-                    background: previewMode ? '#1e293b' : '#f8fafc', 
-                    color: previewMode ? 'white' : '#64748b',
-                    border: '1px solid',
-                    borderColor: previewMode ? '#1e293b' : '#e2e8f0',
-                    padding: '0.5rem 1rem', borderRadius: '10px', 
-                    fontSize: '0.75rem', fontWeight: 800, cursor: 'pointer', 
-                    display: 'flex', alignItems: 'center', gap: '0.5rem',
-                    transition: 'all 0.2s'
-                  }}
-                >
-                  {previewMode ? <Edit3 size={14} /> : <Eye size={14} />}
-                  {previewMode ? 'EDITAR' : 'PREVISUALIZAR'}
-                </button>
-              </div>
+      <div className="space-y-6">
+        {/* Card Principal de Edición */}
+        <div className="admin-card" style={{ padding: '2.5rem', borderRadius: '24px' }}>
+          <div style={{ marginBottom: '2rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 900, color: '#0f172a' }}>
+                Contenido en {langNames[activeLang]}
+              </h3>
+              <p style={{ margin: '0.25rem 0 0', fontSize: '0.9rem', color: '#64748b' }}>Edita la versión localizada del artículo.</p>
             </div>
-
-            <div className="space-y-6">
-              <div>
-                <label className="admin-label" style={{ color: '#475569', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Título del Post ({activeLang})</label>
-                <input 
-                  required={activeLang === 'es'}
-                  className="admin-input"
-                  style={{ fontSize: '1.5rem', fontWeight: 800, padding: '1.25rem', borderRadius: '14px', border: '2px solid #e2e8f0' }}
-                  value={titles[activeLang]}
-                  onChange={e => handleTitleChange(e.target.value)}
-                  placeholder={`Ej: Cómo aprobar ${activeLang === 'es' ? 'Álgebra I' : 'Algebra I'}`}
-                />
-              </div>
-
-              <div>
-                <label className="admin-label" style={{ color: '#475569', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Cuerpo del Post ({activeLang})</label>
-                {!previewMode ? (
-                  <textarea 
-                    required={activeLang === 'es'}
-                    className="admin-input"
-                    style={{ 
-                      minHeight: '500px', 
-                      fontFamily: 'SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace', 
-                      fontSize: '1rem', 
-                      lineHeight: '1.7',
-                      padding: '1.5rem',
-                      background: '#fcfcfc',
-                      borderRadius: '14px',
-                      border: '2px solid #e2e8f0'
-                    }}
-                    value={contents[activeLang]}
-                    onChange={e => handleContentChange(e.target.value)}
-                    placeholder="Escribe aquí en Markdown..."
-                  />
-                ) : (
-                  <div 
-                    className="admin-input"
-                    style={{ 
-                      minHeight: '500px', 
-                      background: '#f8fafc', 
-                      overflowY: 'auto', 
-                      padding: '2.5rem',
-                      border: '2px dashed #cbd5e1',
-                      borderRadius: '14px'
-                    }}
-                  >
-                    <div className="markdown-preview" style={{ lineHeight: '1.8', color: '#334155' }}>
-                      {contents[activeLang] ? (
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                          {contents[activeLang]}
-                        </ReactMarkdown>
-                      ) : (
-                        <span style={{ color: '#94a3b8', fontStyle: 'italic' }}>Nada para previsualizar en este idioma...</span>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button 
+                type="button"
+                onClick={() => setPreviewMode(!previewMode)}
+                style={{ 
+                  background: previewMode ? '#1e293b' : '#f8fafc', 
+                  color: previewMode ? 'white' : '#64748b',
+                  border: '1px solid',
+                  borderColor: previewMode ? '#1e293b' : '#e2e8f0',
+                  padding: '0.5rem 1rem', borderRadius: '10px', 
+                  fontSize: '0.75rem', fontWeight: 800, cursor: 'pointer', 
+                  display: 'flex', alignItems: 'center', gap: '0.5rem',
+                  transition: 'all 0.2s'
+                }}
+              >
+                {previewMode ? <Edit3 size={14} /> : <Eye size={14} />}
+                {previewMode ? 'EDITAR' : 'PREVISUALIZAR'}
+              </button>
             </div>
           </div>
-        </div>
 
-        {/* Sección Lateral: Configuración Global */}
-        <div className="space-y-6">
-          <div className="admin-card" style={{ padding: '2rem', borderRadius: '24px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
-              <Globe size={20} className="text-accent" />
-              <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 900 }}>Configuración Global</h3>
-            </div>
-            
-            <div className="space-y-5">
+          <div className="space-y-10">
+            {/* 1. Configuración Global (Slug y Estado) */}
+            <div style={{ padding: '1.5rem', background: '#f8fafc', borderRadius: '16px', border: '1px solid #e2e8f0', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', alignItems: 'flex-end' }}>
               <div>
-                <label className="admin-label" style={{ fontSize: '0.75rem' }}>Slug (URL Compartida)</label>
+                <label className="admin-label" style={{ fontSize: '0.75rem', marginBottom: '0.5rem' }}>Slug (URL Compartida)</label>
                 <input 
                   required
                   className="admin-input"
-                  style={{ borderRadius: '10px', fontSize: '0.9rem' }}
+                  style={{ borderRadius: '10px', fontSize: '0.9rem', background: 'white' }}
                   value={slug}
                   onChange={e => setSlug(e.target.value)}
                   placeholder="ej-mi-post-unico"
                 />
-                <p style={{ fontSize: '0.7rem', color: '#94a3b8', marginTop: '0.5rem' }}>
-                  El slug debe ser el mismo para todos los idiomas.
-                </p>
+                <p style={{ fontSize: '0.65rem', color: '#94a3b8', marginTop: '0.5rem' }}>Único para todos los idiomas.</p>
               </div>
-
               <div>
-                <label className="admin-label" style={{ fontSize: '0.75rem' }}>Estado de Publicación</label>
+                <label className="admin-label" style={{ fontSize: '0.75rem', marginBottom: '0.5rem' }}>Estado de Publicación</label>
                 <div 
                   onClick={() => setPublished(!published)}
                   style={{ 
                     cursor: 'pointer',
-                    padding: '1rem',
-                    borderRadius: '14px',
+                    padding: '0.75rem 1rem',
+                    borderRadius: '12px',
                     background: published ? '#f0fdf4' : '#fff1f2',
                     border: `2px solid ${published ? '#22c55e' : '#fecdd3'}`,
                     display: 'flex',
@@ -284,30 +213,88 @@ export default function PostEditor({ post }: PostEditorProps) {
                     transition: 'all 0.2s'
                   }}
                 >
-                  {published ? <CheckCircle size={18} color="#22c55e" /> : <AlertCircle size={18} color="#e11d48" />}
-                  <span style={{ fontWeight: 800, color: published ? '#166534' : '#9f1239', fontSize: '0.85rem' }}>
+                  {published ? <CheckCircle size={16} color="#22c55e" /> : <AlertCircle size={16} color="#e11d48" />}
+                  <span style={{ fontWeight: 800, color: published ? '#166534' : '#9f1239', fontSize: '0.8rem' }}>
                     {published ? 'POST PÚBLICO' : 'MODO BORRADOR'}
                   </span>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div className="admin-card" style={{ padding: '2rem', borderRadius: '24px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' }}>
-              <Info size={18} className="text-accent" />
-              <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 900 }}>SEO ({activeLang})</h3>
+            {/* 2. Título */}
+            <div>
+              <label className="admin-label" style={{ color: '#475569', fontSize: '0.75rem' }}>Título del Post ({activeLang})</label>
+              <input 
+                required={activeLang === 'es'}
+                className="admin-input"
+                style={{ fontSize: '1.5rem', fontWeight: 800, padding: '1.25rem', borderRadius: '14px', border: '2px solid #e2e8f0' }}
+                value={titles[activeLang]}
+                onChange={e => handleTitleChange(e.target.value)}
+                placeholder={`Ej: Cómo aprobar ${activeLang === 'es' ? 'Álgebra I' : 'Algebra I'}`}
+              />
             </div>
-            <textarea 
-              className="admin-input"
-              style={{ minHeight: '120px', padding: '1rem', borderRadius: '12px', fontSize: '0.9rem', border: '1px solid #e2e8f0' }}
-              value={descriptions[activeLang]}
-              onChange={e => handleDescChange(e.target.value)}
-              placeholder="Resumen para Google..."
-            />
-            <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '1rem', lineHeight: '1.4' }}>
-              Este texto aparecerá en los resultados de búsqueda para la versión en {langNames[activeLang]}.
-            </p>
+
+            {/* 3. Contenido Principal */}
+            <div>
+              <label className="admin-label" style={{ color: '#475569', fontSize: '0.75rem' }}>Cuerpo del Post ({activeLang})</label>
+              {!previewMode ? (
+                <textarea 
+                  required={activeLang === 'es'}
+                  className="admin-input"
+                  style={{ 
+                    minHeight: '500px', 
+                    fontFamily: 'SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace', 
+                    fontSize: '1rem', 
+                    lineHeight: '1.7',
+                    padding: '1.5rem',
+                    background: '#fcfcfc',
+                    borderRadius: '14px',
+                    border: '2px solid #e2e8f0'
+                  }}
+                  value={contents[activeLang]}
+                  onChange={e => handleContentChange(e.target.value)}
+                  placeholder="Escribe aquí en Markdown..."
+                />
+              ) : (
+                <div 
+                  className="admin-input"
+                  style={{ 
+                    minHeight: '500px', 
+                    background: '#f8fafc', 
+                    overflowY: 'auto', 
+                    padding: '2.5rem',
+                    border: '2px dashed #cbd5e1',
+                    borderRadius: '14px'
+                  }}
+                >
+                  <div className="markdown-preview" style={{ lineHeight: '1.8', color: '#334155' }}>
+                    {contents[activeLang] ? (
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {contents[activeLang]}
+                      </ReactMarkdown>
+                    ) : (
+                      <span style={{ color: '#94a3b8', fontStyle: 'italic' }}>Nada para previsualizar en este idioma...</span>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* 4. SEO */}
+            <div style={{ padding: '1.5rem', background: '#f8fafc', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+                <Info size={16} className="text-accent" />
+                <h3 style={{ margin: 0, fontSize: '0.9rem', fontWeight: 900 }}>Descripción SEO ({activeLang})</h3>
+              </div>
+              <textarea 
+                className="admin-input"
+                style={{ minHeight: '80px', padding: '1rem', borderRadius: '12px', fontSize: '0.9rem', border: '1px solid #e2e8f0', background: 'white' }}
+                value={descriptions[activeLang]}
+                onChange={e => handleDescChange(e.target.value)}
+                placeholder="Resumen para Google y redes sociales..."
+              />
+              <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.75rem' }}>Específico para la versión en {langNames[activeLang]}.</p>
+            </div>
           </div>
         </div>
       </div>

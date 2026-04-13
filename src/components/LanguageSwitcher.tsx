@@ -4,12 +4,19 @@ import { useLanguage } from '@/context/LanguageContext';
 import { usePathname, useRouter } from 'next/navigation';
 import { Locale } from '@/lib/translations';
 
-export default function LanguageSwitcher() {
+interface LanguageSwitcherProps {
+    availableLangs?: string[];
+}
+
+export default function LanguageSwitcher({ availableLangs }: LanguageSwitcherProps) {
     const { lang, setLang } = useLanguage();
     const pathname = usePathname();
     const router = useRouter();
 
     const changeLanguage = (newLang: Locale) => {
+        // If lang is not available for this specific post, do nothing
+        if (availableLangs && !availableLangs.includes(newLang)) return;
+
         // 1. Update the context and cookie immediately
         setLang(newLang);
 
@@ -50,53 +57,38 @@ export default function LanguageSwitcher() {
         router.push(finalPath || '/');
     };
 
+    const renderButton = (l: Locale, label: string) => {
+        const isAvailable = !availableLangs || availableLangs.includes(l);
+        const isActive = lang === l;
+
+        return (
+            <button
+                key={l}
+                disabled={!isAvailable}
+                onClick={() => changeLanguage(l)}
+                className={`${isActive ? 'active' : ''} ${!isAvailable ? 'disabled' : ''}`}
+                style={{ 
+                    background: 'none', 
+                    border: 'none', 
+                    cursor: isAvailable ? 'pointer' : 'not-allowed', 
+                    font: 'inherit', 
+                    padding: '0.2rem 0.5rem',
+                    opacity: isActive ? 1 : (isAvailable ? 0.6 : 0.2),
+                    fontWeight: isActive ? 'bold' : 'normal',
+                    color: !isAvailable ? '#94a3b8' : 'inherit',
+                    transition: 'all 0.2s'
+                }}
+            >
+                {label}
+            </button>
+        );
+    }
+
     return (
-        <nav className="lang-switcher">
-            <button
-                onClick={() => changeLanguage('es')}
-                className={lang === 'es' ? 'active' : ''}
-                style={{ 
-                    background: 'none', 
-                    border: 'none', 
-                    cursor: 'pointer', 
-                    font: 'inherit', 
-                    padding: '0.2rem 0.5rem',
-                    opacity: lang === 'es' ? 1 : 0.6,
-                    fontWeight: lang === 'es' ? 'bold' : 'normal'
-                }}
-            >
-                ES
-            </button>
-            <button
-                onClick={() => changeLanguage('en')}
-                className={lang === 'en' ? 'active' : ''}
-                style={{ 
-                    background: 'none', 
-                    border: 'none', 
-                    cursor: 'pointer', 
-                    font: 'inherit', 
-                    padding: '0.2rem 0.5rem',
-                    opacity: lang === 'en' ? 1 : 0.6,
-                    fontWeight: lang === 'en' ? 'bold' : 'normal'
-                }}
-            >
-                EN
-            </button>
-            <button
-                onClick={() => changeLanguage('pt')}
-                className={lang === 'pt' ? 'active' : ''}
-                style={{ 
-                    background: 'none', 
-                    border: 'none', 
-                    cursor: 'pointer', 
-                    font: 'inherit', 
-                    padding: '0.2rem 0.5rem',
-                    opacity: lang === 'pt' ? 1 : 0.6,
-                    fontWeight: lang === 'pt' ? 'bold' : 'normal'
-                }}
-            >
-                PT
-            </button>
+        <nav className="lang-switcher" style={{ display: 'flex', gap: '0.25rem' }}>
+            {renderButton('es', 'ES')}
+            {renderButton('en', 'EN')}
+            {renderButton('pt', 'PT')}
         </nav>
     );
 }

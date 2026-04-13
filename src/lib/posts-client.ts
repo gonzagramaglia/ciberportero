@@ -4,4 +4,5 @@ export interface PostData {
     date: string;
     description: string;
     content: string;
+    availableLangs?: string[];
 }

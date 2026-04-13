@@ -412,3 +412,13 @@
     gap: 2rem;
   }
 }
+
+.markdown-preview img {
+  max-width: 100%;
+  max-height: 500px;
+  object-fit: contain;
+  border-radius: 12px;
+  display: block;
+  margin: 1.5rem auto;
+  border: 1px solid #e2e8f0;
+}

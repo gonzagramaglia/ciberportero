@@ -21,7 +21,8 @@ export async function GET(request: Request) {
                     title: titleObj[lang] || titleObj['es'] || titleObj['en'] || '',
                     content: contentObj[lang] || contentObj['es'] || contentObj['en'] || '',
                     description: descObj?.[lang] || descObj?.['es'] || descObj?.['en'] || '',
-                    date: dbPost.date
+                    date: dbPost.date,
+                    availableLangs: Object.keys(titleObj).filter(l => titleObj[l] && contentObj[l])
                 });
             }
         } catch (error) {
@@ -31,7 +32,11 @@ export async function GET(request: Request) {
         // 2. Fallback to Files
         try {
             const post = getPostData(slug, lang);
-            return NextResponse.json(post);
+            const { getAvailableLangs } = require('@/lib/posts');
+            return NextResponse.json({
+                ...post,
+                availableLangs: getAvailableLangs(slug)
+            });
         } catch (error) {
             return NextResponse.json({ error: 'Post not found' }, { status: 404 });
         }
@@ -46,21 +51,29 @@ export async function GET(request: Request) {
             where: { published: true }, 
             orderBy: { date: 'desc' } 
         });
-        dbPosts = posts.map(p => {
-            const titleObj = p.title as any;
-            const descObj = p.description as any;
-            return {
-                slug: p.slug,
-                title: titleObj[lang] || titleObj['es'] || titleObj['en'] || '',
-                description: descObj?.[lang] || descObj?.['es'] || descObj?.['en'] || '',
-                date: p.date
-            };
-        });
+        dbPosts = posts
+            .filter(p => {
+                const titleObj = p.title as any;
+                const contentObj = p.content as any;
+                // Only show if it has title AND content in the current lang
+                return titleObj[lang] && contentObj[lang];
+            })
+            .map(p => {
+                const titleObj = p.title as any;
+                const descObj = p.description as any;
+                return {
+                    slug: p.slug,
+                    title: titleObj[lang],
+                    description: descObj?.[lang] || '',
+                    date: p.date,
+                    availableLangs: Object.keys(titleObj).filter(l => titleObj[l])
+                };
+            });
     } catch (error) {
         console.error("DB Posts list error:", error);
     }
 
-    // Fetch from Files
+    // Fetch from Files (already filtered by getAllPosts(lang))
     const filePosts = getAllPosts(lang);
     
     // Merge (Database takes priority if slug matches)

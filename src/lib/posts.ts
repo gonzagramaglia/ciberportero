@@ -59,3 +59,11 @@ export function getPostData(slug: string, lang: string = 'es'): PostData {
     description: matterResult.data.description,
   };
 }
+
+export function getAvailableLangs(slug: string): string[] {
+  const langs = ['es', 'en', 'pt'];
+  return langs.filter(lang => {
+    const fullPath = path.join(postsDirectory, lang, `${slug}.md`);
+    return fs.existsSync(fullPath);
+  });
+}

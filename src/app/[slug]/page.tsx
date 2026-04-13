@@ -118,7 +118,7 @@ export default function Post() {
                         <ChevronLeft size={16} />
                         {t.back}
                     </Link>
-                    <LanguageSwitcher />
+                    <LanguageSwitcher availableLangs={post?.availableLangs} />
                 </div>
 
                 <article className="post-content">
