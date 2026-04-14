@@ -193,12 +193,29 @@ export const translations = {
             periodMessage: "Seleccioná tu periodo académico",
             addPersonalized: "Agregar evento personalizado",
             addPersonalizedTitle: "Agregar evento",
-            exportToGoogleCalendar: "Exportar evento a tu calendario de Google",
+            exportToGoogleCalendar: "Agregar a Google Calendar",
             schedules: {
                 math1: "Cronograma de [01] Análisis Matemático I",
                 algebra1: "Cronograma de [02] Álgebra I",
                 management1: "Cronograma de [03] Gestión de Sist. de Inf.",
                 os1: "Cronograma de [05] Sistemas Operativos I"
+            },
+            batchExport: {
+                title: "Exportar múltiples eventos",
+                button: "Exportar a Google Calendar",
+                eventsToExport: "Eventos a exportar",
+                timePeriod: "Periodo de tiempo",
+                allEvents: "Todos los eventos",
+                categoryEvents: "Eventos por tipo",
+                courseEvents: "Eventos por materia",
+                personalEvents: "Mis eventos personales",
+                thisWeek: "Esta semana",
+                thisMonth: "Este mes",
+                sixtyDays: "Próximos 60 días",
+                customRange: "Todo el año académico",
+                generateButton: "Descargar archivo .ics",
+                instructions: "Una vez descargado, importalo en la configuración de Google Calendar (Importar/Exportar).",
+                help: "Al ser un sistema académico, te recomendamos exportar por materias para mejor organización."
             }
         },
         comments: {
@@ -413,12 +430,29 @@ export const translations = {
             periodMessage: "Select your academic period",
             addPersonalized: "Add personalized event",
             addPersonalizedTitle: "Add event",
-            exportToGoogleCalendar: "Export event to your Google calendar",
+            exportToGoogleCalendar: "Add to Google Calendar",
             schedules: {
                 math1: "Schedule for [01] Mathematics I",
                 algebra1: "Schedule for [02] Algebra I",
                 management1: "Schedule for [03] Management of Info Systems",
                 os1: "Schedule for [05] Operating Systems I"
+            },
+            batchExport: {
+                title: "Export multiple events",
+                button: "Export to Google Calendar",
+                eventsToExport: "Events to export",
+                timePeriod: "Time period",
+                allEvents: "All events",
+                categoryEvents: "Events by type",
+                courseEvents: "Events by subject",
+                personalEvents: "My personal events",
+                thisWeek: "This week",
+                thisMonth: "This month",
+                sixtyDays: "Next 60 days",
+                customRange: "Whole academic year",
+                generateButton: "Download .ics file",
+                instructions: "Once downloaded, import it in Google Calendar settings (Import/Export).",
+                help: "As an academic system, we recommend exporting by subject for better organization."
             }
         },
         comments: {
@@ -633,12 +667,29 @@ export const translations = {
             periodMessage: "Selecione seu período acadêmico",
             addPersonalized: "Adicionar evento personalizado",
             addPersonalizedTitle: "Adicionar evento",
-            exportToGoogleCalendar: "Exportar evento para o seu calendário do Google",
+            exportToGoogleCalendar: "Adicionar ao Google Agenda",
             schedules: {
                 math1: "Cronograma de [01] Análise Matemática I",
                 algebra1: "Cronograma de [02] Álgebra I",
                 management1: "Cronograma de [03] Gestão de Sist. de Inf.",
                 os1: "Cronograma de [05] Sistemas Operativos I"
+            },
+            batchExport: {
+                title: "Exportar múltiplos eventos",
+                button: "Exportar para Google Agenda",
+                eventsToExport: "Eventos para exportar",
+                timePeriod: "Período de tempo",
+                allEvents: "Todos os eventos",
+                categoryEvents: "Eventos por tipo",
+                courseEvents: "Eventos por matéria",
+                personalEvents: "Meus eventos pessoais",
+                thisWeek: "Esta semana",
+                thisMonth: "Este mês",
+                sixtyDays: "Próximos 60 dias",
+                customRange: "Todo o ano letivo",
+                generateButton: "Baixar arquivo .ics",
+                instructions: "Após baixar, importe-o nas configurações do Google Agenda (Importar/Exportar).",
+                help: "Como um sistema acadêmico, recomendamos exportar por matérias para melhor organização."
             }
         },
         comments: {

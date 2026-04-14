@@ -12,6 +12,7 @@ import NotificationBanners from "@/components/NotificationBanners"
 import SyncedBadge from "@/components/SyncedBadge"
 import { SignInButton, SignOutButton } from "@/components/AuthButtons"
 import CommentSection from "@/components/CommentSection"
+import { Download, Share2 } from "lucide-react"
 
 interface AcademicEvent {
   id: string;
@@ -42,6 +43,25 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [newEvent, setNewEvent] = useState({ title: '', startDate: '', endDate: '', type: 'exam', subjectId: 'all', period: 'all' })
   const [isSaving, setIsSaving] = useState(false)
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false)
+  const [exportConfig, setExportConfig] = useState({
+    type: 'all',
+    range: 'year',
+    subjectId: 'all',
+    eventType: 'all'
+  })
+
+  const getTypeStyle = (type: string) => {
+    const styles: Record<string, { bg: string, border: string, text: string, hover: string }> = {
+      exam: { bg: '#f0f9ff', border: '#bae6fd', text: '#0369a1', hover: '#e0f2fe' },
+      quiz_mandatory: { bg: '#f5f3ff', border: '#ddd6fe', text: '#6d28d9', hover: '#ede9fe' },
+      enrollment: { bg: '#f0fdf4', border: '#bbf7d0', text: '#15803d', hover: '#dcfce7' },
+      classes: { bg: '#fff7ed', border: '#fed7aa', text: '#c2410c', hover: '#ffedd5' },
+      admin: { bg: '#fef2f2', border: '#fecaca', text: '#991b1b', hover: '#fee2e2' },
+      default: { bg: '#f8fafc', border: '#e2e8f0', text: '#475569', hover: '#f1f5f9' }
+    };
+    return styles[type] || styles.default;
+  };
   
   const [isFinished, setIsFinished] = useState(false);
   const [isClassesFinished, setIsClassesFinished] = useState(false);
@@ -172,6 +192,102 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
     }
     
     return `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&dates=${start}/${end}`;
+  }
+
+  const handleExport = () => {
+    // Determine which events to export
+    let toExport = [...allEvents];
+
+    // Filter by type of events
+    // Filter by type of events
+    if (exportConfig.type === 'personal') {
+      toExport = toExport.filter(e => e.userId === session?.user?.id);
+    } else if (exportConfig.type === 'custom') {
+      if (exportConfig.eventType !== 'all') {
+        toExport = toExport.filter(e => e.type === exportConfig.eventType);
+      }
+      if (exportConfig.subjectId !== 'all') {
+        toExport = toExport.filter(e => e.subjectId === exportConfig.subjectId);
+      }
+    }
+
+    // Filter by time range
+    const now = new Date();
+    const startOfWeek = new Date(now);
+    startOfWeek.setDate(now.getDate() - now.getDay());
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 7);
+
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+    const sixtyDaysLater = new Date(now);
+    sixtyDaysLater.setDate(now.getDate() + 60);
+
+    if (exportConfig.range === 'week') {
+      toExport = toExport.filter(e => {
+        const d = new Date(e.startDate + 'T00:00:00');
+        return d >= startOfWeek && d <= endOfWeek;
+      });
+    } else if (exportConfig.range === 'month') {
+      toExport = toExport.filter(e => {
+        const d = new Date(e.startDate + 'T00:00:00');
+        return d >= startOfMonth && d <= endOfMonth;
+      });
+    } else if (exportConfig.range === 'sixty') {
+      toExport = toExport.filter(e => {
+        const d = new Date(e.startDate + 'T00:00:00');
+        return d >= now && d <= sixtyDaysLater;
+      });
+    }
+
+    if (toExport.length === 0) {
+      alert(lang === 'es' ? 'No hay eventos que coincidan con los filtros seleccionados.' : 'No events match the selected filters.');
+      return;
+    }
+
+    // Generate ICS
+    let icsContent = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Ciberportero//Academic Calendar//ES\nCALSCALE:GREGORIAN\nMETHOD:PUBLISH\n";
+    
+    toExport.forEach(event => {
+      const start = event.startDate.replace(/-/g, '');
+      let end = start;
+      if (event.endDate) {
+        const d = new Date(event.endDate + 'T00:00:00');
+        d.setDate(d.getDate() + 1);
+        end = d.toISOString().split('T')[0].replace(/-/g, '');
+      } else {
+        const d = new Date(event.startDate + 'T00:00:00');
+        d.setDate(d.getDate() + 1);
+        end = d.toISOString().split('T')[0].replace(/-/g, '');
+      }
+      
+      const title = event.title[lang] || event.title['es'] || '';
+      const description = (event.desc[lang] || event.desc['es'] || '').replace(/\n/g, '\\n');
+      
+      icsContent += "BEGIN:VEVENT\n";
+      icsContent += `SUMMARY:${title}\n`;
+      icsContent += `DESCRIPTION:${description}\n`;
+      icsContent += `DTSTART;VALUE=DATE:${start}\n`;
+      icsContent += `DTEND;VALUE=DATE:${end}\n`;
+      icsContent += `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z\n`;
+      icsContent += `UID:${event.id}@ciberportero.com\n`;
+      icsContent += "END:VEVENT\n";
+    });
+    
+    icsContent += "END:VCALENDAR";
+    
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `ciberportero_${exportConfig.type}_${exportConfig.range}.ics`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+    
+    setIsExportModalOpen(false);
   }
 
   const nextMonth = () => {
@@ -541,9 +657,48 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
             {renderCalendar()}
           </div>
 
-          <div className="calendar-legend">
-              <div className="legend-item"><div className="legend-dot exam"></div> <span>{lang === 'es' ? 'Exámenes' : lang === 'pt' ? 'Exames' : 'Exams'}</span></div>
-              <div className="legend-item"><div className="legend-dot enrollment"></div> <span>{lang === 'es' ? 'Tareas/TPs' : lang === 'pt' ? 'Tarefas/TPs' : 'Assignments'}</span></div>
+          <div className="calendar-legend" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+              <div style={{ display: 'flex', gap: '1.2rem', flexWrap: 'wrap' }}>
+                <div className="legend-item"><div className="legend-dot exam"></div> <span>{ct.events.exam}</span></div>
+                <div className="legend-item"><div className="legend-dot quiz_mandatory"></div> <span>{ct.events.quizMandatory}</span></div>
+                <div className="legend-item"><div className="legend-dot enrollment"></div> <span>{ct.events.enrollment}</span></div>
+                <div className="legend-item"><div className="legend-dot classes"></div> <span>{ct.events.classes}</span></div>
+                <div className="legend-item"><div className="legend-dot event"></div> <span>{ct.events.others}</span></div>
+              </div>
+
+              <button 
+                onClick={() => setIsExportModalOpen(true)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.6rem',
+                  padding: '0.8rem 1.2rem',
+                  borderRadius: '12px',
+                  background: '#fffcf0',
+                  color: '#854d0e',
+                  fontSize: '0.85rem',
+                  fontWeight: '800',
+                  border: '1px solid #eab308',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  width: 'fit-content'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#fef9c3';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(234, 179, 8, 0.15)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = '#fffcf0';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
+              >
+                <img 
+                  src="/google-calendar-logo.png" 
+                  alt="Google Calendar"
+                  style={{ width: '18px', height: '18px', objectFit: 'contain' }}
+                />
+                {(ct as any).batchExport.button}
+              </button>
           </div>
         </div>
 
@@ -604,43 +759,48 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
                       <h4 style={{ margin: 0 }}>{event.title[lang] || event.title['es']}</h4>
                       <p>{event.desc[lang] || event.desc['es']}</p>
                       
-                      <a 
-                        href={getGoogleCalendarUrl(event)} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '0.6rem',
-                          marginTop: '1.2rem',
-                          padding: '0.8rem 1.2rem',
-                          borderRadius: '12px',
-                          background: 'rgba(66, 133, 244, 0.08)',
-                          color: '#4285F4',
-                          fontSize: '0.85rem',
-                          fontWeight: '700',
-                          textDecoration: 'none',
-                          transition: 'all 0.2s',
-                          border: '1px solid rgba(66, 133, 244, 0.2)',
-                          width: 'fit-content'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.background = 'rgba(66, 133, 244, 0.12)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(66, 133, 244, 0.1)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.background = 'rgba(66, 133, 244, 0.08)';
-                          e.currentTarget.style.boxShadow = 'none';
-                        }}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <img 
-                          src="/google-calendar-logo.png" 
-                          alt="Google Calendar"
-                          style={{ width: '18px', height: '18px', objectFit: 'contain' }}
-                        />
-                        {(ct as any).exportToGoogleCalendar}
-                      </a>
+                        {(() => {
+                          const style = getTypeStyle(event.type);
+                          return (
+                            <a 
+                              href={getGoogleCalendarUrl(event)} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.6rem',
+                                marginTop: '1.2rem',
+                                padding: '0.8rem 1.2rem',
+                                borderRadius: '12px',
+                                background: style.bg,
+                                color: style.text,
+                                fontSize: '0.85rem',
+                                fontWeight: '800',
+                                textDecoration: 'none',
+                                transition: 'all 0.2s',
+                                border: `1px solid ${style.border}`,
+                                width: 'fit-content'
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.background = style.hover;
+                                e.currentTarget.style.boxShadow = `0 4px 12px ${style.border}44`;
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.background = style.bg;
+                                e.currentTarget.style.boxShadow = 'none';
+                              }}
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <img 
+                                src="/google-calendar-logo.png" 
+                                alt="Google Calendar"
+                                style={{ width: '18px', height: '18px', objectFit: 'contain' }}
+                              />
+                              {(ct as any).exportToGoogleCalendar}
+                            </a>
+                          );
+                        })()}
                     </div>
                   ))
                 ) : (
@@ -735,6 +895,279 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
               <Youtube size={22} />
           </a>
       </footer>
+
+      {/* Batch Export Modal */}
+      {isExportModalOpen && (
+        <div className="modal-overlay" style={{
+          position: 'fixed',
+          top: 0, left: 0, right: 0, bottom: 0,
+          background: 'rgba(0,0,0,0.6)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1100,
+          backdropFilter: 'blur(8px)'
+        }}>
+          <div className="modal-content" style={{
+            background: 'white',
+            padding: '2.5rem',
+            borderRadius: '32px',
+            width: '100%',
+            maxWidth: '550px',
+            boxShadow: '0 30px 60px rgba(0,0,0,0.3)',
+            animation: 'modalFadeUp 0.4s cubic-bezier(0.165, 0.84, 0.44, 1)'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(234, 179, 8, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <img src="/google-calendar-logo.png" style={{ width: '24px' }} alt="" />
+                </div>
+                <div>
+                  <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 900 }}>{(ct as any).batchExport.title}</h2>
+                  <p style={{ margin: 0, fontSize: '0.85rem', color: '#854d0e', fontWeight: 600 }}>Ciberportero Academic Sync</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsExportModalOpen(false)} 
+                style={{ border: 'none', background: '#f1f5f9', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s' }}
+                onMouseEnter={(e) => e.currentTarget.style.background = '#e2e8f0'}
+                onMouseLeave={(e) => e.currentTarget.style.background = '#f1f5f9'}
+              >
+                <CloseIcon size={20} />
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+              {/* Events to Export Section */}
+              <section>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                  <div style={{ width: '6px', height: '20px', background: '#eab308', borderRadius: '3px' }}></div>
+                  <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800 }}>{(ct as any).batchExport.eventsToExport}</h3>
+                </div>
+                <div style={{ display: 'grid', gap: '0.75rem' }}>
+                  <label className="export-option">
+                    <input type="radio" name="exportType" checked={exportConfig.type === 'all'} onChange={() => setExportConfig({...exportConfig, type: 'all'})} />
+                    <div className="option-ui">
+                      <span className="radio-dot"></span>
+                      <span>{(ct as any).batchExport.allEvents}</span>
+                    </div>
+                  </label>
+                  
+                  <label className="export-option">
+                    <input type="radio" name="exportType" checked={exportConfig.type === 'custom'} onChange={() => setExportConfig({...exportConfig, type: 'custom'})} />
+                    <div className="option-ui">
+                      <span className="radio-dot"></span>
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                        <span style={{ fontWeight: 800 }}>{lang === 'es' ? 'Selección personalizada' : lang === 'pt' ? 'Seleção personalizada' : 'Custom selection'}</span>
+                        {exportConfig.type === 'custom' && (
+                          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                            <select 
+                              value={exportConfig.eventType} 
+                              onChange={(e) => setExportConfig({...exportConfig, eventType: e.target.value})}
+                              style={{ flex: 1, minWidth: '120px', background: '#f8fafc', border: '1px solid #e2e8f0', padding: '0.4rem 0.6rem', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 700 }}
+                            >
+                              <option value="all">{ct.allTypes}</option>
+                              <option value="exam">{ct.events.exam}</option>
+                              <option value="quiz_mandatory">{ct.events.quizMandatory}</option>
+                              <option value="enrollment">{ct.events.enrollment}</option>
+                              <option value="classes">{ct.events.classes}</option>
+                            </select>
+                            <select 
+                              value={exportConfig.subjectId} 
+                              onChange={(e) => setExportConfig({...exportConfig, subjectId: e.target.value})}
+                              style={{ flex: 2, minWidth: '180px', background: '#f8fafc', border: '1px solid #e2e8f0', padding: '0.4rem 0.6rem', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 700 }}
+                            >
+                              <option value="all">{ct.allSubjects}</option>
+                              {Object.entries(st).map(([id, name]) => (
+                                <option key={id} value={id}>[{id.padStart(2, '0')}] {name}</option>
+                              ))}
+                            </select>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </label>
+
+                  {session && (
+                    <label className="export-option">
+                      <input type="radio" name="exportType" checked={exportConfig.type === 'personal'} onChange={() => setExportConfig({...exportConfig, type: 'personal'})} />
+                      <div className="option-ui">
+                        <span className="radio-dot"></span>
+                        <span>{(ct as any).batchExport.personalEvents}</span>
+                      </div>
+                    </label>
+                  )}
+                </div>
+              </section>
+
+              {/* Time Period Section */}
+              <section>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                  <div style={{ width: '6px', height: '20px', background: '#34a853', borderRadius: '3px' }}></div>
+                  <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800 }}>{(ct as any).batchExport.timePeriod}</h3>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem' }}>
+                  <label className="export-option">
+                    <input type="radio" name="exportRange" checked={exportConfig.range === 'week'} onChange={() => setExportConfig({...exportConfig, range: 'week'})} />
+                    <div className="option-ui">
+                      <span className="radio-dot"></span>
+                      <span>{(ct as any).batchExport.thisWeek}</span>
+                    </div>
+                  </label>
+                  <label className="export-option">
+                    <input type="radio" name="exportRange" checked={exportConfig.range === 'month'} onChange={() => setExportConfig({...exportConfig, range: 'month'})} />
+                    <div className="option-ui">
+                      <span className="radio-dot"></span>
+                      <span>{(ct as any).batchExport.thisMonth}</span>
+                    </div>
+                  </label>
+                  <label className="export-option">
+                    <input type="radio" name="exportRange" checked={exportConfig.range === 'sixty'} onChange={() => setExportConfig({...exportConfig, range: 'sixty'})} />
+                    <div className="option-ui">
+                      <span className="radio-dot"></span>
+                      <span>{(ct as any).batchExport.sixtyDays}</span>
+                    </div>
+                  </label>
+                  <label className="export-option">
+                    <input type="radio" name="exportRange" checked={exportConfig.range === 'year'} onChange={() => setExportConfig({...exportConfig, range: 'year'})} />
+                    <div className="option-ui">
+                      <span className="radio-dot"></span>
+                      <span>{(ct as any).batchExport.customRange}</span>
+                    </div>
+                  </label>
+                </div>
+              </section>
+
+              {/* Action Section */}
+              <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '24px', border: '1px solid #e2e8f0' }}>
+                <p style={{ margin: '0 0 1.2rem 0', fontSize: '0.8rem', color: '#64748b', lineHeight: 1.6, fontWeight: 500 }}>
+                  {(ct as any).batchExport.instructions}
+                  {' '}
+                  <a 
+                    href="https://calendar.google.com/calendar/u/0/r/settings/export" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.4rem',
+                      color: '#eab308',
+                      textDecoration: 'none',
+                      fontWeight: '800',
+                      transition: 'all 0.2s',
+                      verticalAlign: 'middle'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'}
+                    onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+                  >
+                    <ExternalLink size={14} />
+                    {lang === 'es' ? 'Abrir Configuración de Google Calendar' : lang === 'pt' ? 'Abrir Configurações do Google Agenda' : 'Open Google Calendar Settings'}
+                  </a>
+                </p>
+                <button 
+                  onClick={handleExport}
+                  style={{
+                    width: '100%',
+                    background: '#eab308',
+                    color: 'white',
+                    padding: '1rem',
+                    borderRadius: '16px',
+                    border: 'none',
+                    fontWeight: 800,
+                    fontSize: '1rem',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.75rem',
+                    boxShadow: '0 8px 20px rgba(234, 179, 8, 0.25)',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+                  onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                >
+                  <Download size={20} />
+                  {(ct as any).batchExport.generateButton}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style jsx>{`
+        .export-option input {
+          display: none;
+        }
+        .option-ui {
+          display: flex;
+          align-items: center;
+          gap: 1.25rem;
+          padding: 0.8rem 1rem;
+          background: #fff;
+          border: 1px solid #e2e8f0;
+          border-radius: 12px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          font-size: 0.9rem;
+          font-weight: 700;
+          color: #475569;
+        }
+        .export-option input:checked + .option-ui {
+          background: #fffcf0;
+          border-color: #eab308;
+          color: #854d0e;
+        }
+        .radio-dot {
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          border: 2px solid #cbd5e1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.2s;
+        }
+        .export-option input:checked + .option-ui .radio-dot {
+          border-color: #eab308;
+          background: #fff;
+        }
+        .export-option input:checked + .option-ui .radio-dot::after {
+          content: '';
+          width: 8px;
+          height: 8px;
+          background: #eab308;
+          border-radius: 50%;
+        }
+        @keyframes modalFadeUp {
+          from { opacity: 0; transform: translateY(20px) scale(0.95); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @media (max-width: 600px) {
+          .floating-export-btn {
+            bottom: 1.5rem !important;
+            right: 1.5rem !important;
+            width: 56px !important;
+            height: 56px !important;
+          }
+          .modal-content {
+            padding: 1.5rem !important;
+            margin: 1rem;
+            max-height: 90vh;
+            overflow-y: auto;
+          }
+          section .export-option div {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 0.5rem;
+          }
+           section .export-option div select {
+            width: 100%;
+            max-width: none !important;
+          }
+        }
+      `}</style>
 
       {isAddModalOpen && (
         <div className="modal-overlay" style={{
@@ -1109,10 +1542,12 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
             background: #eab308;
         }
 
-        :global(.event-enrollment .preview-dot) { background: #eab308; }
-        :global(.event-classes .preview-dot) { background: #0070f3; }
+        :global(.event-enrollment .preview-dot) { background: #10b981; }
+        :global(.event-classes .preview-dot) { background: #f97316; }
         :global(.event-holiday .preview-dot) { background: #ef4444; }
         :global(.event-exam .preview-dot) { background: #2563eb; }
+        :global(.event-quiz_mandatory .preview-dot) { background: #a855f7; }
+        :global(.event-event .preview-dot), :global(.event-admin .preview-dot) { background: #64748b; }
 
         :global(.preview-text) {
             font-size: 0.6rem;
@@ -1148,10 +1583,12 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
             border-radius: 50%;
         }
 
-        .legend-dot.enrollment { background: #eab308; }
-        .legend-dot.classes { background: #0070f3; }
+        .legend-dot.enrollment { background: #10b981; }
+        .legend-dot.classes { background: #f97316; }
         .legend-dot.holiday { background: #ef4444; }
         .legend-dot.exam { background: #2563eb; }
+        .legend-dot.quiz_mandatory { background: #a855f7; }
+        .legend-dot.event { background: #64748b; }
 
         .calendar-sidebar {
           display: grid;
@@ -1215,10 +1652,11 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
           box-shadow: 0 2px 8px rgba(0,0,0,0.03);
         }
 
-        .event-detail-item.type-enrollment { border-left-color: #eab308; }
-        .event-detail-item.type-classes { border-left-color: #3b82f6; }
+        .event-detail-item.type-enrollment { border-left-color: #10b981; }
+        .event-detail-item.type-classes { border-left-color: #f97316; }
         .event-detail-item.type-holiday { border-left-color: #ef4444; }
         .event-detail-item.type-exam { border-left-color: #2563eb; }
+        .event-detail-item.type-quiz_mandatory { border-left-color: #a855f7; }
         .event-detail-item.is-personal { border-left-color: #0ea5e9 !important; }
 
         .event-type-tag {
@@ -1323,9 +1761,10 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
           margin-top: 0.3rem;
         }
 
-        .tag-exam { background: #bfdbfe; color: #1e3a8a; }
-        .tag-quiz_mandatory { background: #ffedd5; color: #c2410c; }
-        .tag-class { background: #dcfce7; color: #166534; }
+        .tag-exam { background: #dbeafe; color: #1e40af; }
+        .tag-quiz_mandatory { background: #f3e8ff; color: #7e22ce; }
+        .tag-classes { background: #ffedd5; color: #9a3412; }
+        .tag-enrollment { background: #dcfce7; color: #15803d; }
         .tag-admin { background: #fef2f2; color: #991b1b; }
         .tag-event { background: #f1f5f9; color: #475569; }
 
