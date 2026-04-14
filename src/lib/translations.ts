@@ -212,9 +212,9 @@ export const translations = {
                 thisWeek: "Esta semana",
                 thisMonth: "Este mes",
                 sixtyDays: "Próximos 60 días",
-                customRange: "Todo el año académico",
+                customRange: "Todo el año",
                 generateButton: "Descargar archivo .ics",
-                instructions: "Una vez descargado, importalo en la configuración de Google Calendar (Importar/Exportar).",
+                instructions: "Una vez descargado, importalo en la config de Google Calendar.",
                 help: "Al ser un sistema académico, te recomendamos exportar por materias para mejor organización."
             }
         },

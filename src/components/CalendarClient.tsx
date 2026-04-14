@@ -924,7 +924,6 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
                 </div>
                 <div>
                   <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 900 }}>{(ct as any).batchExport.title}</h2>
-                  <p style={{ margin: 0, fontSize: '0.85rem', color: '#854d0e', fontWeight: 600 }}>Ciberportero Academic Sync</p>
                 </div>
               </div>
               <button 
