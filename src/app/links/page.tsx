@@ -12,6 +12,7 @@ import { useSession } from "next-auth/react";
 import { SignInButton, SignOutButton } from "@/components/AuthButtons";
 import SyncedBadge from "@/components/SyncedBadge";
 import { createPersonalLink, deletePersonalLink } from "@/lib/actions";
+import CommentSection from "@/components/CommentSection";
 import { Trash2, Plus, X as CloseIcon } from "lucide-react";
 
 export default function LinksPage() {
@@ -401,6 +402,8 @@ export default function LinksPage() {
                     </div>
                 </div>
             </main>
+
+            <CommentSection postSlug="links" lang={lang} />
 
             <footer className="footer-main">
                 <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>

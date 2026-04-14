@@ -13,6 +13,7 @@ import { useSession } from "next-auth/react"
 import { getUserProgress, updateUserProgress } from "@/lib/actions"
 import SyncedBadge from "@/components/SyncedBadge"
 import { SignInButton, SignOutButton } from "@/components/AuthButtons"
+import CommentSection from "@/components/CommentSection"
 
 export default function PlanPage() {
   const { lang } = useLanguage()
@@ -672,6 +673,7 @@ export default function PlanPage() {
           </section>
         ))}
       </main>
+      <CommentSection postSlug="plan" lang={lang} />
 
       <footer className="footer-main footer-stacked">
         <a href="https://github.com/zzzNata/Mapa-Interactivo-CiberDefensa-UNDEF" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'var(--muted)', fontSize: '0.8rem', fontWeight: '500', transition: 'color 0.2s', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>

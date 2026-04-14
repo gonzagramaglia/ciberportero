@@ -11,6 +11,7 @@ import { ArrowLeft, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, 
 import NotificationBanners from "@/components/NotificationBanners"
 import SyncedBadge from "@/components/SyncedBadge"
 import { SignInButton, SignOutButton } from "@/components/AuthButtons"
+import CommentSection from "@/components/CommentSection"
 
 interface AcademicEvent {
   id: string;
@@ -634,7 +635,7 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
                         onClick={(e) => e.stopPropagation()}
                       >
                         <img 
-                          src="https://www.startpage.com/av/proxy-image?piurl=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F022%2F613%2F030%2Flarge_2x%2Fgoogle-calendar-icon-logo-symbol-free-png.png&sp=1776147573T5b55b890bb7859547026740aee7bc013616282f08d1471e81e2113a01dfe3f71" 
+                          src="/google-calendar-logo.png" 
                           alt="Google Calendar"
                           style={{ width: '18px', height: '18px', objectFit: 'contain' }}
                         />
@@ -723,40 +724,7 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
           </div>
       </div>
 
-      <div className="feedback-section" style={{ textAlign: 'center', marginTop: '2rem', marginBottom: '1rem', opacity: 0.8, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem' }}>
-          <p style={{ margin: 0, fontSize: '0.9rem', fontWeight: 500, color: 'var(--muted)' }}>
-              {t.reporting?.text}
-          </p>
-          <button 
-            onClick={handleCopyEmail}
-            className="feedback-email-btn"
-            style={{ 
-                background: 'none',
-                border: 'none',
-                color: '#eab308', 
-                textDecoration: 'none', 
-                fontWeight: 700, 
-                fontSize: '0.95rem',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.8rem',
-                padding: '0.4rem 0.8rem',
-                borderRadius: '8px',
-                transition: 'all 0.2s'
-            }}
-          >
-              {t.reporting?.cta}
-              {emailCopied ? (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', borderLeft: '1px solid rgba(234, 179, 8, 0.3)', paddingLeft: '0.8rem' }}>
-                      <span style={{ fontSize: '0.85rem' }}>{t.contact?.copied}</span>
-                      <Check size={16} />
-                  </div>
-              ) : (
-                  <Copy size={16} />
-              )}
-          </button>
-      </div>
+      <CommentSection postSlug="calendar" lang={lang} />
 
       <footer className="footer-main" style={{ marginTop: '3rem' }}>
           <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
