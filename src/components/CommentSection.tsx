@@ -207,6 +207,7 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
           <div className="input-wrapper">
             <div className="avatar-wrapper">
               <Avatar src={session.user.image} name={session.user.name} size={40} />
+              <span className="user-name-mobile">{getFirstName(session.user.name ?? null)}</span>
             </div>
             <textarea
               value={newComment}
@@ -215,7 +216,14 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
               className="comment-textarea"
             />
             <button disabled={isSubmitting || !newComment.trim()} type="submit" className="submit-comment-btn">
-              {isSubmitting ? <Loader2 size={20} className="spin" /> : <Send size={20} />}
+              {isSubmitting ? (
+                <Loader2 size={20} className="spin" />
+              ) : (
+                <>
+                  <span className="btn-text-mobile">{lang === 'es' ? 'Postear comentario' : lang === 'pt' ? 'Postar comentário' : 'Post comment'}</span>
+                  <Send className="btn-icon" size={20} />
+                </>
+              )}
             </button>
           </div>
         </form>
@@ -289,6 +297,16 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
 
         .avatar-wrapper {
           padding: 0.5rem;
+          display: flex;
+          align-items: center;
+        }
+
+        .user-name-mobile {
+          display: none;
+        }
+
+        .btn-text-mobile {
+          display: none;
         }
 
         .comment-textarea {
@@ -352,12 +370,22 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
             height: 20px;
           }
           .input-wrapper {
-            padding: 0.5rem;
-            gap: 0.5rem;
+            padding: 1rem;
+            gap: 0;
             border-radius: 20px;
+            flex-direction: column;
+            align-items: flex-start;
           }
           .avatar-wrapper {
-            padding: 0.2rem;
+            padding: 0;
+            gap: 0.8rem;
+            margin-bottom: 0.5rem;
+          }
+          .user-name-mobile {
+            display: block;
+            font-weight: 800;
+            font-size: 1rem;
+            color: #1e293b;
           }
           :global(.input-wrapper img), :global(.input-wrapper .avatar-fallback) {
             width: 32px !important;
@@ -365,14 +393,22 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
           }
           .comment-textarea {
             font-size: 0.95rem;
-            min-height: 50px;
+            min-height: 80px;
             padding: 0.5rem 0;
+            width: 100%;
           }
           .submit-comment-btn {
-            width: 38px;
-            height: 38px;
+            width: 100%;
+            height: 48px;
             border-radius: 12px;
-            margin: 0.2rem;
+            margin: 0.5rem 0 0.5rem 0;
+            align-self: center;
+            gap: 0.6rem;
+          }
+          .btn-text-mobile {
+            display: block;
+            font-weight: 800;
+            font-size: 0.9rem;
           }
         }
       `}</style>

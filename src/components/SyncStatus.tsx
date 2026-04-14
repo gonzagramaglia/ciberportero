@@ -68,6 +68,11 @@ export default function SyncStatus() {
           from { transform: translateY(20px); opacity: 0; }
           to { transform: translateY(0); opacity: 1; }
         }
+        @media (max-width: 768px) {
+          .sync-status-badge {
+            display: none !important;
+          }
+        }
       `}</style>
     </div>
   )
