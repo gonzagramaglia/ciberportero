@@ -192,29 +192,29 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
   }
 
   return (
-    <section className="comments-container" style={{ marginTop: '4rem', padding: '3rem', background: '#ffffff', borderRadius: '32px', border: '1px solid #f0f0f0', boxShadow: '0 20px 50px rgba(0,0,0,0.04)' }}>
+    <section className="comments-container">
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '2.5rem' }}>
-        <MessageSquare size={28} style={{ strokeWidth: 2.5 }} />
-        <h2 style={{ margin: 0, fontSize: '1.8rem', fontWeight: '900', letterSpacing: '-0.02em' }}>
-          {(translations[lang as keyof typeof translations] as any).comments.title} <span style={{ color: '#999', fontSize: '1.2rem', fontWeight: '500', marginLeft: '0.4rem' }}>({totalCount})</span>
+      <div className="comments-header">
+        <MessageSquare size={28} className="header-icon" />
+        <h2 className="header-title">
+          {(translations[lang as keyof typeof translations] as any).comments.title} <span className="total-count">({totalCount})</span>
         </h2>
       </div>
 
       {/* New comment form */}
       {session ? (
         <form onSubmit={handleSubmit} style={{ marginBottom: '3.5rem' }}>
-          <div style={{ display: 'flex', gap: '1rem', background: '#f8f9fa', padding: '0.8rem', borderRadius: '24px', border: '2px solid transparent', transition: 'all 0.3s', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)' }} className="input-wrapper">
-            <div style={{ padding: '0.5rem' }}>
+          <div className="input-wrapper">
+            <div className="avatar-wrapper">
               <Avatar src={session.user.image} name={session.user.name} size={40} />
             </div>
             <textarea
               value={newComment}
               onChange={e => setNewComment(e.target.value)}
               placeholder={lang === 'es' ? "Escribe lo que piensas..." : lang === 'pt' ? "Escreva o que pensa..." : "Write what you think..."}
-              style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', padding: '0.8rem 0', fontSize: '1.05rem', minHeight: '60px', resize: 'none', fontFamily: 'inherit' }}
+              className="comment-textarea"
             />
-            <button disabled={isSubmitting || !newComment.trim()} type="submit" style={{ background: newComment.trim() ? '#000' : '#eee', color: '#fff', width: '45px', height: '45px', borderRadius: '15px', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s', alignSelf: 'flex-end', margin: '0.3rem' }}>
+            <button disabled={isSubmitting || !newComment.trim()} type="submit" className="submit-comment-btn">
               {isSubmitting ? <Loader2 size={20} className="spin" /> : <Send size={20} />}
             </button>
           </div>
@@ -246,11 +246,135 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
       </div>
 
       <style jsx>{`
+        .comments-container {
+          margin-top: 4rem;
+          padding: 3rem;
+          background: #ffffff;
+          border-radius: 32px;
+          border: 1px solid #f0f0f0;
+          box-shadow: 0 20px 50px rgba(0,0,0,0.04);
+        }
+
+        .comments-header {
+          display: flex;
+          align-items: center;
+          gap: 0.8rem;
+          margin-bottom: 2.5rem;
+        }
+
+        .header-title {
+          margin: 0;
+          font-size: 1.8rem;
+          font-weight: 900;
+          letter-spacing: -0.02em;
+        }
+
+        .total-count {
+          color: #999;
+          font-size: 1.2rem;
+          font-weight: 500;
+          marginLeft: 0.4rem;
+        }
+
+        .input-wrapper {
+          display: flex;
+          gap: 1rem;
+          background: #f8f9fa;
+          padding: 0.8rem;
+          border-radius: 24px;
+          border: 2px solid transparent;
+          transition: all 0.3s;
+          box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .avatar-wrapper {
+          padding: 0.5rem;
+        }
+
+        .comment-textarea {
+          flex: 1;
+          background: transparent;
+          border: none;
+          outline: none;
+          padding: 0.8rem 0;
+          fontSize: 1.05rem;
+          minHeight: 60px;
+          resize: none;
+          font-family: inherit;
+        }
+
+        .submit-comment-btn {
+          width: 45px;
+          height: 45px;
+          border-radius: 15px;
+          border: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.2s;
+          align-self: flex-end;
+          margin: 0.3rem;
+          background: #eee;
+          color: #fff;
+        }
+
+        .submit-comment-btn:not(:disabled) {
+          background: #000;
+        }
+
         .spin { animation: spin 1s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .input-wrapper:focus-within { border-color: #000 !important; background: #fff !important; }
+        
+        .input-wrapper:focus-within { 
+          border-color: #000 !important; 
+          background: #fff !important; 
+          box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+        }
+        
         .reply-input-wrapper:focus-within { border-color: #000 !important; background: #fff !important; }
         .delete-comment-btn:hover { opacity: 1 !important; }
+
+        @media (max-width: 768px) {
+          .comments-container {
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border-radius: 24px;
+          }
+          .comments-header {
+            margin-bottom: 1.5rem;
+          }
+          .header-title {
+            font-size: 1.4rem;
+          }
+          .header-icon {
+            width: 20px;
+            height: 20px;
+          }
+          .input-wrapper {
+            padding: 0.5rem;
+            gap: 0.5rem;
+            border-radius: 20px;
+          }
+          .avatar-wrapper {
+            padding: 0.2rem;
+          }
+          :global(.input-wrapper img), :global(.input-wrapper .avatar-fallback) {
+            width: 32px !important;
+            height: 32px !important;
+          }
+          .comment-textarea {
+            font-size: 0.95rem;
+            min-height: 50px;
+            padding: 0.5rem 0;
+          }
+          .submit-comment-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            margin: 0.2rem;
+          }
+        }
       `}</style>
     </section>
   )

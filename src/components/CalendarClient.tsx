@@ -863,22 +863,34 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
           }}>
               <a href="https://drive.google.com/file/d/1u18VHM9XDm9j-SedtkJkHy2vi_fv_rsK/view?usp=sharing" target="_blank" className="cronograma-link">
                   <FileText size={18} />
-                  <span>{ct.schedules.math1}</span>
+                  <span>
+                    <span className="cronograma-prefix">Cronograma de</span>
+                    <span className="cronograma-subject">{ct.schedules.math1.replace('Cronograma de', '').trim()}</span>
+                  </span>
                   <ExternalLink size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
               </a>
               <a href="https://drive.google.com/file/d/1uW0lIVUwM6ElxiWtH3MR6xPxJY9AeQZg/view?usp=sharing" target="_blank" className="cronograma-link">
                   <FileText size={18} />
-                  <span>{ct.schedules.algebra1}</span>
+                  <span>
+                    <span className="cronograma-prefix">Cronograma de</span>
+                    <span className="cronograma-subject">{ct.schedules.algebra1.replace('Cronograma de', '').trim()}</span>
+                  </span>
                   <ExternalLink size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
               </a>
               <a href="https://drive.google.com/file/d/195obq3YIJTYLhF__E_tscoEhzU-rNZ_j/view?usp=sharing" target="_blank" className="cronograma-link">
                   <FileText size={18} />
-                  <span>{ct.schedules.management1}</span>
+                  <span>
+                    <span className="cronograma-prefix">Cronograma de</span>
+                    <span className="cronograma-subject">{ct.schedules.management1.replace('Cronograma de', '').trim()}</span>
+                  </span>
                   <ExternalLink size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
               </a>
               <a href="https://drive.google.com/file/d/1jUHLjjbVx1_D5UMWaCZszFIc25-00JSk/view?usp=sharing" target="_blank" className="cronograma-link">
                   <FileText size={18} />
-                  <span>{ct.schedules.os1}</span>
+                  <span>
+                    <span className="cronograma-prefix">Cronograma de</span>
+                    <span className="cronograma-subject">{ct.schedules.os1.replace('Cronograma de', '').trim()}</span>
+                  </span>
                   <ExternalLink size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
               </a>
           </div>
@@ -1797,9 +1809,28 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cronograma-subject {
+          font-weight: 800;
+          color: #000;
+        }
+
+        @media (min-width: 901px) {
+          .cronograma-link span {
+            flex-direction: row;
+            gap: 0.3rem;
+          }
+          .cronograma-subject {
+            font-weight: inherit;
+            color: inherit;
+          }
         }
 
         @media (max-width: 900px) {
+          .synced-badge { display: none !important; }
           .calendar-controls { 
               padding: 1rem;
               gap: 1rem;
@@ -1817,9 +1848,9 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
             border-radius: 20px;
           }
           .calendar-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 1rem;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 1.5rem;
           }
           .calendar-layout { gap: 1rem; }
