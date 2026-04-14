@@ -152,6 +152,27 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
     return `${parts[2]}-${parts[1]}-${parts[0]}`;
   };
 
+  const getGoogleCalendarUrl = (event: AcademicEvent) => {
+    const title = encodeURIComponent(event.title[lang] || event.title['es'] || '');
+    const details = encodeURIComponent(event.desc[lang] || event.desc['es'] || '');
+    
+    // Format: YYYYMMDD
+    const start = event.startDate.replace(/-/g, '');
+    let end = start;
+    
+    if (event.endDate) {
+      const d = new Date(event.endDate + 'T00:00:00');
+      d.setDate(d.getDate() + 1);
+      end = d.toISOString().split('T')[0].replace(/-/g, '');
+    } else {
+      const d = new Date(event.startDate + 'T00:00:00');
+      d.setDate(d.getDate() + 1);
+      end = d.toISOString().split('T')[0].replace(/-/g, '');
+    }
+    
+    return `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&dates=${start}/${end}`;
+  }
+
   const nextMonth = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))
   }
@@ -579,8 +600,46 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
                            [{event.subjectId.padStart(2, '0')}] {(st as any)[event.subjectId]}
                         </div>
                       )}
-                      <h4>{event.title[lang] || event.title['es']}</h4>
+                      <h4 style={{ margin: 0 }}>{event.title[lang] || event.title['es']}</h4>
                       <p>{event.desc[lang] || event.desc['es']}</p>
+                      
+                      <a 
+                        href={getGoogleCalendarUrl(event)} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.6rem',
+                          marginTop: '1.2rem',
+                          padding: '0.8rem 1.2rem',
+                          borderRadius: '12px',
+                          background: 'rgba(66, 133, 244, 0.08)',
+                          color: '#4285F4',
+                          fontSize: '0.85rem',
+                          fontWeight: '700',
+                          textDecoration: 'none',
+                          transition: 'all 0.2s',
+                          border: '1px solid rgba(66, 133, 244, 0.2)',
+                          width: 'fit-content'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = 'rgba(66, 133, 244, 0.12)';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(66, 133, 244, 0.1)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = 'rgba(66, 133, 244, 0.08)';
+                          e.currentTarget.style.boxShadow = 'none';
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <img 
+                          src="https://www.startpage.com/av/proxy-image?piurl=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F022%2F613%2F030%2Flarge_2x%2Fgoogle-calendar-icon-logo-symbol-free-png.png&sp=1776147573T5b55b890bb7859547026740aee7bc013616282f08d1471e81e2113a01dfe3f71" 
+                          alt="Google Calendar"
+                          style={{ width: '18px', height: '18px', objectFit: 'contain' }}
+                        />
+                        {(ct as any).exportToGoogleCalendar}
+                      </a>
                     </div>
                   ))
                 ) : (

@@ -193,6 +193,7 @@ export const translations = {
             periodMessage: "Seleccioná tu periodo académico",
             addPersonalized: "Agregar evento personalizado",
             addPersonalizedTitle: "Agregar evento",
+            exportToGoogleCalendar: "Exportar evento a tu calendario de Google",
             schedules: {
                 math1: "Cronograma de [01] Análisis Matemático I",
                 algebra1: "Cronograma de [02] Álgebra I",
@@ -412,6 +413,7 @@ export const translations = {
             periodMessage: "Select your academic period",
             addPersonalized: "Add personalized event",
             addPersonalizedTitle: "Add event",
+            exportToGoogleCalendar: "Export event to your Google calendar",
             schedules: {
                 math1: "Schedule for [01] Mathematics I",
                 algebra1: "Schedule for [02] Algebra I",
@@ -631,6 +633,7 @@ export const translations = {
             periodMessage: "Selecione seu período acadêmico",
             addPersonalized: "Adicionar evento personalizado",
             addPersonalizedTitle: "Adicionar evento",
+            exportToGoogleCalendar: "Exportar evento para o seu calendário do Google",
             schedules: {
                 math1: "Cronograma de [01] Análise Matemática I",
                 algebra1: "Cronograma de [02] Álgebra I",
