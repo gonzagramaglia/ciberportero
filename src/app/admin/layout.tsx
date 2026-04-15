@@ -1,6 +1,6 @@
 import "./admin.css";
 import Link from "next/link";
-import { LayoutDashboard, Link as LinkIcon, FileText, Calendar, Bell, ArrowLeft, LogOut, MessageSquare } from "lucide-react";
+import { LayoutDashboard, Link as LinkIcon, FileText, Calendar, Bell, ArrowLeft, LogOut, MessageSquare, Image as ImageIcon } from "lucide-react";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import AdminNavLink from "@/components/admin/AdminNavLink";
@@ -45,6 +45,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <AdminNavLink href="/admin/calendar" icon={<Calendar size={20} />} label="Calendario" />
           <AdminNavLink href="/admin/notifications" icon={<Bell size={20} />} label="Notificaciones" />
           <AdminNavLink href="/admin/comments" icon={<MessageSquare size={20} />} label="Comentarios" />
+          <AdminNavLink href="/admin/images" icon={<ImageIcon size={20} />} label="Imágenes" />
         </nav>
 
         <div className="sidebar-footer" style={{ marginTop: 'auto', borderTop: '1px solid #f1f5f9', paddingTop: '1rem' }}>

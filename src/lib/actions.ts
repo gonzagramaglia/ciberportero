@@ -453,3 +453,92 @@ export async function deleteComment(commentId: string) {
   revalidatePath(`/${comment.post.slug}`);
   return { success: true };
 }
+
+/* --- IMAGE ACTIONS --- */
+export async function uploadImage(formData: FormData) {
+  const session = await auth();
+  const user = await db.user.findUnique({ where: { id: session?.user?.id } });
+  if ((user as any)?.role !== 'admin') return { error: "Unauthorized" };
+
+  const file = formData.get('file') as File;
+  const slug = formData.get('slug') as string;
+
+  if (!file || !slug) return { error: "Faltan datos" };
+
+  // 1. Upload to Supabase Storage
+  // We use direct fetch if we want to avoid the library for the action, 
+  // but since we installed it, let's use it.
+  const { supabase } = await import('@/lib/supabase');
+  
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const fileExt = file.name.split('.').pop();
+  const filePath = `${slug}-${Date.now()}.${fileExt}`;
+
+  const { data: storageData, error: storageError } = await supabase.storage
+    .from('images') // You must create this bucket in Supabase as PUBLIC
+    .upload(filePath, buffer, {
+      contentType: file.type,
+      upsert: true
+    });
+
+  if (storageError) {
+    console.error('Storage Error:', storageError);
+    return { error: `Error subiendo a Supabase: ${storageError.message}` };
+  }
+
+  // Get public URL
+  const { data: { publicUrl } } = supabase.storage
+    .from('images')
+    .getPublicUrl(filePath);
+
+  // 2. Save metadata in Prisma
+  try {
+    const image = await db.image.create({
+      data: {
+        slug,
+        url: publicUrl,
+        filename: file.name,
+        mimeType: file.type,
+        size: file.size,
+      }
+    });
+
+    await logAction('CREATE', 'image', `Subió imagen: ${slug}`);
+    return { success: true, image };
+  } catch (error: any) {
+    if (error.code === 'P2002') return { error: "El slug ya existe" };
+    console.error('Prisma Error:', error);
+    return { error: "Error al guardar metadatos" };
+  }
+}
+
+export async function getImages() {
+  const session = await auth();
+  const user = await db.user.findUnique({ where: { id: session?.user?.id } });
+  if ((user as any)?.role !== 'admin') return [];
+
+  return db.image.findMany({
+    orderBy: { createdAt: 'desc' }
+  });
+}
+
+export async function deleteImage(id: string) {
+  const session = await auth();
+  const user = await db.user.findUnique({ where: { id: session?.user?.id } });
+  if ((user as any)?.role !== 'admin') return { error: "Unauthorized" };
+
+  const image = await db.image.findUnique({ where: { id } });
+  if (!image) return { error: "Not found" };
+
+  // Delete from Storage
+  const { supabase } = await import('@/lib/supabase');
+  const path = image.url.split('/').pop();
+  if (path) {
+    await supabase.storage.from('images').remove([path]);
+  }
+
+  await db.image.delete({ where: { id } });
+  await logAction('DELETE', 'image', `Eliminó imagen: ${image.slug}`);
+
+  return { success: true };
+}

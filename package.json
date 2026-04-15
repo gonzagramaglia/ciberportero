@@ -12,6 +12,7 @@
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
     "@prisma/client": "6",
+    "@supabase/supabase-js": "^2.103.2",
     "gray-matter": "^4.0.3",
     "lucide-react": "^0.562.0",
     "next": "16.1.4",

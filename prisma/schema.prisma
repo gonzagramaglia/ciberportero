@@ -141,6 +141,21 @@ model Post {
   @@map("posts")
 }
 
+model Image {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  url       String   // Supabase Storage URL
+  filename  String
+  mimeType  String
+  size      Int
+  width     Int?
+  height    Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("images")
+}
+
 model Comment {
   id        String   @id @default(cuid())
   content   String   @db.Text
