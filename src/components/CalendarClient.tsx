@@ -864,32 +864,60 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
               <a href="https://drive.google.com/file/d/1u18VHM9XDm9j-SedtkJkHy2vi_fv_rsK/view?usp=sharing" target="_blank" className="cronograma-link">
                   <FileText size={18} />
                   <span>
-                    <span className="cronograma-prefix">Cronograma de</span>
-                    <span className="cronograma-subject">{ct.schedules.math1.replace('Cronograma de', '').trim()}</span>
+                    {(() => {
+                      const [prefix, subject] = ct.schedules.math1.split(/(?=\[)/);
+                      return (
+                        <>
+                          <span className="cronograma-prefix">{prefix.trim()} </span>
+                          <span className="cronograma-subject">{subject}</span>
+                        </>
+                      );
+                    })()}
                   </span>
                   <ExternalLink size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
               </a>
               <a href="https://drive.google.com/file/d/1uW0lIVUwM6ElxiWtH3MR6xPxJY9AeQZg/view?usp=sharing" target="_blank" className="cronograma-link">
                   <FileText size={18} />
                   <span>
-                    <span className="cronograma-prefix">Cronograma de</span>
-                    <span className="cronograma-subject">{ct.schedules.algebra1.replace('Cronograma de', '').trim()}</span>
+                    {(() => {
+                      const [prefix, subject] = ct.schedules.algebra1.split(/(?=\[)/);
+                      return (
+                        <>
+                          <span className="cronograma-prefix">{prefix.trim()} </span>
+                          <span className="cronograma-subject">{subject}</span>
+                        </>
+                      );
+                    })()}
                   </span>
                   <ExternalLink size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
               </a>
               <a href="https://drive.google.com/file/d/195obq3YIJTYLhF__E_tscoEhzU-rNZ_j/view?usp=sharing" target="_blank" className="cronograma-link">
                   <FileText size={18} />
                   <span>
-                    <span className="cronograma-prefix">Cronograma de</span>
-                    <span className="cronograma-subject">{ct.schedules.management1.replace('Cronograma de', '').trim()}</span>
+                    {(() => {
+                      const [prefix, subject] = ct.schedules.management1.split(/(?=\[)/);
+                      return (
+                        <>
+                          <span className="cronograma-prefix">{prefix.trim()} </span>
+                          <span className="cronograma-subject">{subject}</span>
+                        </>
+                      );
+                    })()}
                   </span>
                   <ExternalLink size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
               </a>
               <a href="https://drive.google.com/file/d/1jUHLjjbVx1_D5UMWaCZszFIc25-00JSk/view?usp=sharing" target="_blank" className="cronograma-link">
                   <FileText size={18} />
                   <span>
-                    <span className="cronograma-prefix">Cronograma de</span>
-                    <span className="cronograma-subject">{ct.schedules.os1.replace('Cronograma de', '').trim()}</span>
+                    {(() => {
+                      const [prefix, subject] = ct.schedules.os1.split(/(?=\[)/);
+                      return (
+                        <>
+                          <span className="cronograma-prefix">{prefix.trim()} </span>
+                          <span className="cronograma-subject">{subject}</span>
+                        </>
+                      );
+                    })()}
                   </span>
                   <ExternalLink size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
               </a>

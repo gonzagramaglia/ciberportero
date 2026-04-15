@@ -24,6 +24,7 @@ export default function PostEditor({ post }: PostEditorProps) {
   const [contents, setContents] = useState<Record<Lang, string>>(post?.content || { es: '', en: '', pt: '' });
   const [descriptions, setDescriptions] = useState<Record<Lang, string>>(post?.description || { es: '', en: '', pt: '' });
   const [slug, setSlug] = useState(post?.slug || '');
+  const [alternativeSlug, setAlternativeSlug] = useState(post?.alternativeSlug || '');
   const [published, setPublished] = useState(post?.published ?? true);
   const isDirty = useMemo(() => {
     const initialTitles = post?.title || { es: '', en: '', pt: '' };
@@ -36,8 +37,9 @@ export default function PostEditor({ post }: PostEditorProps) {
            JSON.stringify(contents) !== JSON.stringify(initialContents) ||
            JSON.stringify(descriptions) !== JSON.stringify(initialDescriptions) ||
            slug !== initialSlug ||
+           alternativeSlug !== (post?.alternativeSlug || '') ||
            published !== initialPublished;
-  }, [titles, contents, descriptions, slug, published, post]);
+  }, [titles, contents, descriptions, slug, alternativeSlug, published, post]);
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -62,13 +64,6 @@ export default function PostEditor({ post }: PostEditorProps) {
 
   const handleTitleChange = (val: string) => {
     setTitles({ ...titles, [activeLang]: val });
-    // Auto-generate slug from Spanish title if it's a new post
-    if (!post && activeLang === 'es') {
-      setSlug(val.toLowerCase()
-        .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Remove accents
-        .replace(/ /g, '-')
-        .replace(/[^\w-]+/g, ''));
-    }
   };
 
   const handleContentChange = (val: string) => {
@@ -88,17 +83,23 @@ export default function PostEditor({ post }: PostEditorProps) {
       return;
     }
 
+    if (!slug) {
+      alert('El slug es obligatorio para guardar el post.');
+      return;
+    }
+
     setIsPending(true);
     try {
       await upsertPost({
         id: post?.id,
         title: titles,
         slug,
+        alternativeSlug,
         content: contents,
         description: descriptions,
         published
       });
-      router.push('/admin/posts');
+      router.push(`/admin/posts?success=${encodeURIComponent(titles.es)}&slug=${slug}`);
       router.refresh();
     } catch (error) {
       console.error(error);
@@ -238,17 +239,29 @@ export default function PostEditor({ post }: PostEditorProps) {
 
           <div className="space-y-12">
             {/* 1. Configuración Global (Slug y Estado) */}
-            <div style={{ padding: '2rem', background: '#f8fafc', borderRadius: '16px', border: '1px solid #e2e8f0', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem', alignItems: 'flex-end', marginBottom: '1rem' }}>
-              <div style={{ flex: 1 }}>
-                <label className="admin-label" style={{ fontSize: '0.75rem', marginBottom: '0.75rem', display: 'block' }}>Slug (URL Compartida)</label>
-                <input 
-                  required
-                  className="admin-input"
-                  style={{ borderRadius: '10px', fontSize: '0.9rem', background: 'white' }}
-                  value={slug}
-                  onChange={e => setSlug(e.target.value)}
-                  placeholder="ej-mi-post-unico"
-                />
+            <div style={{ padding: '2rem', background: '#f8fafc', borderRadius: '16px', border: '1px solid #e2e8f0', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', alignItems: 'flex-end', marginBottom: '1rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', gridColumn: 'span 1' }}>
+                <div>
+                  <label className="admin-label" style={{ fontSize: '0.75rem', marginBottom: '0.75rem', display: 'block' }}>Slug Principal</label>
+                  <input 
+                    required
+                    className="admin-input"
+                    style={{ borderRadius: '10px', fontSize: '0.9rem', background: 'white' }}
+                    value={slug}
+                    onChange={e => setSlug(e.target.value)}
+                    placeholder="ej-mi-post"
+                  />
+                </div>
+                <div>
+                  <label className="admin-label" style={{ fontSize: '0.75rem', marginBottom: '0.75rem', display: 'block' }}>Slug Adicional (Opcional)</label>
+                  <input 
+                    className="admin-input"
+                    style={{ borderRadius: '10px', fontSize: '0.9rem', background: 'white' }}
+                    value={alternativeSlug}
+                    onChange={e => setAlternativeSlug(e.target.value)}
+                    placeholder="ej-alias-post"
+                  />
+                </div>
               </div>
               <div>
                 <label className="admin-label" style={{ fontSize: '0.75rem', marginBottom: '0.75rem', display: 'block' }}>Estado de Publicación</label>

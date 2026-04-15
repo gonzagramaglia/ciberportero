@@ -3,12 +3,17 @@ import { Plus, FileText, Globe, Trash2, Edit, CheckCircle2, Languages } from "lu
 import Link from "next/link";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 import { deletePost } from "@/lib/actions";
+import SuccessToast from "@/components/admin/SuccessToast";
+import { Suspense } from "react";
 
 export default async function AdminPostsPage() {
   const posts = await db.post.findMany({ orderBy: { date: 'desc' } });
 
   return (
     <div className="space-y-6 fade-in">
+      <Suspense fallback={null}>
+        <SuccessToast />
+      </Suspense>
       <div className="admin-header">
         <div>
           <div style={{ marginBottom: '0.25rem' }}>

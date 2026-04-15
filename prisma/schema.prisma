@@ -129,7 +129,8 @@ model Link {
 model Post {
   id          String   @id @default(cuid())
   title       Json     // { "es": "...", "en": "...", "pt": "..." }
-  slug        String   @unique
+  slug           String   @unique
+  alternativeSlug String?  @unique
   content     Json     // { "es": "...", "en": "...", "pt": "..." }
   description Json?    // { "es": "...", "en": "...", "pt": "..." }
   published   Boolean  @default(false)
