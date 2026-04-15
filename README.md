@@ -21,6 +21,7 @@ Ciberportero now includes a restricted **Mission Control** area for administrato
 - **Link Management**: Add, remove, or reorder useful resources and official links.
 - **Post Engine**: Manage academic notes and community resources with a localized CMS.
 - **Event Orchestrator**: Update the academic calendar dates and period filters instantly.
+- **Image Asset Management**: A high-fidelity media library to upload, manage, and link institutional images using custom slugs and Supabase Storage.
 - **Security & Countdown Hub**: Deploy high-visibility security alerts and manage countdowns for critical dates (Enrollment, Classes Start).
 
 ## ✨ Technical Highlights
