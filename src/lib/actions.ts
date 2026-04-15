@@ -506,9 +506,9 @@ export async function uploadImage(formData: FormData) {
     await logAction('CREATE', 'image', `Subió imagen: ${slug}`);
     return { success: true, image };
   } catch (error: any) {
-    if (error.code === 'P2002') return { error: "El slug ya existe" };
     console.error('Prisma Error:', error);
-    return { error: "Error al guardar metadatos" };
+    if (error.code === 'P2002') return { error: "El slug ya existe" };
+    return { error: `Error en DB: ${error.message || "Asegúrate de haber ejecutado npx prisma db push"}` };
   }
 }
 

@@ -30,9 +30,14 @@ export default function ImageManager() {
 
   const fetchImages = async () => {
     setIsLoading(true);
-    const data = await getImages();
-    setImages(data);
-    setIsLoading(false);
+    try {
+      const data = await getImages();
+      setImages(data);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -125,7 +130,7 @@ export default function ImageManager() {
             <ImageIcon size={24} />
           </div>
           <div className="im-stat-info">
-            <p>Total Assets</p>
+            <p>Assets Totales</p>
             <p>{images.length}</p>
           </div>
         </div>
@@ -134,9 +139,9 @@ export default function ImageManager() {
             <Hash size={24} />
           </div>
           <div className="im-stat-info">
-            <p>Bucket Status</p>
+            <p>Estado del Bucket</p>
             <div className="im-badge-success">
-              <Check size={12} /> PUBLIC ACTIVE
+              <Check size={12} /> PÚBLICO ACTIVO
             </div>
           </div>
         </div>
@@ -145,7 +150,7 @@ export default function ImageManager() {
             <Info size={24} />
           </div>
           <div className="im-stat-info">
-            <p>Usage Tip</p>
+            <p>Tip de Uso</p>
             <p style={{ fontSize: '0.8rem', fontWeight: 600, color: '#64748b' }}>
               Slugs cortos = URLs limpias.
             </p>
@@ -158,7 +163,7 @@ export default function ImageManager() {
         <section className="im-upload-section">
           <div className="im-card">
             <h3 style={{ fontSize: '1.25rem', fontWeight: 900, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Plus size={20} color="#0070f3" /> Nuevo Asset
+              Nuevo Asset
             </h3>
 
             <form onSubmit={handleUpload} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -183,6 +188,10 @@ export default function ImageManager() {
                     src={URL.createObjectURL(file)} 
                     className="im-preview-img" 
                     alt="Preview" 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      window.open(URL.createObjectURL(file), '_blank');
+                    }}
                   />
                 ) : (
                   <>
@@ -250,7 +259,7 @@ export default function ImageManager() {
         <section className="im-card" style={{ padding: 0, overflow: 'hidden' }}>
           <header className="im-library-header">
             <h3 style={{ fontSize: '1.1rem', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
-              <Grid size={18} color="#94a3b8" /> Librería de Assets
+              Librería de Assets
             </h3>
 
             <div className="im-search-wrapper">
@@ -280,7 +289,7 @@ export default function ImageManager() {
               <div className="im-gallery-grid">
                 {filteredImages.map(img => (
                   <article key={img.id} className="im-asset-card">
-                    <div className="im-asset-thumb">
+                    <div className="im-asset-thumb" onClick={() => window.open(img.url, '_blank')} style={{ cursor: 'pointer' }}>
                       <img src={img.url} alt={img.slug} />
                     </div>
                     <div className="im-asset-info">
@@ -313,7 +322,7 @@ export default function ImageManager() {
 
           <footer style={{ padding: '1rem 2rem', background: '#f8fafc', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', fontWeight: 800, color: '#94a3b8' }}>
             <span>FORMATOS: PNG, JPG, WEBP, GIF, SVG</span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}><LockIcon size={12} /> STORAGE SECURE</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}><LockIcon size={12} /> ALMACENAMIENTO SEGURO</span>
           </footer>
         </section>
       </div>

@@ -11,8 +11,7 @@ export default async function AdminPostsPage() {
     <div className="space-y-6 fade-in">
       <div className="admin-header">
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
-            <Languages size={24} className="text-accent" />
+          <div style={{ marginBottom: '0.25rem' }}>
             <h2 className="admin-title">Posts Multilingües</h2>
           </div>
           <p className="admin-subtitle">

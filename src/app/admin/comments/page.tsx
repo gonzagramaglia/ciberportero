@@ -25,10 +25,12 @@ export default async function AdminCommentsPage() {
 
   return (
     <>
-      <header style={{ marginBottom: '2rem' }}>
-        <h1 style={{ margin: 0, fontSize: '2rem', fontWeight: '900' }}>Gestión de Comentarios</h1>
-        <p style={{ color: '#666' }}>Modera las interacciones de la comunidad</p>
-      </header>
+      <div className="admin-header" style={{ marginBottom: '2rem' }}>
+        <div>
+          <h2 className="admin-title">Gestión de Comentarios</h2>
+          <p className="admin-subtitle">Modera las interacciones de la comunidad</p>
+        </div>
+      </div>
 
       <div style={{ display: 'grid', gap: '1rem' }}>
         {comments.length === 0 ? (
