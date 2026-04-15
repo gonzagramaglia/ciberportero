@@ -468,13 +468,13 @@ export async function uploadImage(formData: FormData) {
   // 1. Upload to Supabase Storage
   // We use direct fetch if we want to avoid the library for the action, 
   // but since we installed it, let's use it.
-  const { supabase } = await import('@/lib/supabase');
+  const { supabaseAdmin } = await import('@/lib/supabase');
   
   const buffer = Buffer.from(await file.arrayBuffer());
   const fileExt = file.name.split('.').pop();
   const filePath = `${slug}-${Date.now()}.${fileExt}`;
 
-  const { data: storageData, error: storageError } = await supabase.storage
+  const { data: storageData, error: storageError } = await supabaseAdmin.storage
     .from('images') // You must create this bucket in Supabase as PUBLIC
     .upload(filePath, buffer, {
       contentType: file.type,
@@ -487,7 +487,7 @@ export async function uploadImage(formData: FormData) {
   }
 
   // Get public URL
-  const { data: { publicUrl } } = supabase.storage
+  const { data: { publicUrl } } = supabaseAdmin.storage
     .from('images')
     .getPublicUrl(filePath);
 
@@ -531,10 +531,10 @@ export async function deleteImage(id: string) {
   if (!image) return { error: "Not found" };
 
   // Delete from Storage
-  const { supabase } = await import('@/lib/supabase');
+  const { supabaseAdmin } = await import('@/lib/supabase');
   const path = image.url.split('/').pop();
   if (path) {
-    await supabase.storage.from('images').remove([path]);
+    await supabaseAdmin.storage.from('images').remove([path]);
   }
 
   await db.image.delete({ where: { id } });
