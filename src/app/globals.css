@@ -1011,7 +1011,7 @@ footer a:hover {
 .sidebar-widget-left {
   right: calc(50% + 600px + 3.5rem);
   left: auto;
-  top: 6.0rem;
+  top: 6.4rem;
 }
 
 .sidebar-widget-math {
@@ -1021,7 +1021,7 @@ footer a:hover {
 .sidebar-widget-right {
   left: calc(50% + 600px + 3.5rem);
   right: auto;
-  top: 6.0rem;
+  top: 6.4rem;
 }
 
 .sidebar-widget-right img {
@@ -1869,4 +1869,17 @@ html {
   color: #eab308 !important;
   border-color: #eab308 !important;
   box-shadow: 0 15px 35px rgba(234, 179, 8, 0.2) !important;
+}
+
+/* Skeleton Animation */
+@keyframes skeleton-pulse {
+  0% { opacity: 0.03; }
+  50% { opacity: 0.08; }
+  100% { opacity: 0.03; }
+}
+
+.skeleton-pulse {
+  animation: skeleton-pulse 2.5s ease-in-out infinite;
+  background-color: #64748b;
+  border-radius: 14px;
 }

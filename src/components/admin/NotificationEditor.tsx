@@ -120,11 +120,11 @@ export default function NotificationEditor({ notification }: NotificationEditorP
 
         <div className="space-y-6">
           <section className="admin-card" style={{ padding: '2rem' }}>
-            <div style={{ marginBottom: '1.5rem' }}>
-              <h4 style={{ margin: 0, fontSize: '0.9rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase' }}>Configuración</h4>
+            <div style={{ marginBottom: '2.5rem' }}>
+              <h4 style={{ margin: 0, fontSize: '0.8rem', fontWeight: 900, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Configuración</h4>
             </div>
 
-            <div className="space-y-6">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
               <div>
                 <label className="admin-label">Tipo de Alerta</label>
                 <select 
@@ -142,21 +142,25 @@ export default function NotificationEditor({ notification }: NotificationEditorP
               <div 
                 onClick={() => setActive(!active)}
                 style={{ 
-                  cursor: 'pointer', padding: '1.25rem', borderRadius: '16px',
-                  background: active ? '#f0fdf4' : '#f8fafc',
+                  cursor: 'pointer', padding: '1.25rem', borderRadius: '18px',
+                  background: active ? '#f0fdf4' : '#ffffff',
                   border: `2px solid ${active ? '#22c55e' : '#e2e8f0'}`,
-                  display: 'flex', alignItems: 'center', gap: '0.75rem', transition: 'all 0.2s'
+                  display: 'flex', alignItems: 'center', gap: '1rem', transition: 'all 0.2s',
+                  boxShadow: active ? '0 4px 12px rgba(34, 197, 94, 0.1)' : 'none'
                 }}
               >
                 <div style={{ 
-                  width: '20px', height: '20px', borderRadius: '6px', 
-                  border: `2px solid ${active ? '#22c55e' : '#cbd5e1'}`,
-                  background: active ? '#22c55e' : 'white',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center'
+                  width: '44px', height: '24px', borderRadius: '12px', background: active ? '#22c55e' : '#cbd5e1',
+                  position: 'relative', transition: 'all 0.3s'
                 }}>
-                  {active && <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'white' }} />}
+                  <div style={{ 
+                    width: '18px', height: '18px', borderRadius: '50%', background: 'white',
+                    position: 'absolute', top: '3px', left: active ? '23px' : '3px',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                  }} />
                 </div>
-                <span style={{ fontWeight: 800, color: active ? '#166534' : '#64748b', fontSize: '0.85rem' }}>
+                <span style={{ fontWeight: 800, color: active ? '#166534' : '#64748b', fontSize: '0.95rem' }}>
                   {active ? 'Alerta Habilitada' : 'Alerta Desactivada'}
                 </span>
               </div>

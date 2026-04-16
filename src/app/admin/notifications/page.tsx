@@ -1,14 +1,10 @@
 import { db } from "@/lib/db";
-import NotificationsClient from "@/components/admin/NotificationsTabs";
+import NotificationsList from "@/components/admin/NotificationsList";
 
 export default async function AdminNotificationsPage() {
-  const [notifications, countdowns] = await Promise.all([
-    db.notification.findMany({ orderBy: { createdAt: 'desc' } }),
-    db.countdown.findMany({ 
-      where: { postId: null },
-      orderBy: { slot: 'asc' } 
-    })
-  ]);
+  const notifications = await db.notification.findMany({ 
+    orderBy: { createdAt: 'desc' } 
+  });
 
-  return <NotificationsClient notifications={notifications} countdowns={countdowns} />;
+  return <NotificationsList notifications={notifications} />;
 }

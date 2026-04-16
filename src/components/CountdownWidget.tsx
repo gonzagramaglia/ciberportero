@@ -21,19 +21,22 @@ interface CountdownWidgetProps {
 export default function CountdownWidget({ countdowns: initialCountdowns }: CountdownWidgetProps) {
     const { lang } = useLanguage();
     const t = translations[lang].countdown;
+    const [isLoading, setIsLoading] = useState(!initialCountdowns);
     const [countdowns, setCountdowns] = useState<CountdownData[]>(initialCountdowns || []);
 
     useEffect(() => {
         if (initialCountdowns) {
             setCountdowns(initialCountdowns);
+            setIsLoading(false);
         } else {
-            // Fetch global countdowns if not provided as props
+            setIsLoading(true);
             fetch(`/api/countdowns?lang=${lang}`)
                 .then(res => res.json())
                 .then(data => {
                     if (Array.isArray(data)) setCountdowns(data);
                 })
-                .catch(err => console.error("Error fetching countdowns:", err));
+                .catch(err => console.error("Error fetching countdowns:", err))
+                .finally(() => setIsLoading(false));
         }
     }, [initialCountdowns, lang]);
 
@@ -99,6 +102,15 @@ export default function CountdownWidget({ countdowns: initialCountdowns }: Count
             </div>
         </div>
     );
+
+    if (isLoading) {
+        return (
+            <>
+                <div className="sidebar-widget sidebar-widget-left skeleton-pulse" style={{ height: '85px', opacity: 0.5 }}></div>
+                <div className="sidebar-widget sidebar-widget-right skeleton-pulse" style={{ height: '85px', opacity: 0.5 }}></div>
+            </>
+        );
+    }
 
     return (
         <>
