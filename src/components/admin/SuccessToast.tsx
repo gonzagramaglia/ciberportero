@@ -49,7 +49,7 @@ export default function SuccessToast() {
       gap: '1rem',
       zIndex: 10000,
       animation: 'slideInTop 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
-      maxWidth: '400px',
+      maxWidth: '600px',
       width: 'calc(100% - 2rem)'
     }}>
       <div style={{ 

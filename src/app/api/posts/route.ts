@@ -10,7 +10,14 @@ export async function GET(request: Request) {
     if (slug) {
         // 1. Try Database first
         try {
-            const dbPost = await db.post.findUnique({ where: { slug } });
+            const dbPost = await db.post.findFirst({ 
+                where: { 
+                    OR: [
+                        { slug },
+                        { alternativeSlug: slug }
+                    ]
+                } 
+            });
             if (dbPost && dbPost.published) {
                 const titleObj = dbPost.title as any;
                 const contentObj = dbPost.content as any;

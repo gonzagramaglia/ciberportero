@@ -286,36 +286,55 @@ export default function ImageManager() {
                 <p style={{ fontWeight: 800 }}>No hay assets aún</p>
               </div>
             ) : (
-              <div className="im-gallery-grid">
-                {filteredImages.map(img => (
-                  <article key={img.id} className="im-asset-card">
-                    <div className="im-asset-thumb" onClick={() => window.open(img.url, '_blank')} style={{ cursor: 'pointer' }}>
-                      <img src={img.url} alt={img.slug} />
-                    </div>
-                    <div className="im-asset-info">
-                      <div className="im-asset-slug">
-                        <Hash size={14} color="#0070f3" /> {img.slug}
-                      </div>
-                      <div className="im-asset-meta">{img.filename}</div>
-                      
-                      <div className="im-asset-actions">
-                        <button 
-                          onClick={() => copyToClipboard(img.slug, img.id)}
-                          className={`im-btn-copy ${copiedId === img.id ? 'success' : ''}`}
-                        >
-                          {copiedId === img.id ? <Check size={14} /> : <Copy size={14} />}
-                          {copiedId === img.id ? 'COPIADO' : 'COPIAR'}
-                        </button>
-                        <button 
-                          onClick={() => handleDelete(img.id, img.slug)}
-                          className="im-btn-delete"
-                        >
-                          <Trash2 size={14} />
-                        </button>
-                      </div>
-                    </div>
-                  </article>
-                ))}
+              <div className="im-gallery-list">
+                <table className="im-list-table">
+                  <thead>
+                    <tr>
+                      <th>Slug (Click para ver)</th>
+                      <th>Nombre del Archivo</th>
+                      <th style={{ textAlign: 'right' }}>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredImages.map(img => (
+                      <tr key={img.id} className="im-asset-row">
+                        <td>
+                          <a 
+                            href={img.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="im-asset-slug-link"
+                          >
+                            <Hash size={14} style={{ marginRight: '4px' }} />
+                            {img.slug}
+                          </a>
+                        </td>
+                        <td>
+                          <span className="im-asset-filename">{img.filename}</span>
+                        </td>
+                        <td>
+                          <div className="im-asset-actions-row">
+                            <button 
+                              onClick={() => copyToClipboard(img.slug, img.id)}
+                              className={`im-btn-copy-small ${copiedId === img.id ? 'success' : ''}`}
+                              title="Copiar código Markdown"
+                            >
+                              {copiedId === img.id ? <Check size={14} /> : <Copy size={14} />}
+                              <span>{copiedId === img.id ? 'COPIADO' : 'COPIAR'}</span>
+                            </button>
+                            <button 
+                              onClick={() => handleDelete(img.id, img.slug)}
+                              className="im-btn-delete-small"
+                              title="Eliminar"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             )}
           </div>
