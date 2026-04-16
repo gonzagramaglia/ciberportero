@@ -19,6 +19,8 @@ export default function NotificationEditor({ notification }: NotificationEditorP
   const [descriptions, setDescriptions] = useState(notification?.description || { es: '', en: '', pt: '' });
   const [type, setType] = useState(notification?.type || 'info');
   const [active, setActive] = useState(notification?.active ?? true);
+  const [adminNotes, setAdminNotes] = useState(notification?.adminNotes || '');
+  const [url, setUrl] = useState(notification?.url || '');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,7 +35,9 @@ export default function NotificationEditor({ notification }: NotificationEditorP
         message: messages,
         description: descriptions,
         type,
-        active
+        active,
+        adminNotes,
+        url
       });
       router.push('/admin/notifications');
       router.refresh();
@@ -118,7 +122,7 @@ export default function NotificationEditor({ notification }: NotificationEditorP
           </section>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-6" style={{ marginTop: '5.5rem' }}>
           <section className="admin-card" style={{ padding: '2rem' }}>
             <div style={{ marginBottom: '2.5rem' }}>
               <h4 style={{ margin: 0, fontSize: '0.8rem', fontWeight: 900, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Configuración</h4>
@@ -137,6 +141,18 @@ export default function NotificationEditor({ notification }: NotificationEditorP
                   <option value="danger">Danger (Rojo)</option>
                   <option value="success">Éxito (Verde)</option>
                 </select>
+              </div>
+
+              <div>
+                <label className="admin-label">URL de destino (Opcional)</label>
+                <input 
+                  type="url"
+                  className="admin-input"
+                  value={url}
+                  onChange={e => setUrl(e.target.value)}
+                  placeholder="https://ejemplo.com"
+                />
+                <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.5rem' }}>Al hacer click en el banner, se abrirá este link en una pestaña nueva.</p>
               </div>
 
               <div 
@@ -165,6 +181,19 @@ export default function NotificationEditor({ notification }: NotificationEditorP
                 </span>
               </div>
             </div>
+          </section>
+          <section className="admin-card" style={{ padding: '2rem' }}>
+            <div style={{ marginBottom: '1.5rem' }}>
+              <h4 style={{ margin: 0, fontSize: '0.8rem', fontWeight: 900, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Notas Internas (Admin)</h4>
+            </div>
+            <textarea 
+              className="admin-input"
+              rows={4}
+              value={adminNotes}
+              onChange={e => setAdminNotes(e.target.value)}
+              placeholder="Recordatorios privados sobre esta alerta... (No visible en la web)"
+              style={{ fontSize: '0.9rem', background: '#fff', border: '1px dashed #cbd5e1' }}
+            />
           </section>
         </div>
       </div>

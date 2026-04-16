@@ -151,6 +151,8 @@ export async function upsertNotification(data: any) {
     description: data.description,
     type: data.type,
     active: data.active,
+    url: data.url || null,
+    adminNotes: data.adminNotes || null,
   };
 
   if (isUpdate) {
@@ -194,6 +196,7 @@ export async function upsertPost(data: any) {
     alternativeSlug: data.alternativeSlug || null,
     description: data.description,
     published: data.published,
+    adminNotes: data.adminNotes || null,
   };
 
   if (isUpdate) {
@@ -211,7 +214,8 @@ export async function upsertPost(data: any) {
               targetDate: new Date(c.targetDate),
               description: c.description,
               url: c.url || null,
-              isActive: c.isActive
+              isActive: c.isActive,
+              adminNotes: c.adminNotes || null
             }))
           }
         }
@@ -229,7 +233,8 @@ export async function upsertPost(data: any) {
             targetDate: new Date(c.targetDate),
             description: c.description,
             url: c.url || null,
-            isActive: c.isActive
+            isActive: c.isActive,
+            adminNotes: c.adminNotes || null
           }))
         }
       }
@@ -268,6 +273,7 @@ export async function upsertCountdown(data: any) {
         url: data.url || null,
         slot: data.slot || 'left',
         isActive: data.isActive,
+        adminNotes: data.adminNotes || null,
       }
     });
     await logAction('UPDATE', 'countdown', `Actualizó el contador: ${titleEs}`);
@@ -280,6 +286,7 @@ export async function upsertCountdown(data: any) {
         url: data.url || null,
         slot: data.slot || 'left',
         isActive: data.isActive,
+        adminNotes: data.adminNotes || null,
       }
     });
     await logAction('CREATE', 'countdown', `Creó un nuevo contador: ${titleEs}`);
@@ -324,6 +331,7 @@ export async function upsertCalendarEvent(data: any) {
     period: data.period,
     type: data.type,
     subjectId: data.subjectId,
+    adminNotes: data.adminNotes || null,
   };
 
   if (isUpdate) {

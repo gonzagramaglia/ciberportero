@@ -55,7 +55,8 @@ export default function CountdownsList({ countdowns }: Props) {
                     <div>
                       <h4 style={{ margin: 0, fontWeight: 800, fontSize: '0.95rem' }}>{c ? (c.title as any)?.es : slotName}</h4>
                       <p style={{ margin: 0, fontSize: '10px', color: c?.isActive ? '#22c55e' : '#94a3b8', fontWeight: 900, textTransform: 'uppercase' }}>
-                        {c ? (c.isActive ? 'Habilitado' : 'Desactivado') : 'Sin configuración'}
+                        {c ? (c.slot === 'left' ? 'IZQUIERDA ' : 'DERECHA ') : ''}
+                        {c ? (c.isActive ? '/ HABILITADO' : '/ DESACTIVADO') : 'Sin configuración'}
                       </p>
                     </div>
                   </div>
@@ -75,7 +76,7 @@ export default function CountdownsList({ countdowns }: Props) {
                         background: '#f8fafc', borderRadius: '10px', border: '1px solid #e2e8f0',
                         display: 'flex', justifyContent: 'space-between'
                       }}>
-                        <span style={{ color: '#94a3b8', fontSize: '10px' }}>META:</span>
+                        <span style={{ color: '#94a3b8', fontSize: '10px' }}>DEADLINE:</span>
                         <span>{new Date(c.targetDate).toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' })}</span>
                       </div>
                       <Link href={`/admin/countdowns/${c.id}`} style={{ 

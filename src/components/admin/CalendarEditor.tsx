@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, X, Calendar as CalendarIcon, Info, Tag, Book } from 'lucide-react';
+import { Save, X, Calendar as CalendarIcon, Tag, Book, Edit3 } from 'lucide-react';
 import { upsertCalendarEvent } from '@/lib/actions';
 import { translations } from '@/lib/translations';
 
@@ -42,6 +42,7 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
   const [period, setPeriod] = useState(event?.period || '1er cuatrimestre de 1er año');
   const [type, setType] = useState(event?.type || 'event');
   const [subjectId, setSubjectId] = useState<string | null>(event?.subjectId || null);
+  const [adminNotes, setAdminNotes] = useState(event?.adminNotes || '');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,7 +56,8 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
         endDate: endDate || null,
         period,
         type,
-        subjectId
+        subjectId,
+        adminNotes
       });
       router.push('/admin/calendar');
       router.refresh();
@@ -101,43 +103,43 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
             <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 800 }}>Información del Evento</h3>
           </div>
 
-            <div style={{ display: 'grid', gap: '2.5rem' }}>
-              <div style={{ display: 'grid', gap: '1rem' }}>
-                <label className="admin-label" style={{ color: '#1a1a1a' }}>Título del Evento</label>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
-                  <div style={{ position: 'relative' }}>
-                    <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', fontSize: '1.2rem' }}>🇦🇷</span>
-                    <input className="admin-input" value={titles.es} onChange={e => setTitles({...titles, es: e.target.value})} placeholder="Final de Álgebra" style={{ paddingLeft: '3rem' }} required />
-                  </div>
-                  <div style={{ position: 'relative' }}>
-                    <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', fontSize: '1.2rem' }}>🇺🇸</span>
-                    <input className="admin-input" value={titles.en} onChange={e => setTitles({...titles, en: e.target.value})} placeholder="Algebra Final Exam" style={{ paddingLeft: '3rem' }} />
-                  </div>
-                  <div style={{ position: 'relative' }}>
-                    <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', fontSize: '1.2rem' }}>🇧🇷</span>
-                    <input className="admin-input" value={titles.pt} onChange={e => setTitles({...titles, pt: e.target.value})} placeholder="Final de Álgebra" style={{ paddingLeft: '3rem' }} />
-                  </div>
+          <div style={{ display: 'grid', gap: '2.5rem' }}>
+            <div style={{ display: 'grid', gap: '1rem' }}>
+              <label className="admin-label" style={{ color: '#1a1a1a' }}>Título del Evento</label>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
+                <div style={{ position: 'relative' }}>
+                  <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', fontSize: '1.2rem' }}>🇦🇷</span>
+                  <input className="admin-input" value={titles.es} onChange={e => setTitles({...titles, es: e.target.value})} placeholder="Final de Álgebra" style={{ paddingLeft: '3rem' }} required />
                 </div>
-              </div>
-
-              <div style={{ display: 'grid', gap: '1rem' }}>
-                <label className="admin-label" style={{ color: '#1a1a1a' }}>Descripción (Opcional)</label>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
-                  <div style={{ position: 'relative' }}>
-                    <span style={{ position: 'absolute', left: '1rem', top: '1rem', fontSize: '1.2rem' }}>🇦🇷</span>
-                    <textarea className="admin-input" value={descriptions.es} onChange={e => setDescriptions({...descriptions, es: e.target.value})} placeholder="Detalles en español..." rows={3} style={{ paddingLeft: '3rem' }} />
-                  </div>
-                  <div style={{ position: 'relative' }}>
-                    <span style={{ position: 'absolute', left: '1rem', top: '1rem', fontSize: '1.2rem' }}>🇺🇸</span>
-                    <textarea className="admin-input" value={descriptions.en} onChange={e => setDescriptions({...descriptions, en: e.target.value})} placeholder="English details..." rows={3} style={{ paddingLeft: '3rem' }} />
-                  </div>
-                  <div style={{ position: 'relative' }}>
-                    <span style={{ position: 'absolute', left: '1rem', top: '1rem', fontSize: '1.2rem' }}>🇧🇷</span>
-                    <textarea className="admin-input" value={descriptions.pt} onChange={e => setDescriptions({...descriptions, pt: e.target.value})} placeholder="Detalhes em português..." rows={3} style={{ paddingLeft: '3rem' }} />
-                  </div>
+                <div style={{ position: 'relative' }}>
+                  <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', fontSize: '1.2rem' }}>🇺🇸</span>
+                  <input className="admin-input" value={titles.en} onChange={e => setTitles({...titles, en: e.target.value})} placeholder="Algebra Final Exam" style={{ paddingLeft: '3rem' }} />
+                </div>
+                <div style={{ position: 'relative' }}>
+                  <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', fontSize: '1.2rem' }}>🇧🇷</span>
+                  <input className="admin-input" value={titles.pt} onChange={e => setTitles({...titles, pt: e.target.value})} placeholder="Final de Álgebra" style={{ paddingLeft: '3rem' }} />
                 </div>
               </div>
             </div>
+
+            <div style={{ display: 'grid', gap: '1rem' }}>
+              <label className="admin-label" style={{ color: '#1a1a1a' }}>Descripción (Opcional)</label>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
+                <div style={{ position: 'relative' }}>
+                  <span style={{ position: 'absolute', left: '1rem', top: '1rem', fontSize: '1.2rem' }}>🇦🇷</span>
+                  <textarea className="admin-input" value={descriptions.es} onChange={e => setDescriptions({...descriptions, es: e.target.value})} placeholder="Detalles en español..." rows={3} style={{ paddingLeft: '3rem' }} />
+                </div>
+                <div style={{ position: 'relative' }}>
+                  <span style={{ position: 'absolute', left: '1rem', top: '1rem', fontSize: '1.2rem' }}>🇺🇸</span>
+                  <textarea className="admin-input" value={descriptions.en} onChange={e => setDescriptions({...descriptions, en: e.target.value})} placeholder="English details..." rows={3} style={{ paddingLeft: '3rem' }} />
+                </div>
+                <div style={{ position: 'relative' }}>
+                  <span style={{ position: 'absolute', left: '1rem', top: '1rem', fontSize: '1.2rem' }}>🇧🇷</span>
+                  <textarea className="admin-input" value={descriptions.pt} onChange={e => setDescriptions({...descriptions, pt: e.target.value})} placeholder="Detalhes em português..." rows={3} style={{ paddingLeft: '3rem' }} />
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
 
         {/* Sección: Configuración Técnica */}
@@ -177,7 +179,7 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
                   style={{ cursor: 'pointer', appearance: 'none', backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2364748b\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1.2rem' }}
                 >
                   <option value="">Ninguna (Evento General)</option>
-                  {Object.entries(translations.es.plan.subjectNames)
+                  {Object.entries((translations.es as any).plan.subjectNames)
                     .filter(([id]) => {
                       const numId = parseInt(id);
                       if (period === '1er cuatrimestre de 1er año') return numId >= 1 && numId <= 5;
@@ -190,9 +192,6 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
                       <option key={id} value={id}>[{id.padStart(2, '0')}] {name as string}</option>
                   ))}
                 </select>
-                <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.5rem' }}>
-                  Esto permite que el evento aparezca cuando se filtra por esta materia.
-                </p>
               </div>
             </div>
           </section>
@@ -204,27 +203,13 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
             </div>
             
             <div style={{ display: 'grid', gap: '1.75rem' }}>
-              <div style={{ display: 'grid', gap: '1.75rem' }}>
-                <div>
-                  <label className="admin-label">Fecha de Inicio</label>
-                  <input 
-                    type="date" 
-                    className="admin-input" 
-                    value={startDate} 
-                    onChange={e => setStartDate(e.target.value)} 
-                    required 
-                  />
-                </div>
-                <div>
-                  <label className="admin-label">Fecha de Fin (Opcional)</label>
-                  <input 
-                    type="date" 
-                    className="admin-input" 
-                    value={endDate} 
-                    onChange={e => setEndDate(e.target.value)} 
-                    min={startDate}
-                  />
-                </div>
+              <div>
+                <label className="admin-label">Fecha de Inicio</label>
+                <input type="date" className="admin-input" value={startDate} onChange={e => setStartDate(e.target.value)} required />
+              </div>
+              <div>
+                <label className="admin-label">Fecha de Fin (Opcional)</label>
+                <input type="date" className="admin-input" value={endDate} onChange={e => setEndDate(e.target.value)} min={startDate} />
               </div>
             </div>
           </section>
@@ -241,33 +226,39 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
                   key={t.id}
                   onClick={() => setType(t.id)}
                   style={{ 
-                    cursor: 'pointer',
-                    padding: '1rem',
-                    borderRadius: '12px',
+                    cursor: 'pointer', padding: '1rem', borderRadius: '12px',
                     background: type === t.id ? t.bg : 'white',
                     border: `2px solid ${type === t.id ? t.color : '#e2e8f0'}`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '1rem',
-                    transition: 'all 0.2s ease'
+                    display: 'flex', alignItems: 'center', gap: '1rem', transition: 'all 0.2s'
                   }}
                 >
                   <div style={{ 
                     width: '18px', height: '18px', borderRadius: '50%', 
                     border: `2px solid ${type === t.id ? t.color : '#cbd5e1'}`,
-                    background: type === t.id ? t.color : 'white',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center'
-                  }}>
-                    {type === t.id && <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'white' }} />}
-                  </div>
-                  <span style={{ fontWeight: 800, color: type === t.id ? t.color : '#64748b' }}>
-                    {t.label}
-                  </span>
+                    background: type === t.id ? t.color : 'white'
+                  }} />
+                  <span style={{ fontWeight: 800, color: type === t.id ? t.color : '#64748b' }}>{t.label}</span>
                 </div>
               ))}
             </div>
           </section>
         </div>
+
+        {/* NOTAS ADMIN */}
+        <section className="admin-card" style={{ padding: '2rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+            <Edit3 size={18} className="text-accent" />
+            <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 900 }}>Notas Internas (Admin)</h3>
+          </div>
+          <textarea 
+            className="admin-input"
+            rows={4}
+            value={adminNotes}
+            onChange={e => setAdminNotes(e.target.value)}
+            placeholder="Recordatorios privados sobre este evento..."
+            style={{ fontSize: '0.9rem', background: '#fff', border: '1px dashed #cbd5e1' }}
+          />
+        </section>
       </div>
     </form>
   );

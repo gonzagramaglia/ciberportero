@@ -63,6 +63,28 @@ export default function NotificationBanners({ limitTo = 'all' }: { limitTo?: 'iv
                     info: { bg: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', border: '#1d4ed8', icon: <Bell size={18} /> }
                 }[type as 'danger' | 'warning' | 'success' | 'info'];
 
+                const url = notification.url;
+
+                const Content = () => (
+                    <div className="notification-content" style={{ cursor: url ? 'pointer' : 'default', width: '100%' }}>
+                        <div className="notification-icon" style={{ background: 'rgba(255,255,255,0.2)' }}>
+                            {styles.icon}
+                        </div>
+                        <div className="notification-text">
+                            <p 
+                                style={{ margin: 0, fontWeight: 800, fontSize: '0.95rem', letterSpacing: '-0.01em' }} 
+                                dangerouslySetInnerHTML={{ __html: message }} 
+                            />
+                            {description && (
+                                <p 
+                                    style={{ margin: '0.1rem 0 0', opacity: 0.9, fontSize: '0.85rem', fontWeight: 500 }} 
+                                    dangerouslySetInnerHTML={{ __html: description }} 
+                                />
+                            )}
+                        </div>
+                    </div>
+                );
+
                 return (
                     <div key={notification.id} className={`notification-banner ${type}`} style={{ 
                         background: styles.bg,
@@ -73,26 +95,24 @@ export default function NotificationBanners({ limitTo = 'all' }: { limitTo?: 'iv
                         borderRadius: '16px',
                         overflow: 'hidden'
                     }}>
-                        <div className="notification-content">
-                            <div className="notification-icon" style={{ background: 'rgba(255,255,255,0.2)' }}>
-                                {styles.icon}
-                            </div>
-                            <div className="notification-text">
-                                <p 
-                                    style={{ margin: 0, fontWeight: 800, fontSize: '0.95rem', letterSpacing: '-0.01em' }} 
-                                    dangerouslySetInnerHTML={{ __html: message }} 
-                                />
-                                {description && (
-                                    <p 
-                                        style={{ margin: '0.1rem 0 0', opacity: 0.9, fontSize: '0.85rem', fontWeight: 500 }} 
-                                        dangerouslySetInnerHTML={{ __html: description }} 
-                                    />
-                                )}
-                            </div>
-                            <button className="notification-close" onClick={() => closeNotification(notification.id)}>
-                                <X size={16} />
-                            </button>
-                        </div>
+                        {url ? (
+                            <a href={url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
+                                <Content />
+                            </a>
+                        ) : (
+                            <Content />
+                        )}
+                        <button 
+                            className="notification-close" 
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                closeNotification(notification.id);
+                            }}
+                            style={{ zIndex: 10 }}
+                        >
+                            <X size={16} />
+                        </button>
                     </div>
                 );
             })}

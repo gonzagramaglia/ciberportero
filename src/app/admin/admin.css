@@ -119,7 +119,7 @@
 }
 
 .admin-sidebar {
-  width: 280px;
+  width: 310px;
   background: white;
   border-right: 1px solid #e2e8f0;
   padding: 2rem;
@@ -306,7 +306,7 @@
 /* Responsive Styles */
 @media (max-width: 1024px) {
   .admin-sidebar {
-    width: 240px;
+    width: 270px;
     padding: 1.5rem;
   }
 }

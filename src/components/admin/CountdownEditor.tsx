@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, X, Clock } from 'lucide-react';
+import { Save, X, Clock, Edit3 } from 'lucide-react';
 import { upsertCountdown } from '@/lib/actions';
 
 interface CountdownEditorProps {
@@ -31,6 +31,7 @@ export default function CountdownEditor({ countdown }: CountdownEditorProps) {
   const [isActive, setIsActive] = useState(countdown?.isActive ?? true);
   const [url, setUrl] = useState(countdown?.url || '');
   const [slot, setSlot] = useState(countdown?.slot || 'left');
+  const [adminNotes, setAdminNotes] = useState(countdown?.adminNotes || '');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,7 +44,8 @@ export default function CountdownEditor({ countdown }: CountdownEditorProps) {
         targetDate,
         isActive,
         url,
-        slot
+        slot,
+        adminNotes
       });
       router.push('/admin/notifications');
       router.refresh();
@@ -75,141 +77,60 @@ export default function CountdownEditor({ countdown }: CountdownEditorProps) {
       </div>
 
       <div style={{ display: 'grid', gap: '2rem' }}>
-        {/* Sección: Textos y Traducciones */}
         <section className="admin-card" style={{ padding: '2.5rem' }}>
           <div style={{ marginBottom: '2rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '1rem' }}>
             <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 800 }}>Información del Contador</h3>
-            <p style={{ margin: '0.25rem 0 0', fontSize: '0.9rem', color: '#64748b' }}>Define los textos que verán los usuarios en cada idioma.</p>
           </div>
 
-          <div style={{ display: 'grid', gap: '2rem' }}>
-            <div className="space-y-4">
-              <label className="admin-label" style={{ color: '#1a1a1a' }}>Títulos</label>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
-                <div style={{ position: 'relative' }}>
-                  <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', fontSize: '1.2rem' }}>🇦🇷</span>
-                  <input className="admin-input" value={titleEs} onChange={e => setTitleEs(e.target.value)} placeholder="Inscripción a Materias" style={{ paddingLeft: '3rem' }} required />
-                </div>
-                <div style={{ position: 'relative' }}>
-                  <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', fontSize: '1.2rem' }}>🇺🇸</span>
-                  <input className="admin-input" value={titleEn} onChange={e => setTitleEn(e.target.value)} placeholder="Subject Enrollment" style={{ paddingLeft: '3rem' }} />
-                </div>
-                <div style={{ position: 'relative' }}>
-                  <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', fontSize: '1.2rem' }}>🇧🇷</span>
-                  <input className="admin-input" value={titlePt} onChange={e => setTitlePt(e.target.value)} placeholder="Inscrição em Matérias" style={{ paddingLeft: '3rem' }} />
-                </div>
+          <div className="space-y-6">
+            <div>
+              <label className="admin-label">Títulos (ES / EN / PT)</label>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+                <input className="admin-input" value={titleEs} onChange={e => setTitleEs(e.target.value)} placeholder="Español" required />
+                <input className="admin-input" value={titleEn} onChange={e => setTitleEn(e.target.value)} placeholder="English" />
+                <input className="admin-input" value={titlePt} onChange={e => setTitlePt(e.target.value)} placeholder="Português" />
               </div>
             </div>
 
-            <div className="space-y-4">
-              <label className="admin-label" style={{ color: '#1a1a1a' }}>Descripciones (Opcional)</label>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
-                <div style={{ position: 'relative' }}>
-                  <span style={{ position: 'absolute', left: '1rem', top: '1rem', fontSize: '1.2rem' }}>🇦🇷</span>
-                  <textarea className="admin-input" value={descEs} onChange={e => setDescEs(e.target.value)} placeholder="Descripción en Español" rows={3} style={{ paddingLeft: '3rem' }} />
-                </div>
-                <div style={{ position: 'relative' }}>
-                  <span style={{ position: 'absolute', left: '1rem', top: '1rem', fontSize: '1.2rem' }}>🇺🇸</span>
-                  <textarea className="admin-input" value={descEn} onChange={e => setDescEn(e.target.value)} placeholder="Description in English" rows={3} style={{ paddingLeft: '3rem' }} />
-                </div>
-                <div style={{ position: 'relative' }}>
-                  <span style={{ position: 'absolute', left: '1rem', top: '1rem', fontSize: '1.2rem' }}>🇧🇷</span>
-                  <textarea className="admin-input" value={descPt} onChange={e => setDescPt(e.target.value)} placeholder="Descrição em Português" rows={3} style={{ paddingLeft: '3rem' }} />
-                </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '2rem' }}>
+              <div>
+                <label className="admin-label">Deadline (Fecha y Hora)</label>
+                <input type="datetime-local" className="admin-input" value={targetDate} onChange={e => setTargetDate(e.target.value)} required />
               </div>
+              <div>
+                <label className="admin-label">Posición</label>
+                <select className="admin-input" value={slot} onChange={e => setSlot(e.target.value)}>
+                  <option value="left">Izquierda</option>
+                  <option value="right">Derecha</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="admin-label">URL de destino (Opcional)</label>
+              <input type="url" className="admin-input" value={url} onChange={e => setUrl(e.target.value)} placeholder="https://..." />
+            </div>
+
+            <div onClick={() => setIsActive(!isActive)} style={{ cursor: 'pointer', padding: '1rem', borderRadius: '12px', background: isActive ? '#f0fdf4' : '#fff1f2', border: `2px solid ${isActive ? '#22c55e' : '#fecdd3'}`, display: 'inline-flex', alignItems: 'center', gap: '1rem' }}>
+              <div style={{ width: '40px', height: '20px', borderRadius: '10px', background: isActive ? '#22c55e' : '#cbd5e1', position: 'relative' }}>
+                <div style={{ width: '14px', height: '14px', borderRadius: '50%', background: 'white', position: 'absolute', top: '3px', left: isActive ? '23px' : '3px', transition: 'all 0.2s' }} />
+              </div>
+              <span style={{ fontWeight: 800, color: isActive ? '#166534' : '#9f1239' }}>{isActive ? 'CONTADOR ACTIVO' : 'INACTIVO'}</span>
             </div>
           </div>
         </section>
 
-        {/* Sección: Configuración Técnica */}
-        <section style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '2rem' }}>
-          <div className="admin-card" style={{ padding: '2.5rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
-              <Clock size={20} color="#1a1a1a" />
-              <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800 }}>Fecha y Hora Meta</h3>
-            </div>
-            <input 
-              type="datetime-local" 
-              className="admin-input" 
-              value={targetDate} 
-              onChange={e => setTargetDate(e.target.value)} 
-              required 
-              style={{ fontSize: '1.1rem', padding: '1rem' }}
-            />
-            <div style={{ marginTop: '2rem' }}>
-              <label className="admin-label" style={{ color: '#1a1a1a', marginBottom: '0.75rem', display: 'block' }}>Posición del Widget</label>
-              <div style={{ display: 'flex', gap: '1rem' }}>
-                <button 
-                  type="button" 
-                  onClick={() => setSlot('left')}
-                  style={{ 
-                    flex: 1, padding: '0.75rem', borderRadius: '12px', border: '2px solid',
-                    background: slot === 'left' ? '#eff6ff' : 'white',
-                    borderColor: slot === 'left' ? '#3b82f6' : '#e2e8f0',
-                    fontWeight: 700, color: slot === 'left' ? '#1e40af' : '#64748b'
-                  }}
-                >
-                  Izquierda
-                </button>
-                <button 
-                  type="button" 
-                  onClick={() => setSlot('right')}
-                  style={{ 
-                    flex: 1, padding: '0.75rem', borderRadius: '12px', border: '2px solid',
-                    background: slot === 'right' ? '#eff6ff' : 'white',
-                    borderColor: slot === 'right' ? '#3b82f6' : '#e2e8f0',
-                    fontWeight: 700, color: slot === 'right' ? '#1e40af' : '#64748b'
-                  }}
-                >
-                  Derecha
-                </button>
-              </div>
-            </div>
-
-            <div style={{ marginTop: '2rem' }}>
-              <label className="admin-label" style={{ color: '#1a1a1a', marginBottom: '0.75rem', display: 'block' }}>Link al clickear (URL)</label>
-              <input 
-                type="url"
-                className="admin-input" 
-                value={url} 
-                onChange={e => setUrl(e.target.value)} 
-                placeholder="https://ejemplo.com"
-                style={{ fontSize: '1rem', padding: '0.8rem' }}
-              />
-            </div>
-            <p style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '1rem' }}>
-              El contador se actualizará automáticamente y llegará a cero en este instante exacto.
-            </p>
+        {/* NOTAS ADMIN */}
+        <section className="admin-card" style={{ padding: '2rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+            <Edit3 size={18} className="text-accent" />
+            <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 900 }}>Notas de Administración (Privadas)</h3>
           </div>
-
-          <div className="admin-card" style={{ padding: '2.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <div 
-              onClick={() => setIsActive(!isActive)}
-              style={{ 
-                cursor: 'pointer',
-                padding: '1.5rem',
-                borderRadius: '16px',
-                background: isActive ? '#f0fdf4' : '#f8fafc',
-                border: `2px solid ${isActive ? '#22c55e' : '#e2e8f0'}`,
-                display: 'flex',
-                alignItems: 'center',
-                gap: '1rem',
-                transition: 'all 0.2s ease'
-              }}
-            >
-              <div style={{ 
-                width: '24px', height: '24px', borderRadius: '6px', 
-                border: `2px solid ${isActive ? '#22c55e' : '#cbd5e1'}`,
-                background: isActive ? '#22c55e' : 'white',
-                display: 'flex', alignItems: 'center', justifyContent: 'center'
-              }}>
-                {isActive && <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'white' }} />}
-              </div>
-              <span style={{ fontWeight: 800, color: isActive ? '#166534' : '#64748b' }}>
-                {isActive ? 'Contador Activo' : 'Contador Inactivo'}
-              </span>
-            </div>
-          </div>
+          <textarea 
+            className="admin-input" rows={4} value={adminNotes} onChange={e => setAdminNotes(e.target.value)} 
+            placeholder="Recordatorios privados sobre este contador..."
+            style={{ background: '#fff', border: '1px dashed #cbd5e1' }}
+          />
         </section>
       </div>
     </form>

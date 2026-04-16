@@ -127,18 +127,19 @@ model Link {
 }
 
 model Post {
-  id          String   @id @default(cuid())
-  title       Json     // { "es": "...", "en": "...", "pt": "..." }
-  slug           String   @unique
-  alternativeSlug String?  @unique
-  content     Json     // { "es": "...", "en": "...", "pt": "..." }
-  description Json?    // { "es": "...", "en": "...", "pt": "..." }
-  published   Boolean  @default(false)
-  date        DateTime @default(now())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  comments    Comment[]
-  countdowns  Countdown[]
+  id              String      @id @default(cuid())
+  title           Json        // { "es": "...", "en": "...", "pt": "..." }
+  content         Json        // { "es": "...", "en": "...", "pt": "..." }
+  slug            String      @unique
+  alternativeSlug String?     @unique
+  description     Json?       // { "es": "...", "en": "...", "pt": "..." }
+  published       Boolean     @default(false)
+  date            DateTime    @default(now())
+  adminNotes      String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  comments        Comment[]
+  countdowns      Countdown[]
 
   @@map("posts")
 }
@@ -198,7 +199,9 @@ model Notification {
   description Json?    // { "es": "...", "en": "...", "pt": "..." }
   type        String   @default("info") // info, warning, danger, success
   active      Boolean  @default(true)
+  url         String?
   expiresAt   DateTime?
+  adminNotes  String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -215,6 +218,7 @@ model Countdown {
   description Json?    // { "es": "...", "en": "...", "pt": "..." }
   url         String?
   isActive    Boolean  @default(true)
+  adminNotes  String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
