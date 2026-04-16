@@ -19,6 +19,7 @@ export default function CountdownEditor({ countdown, slot }: CountdownEditorProp
   // Form state
   const [titles, setTitles] = useState<any>(countdown?.title || { es: '', en: '', pt: '' });
   const [descriptions, setDescriptions] = useState<any>(countdown?.description || { es: '', en: '', pt: '' });
+  const [expiredMessages, setExpiredMessages] = useState<any>(countdown?.expiredMessage || { es: '', en: '', pt: '' });
   const [targetDate, setTargetDate] = useState(countdown?.targetDate ? new Date(countdown.targetDate).toISOString().slice(0, 16) : '');
   const [url, setUrl] = useState(countdown?.url || '');
   const [isActive, setIsActive] = useState(countdown?.isActive ?? true);
@@ -32,11 +33,12 @@ export default function CountdownEditor({ countdown, slot }: CountdownEditorProp
         slot: slot || countdown?.slot,
         title: titles,
         description: descriptions,
+        expiredMessage: expiredMessages,
         targetDate: new Date(targetDate),
         url,
         isActive
       });
-      router.push('/admin/notifications');
+      router.push('/admin/countdowns');
       router.refresh();
     } catch (error) {
       console.error(error);
@@ -54,6 +56,10 @@ export default function CountdownEditor({ countdown, slot }: CountdownEditorProp
     setDescriptions({ ...descriptions, [activeLang]: val });
   };
 
+  const updateExpiredMessage = (val: string) => {
+    setExpiredMessages({ ...expiredMessages, [activeLang]: val });
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-12 fade-in">
       <div className="admin-header">
@@ -62,7 +68,7 @@ export default function CountdownEditor({ countdown, slot }: CountdownEditorProp
           <p className="admin-subtitle">Configura el mensaje y el tiempo restante para este aviso global.</p>
         </div>
         <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <button type="button" onClick={() => router.back()} className="btn-secondary">
+          <button type="button" onClick={() => router.push('/admin/countdowns')} className="btn-secondary">
             <X size={18} />
             <span>Cancelar</span>
           </button>
@@ -107,6 +113,18 @@ export default function CountdownEditor({ countdown, slot }: CountdownEditorProp
                 />
               </div>
 
+              <div>
+                <label className="admin-label" style={{ marginBottom: '1rem', fontSize: '0.95rem' }}>Mensaje al Expirar ({activeLang})</label>
+                <textarea 
+                  className="admin-input"
+                  rows={2}
+                  style={{ fontSize: '1.1rem', fontWeight: 600, padding: '1.25rem', borderRadius: '16px', lineHeight: 1.6, background: '#fff1f2', border: '1px solid #fecdd3' }}
+                  value={expiredMessages[activeLang] || ''}
+                  onChange={e => updateExpiredMessage(e.target.value)}
+                  placeholder="Mensaje que aparecerá cuando el tiempo llegue a cero..."
+                />
+              </div>
+
               <div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '2px dashed #f1f5f9' }}>
                 <label className="admin-label" style={{ marginBottom: '1rem', fontSize: '0.95rem' }}>URL LINK (OPCIONAL)</label>
                 <input 
@@ -117,9 +135,6 @@ export default function CountdownEditor({ countdown, slot }: CountdownEditorProp
                   onChange={e => setUrl(e.target.value)}
                   placeholder="https://..."
                 />
-                <p style={{ fontSize: '0.85rem', color: '#64748b', marginTop: '0.75rem', fontStyle: 'italic', fontWeight: 500 }}>
-                  * Al hacer click en la cuenta regresiva, se abrirá este link.
-                </p>
               </div>
             </div>
           </section>
@@ -162,7 +177,8 @@ export default function CountdownEditor({ countdown, slot }: CountdownEditorProp
                   cursor: 'pointer', padding: '1.5rem', borderRadius: '20px', 
                   background: isActive ? '#f0fdf4' : '#fff1f2',
                   border: `2px solid ${isActive ? '#22c55e' : '#fecdd3'}`,
-                  display: 'flex', alignItems: 'center', gap: '1rem', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                  display: 'flex', alignItems: 'center', gap: '1rem', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  marginTop: '1rem'
                 }}
               >
                 <div style={{ 
@@ -175,7 +191,7 @@ export default function CountdownEditor({ countdown, slot }: CountdownEditorProp
                   }} />
                 </div>
                 <span style={{ fontWeight: 900, color: isActive ? '#166534' : '#9f1239', fontSize: '0.95rem' }}>
-                  {isActive ? 'WIDGET HABILITADO' : 'DESACTIVADO'}
+                  {isActive ? 'HABILITADO' : 'NO HABILITADO'}
                 </span>
               </div>
             </div>

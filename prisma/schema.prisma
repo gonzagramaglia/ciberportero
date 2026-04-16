@@ -214,6 +214,7 @@ model Countdown {
   title       Json     // { "es": "...", "en": "...", "pt": "..." }
   targetDate  DateTime
   description Json?    // { "es": "...", "en": "...", "pt": "..." }
+  expiredMessage Json?    // { "es": "...", "en": "...", "pt": "..." }
   url         String?
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())

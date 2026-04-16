@@ -23,7 +23,7 @@ export default function CountdownsList({ countdowns }: Props) {
         </div>
       </div>
 
-      <div className="stats-grid">
+      <div className="admin-countdowns-grid">
         {slots.map((slot, index) => {
           const c = countdowns.find(x => x.slot === slot.id);
           const slotLabel = slot.label;

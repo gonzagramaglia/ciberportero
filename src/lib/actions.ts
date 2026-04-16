@@ -209,6 +209,7 @@ export async function upsertPost(data: any) {
             title: c.title,
             targetDate: new Date(c.targetDate),
             description: c.description,
+            expiredMessage: c.expiredMessage,
             url: c.url || null,
             isActive: c.isActive,
           }))
@@ -226,6 +227,7 @@ export async function upsertPost(data: any) {
             title: c.title,
             targetDate: new Date(c.targetDate),
             description: c.description,
+            expiredMessage: c.expiredMessage,
             url: c.url || null,
             isActive: c.isActive,
           }))
@@ -248,7 +250,7 @@ export async function toggleCountdown(id: string, isActive: boolean) {
   });
   const title = (c.title as any)?.es || 'Sin título';
   await logAction('TOGGLE', 'countdown', `${isActive ? 'Activó' : 'Desactivó'} el contador: ${title}`);
-  revalidatePath('/admin/notifications');
+  revalidatePath('/admin/countdowns');
   revalidatePath('/');
 }
 
@@ -256,34 +258,30 @@ export async function upsertCountdown(data: any) {
   const isUpdate = !!data.id;
   const titleEs = data.title.es || 'Sin título';
 
+  const cData = {
+    title: data.title,
+    description: data.description,
+    expiredMessage: data.expiredMessage,
+    targetDate: new Date(data.targetDate),
+    url: data.url || null,
+    slot: data.slot || 'left',
+    isActive: data.isActive,
+  };
+
   if (isUpdate) {
     await db.countdown.update({
       where: { id: data.id },
-      data: {
-        title: data.title,
-        description: data.description,
-        targetDate: new Date(data.targetDate),
-        url: data.url || null,
-        slot: data.slot || 'left',
-        isActive: data.isActive,
-      }
+      data: cData
     });
     await logAction('UPDATE', 'countdown', `Actualizó el contador: ${titleEs}`);
   } else {
     await db.countdown.create({
-      data: {
-        title: data.title,
-        description: data.description,
-        targetDate: new Date(data.targetDate),
-        url: data.url || null,
-        slot: data.slot || 'left',
-        isActive: data.isActive,
-      }
+      data: cData
     });
     await logAction('CREATE', 'countdown', `Creó un nuevo contador: ${titleEs}`);
   }
   
-  revalidatePath('/admin/notifications');
+  revalidatePath('/admin/countdowns');
   revalidatePath('/');
 }
 
@@ -596,6 +594,7 @@ export async function updateAdminSectionNote(section: string, content: string) {
     revalidatePath('/admin/posts');
     revalidatePath('/admin/calendar');
     revalidatePath('/admin/users');
+    revalidatePath('/admin/countdowns');
     return { success: true };
   } catch (error) {
     console.error(error);

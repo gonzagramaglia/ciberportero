@@ -18,6 +18,8 @@ export async function GET(request: Request) {
                 id: c.id,
                 slot: c.slot,
                 title: (c.title as any)[lang]?.trim() || "",
+                description: (c.description as any)?.[lang]?.trim() || "",
+                expiredMessage: (c.expiredMessage as any)?.[lang]?.trim() || "",
                 targetDate: c.targetDate,
                 url: c.url,
                 isActive: c.isActive

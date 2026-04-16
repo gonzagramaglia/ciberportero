@@ -35,6 +35,8 @@ export async function GET(request: Request) {
                     countdowns: dbPost.countdowns.map(c => ({
                         slot: c.slot,
                         title: (c.title as any)[lang] || (c.title as any)['es'],
+                        description: (c.description as any)?.[lang] || (c.description as any)?.['es'],
+                        expiredMessage: (c.expiredMessage as any)?.[lang] || (c.expiredMessage as any)?.['es'],
                         targetDate: c.targetDate,
                         url: c.url,
                         isActive: c.isActive

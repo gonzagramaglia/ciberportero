@@ -9,6 +9,8 @@ interface CountdownData {
     id?: string;
     slot: 'left' | 'right';
     title: string;
+    description?: string;
+    expiredMessage?: string;
     targetDate: string | Date;
     url?: string;
     isActive: boolean;
@@ -120,15 +122,23 @@ export default function CountdownWidget({ countdowns: initialCountdowns }: Count
 
                 const content = (
                     <div className={`sidebar-widget sidebar-widget-${cd.slot} ${initialCountdowns ? 'post-specific' : ''}`} style={{ cursor: cd.url ? 'pointer' : 'default' }}>
-                        <div className="countdown-header">
+                        <div className="countdown-header" style={{ marginBottom: (cd.description || !time.expired) ? '0.5rem' : '0' }}>
                             <Clock size={14} />
                             <span>{cd.title}</span>
                         </div>
+                        
                         {!time.expired ? (
-                            <TimerGrid time={time} />
+                            <>
+                                {cd.description && (
+                                    <p className="countdown-desc" style={{ fontSize: '0.75rem', opacity: 0.8, marginBottom: '0.5rem', fontWeight: 600 }}>
+                                        {cd.description}
+                                    </p>
+                                )}
+                                <TimerGrid time={time} />
+                            </>
                         ) : (
-                            <p className="countdown-desc" style={{ textAlign: 'center', fontWeight: 700, marginBottom: '0.5rem' }}>
-                                {t.available}
+                            <p className="countdown-desc" style={{ textAlign: 'center', fontWeight: 700, margin: 0, fontSize: '0.9rem' }}>
+                                {cd.expiredMessage || t.available}
                             </p>
                         )}
                     </div>
