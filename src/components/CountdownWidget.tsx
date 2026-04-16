@@ -130,14 +130,14 @@ export default function CountdownWidget({ countdowns: initialCountdowns }: Count
                         {!time.expired ? (
                             <>
                                 {cd.description && (
-                                    <p className="countdown-desc" style={{ fontSize: '0.75rem', opacity: 0.8, marginBottom: '0.5rem', fontWeight: 600 }}>
+                                    <p className="countdown-desc" style={{ fontSize: '0.75rem', opacity: 0.8, marginBottom: '0.5rem', fontWeight: 600, textAlign: 'left' }}>
                                         {cd.description}
                                     </p>
                                 )}
                                 <TimerGrid time={time} />
                             </>
                         ) : (
-                            <p className="countdown-desc" style={{ textAlign: 'center', fontWeight: 700, margin: 0, fontSize: '0.9rem' }}>
+                            <p className="countdown-desc" style={{ textAlign: 'left', fontWeight: 700, margin: 0, fontSize: '0.9rem' }}>
                                 {cd.expiredMessage || t.available}
                             </p>
                         )}

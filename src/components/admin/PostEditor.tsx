@@ -111,6 +111,7 @@ export default function PostEditor({ post }: PostEditorProps) {
         slot, 
         title: { es: '', en: '', pt: '' }, 
         description: { es: '', en: '', pt: '' },
+        expiredMessage: { es: '', en: '', pt: '' },
         targetDate: new Date().toISOString(), 
         url: '',
         isActive: true 
@@ -303,6 +304,21 @@ export default function PostEditor({ post }: PostEditorProps) {
                                   updateCountdown(slot, 'description', newDesc);
                                 }}
                                 placeholder="Contexto..."
+                              />
+                            </div>
+
+                            <div>
+                              <label className="admin-label" style={{ fontWeight: 800 }}>Mensaje al Expirar ({activeLang})</label>
+                              <textarea 
+                                className="admin-input" 
+                                rows={2}
+                                style={{ fontSize: '0.9rem', fontWeight: 600, padding: '1rem', borderRadius: '14px' }}
+                                value={c.expiredMessage?.[activeLang] || ''} 
+                                onChange={e => {
+                                  const newExpired = { ...(c.expiredMessage || {}), [activeLang]: e.target.value };
+                                  updateCountdown(slot, 'expiredMessage', newExpired);
+                                }}
+                                placeholder="Ej: Inscripciones cerradas!"
                               />
                             </div>
 
