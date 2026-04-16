@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, X, Languages, Edit3, ExternalLink, Smile, Clock, Plus, Trash2 } from 'lucide-react';
+import { Save, X, Languages, Edit3, ExternalLink, Smile, Clock, Plus, Trash2, Link as LinkIcon, AlignLeft, Type, FileText } from 'lucide-react';
 import { upsertPost } from '@/lib/actions';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -101,15 +101,18 @@ export default function PostEditor({ post }: PostEditorProps) {
   };
 
   const updateCountdown = (slot: 'left' | 'right', field: string, value: any) => {
-    const existing = countdowns.find(c => c.slot === slot);
-    if (existing) {
-      setCountdowns(countdowns.map(c => c.slot === slot ? { ...c, [field]: value } : c));
+    const existingIndex = countdowns.findIndex(c => c.slot === slot);
+    if (existingIndex !== -1) {
+      const updated = [...countdowns];
+      updated[existingIndex] = { ...updated[existingIndex], [field]: value };
+      setCountdowns(updated);
     } else {
       const newC = { 
         slot, 
         title: { es: '', en: '', pt: '' }, 
-        targetDate: new Date(), 
-        description: { es: '', en: '', pt: '' }, 
+        description: { es: '', en: '', pt: '' },
+        targetDate: new Date().toISOString(), 
+        url: '',
         isActive: true 
       };
       setCountdowns([...countdowns, { ...newC, [field]: value }]);
@@ -154,27 +157,28 @@ export default function PostEditor({ post }: PostEditorProps) {
 
         <LanguageTabs active={activeLang} onChange={(l: any) => setActiveLang(l)} />
 
-        <div className="space-y-6">
-          <div className="admin-card" style={{ padding: '2.5rem', borderRadius: '24px' }}>
-            <div style={{ marginBottom: '2rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="space-y-12">
+          <div className="admin-card" style={{ padding: '3rem', borderRadius: '32px' }}>
+            <div style={{ marginBottom: '3rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 900, color: '#0f172a' }}>Contenido del Post</h3>
+                <h3 style={{ margin: 0, fontSize: '1.35rem', fontWeight: 900, color: '#0f172a' }}>Editor de Contenido</h3>
               </div>
               <button 
                 type="button" 
                 onClick={() => setPreviewMode(!previewMode)}
                 style={{ 
                   background: previewMode ? '#1e293b' : '#f8fafc', color: previewMode ? 'white' : '#64748b',
-                  border: '1px solid #e2e8f0', padding: '0.5rem 1rem', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 800, cursor: 'pointer'
+                  border: '1px solid #e2e8f0', padding: '0.6rem 1.25rem', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer',
+                  transition: 'all 0.2s'
                 }}
               >
-                {previewMode ? 'EDITAR' : 'PREVISUALIZAR'}
+                {previewMode ? 'VOLVER A EDITAR' : 'PREVISUALIZAR'}
               </button>
             </div>
 
-            <div className="space-y-8">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '3.5rem' }}>
               {/* Slugs y Estado */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem', background: '#f8fafc', padding: '1.5rem', borderRadius: '16px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem', background: '#f8fafc', padding: '2rem', borderRadius: '24px', border: '1px solid #f1f5f9' }}>
                 <div>
                   <label className="admin-label">Slug Principal</label>
                   <input className="admin-input" value={slug} onChange={e => setSlug(e.target.value)} required />
@@ -183,51 +187,101 @@ export default function PostEditor({ post }: PostEditorProps) {
                   <label className="admin-label">Slug Opcional</label>
                   <input className="admin-input" value={alternativeSlug} onChange={e => setAlternativeSlug(e.target.value)} />
                 </div>
-                <div onClick={() => setPublished(!published)} style={{ cursor: 'pointer', padding: '0.5rem', borderRadius: '12px', background: published ? '#f0fdf4' : '#fff1f2', border: `2px solid ${published ? '#22c55e' : '#fecdd3'}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <span style={{ fontWeight: 800, color: published ? '#166534' : '#9f1239', fontSize: '0.8rem' }}>{published ? 'PUBLICADO' : 'BORRADOR'}</span>
+                <div onClick={() => setPublished(!published)} style={{ cursor: 'pointer', padding: '0.5rem', borderRadius: '16px', background: published ? '#f0fdf4' : '#fff1f2', border: `2px solid ${published ? '#22c55e' : '#fecdd3'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
+                  <span style={{ fontWeight: 900, color: published ? '#166534' : '#9f1239', fontSize: '0.85rem' }}>{published ? 'PUBLICADO' : 'BORRADOR'}</span>
                 </div>
               </div>
 
               {/* Título e Input */}
-              <div>
-                <label className="admin-label">Título ({activeLang})</label>
-                <input className="admin-input" style={{ fontSize: '1.5rem', fontWeight: 800 }} value={titles[activeLang]} onChange={e => setTitles({...titles, [activeLang]: e.target.value})} />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
+                    <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3b82f6' }}>
+                      <Type size={18} />
+                    </div>
+                    <label className="admin-label" style={{ margin: 0, fontSize: '0.95rem' }}>Título del Post ({activeLang})</label>
+                  </div>
+                  <input 
+                    className="admin-input" 
+                    style={{ fontSize: '2rem', fontWeight: 900, padding: '1.5rem', borderRadius: '20px' }} 
+                    value={titles[activeLang]} 
+                    onChange={e => setTitles({...titles, [activeLang]: e.target.value})} 
+                    placeholder="Escribe un título impactante..." 
+                  />
+                </div>
+
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
+                    <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#fff7ed', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#f97316' }}>
+                      <AlignLeft size={18} />
+                    </div>
+                    <label className="admin-label" style={{ margin: 0, fontSize: '0.95rem' }}>Descripción / Extracto ({activeLang})</label>
+                  </div>
+                  <textarea 
+                    className="admin-input" 
+                    rows={3}
+                    style={{ fontSize: '1.1rem', fontWeight: 600, background: '#f8fafc', padding: '1.5rem', borderRadius: '20px', lineHeight: 1.6 }}
+                    value={descriptions[activeLang]} 
+                    onChange={e => setDescriptions({...descriptions, [activeLang]: e.target.value})} 
+                    placeholder="Imagina que es el resumen que verá el usuario en redes o en el listado..."
+                  />
+                </div>
+
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
+                    <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#f5f3ff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8b5cf6' }}>
+                      <FileText size={18} />
+                    </div>
+                    <label className="admin-label" style={{ margin: 0, fontSize: '0.95rem' }}>Contenido Principal ({activeLang})</label>
+                  </div>
+                  {/* Editor / Preview */}
+                  {!previewMode ? (
+                    <textarea 
+                      className="admin-input" 
+                      style={{ minHeight: '600px', fontFamily: 'monospace', padding: '2rem', borderRadius: '24px', fontSize: '1.05rem', lineHeight: 1.7 }} 
+                      value={contents[activeLang]} 
+                      onChange={e => setContents({...contents, [activeLang]: e.target.value})} 
+                      placeholder="Escribe tu contenido usando Markdown..." 
+                    />
+                  ) : (
+                    <div className="markdown-preview" style={{ minHeight: '600px', background: '#f8fafc', padding: '3rem', border: '1px dashed #cbd5e1', borderRadius: '24px' }}>
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{contents[activeLang]}</ReactMarkdown>
+                    </div>
+                  )}
+                </div>
               </div>
 
-              {/* Editor / Preview */}
-              {!previewMode ? (
-                <textarea className="admin-input" style={{ minHeight: '500px', fontFamily: 'monospace' }} value={contents[activeLang]} onChange={e => setContents({...contents, [activeLang]: e.target.value})} placeholder="Markdown..." />
-              ) : (
-                <div className="markdown-preview" style={{ minHeight: '500px', background: '#f8fafc', padding: '2rem', border: '1px dashed #cbd5e1', borderRadius: '16px' }}>
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{contents[activeLang]}</ReactMarkdown>
-                </div>
-              )}
-
               {/* Cuentas Regresivas Locales */}
-              <div style={{ borderTop: '2px dashed #f1f5f9', paddingTop: '2rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
-                  <Clock size={20} className="text-secondary" />
-                  <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 900 }}>Cuentas Regresivas Locales</h4>
-                  <p style={{ margin: 0, fontSize: '0.8rem', color: '#64748b', fontWeight: 600 }}>(Solo para este post)</p>
+              <div style={{ borderTop: '2px dashed #f1f5f9', paddingTop: '3.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem' }}>
+                  <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: '#fdf2f8', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#db2777' }}>
+                    <Clock size={22} />
+                  </div>
+                  <div>
+                    <h4 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 900 }}>Cuentas Regresivas Locales</h4>
+                    <p style={{ margin: 0, fontSize: '0.8rem', color: '#64748b', fontWeight: 600 }}>Solo se mostrarán dentro de este post específico.</p>
+                  </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
                   {(['left', 'right'] as const).map(slot => {
                     const c = countdowns.find(x => x.slot === slot);
                     return (
                       <div key={slot} style={{ 
-                        padding: '1.5rem', borderRadius: '24px', 
-                        background: c ? '#f8fafc' : 'rgba(241, 245, 249, 0.5)', 
+                        padding: '2.5rem', borderRadius: '32px', 
+                        background: c ? '#fff' : 'rgba(241, 245, 249, 0.4)', 
                         border: c ? '1px solid #e2e8f0' : '2px dashed #e2e8f0',
-                        transition: 'all 0.2s'
+                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                        position: 'relative',
+                        boxShadow: c ? '0 10px 30px rgba(0,0,0,0.03)' : 'none'
                       }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                          <span style={{ fontSize: '10px', fontWeight: 900, background: '#0f172a', color: 'white', padding: '2px 8px', borderRadius: '6px', textTransform: 'uppercase' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                          <span style={{ fontSize: '10px', fontWeight: 900, background: '#0f172a', color: 'white', padding: '4px 12px', borderRadius: '10px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
                             SLOT {slot === 'left' ? 'IZQUIERDO' : 'DERECHO'}
                           </span>
                           {c && (
-                            <button type="button" onClick={() => removeCountdown(slot)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}>
-                              <Trash2 size={16} />
+                            <button type="button" onClick={() => removeCountdown(slot)} style={{ background: '#fee2e2', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '0.6rem', borderRadius: '12px', transition: 'all 0.2s' }}>
+                              <Trash2 size={18} />
                             </button>
                           )}
                         </div>
@@ -235,38 +289,78 @@ export default function PostEditor({ post }: PostEditorProps) {
                         {!c ? (
                           <button 
                             type="button" 
-                            onClick={() => updateCountdown(slot, 'title', { es: '', en: '', pt: '' })}
+                            onClick={() => updateCountdown(slot, 'isActive', true)}
                             style={{ 
-                              width: '100%', padding: '1rem', borderRadius: '12px', border: 'none',
-                              background: 'white', color: '#64748b', fontWeight: 800, fontSize: '0.85rem',
-                              cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
-                              boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+                              width: '100%', padding: '2rem', borderRadius: '20px', border: 'none',
+                              background: 'white', color: '#64748b', fontWeight: 800, fontSize: '0.95rem',
+                              cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem',
+                              boxShadow: '0 4px 12px rgba(0,0,0,0.04)', transition: 'all 0.2s'
                             }}
                           >
-                            <Plus size={16} /> Activar Slot
+                            <Plus size={20} /> Activar Cuenta Regresiva
                           </button>
                         ) : (
-                          <div className="space-y-4">
+                          <div className="space-y-6">
                             <div>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                                <Edit3 size={14} className="text-secondary" />
+                                <label className="admin-label" style={{ margin: 0, fontWeight: 800 }}>Título ({activeLang})</label>
+                              </div>
                               <input 
                                 className="admin-input" 
-                                style={{ fontSize: '0.9rem', fontWeight: 800, padding: '0.5rem' }}
+                                style={{ fontSize: '1.1rem', fontWeight: 900, padding: '1rem' }}
                                 value={c.title[activeLang] || ''} 
                                 onChange={e => {
                                   const newTitles = { ...c.title, [activeLang]: e.target.value };
                                   updateCountdown(slot, 'title', newTitles);
                                 }}
-                                placeholder="Título (Slot)"
+                                placeholder="Ej: Próximo Examen"
                               />
                             </div>
+
                             <div>
-                              <input 
-                                type="datetime-local"
-                                className="admin-input"
-                                style={{ fontSize: '0.8rem', padding: '0.5rem' }}
-                                value={c.targetDate ? new Date(c.targetDate).toISOString().slice(0, 16) : ''}
-                                onChange={e => updateCountdown(slot, 'targetDate', e.target.value)}
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                                <AlignLeft size={14} className="text-secondary" />
+                                <label className="admin-label" style={{ margin: 0, fontWeight: 800 }}>Descripción ({activeLang})</label>
+                              </div>
+                              <textarea 
+                                className="admin-input" 
+                                rows={2}
+                                style={{ fontSize: '0.9rem', fontWeight: 600, padding: '1rem', borderRadius: '14px' }}
+                                value={c.description?.[activeLang] || ''} 
+                                onChange={e => {
+                                  const newDesc = { ...(c.description || {}), [activeLang]: e.target.value };
+                                  updateCountdown(slot, 'description', newDesc);
+                                }}
+                                placeholder="Breve contexto..."
                               />
+                            </div>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                              <div>
+                                <label className="admin-label" style={{ fontWeight: 800 }}>Fecha Objetivo</label>
+                                <input 
+                                  type="datetime-local"
+                                  className="admin-input"
+                                  style={{ fontSize: '0.85rem', padding: '0.8rem', borderRadius: '12px' }}
+                                  value={c.targetDate ? new Date(c.targetDate).toISOString().slice(0, 16) : ''}
+                                  onChange={e => updateCountdown(slot, 'targetDate', e.target.value)}
+                                />
+                              </div>
+                              <div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                                  <LinkIcon size={14} className="text-secondary" />
+                                  <label className="admin-label" style={{ margin: 0, fontWeight: 800 }}>URL Link</label>
+                                </div>
+                                <input 
+                                  type="url"
+                                  className="admin-input"
+                                  style={{ fontSize: '0.85rem', padding: '0.8rem', borderRadius: '12px' }}
+                                  value={c.url || ''}
+                                  onChange={e => updateCountdown(slot, 'url', e.target.value)}
+                                  placeholder="https://..."
+                                />
+                              </div>
                             </div>
                           </div>
                         )}
@@ -280,6 +374,9 @@ export default function PostEditor({ post }: PostEditorProps) {
         </div>
       </form>
 
+      <a href="https://emojis.hoy.today" target="_blank" rel="noopener noreferrer" style={{ position: 'fixed', bottom: '4rem', right: '4.5rem', width: '64px', height: '64px', borderRadius: '50%', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)', color: '#0f172a', zIndex: 9999, border: '2px solid #e2e8f0' }}>
+        <Smile size={32} />
+      </a>
     </>
   );
 }
