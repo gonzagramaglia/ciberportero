@@ -98,6 +98,8 @@ export default async function AdminLinksPage() {
           </tbody>
         </table>
       </div>
+
+      <AdminSectionNotes section="links" initialContent={note?.content || ''} />
     </div>
   );
 }

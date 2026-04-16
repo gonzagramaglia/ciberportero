@@ -52,21 +52,6 @@ export default function AdminSectionNotes({ section, initialContent }: Props) {
             </div>
           </div>
           
-          {!isEditing && (
-            <button 
-              onClick={() => setIsEditing(true)}
-              style={{ 
-                padding: '0.6rem 1.25rem', borderRadius: '14px', border: '1px solid #e2e8f0',
-                background: 'white', color: '#64748b', fontSize: '0.85rem', fontWeight: 800,
-                cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem',
-                transition: 'all 0.2s'
-              }}
-              className="btn-edit-notes"
-            >
-              <Sparkles size={14} className="text-accent" />
-              <span>Editar Notas</span>
-            </button>
-          )}
         </div>
 
         {isEditing ? (

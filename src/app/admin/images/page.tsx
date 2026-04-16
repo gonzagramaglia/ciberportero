@@ -1,11 +1,14 @@
 import ImageManager from "@/components/admin/ImageManager";
-import { ImageIcon } from "lucide-react";
+import { getAdminNote } from "@/lib/actions";
+import AdminSectionNotes from "@/components/admin/AdminSectionNotes";
 
 export const metadata = {
   title: "Admin | Imágenes",
 };
 
-export default function AdminImagesPage() {
+export default async function AdminImagesPage() {
+  const note = await getAdminNote('images');
+
   return (
     <div className="space-y-6">
       <div className="admin-header">
@@ -13,11 +16,13 @@ export default function AdminImagesPage() {
           <h2 className="admin-title">
             Gestión de Imágenes
           </h2>
-          <p className="text-muted mt-1">Sube imágenes para usar en tus posts con slugs personalizados.</p>
+          <p className="admin-subtitle">Sube imágenes para usar en tus posts con slugs personalizados.</p>
         </div>
       </div>
 
       <ImageManager />
+
+      <AdminSectionNotes section="images" initialContent={note?.content || ''} />
     </div>
   );
 }

@@ -12,7 +12,7 @@ export default async function AdminCalendarPage() {
   ]);
 
   return (
-    <div className="space-y-6 fade-in">
+    <div className="space-y-12 fade-in">
       <div className="admin-header">
         <div>
           <h2 className="admin-title">Calendario Académico</h2>
@@ -29,71 +29,69 @@ export default async function AdminCalendarPage() {
         </Link>
       </div>
 
-      <div className="admin-card table-container" style={{ borderRadius: '20px' }}>
+      <div className="admin-card table-container" style={{ borderRadius: '24px', border: '1px solid #e2e8f0', overflow: 'hidden' }}>
         <table className="admin-table">
           <thead>
             <tr>
-              <th style={{ width: '40%' }}>Evento</th>
-              <th>Descripción</th>
-              <th>Fecha</th>
-              <th>Tipo</th>
-              <th>Periodo</th>
-              <th style={{ textAlign: 'right', paddingRight: '2rem' }}>Acciones</th>
+              <th style={{ padding: '1.5rem 2rem' }}>EVENTO</th>
+              <th>DESCRIPCIÓN</th>
+              <th>FECHA</th>
+              <th>TIPO</th>
+              <th style={{ minWidth: '150px' }}>PERIODO</th>
+              <th style={{ textAlign: 'center' }}>ACCIONES</th>
             </tr>
           </thead>
           <tbody>
             {events.map((event) => (
               <tr key={event.id}>
-                <td style={{ verticalAlign: 'top' }}>
+                <td style={{ padding: '1.5rem 2rem' }}>
                   <div className="admin-flex-center">
                     <div style={{ 
-                      width: '32px', height: '32px', borderRadius: '8px', 
-                      background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      color: '#64748b', flexShrink: 0
+                      width: '40px', height: '40px', borderRadius: '12px', 
+                      background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      color: '#64748b', flexShrink: 0, border: '1px solid #f1f5f9'
                     }}>
-                      <CalendarIcon size={16} />
+                      <CalendarIcon size={18} />
                     </div>
-                    <span style={{ fontWeight: 800, color: '#0f172a', lineHeight: 1.2 }}>{(event.title as any)?.es || 'Sin título'}</span>
+                    <span style={{ fontWeight: 800, color: '#0f172a', fontSize: '1rem' }}>
+                      {(event.title as any)?.es || 'Sin título'}
+                    </span>
                   </div>
                 </td>
-                <td style={{ verticalAlign: 'top', paddingTop: '1.25rem' }}>
-                  <p style={{ 
-                    margin: 0, fontSize: '0.8rem', color: '#64748b', 
-                    maxWidth: '220px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' 
-                  }}>
-                    {(event.description as any)?.es || '-'}
-                  </p>
+                <td style={{ color: '#64748b', fontSize: '0.85rem', fontWeight: 500 }}>
+                  {(event.description as any)?.es || '-'}
                 </td>
-                <td style={{ verticalAlign: 'top', paddingTop: '1.25rem' }}>
-                  <span style={{ fontWeight: 700, color: '#1e293b', whiteSpace: 'nowrap', fontSize: '0.9rem' }}>
+                <td>
+                  <span style={{ fontWeight: 900, color: '#0f172a', whiteSpace: 'nowrap' }}>
                     {new Date(event.startDate).toLocaleDateString('es-AR', { day: '2-digit', month: 'short' })}
                   </span>
                 </td>
-                <td style={{ verticalAlign: 'top', paddingTop: '1.15rem' }}>
+                <td>
                   <span style={{ 
-                    padding: '0.25rem 0.6rem', 
+                    padding: '0.3rem 0.6rem', 
                     borderRadius: '8px', 
                     fontSize: '10px', 
                     fontWeight: 900, 
                     textTransform: 'uppercase',
-                    whiteSpace: 'nowrap',
                     background: event.type === 'exam' ? '#fff1f2' : event.type === 'quiz' ? '#fffbeb' : event.type === 'class' ? '#eff6ff' : event.type === 'admin' ? '#f5f3ff' : '#f1f5f9',
                     color: event.type === 'exam' ? '#be123c' : event.type === 'quiz' ? '#b45309' : event.type === 'class' ? '#1d4ed8' : event.type === 'admin' ? '#7c3aed' : '#475569',
-                    border: `1px solid ${event.type === 'exam' ? '#fecdd3' : event.type === 'quiz' ? '#fde68a' : event.type === 'class' ? '#bfdbfe' : event.type === 'admin' ? '#ddd6fe' : '#e2e8f0'}`
+                    border: '1px solid currentColor',
+                    opacity: 0.8
                   }}>
                     {event.type}
                   </span>
                 </td>
-                <td style={{ verticalAlign: 'top', paddingTop: '1.25rem', fontSize: '0.85rem', color: '#64748b', fontWeight: 700 }}>{event.period || '-'}</td>
-                <td style={{ textAlign: 'right', verticalAlign: 'top', paddingTop: '0.75rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '0.5rem', paddingRight: '0.5rem' }}>
+                <td>
+                  <span style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: 600, display: 'block', maxWidth: '200px' }}>
+                    {event.period || '-'}
+                  </span>
+                </td>
+                <td>
+                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }}>
                     <Link 
                       href={`/admin/calendar/${event.id}`} 
-                      style={{ 
-                        width: '36px', height: '36px', borderRadius: '50%', background: 'white', 
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        color: '#94a3b8', border: '1px solid #e2e8f0', transition: 'all 0.2s'
-                      }}
+                      className="btn-secondary"
+                      style={{ padding: '0.5rem', borderRadius: '10px', color: '#94a3b8' }}
                     >
                       <Edit size={16} />
                     </Link>
