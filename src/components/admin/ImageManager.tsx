@@ -134,6 +134,7 @@ export default function ImageManager() {
             <p>{images.length}</p>
           </div>
         </div>
+
         <div className="im-stat-card">
           <div className="im-stat-icon" style={{ background: '#ecfdf5', color: '#10b981' }}>
             <Hash size={24} />
@@ -145,7 +146,17 @@ export default function ImageManager() {
             </div>
           </div>
         </div>
-        <div className="im-stat-card" style={{ visibility: 'hidden', opacity: 0 }}>
+
+        <div className="im-stat-card">
+          <div className="im-stat-icon" style={{ background: '#fefce8', color: '#ca8a04' }}>
+            <Info size={24} />
+          </div>
+          <div className="im-stat-info">
+            <p>Tip de Uso</p>
+            <p style={{ fontSize: '0.75rem', fontWeight: 600, color: '#a16207', lineHeight: '1.2', marginTop: '0.2rem' }}>
+              Copia el código Markdown para insertar imágenes en tus posts fácilmente.
+            </p>
+          </div>
         </div>
       </div>
 

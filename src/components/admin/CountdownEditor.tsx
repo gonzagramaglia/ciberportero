@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, X, Clock, Link as LinkIcon, Type, AlignLeft, Settings, Calendar } from 'lucide-react';
+import { Save, X } from 'lucide-react';
 import { upsertCountdown } from '@/lib/actions';
 import LanguageTabs from './LanguageTabs';
 
@@ -84,12 +84,7 @@ export default function CountdownEditor({ countdown, slot }: CountdownEditorProp
 
             <div className="space-y-10">
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
-                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3b82f6' }}>
-                    <Type size={18} />
-                  </div>
-                  <label className="admin-label" style={{ margin: 0, fontSize: '0.95rem' }}>Título ({activeLang})</label>
-                </div>
+                <label className="admin-label" style={{ marginBottom: '1rem', fontSize: '0.95rem' }}>Título ({activeLang})</label>
                 <input 
                   className="admin-input"
                   style={{ fontSize: '1.5rem', fontWeight: 900, padding: '1.25rem', borderRadius: '16px' }}
@@ -101,12 +96,7 @@ export default function CountdownEditor({ countdown, slot }: CountdownEditorProp
               </div>
 
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
-                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#fff7ed', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#f97316' }}>
-                    <AlignLeft size={18} />
-                  </div>
-                  <label className="admin-label" style={{ margin: 0, fontSize: '0.95rem' }}>Descripción / Subtítulo ({activeLang})</label>
-                </div>
+                <label className="admin-label" style={{ marginBottom: '1rem', fontSize: '0.95rem' }}>Descripción / Subtítulo ({activeLang})</label>
                 <textarea 
                   className="admin-input"
                   rows={3}
@@ -118,12 +108,7 @@ export default function CountdownEditor({ countdown, slot }: CountdownEditorProp
               </div>
 
               <div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '2px dashed #f1f5f9' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
-                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#f5f3ff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8b5cf6' }}>
-                    <LinkIcon size={18} />
-                  </div>
-                  <label className="admin-label" style={{ margin: 0, fontSize: '0.95rem' }}>URL LINK (OPCIONAL)</label>
-                </div>
+                <label className="admin-label" style={{ marginBottom: '1rem', fontSize: '0.95rem' }}>URL LINK (OPCIONAL)</label>
                 <input 
                   type="url"
                   className="admin-input"
@@ -133,7 +118,7 @@ export default function CountdownEditor({ countdown, slot }: CountdownEditorProp
                   placeholder="https://..."
                 />
                 <p style={{ fontSize: '0.85rem', color: '#64748b', marginTop: '0.75rem', fontStyle: 'italic', fontWeight: 500 }}>
-                  * Al hacer click en la cuenta regresiva, se abrirá este link en otra pestaña.
+                  * Al hacer click en la cuenta regresiva, se abrirá este link.
                 </p>
               </div>
             </div>
@@ -142,19 +127,13 @@ export default function CountdownEditor({ countdown, slot }: CountdownEditorProp
 
         <div className="space-y-8" style={{ marginTop: '3.9rem' }}>
           <section className="admin-card" style={{ padding: '2.5rem', borderRadius: '28px' }}>
-            <div style={{ marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-              <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' }}>
-                <Settings size={18} />
-              </div>
+            <div style={{ marginBottom: '2rem' }}>
               <h4 style={{ margin: 0, fontSize: '0.9rem', fontWeight: 900, color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Configuración</h4>
             </div>
 
             <div className="space-y-8">
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                  <Calendar size={14} className="text-accent" />
-                  <label className="admin-label" style={{ margin: 0 }}>Fecha y Hora Final</label>
-                </div>
+                <label className="admin-label" style={{ marginBottom: '0.75rem', fontWeight: 800 }}>Fecha y Hora Final</label>
                 <input 
                   type="datetime-local"
                   className="admin-input"

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, X, Calendar, Type, AlignLeft, Tag, BookOpen, GraduationCap, Clock, Layers } from 'lucide-react';
+import { Save, X } from 'lucide-react';
 import { upsertCalendarEvent } from '@/lib/actions';
 import LanguageTabs from './LanguageTabs';
 
@@ -62,10 +62,7 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
     <form onSubmit={handleSubmit} className="space-y-12 fade-in">
       <div className="admin-header">
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
-            <Calendar size={24} className="text-accent" />
-            <h2 className="admin-title">{event ? 'Editar Evento Académico' : 'Nuevo Evento Académico'}</h2>
-          </div>
+          <h2 className="admin-title">{event ? 'Editar Evento Académico' : 'Nuevo Evento Académico'}</h2>
           <p className="admin-subtitle">Gestiona las fechas importantes del calendario universitario.</p>
         </div>
         <div style={{ display: 'flex', gap: '0.75rem' }}>
@@ -91,12 +88,7 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
 
             <div className="space-y-10">
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
-                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3b82f6' }}>
-                    <Type size={18} />
-                  </div>
-                  <label className="admin-label" style={{ margin: 0, fontSize: '0.95rem' }}>TÍTULO DEL EVENTO ({activeLang})</label>
-                </div>
+                <label className="admin-label" style={{ marginBottom: '1rem', fontSize: '0.95rem' }}>TÍTULO DEL EVENTO ({activeLang})</label>
                 <input 
                   className="admin-input"
                   style={{ fontSize: '1.5rem', fontWeight: 900, padding: '1.25rem', borderRadius: '16px' }}
@@ -108,12 +100,7 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
               </div>
 
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
-                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#fff7ed', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#f97316' }}>
-                    <AlignLeft size={18} />
-                  </div>
-                  <label className="admin-label" style={{ margin: 0, fontSize: '0.95rem' }}>DESCRIPCIÓN DETALLADA (OPCIONAL) ({activeLang})</label>
-                </div>
+                <label className="admin-label" style={{ marginBottom: '1rem', fontSize: '0.95rem' }}>DESCRIPCIÓN DETALLADA ({activeLang})</label>
                 <textarea 
                   className="admin-input"
                   rows={4}
@@ -126,10 +113,7 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginTop: '1.5rem' }}>
                 <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                    <Clock size={16} className="text-accent" />
-                    <label className="admin-label" style={{ margin: 0, fontWeight: 800 }}>FECHA DE INICIO</label>
-                  </div>
+                  <label className="admin-label" style={{ marginBottom: '0.75rem', fontWeight: 800 }}>FECHA DE INICIO</label>
                   <input 
                     type="date"
                     className="admin-input"
@@ -140,10 +124,7 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
                   />
                 </div>
                 <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                    <Clock size={16} className="text-secondary" />
-                    <label className="admin-label" style={{ margin: 0, fontWeight: 800 }}>FECHA DE FIN (OPCIONAL)</label>
-                  </div>
+                  <label className="admin-label" style={{ marginBottom: '0.75rem', fontWeight: 800 }}>FECHA DE FIN (OPCIONAL)</label>
                   <input 
                     type="date"
                     className="admin-input"
@@ -157,38 +138,29 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
           </section>
 
           <section className="admin-card" style={{ padding: '3rem', borderRadius: '32px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2.5rem' }}>
-              <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: '#f5f3ff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8b5cf6' }}>
-                <BookOpen size={20} />
-              </div>
+            <div style={{ marginBottom: '2.5rem' }}>
               <h3 style={{ margin: 0, fontSize: '1.35rem', fontWeight: 900, color: '#0f172a' }}>Vínculo Académico</h3>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                  <Layers size={16} className="text-secondary" />
-                  <label className="admin-label" style={{ margin: 0, fontWeight: 800 }}>CUATRIMESTRE / PERIODO</label>
-                </div>
+                <label className="admin-label" style={{ marginBottom: '0.75rem', fontWeight: 800 }}>CUATRIMESTRE / PERIODO</label>
                 <input 
                   className="admin-input"
                   style={{ padding: '1rem', borderRadius: '14px', fontSize: '1rem', fontWeight: 700 }}
                   value={period}
                   onChange={e => setPeriod(e.target.value)}
-                  placeholder="Ej: 1er cuatrimestre de 1er año"
+                  placeholder="Ej: 1er cuatrimestre"
                 />
               </div>
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                  <GraduationCap size={16} className="text-secondary" />
-                  <label className="admin-label" style={{ margin: 0, fontWeight: 800 }}>MATERIA ESPECÍFICA (OPCIONAL)</label>
-                </div>
+                <label className="admin-label" style={{ marginBottom: '0.75rem', fontWeight: 800 }}>MATERIA ESPECÍFICA</label>
                 <input 
                   className="admin-input"
                   style={{ padding: '1rem', borderRadius: '14px', fontSize: '1rem', fontWeight: 700 }}
                   value={subject}
                   onChange={e => setSubject(e.target.value)}
-                  placeholder="Ej: Análisis Matemático I"
+                  placeholder="Materia..."
                 />
               </div>
             </div>
@@ -197,10 +169,7 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
 
         <div className="space-y-8" style={{ marginTop: '3.9rem' }}>
           <section className="admin-card" style={{ padding: '2.5rem', borderRadius: '28px' }}>
-            <div style={{ marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-              <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' }}>
-                <Tag size={18} />
-              </div>
+            <div style={{ marginBottom: '2rem' }}>
               <h4 style={{ margin: 0, fontSize: '0.9rem', fontWeight: 900, color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.05em' }}>CATEGORÍA</h4>
             </div>
 
@@ -213,12 +182,11 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
                     cursor: 'pointer', padding: '1.25rem', borderRadius: '16px', 
                     background: category === cat ? '#f0fdf4' : '#fff',
                     border: `2px solid ${category === cat ? '#22c55e' : '#f1f5f9'}`,
-                    display: 'flex', alignItems: 'center', gap: '0.75rem', transition: 'all 0.2s',
+                    display: 'flex', alignItems: 'center', transition: 'all 0.2s',
                     fontWeight: 800, color: category === cat ? '#166534' : '#64748b', fontSize: '0.9rem',
                     boxShadow: category === cat ? '0 4px 12px rgba(34, 197, 94, 0.1)' : 'none'
                   }}
                 >
-                  <Tag size={16} style={{ opacity: category === cat ? 1 : 0.4 }} />
                   {cat}
                 </div>
               ))}

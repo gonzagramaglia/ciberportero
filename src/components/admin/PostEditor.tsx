@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, X, Languages, Edit3, ExternalLink, Smile, Clock, Plus, Trash2, Link as LinkIcon, AlignLeft, Type, FileText, Settings } from 'lucide-react';
+import { Save, X, ExternalLink, Smile, Plus, Trash2 } from 'lucide-react';
 import { upsertPost } from '@/lib/actions';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -123,17 +123,12 @@ export default function PostEditor({ post }: PostEditorProps) {
     setCountdowns(countdowns.filter(c => c.slot !== slot));
   };
 
-  const langNames = { es: 'Español', en: 'English', pt: 'Português' };
-
   return (
     <>
       <form onSubmit={handleSubmit} className="space-y-6 fade-in">
         <div className="admin-header">
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
-              <Languages size={24} className="text-accent" />
-              <h2 className="admin-title">{post ? 'Editar Post Multilingüe' : 'Nuevo Post Multilingüe'}</h2>
-            </div>
+            <h2 className="admin-title">{post ? 'Editar Post Multilingüe' : 'Nuevo Post Multilingüe'}</h2>
             {slug && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.4rem' }}>
                 <span style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 600 }}>Acceso al post público:</span>
@@ -167,9 +162,9 @@ export default function PostEditor({ post }: PostEditorProps) {
                 type="button" 
                 onClick={() => setPreviewMode(!previewMode)}
                 style={{ 
-                  background: previewMode ? '#1e293b' : '#f8fafc', color: previewMode ? 'white' : '#64748b',
-                  border: '1px solid #e2e8f0', padding: '0.6rem 1.25rem', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer',
-                  transition: 'all 0.2s'
+                   background: previewMode ? '#1e293b' : '#f8fafc', color: previewMode ? 'white' : '#64748b',
+                   border: '1px solid #e2e8f0', padding: '0.6rem 1.25rem', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer',
+                   transition: 'all 0.2s'
                 }}
               >
                 {previewMode ? 'VOLVER A EDITAR' : 'PREVISUALIZAR'}
@@ -177,15 +172,9 @@ export default function PostEditor({ post }: PostEditorProps) {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '3.5rem' }}>
-              {/* Título e Input */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
                 <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
-                    <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3b82f6' }}>
-                      <Type size={18} />
-                    </div>
-                    <label className="admin-label" style={{ margin: 0, fontSize: '0.95rem' }}>Título del Post ({activeLang})</label>
-                  </div>
+                  <label className="admin-label" style={{ marginBottom: '1rem', fontSize: '0.95rem' }}>Título del Post ({activeLang})</label>
                   <input 
                     className="admin-input" 
                     style={{ fontSize: '2rem', fontWeight: 900, padding: '1.5rem', borderRadius: '20px' }} 
@@ -196,30 +185,19 @@ export default function PostEditor({ post }: PostEditorProps) {
                 </div>
 
                 <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
-                    <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#fff7ed', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#f97316' }}>
-                      <AlignLeft size={18} />
-                    </div>
-                    <label className="admin-label" style={{ margin: 0, fontSize: '0.95rem' }}>Descripción / Extracto ({activeLang})</label>
-                  </div>
+                  <label className="admin-label" style={{ marginBottom: '1rem', fontSize: '0.95rem' }}>Descripción / Extracto ({activeLang})</label>
                   <textarea 
                     className="admin-input" 
                     rows={3}
                     style={{ fontSize: '1.1rem', fontWeight: 600, background: '#f8fafc', padding: '1.5rem', borderRadius: '20px', lineHeight: 1.6 }}
                     value={descriptions[activeLang]} 
                     onChange={e => setDescriptions({...descriptions, [activeLang]: e.target.value})} 
-                    placeholder="Imagina que es el resumen que verá el usuario en redes o en el listado..."
+                    placeholder="Resumen SEO..."
                   />
                 </div>
 
                 <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
-                    <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#f5f3ff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8b5cf6' }}>
-                      <FileText size={18} />
-                    </div>
-                    <label className="admin-label" style={{ margin: 0, fontSize: '0.95rem' }}>Contenido Principal ({activeLang})</label>
-                  </div>
-                  {/* Editor / Preview */}
+                  <label className="admin-label" style={{ marginBottom: '1rem', fontSize: '0.95rem' }}>Contenido Principal ({activeLang})</label>
                   {!previewMode ? (
                     <textarea 
                       className="admin-input" 
@@ -236,14 +214,9 @@ export default function PostEditor({ post }: PostEditorProps) {
                 </div>
               </div>
 
-              {/* Slugs y Estado (MOVIDO AQUÍ) */}
+              {/* Slugs y Estado */}
               <div style={{ borderTop: '2px dashed #f1f5f9', paddingTop: '3.5rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
-                  <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' }}>
-                    <Settings size={22} />
-                  </div>
-                  <h4 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 900 }}>Configuración de Slugs y Publicación</h4>
-                </div>
+                <h4 style={{ margin: '0 0 2rem 0', fontSize: '1.2rem', fontWeight: 900 }}>Configuración de Slugs y Publicación</h4>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem', background: '#f8fafc', padding: '2rem', borderRadius: '24px', border: '1px solid #f1f5f9' }}>
                   <div>
                     <label className="admin-label">Slug Principal</label>
@@ -261,14 +234,9 @@ export default function PostEditor({ post }: PostEditorProps) {
 
               {/* Cuentas Regresivas Locales */}
               <div style={{ borderTop: '2px dashed #f1f5f9', paddingTop: '3.5rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem' }}>
-                  <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: '#fdf2f8', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#db2777' }}>
-                    <Clock size={22} />
-                  </div>
-                  <div>
-                    <h4 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 900 }}>Cuentas Regresivas Locales</h4>
-                    <p style={{ margin: 0, fontSize: '0.8rem', color: '#64748b', fontWeight: 600 }}>Solo se mostrarán dentro de este post específico.</p>
-                  </div>
+                <div style={{ marginBottom: '2rem' }}>
+                  <h4 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 900 }}>Cuentas Regresivas Locales</h4>
+                  <p style={{ margin: 0, fontSize: '0.8rem', color: '#64748b', fontWeight: 600 }}>Solo para este post específico.</p>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
@@ -310,10 +278,7 @@ export default function PostEditor({ post }: PostEditorProps) {
                         ) : (
                           <div className="space-y-6">
                             <div>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                                <Edit3 size={14} className="text-secondary" />
-                                <label className="admin-label" style={{ margin: 0, fontWeight: 800 }}>Título ({activeLang})</label>
-                              </div>
+                              <label className="admin-label" style={{ fontWeight: 800 }}>Título ({activeLang})</label>
                               <input 
                                 className="admin-input" 
                                 style={{ fontSize: '1.1rem', fontWeight: 900, padding: '1rem' }}
@@ -327,10 +292,7 @@ export default function PostEditor({ post }: PostEditorProps) {
                             </div>
 
                             <div>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                                <AlignLeft size={14} className="text-secondary" />
-                                <label className="admin-label" style={{ margin: 0, fontWeight: 800 }}>Descripción ({activeLang})</label>
-                              </div>
+                              <label className="admin-label" style={{ fontWeight: 800 }}>Descripción ({activeLang})</label>
                               <textarea 
                                 className="admin-input" 
                                 rows={2}
@@ -340,7 +302,7 @@ export default function PostEditor({ post }: PostEditorProps) {
                                   const newDesc = { ...(c.description || {}), [activeLang]: e.target.value };
                                   updateCountdown(slot, 'description', newDesc);
                                 }}
-                                placeholder="Breve contexto..."
+                                placeholder="Contexto..."
                               />
                             </div>
 
@@ -356,10 +318,7 @@ export default function PostEditor({ post }: PostEditorProps) {
                                 />
                               </div>
                               <div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                                  <LinkIcon size={14} className="text-secondary" />
-                                  <label className="admin-label" style={{ margin: 0, fontWeight: 800 }}>URL Link</label>
-                                </div>
+                                <label className="admin-label" style={{ fontWeight: 800 }}>URL Link</label>
                                 <input 
                                   type="url"
                                   className="admin-input"

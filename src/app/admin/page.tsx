@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { Link as LinkIcon, FileText, Calendar, Bell, Clock, User as UserIcon } from "lucide-react";
+import { Link as LinkIcon, FileText, Calendar, Bell, Clock, User as UserIcon, MessageSquare, Image as ImageIcon, Users } from "lucide-react";
 import Link from "next/link";
 import { getAdminNote } from "@/lib/actions";
 import AdminSectionNotes from "@/components/admin/AdminSectionNotes";
@@ -12,6 +12,9 @@ export default async function AdminPage() {
       events: await db.calendarEvent.count(),
       notifications: await db.notification.count(),
       countdowns: await db.countdown.count(),
+      comments: await db.comment.count(),
+      users: await db.user.count(),
+      images: await db.image.count(),
     },
     db.auditLog.findMany({
       take: 10,
@@ -26,7 +29,7 @@ export default async function AdminPage() {
       <div className="admin-header">
         <div>
           <h2 className="admin-title">Panel de Control</h2>
-          <p className="admin-subtitle">Visión general de la plataforma y estadísticas.</p>
+          <p className="admin-subtitle">Visión general de la plataforma y estadísticas globales.</p>
         </div>
       </div>
 
@@ -35,7 +38,10 @@ export default async function AdminPage() {
         <StatCard href="/admin/posts" title="Posts" count={counts.posts} icon={<FileText className="text-emerald-500" />} />
         <StatCard href="/admin/calendar" title="Eventos" count={counts.events} icon={<Calendar className="text-purple-500" />} />
         <StatCard href="/admin/notifications" title="Notificaciones" count={counts.notifications} icon={<Bell className="text-amber-500" />} />
-        <StatCard href="/admin/notifications" title="Cuentas Regresivas" count={counts.countdowns} icon={<Clock className="text-rose-500" />} />
+        <StatCard href="/admin/countdowns" title="Cuentas Regresivas" count={counts.countdowns} icon={<Clock className="text-rose-500" />} />
+        <StatCard href="/admin/comments" title="Comentarios" count={counts.comments} icon={<MessageSquare className="text-indigo-500" />} />
+        <StatCard href="/admin/users" title="Usuarios" count={counts.users} icon={<Users className="text-orange-500" />} />
+        <StatCard href="/admin/images" title="Imágenes" count={counts.images} icon={<ImageIcon className="text-cyan-500" />} />
       </div>
 
       <section>
@@ -75,7 +81,7 @@ export default async function AdminPage() {
                   </td>
                   <td style={{ fontSize: '0.85rem' }}>{log.details}</td>
                   <td style={{ textAlign: 'right', fontSize: '0.8rem', color: '#94a3b8', whiteSpace: 'nowrap' }}>
-                    {log.createdAt.toLocaleString()}
+                    {log.createdAt.toLocaleString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                   </td>
                 </tr>
               ))}

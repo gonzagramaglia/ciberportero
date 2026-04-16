@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, X, Bell, Link as LinkIcon, Type, AlignLeft, Settings, Info } from 'lucide-react';
+import { Save, X } from 'lucide-react';
 import { upsertNotification } from '@/lib/actions';
 import LanguageTabs from './LanguageTabs';
 
@@ -56,11 +56,8 @@ export default function NotificationEditor({ notification }: NotificationEditorP
     <form onSubmit={handleSubmit} className="space-y-12 fade-in">
       <div className="admin-header">
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
-            <Bell size={24} className="text-secondary" />
-            <h2 className="admin-title">{notification ? 'Editar Notificación' : 'Nueva Notificación Global'}</h2>
-          </div>
-          <p className="admin-subtitle">Configura el mensaje que aparecerá en el banner superior de todo el sitio.</p>
+          <h2 className="admin-title">{notification ? 'Editar Notificación' : 'Nueva Notificación Global'}</h2>
+          <p className="admin-subtitle">Configura el mensaje que aparecerá en el banner superior.</p>
         </div>
         <div style={{ display: 'flex', gap: '0.75rem' }}>
           <button type="button" onClick={() => router.back()} className="btn-secondary">
@@ -85,12 +82,7 @@ export default function NotificationEditor({ notification }: NotificationEditorP
 
             <div className="space-y-10">
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
-                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3b82f6' }}>
-                    <Type size={18} />
-                  </div>
-                  <label className="admin-label" style={{ margin: 0, fontSize: '0.95rem' }}>Título del mensaje ({activeLang})</label>
-                </div>
+                <label className="admin-label" style={{ marginBottom: '1rem', fontSize: '0.95rem' }}>Título del mensaje ({activeLang})</label>
                 <input 
                   className="admin-input"
                   style={{ fontSize: '1.5rem', fontWeight: 900, padding: '1.25rem', borderRadius: '16px' }}
@@ -102,29 +94,19 @@ export default function NotificationEditor({ notification }: NotificationEditorP
               </div>
 
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
-                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#fff7ed', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#f97316' }}>
-                    <AlignLeft size={18} />
-                  </div>
-                  <label className="admin-label" style={{ margin: 0, fontSize: '0.95rem' }}>Descripción / Texto Extra ({activeLang})</label>
-                </div>
+                <label className="admin-label" style={{ marginBottom: '1rem', fontSize: '0.95rem' }}>Descripción / Texto Extra ({activeLang})</label>
                 <textarea 
                   className="admin-input"
                   rows={4}
                   style={{ fontSize: '1.1rem', fontWeight: 600, padding: '1.25rem', borderRadius: '16px', lineHeight: 1.6, background: '#f8fafc' }}
                   value={descriptions[activeLang] || ''}
                   onChange={e => updateDescription(e.target.value)}
-                  placeholder="Este texto aparece al expandir la notificación o en dispositivos grandes..."
+                  placeholder="Texto adicional..."
                 />
               </div>
 
               <div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '2px dashed #f1f5f9' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
-                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#f5f3ff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8b5cf6' }}>
-                    <LinkIcon size={18} />
-                  </div>
-                  <label className="admin-label" style={{ margin: 0, fontSize: '0.95rem' }}>URL de destino (OPCIONAL)</label>
-                </div>
+                <label className="admin-label" style={{ marginBottom: '1rem', fontSize: '0.95rem' }}>URL de destino (OPCIONAL)</label>
                 <input 
                   type="url"
                   className="admin-input"
@@ -143,19 +125,13 @@ export default function NotificationEditor({ notification }: NotificationEditorP
 
         <div className="space-y-8" style={{ marginTop: '3.9rem' }}>
           <section className="admin-card" style={{ padding: '2.5rem', borderRadius: '28px' }}>
-            <div style={{ marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-              <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' }}>
-                <Settings size={18} />
-              </div>
+            <div style={{ marginBottom: '2rem' }}>
               <h4 style={{ margin: 0, fontSize: '0.9rem', fontWeight: 900, color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Configuración</h4>
             </div>
 
             <div className="space-y-8">
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                  <Info size={14} className="text-secondary" />
-                  <label className="admin-label" style={{ margin: 0, fontWeight: 800 }}>Tipo de Alerta</label>
-                </div>
+                <label className="admin-label" style={{ marginBottom: '0.75rem', fontWeight: 800 }}>Tipo de Alerta</label>
                 <select 
                   className="admin-input" 
                   style={{ padding: '0.8rem', borderRadius: '12px', fontWeight: 700, cursor: 'pointer' }}
