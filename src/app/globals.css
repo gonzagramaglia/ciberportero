@@ -1077,8 +1077,8 @@ footer a:hover {
 .countdown-timer {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.2rem;
+  justify-content: flex-start;
+  gap: 0.35rem;
   margin-bottom: 0.75rem;
 }
 
@@ -1115,8 +1115,9 @@ footer a:hover {
 .countdown-desc {
   font-size: 0.68rem;
   line-height: 1.4;
-  opacity: 0.7;
+  opacity: 0.8;
   margin: 0;
+  text-align: left;
 }
 
 .countdown-desc strong {
