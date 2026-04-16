@@ -8,7 +8,10 @@ import { deleteNotification } from "@/lib/actions";
 
 export default async function AdminNotificationsPage() {
   const notifications = await db.notification.findMany({ orderBy: { createdAt: 'desc' } });
-  const countdowns = await db.countdown.findMany({ orderBy: { createdAt: 'desc' } });
+  const countdowns = await db.countdown.findMany({ 
+    where: { postId: null },
+    orderBy: { slot: 'asc' } 
+  });
 
   return (
     <div className="space-y-16">
