@@ -4,20 +4,42 @@ import { useState, useEffect } from 'react';
 import { Clock } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { translations } from '../lib/translations';
-import { usePathname } from 'next/navigation';
 
-export default function CountdownWidget() {
-    const pathname = usePathname();
+interface CountdownData {
+    id?: string;
+    slot: 'left' | 'right';
+    title: string;
+    targetDate: string | Date;
+    url?: string;
+    isActive: boolean;
+}
+
+interface CountdownWidgetProps {
+    countdowns?: CountdownData[];
+}
+
+export default function CountdownWidget({ countdowns: initialCountdowns }: CountdownWidgetProps) {
     const { lang } = useLanguage();
-
-    if (pathname === '/dashboard') return null;
     const t = translations[lang].countdown;
-    // New target date for Inscripción a Materias: March 31, 2026 at 12:00
-    const targetDate = new Date('2026-03-31T12:00:00-03:00');
+    const [countdowns, setCountdowns] = useState<CountdownData[]>(initialCountdowns || []);
 
-    const calculateTimeLeft = (target: Date) => {
+    useEffect(() => {
+        if (initialCountdowns) {
+            setCountdowns(initialCountdowns);
+        } else {
+            // Fetch global countdowns if not provided as props
+            fetch(`/api/countdowns?lang=${lang}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (Array.isArray(data)) setCountdowns(data);
+                })
+                .catch(err => console.error("Error fetching countdowns:", err));
+        }
+    }, [initialCountdowns, lang]);
+
+    const calculateTimeLeft = (target: string | Date) => {
         const now = new Date();
-        const diff = target.getTime() - now.getTime();
+        const diff = new Date(target).getTime() - now.getTime();
 
         if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0, expired: true };
 
@@ -30,24 +52,37 @@ export default function CountdownWidget() {
         };
     };
 
-    const [timeLeft, setTimeLeft] = useState(() => calculateTimeLeft(targetDate));
-
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setTimeLeft(calculateTimeLeft(targetDate));
-        }, 1000);
-        return () => clearInterval(timer);
-    }, []);
-
     const pad = (n: number) => String(n).padStart(2, '0');
 
-    const TimerLines = ({ time }: { time: any }) => (
+    const [times, setTimes] = useState<Record<string, any>>({});
+
+    useEffect(() => {
+        const updateAll = () => {
+            const newTimes: Record<string, any> = {};
+            countdowns.forEach(cd => {
+                if (cd.slot) {
+                    newTimes[cd.slot] = calculateTimeLeft(cd.targetDate);
+                }
+            });
+            setTimes(newTimes);
+        };
+
+        updateAll();
+        const timer = setInterval(updateAll, 1000);
+        return () => clearInterval(timer);
+    }, [countdowns]);
+
+    const TimerGrid = ({ time }: { time: any }) => (
         <div className="countdown-timer">
-            <div className="countdown-unit">
-                <span className="countdown-number">{pad(time.days)}</span>
-                <span className="countdown-label">{t.days}</span>
-            </div>
-            <span className="countdown-sep">:</span>
+            {time.days > 0 && (
+                <>
+                    <div className="countdown-unit">
+                        <span className="countdown-number">{time.days}</span>
+                        <span className="countdown-label">{t.days}</span>
+                    </div>
+                    <span className="countdown-sep">:</span>
+                </>
+            )}
             <div className="countdown-unit">
                 <span className="countdown-number">{pad(time.hours)}</span>
                 <span className="countdown-label">{t.hours}</span>
@@ -67,35 +102,42 @@ export default function CountdownWidget() {
 
     return (
         <>
-            {/* Left Side: Inscripción Countdown */}
-            <a 
-                href="https://autogestion.fadena.undef.edu.ar/3w/" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="sidebar-widget sidebar-widget-left" 
-                style={{ textDecoration: 'none', color: 'white' }}
-            >
-                <div className="countdown-header">
-                    <Clock size={14} />
-                    <span>{t.ivuTitle}</span>
-                </div>
-                {!timeLeft.expired ? (
-                    <TimerLines time={timeLeft} />
-                ) : (
-                    <p className="countdown-desc" style={{ textAlign: 'center', fontWeight: 700, marginBottom: '0.5rem' }}>{t.available}</p>
-                )}
-                <p className="countdown-desc" dangerouslySetInnerHTML={{ __html: t.ivuDesc }} />
-            </a>
+            {countdowns.map(cd => {
+                const time = times[cd.slot];
+                if (!time) return null;
 
-            {/* Right Side: SIU Image Widget */}
-            <div className="sidebar-widget sidebar-widget-right">
-                <a href="/siu.png" target="_blank" rel="noopener noreferrer">
-                    <img 
-                        src="/siu.png" 
-                        alt="Inscripción SIU Guaraní" 
-                    />
-                </a>
-            </div>
+                const content = (
+                    <div className={`sidebar-widget sidebar-widget-${cd.slot}`} style={{ cursor: cd.url ? 'pointer' : 'default' }}>
+                        <div className="countdown-header">
+                            <Clock size={14} />
+                            <span>{cd.title}</span>
+                        </div>
+                        {!time.expired ? (
+                            <TimerGrid time={time} />
+                        ) : (
+                            <p className="countdown-desc" style={{ textAlign: 'center', fontWeight: 700, marginBottom: '0.5rem' }}>
+                                {t.available}
+                            </p>
+                        )}
+                    </div>
+                );
+
+                if (cd.url) {
+                    return (
+                        <a 
+                            key={cd.slot} 
+                            href={cd.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            style={{ textDecoration: 'none', color: 'inherit' }}
+                        >
+                            {content}
+                        </a>
+                    );
+                }
+
+                return <div key={cd.slot}>{content}</div>;
+            })}
         </>
     );
 }

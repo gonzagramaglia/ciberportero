@@ -16,7 +16,8 @@ export async function GET(request: Request) {
                         { slug },
                         { alternativeSlug: slug }
                     ]
-                } 
+                },
+                include: { countdowns: true }
             });
             if (dbPost && dbPost.published) {
                 const titleObj = dbPost.title as any;
@@ -30,7 +31,14 @@ export async function GET(request: Request) {
                     content: contentObj[lang] || contentObj['es'] || contentObj['en'] || '',
                     description: descObj?.[lang] || descObj?.['es'] || descObj?.['en'] || '',
                     date: dbPost.date,
-                    availableLangs: Object.keys(titleObj).filter(l => titleObj[l] && contentObj[l])
+                    availableLangs: Object.keys(titleObj).filter(l => titleObj[l] && contentObj[l]),
+                    countdowns: dbPost.countdowns.map(c => ({
+                        slot: c.slot,
+                        title: (c.title as any)[lang] || (c.title as any)['es'],
+                        targetDate: c.targetDate,
+                        url: c.url,
+                        isActive: c.isActive
+                    }))
                 });
             }
         } catch (error) {

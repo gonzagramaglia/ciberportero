@@ -26,20 +26,24 @@ export default function PostEditor({ post }: PostEditorProps) {
   const [slug, setSlug] = useState(post?.slug || '');
   const [alternativeSlug, setAlternativeSlug] = useState(post?.alternativeSlug || '');
   const [published, setPublished] = useState(post?.published ?? true);
+  const [countdowns, setCountdowns] = useState<any[]>(post?.countdowns || []);
+
   const isDirty = useMemo(() => {
     const initialTitles = post?.title || { es: '', en: '', pt: '' };
     const initialContents = post?.content || { es: '', en: '', pt: '' };
     const initialDescriptions = post?.description || { es: '', en: '', pt: '' };
     const initialSlug = post?.slug || '';
     const initialPublished = post?.published ?? true;
+    const initialCountdowns = post?.countdowns || [];
 
     return JSON.stringify(titles) !== JSON.stringify(initialTitles) ||
            JSON.stringify(contents) !== JSON.stringify(initialContents) ||
            JSON.stringify(descriptions) !== JSON.stringify(initialDescriptions) ||
            slug !== initialSlug ||
            alternativeSlug !== (post?.alternativeSlug || '') ||
-           published !== initialPublished;
-  }, [titles, contents, descriptions, slug, alternativeSlug, published, post]);
+           published !== initialPublished ||
+           JSON.stringify(countdowns) !== JSON.stringify(initialCountdowns);
+  }, [titles, contents, descriptions, slug, alternativeSlug, published, countdowns, post]);
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -97,7 +101,8 @@ export default function PostEditor({ post }: PostEditorProps) {
         alternativeSlug,
         content: contents,
         description: descriptions,
-        published
+        published,
+        countdowns // Add countdowns here
       });
       router.push(`/admin/posts?success=${encodeURIComponent(titles.es)}&slug=${slug}`);
       router.refresh();
@@ -239,29 +244,27 @@ export default function PostEditor({ post }: PostEditorProps) {
 
           <div className="space-y-12">
             {/* 1. Configuración Global (Slug y Estado) */}
-            <div style={{ padding: '2rem', background: '#f8fafc', borderRadius: '16px', border: '1px solid #e2e8f0', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', alignItems: 'flex-end', marginBottom: '1rem' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', gridColumn: 'span 1' }}>
-                <div>
-                  <label className="admin-label" style={{ fontSize: '0.75rem', marginBottom: '0.75rem', display: 'block' }}>Slug Principal</label>
-                  <input 
-                    required
-                    className="admin-input"
-                    style={{ borderRadius: '10px', fontSize: '0.9rem', background: 'white' }}
-                    value={slug}
-                    onChange={e => setSlug(e.target.value)}
-                    placeholder="ej-mi-post"
-                  />
-                </div>
-                <div>
-                  <label className="admin-label" style={{ fontSize: '0.75rem', marginBottom: '0.75rem', display: 'block' }}>Slug Adicional (Opcional)</label>
-                  <input 
-                    className="admin-input"
-                    style={{ borderRadius: '10px', fontSize: '0.9rem', background: 'white' }}
-                    value={alternativeSlug}
-                    onChange={e => setAlternativeSlug(e.target.value)}
-                    placeholder="ej-alias-post"
-                  />
-                </div>
+            <div style={{ padding: '2rem', background: '#f8fafc', borderRadius: '16px', border: '1px solid #e2e8f0', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem', alignItems: 'flex-end', marginBottom: '1rem' }}>
+              <div>
+                <label className="admin-label" style={{ fontSize: '0.75rem', marginBottom: '0.75rem', display: 'block' }}>Slug Principal</label>
+                <input 
+                  required
+                  className="admin-input"
+                  style={{ borderRadius: '10px', fontSize: '0.9rem', background: 'white' }}
+                  value={slug}
+                  onChange={e => setSlug(e.target.value)}
+                  placeholder="ej-mi-post"
+                />
+              </div>
+              <div>
+                <label className="admin-label" style={{ fontSize: '0.75rem', marginBottom: '0.75rem', display: 'block' }}>Slug Adicional (Opcional)</label>
+                <input 
+                  className="admin-input"
+                  style={{ borderRadius: '10px', fontSize: '0.9rem', background: 'white' }}
+                  value={alternativeSlug}
+                  onChange={e => setAlternativeSlug(e.target.value)}
+                  placeholder="ej-alias-post"
+                />
               </div>
               <div>
                 <label className="admin-label" style={{ fontSize: '0.75rem', marginBottom: '0.75rem', display: 'block' }}>Estado de Publicación</label>
@@ -356,7 +359,127 @@ export default function PostEditor({ post }: PostEditorProps) {
               )}
             </div>
 
-            {/* 4. SEO */}
+            {/* 4. Cuentas Regresivas (Opcionales) */}
+            <div style={{ marginTop: '3rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                <AlertCircle size={20} className="text-accent" />
+                <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 900 }}>Cuentas Regresivas Personalizadas (Opcionales)</h3>
+              </div>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+                {(['left', 'right'] as const).map(slot => {
+                  const cd = countdowns.find(c => c.slot === slot);
+                  const isActive = !!cd;
+                  
+                  return (
+                    <div 
+                      key={slot}
+                      style={{ 
+                        padding: '1.5rem', 
+                        background: isActive ? '#f0f9ff' : '#f8fafc', 
+                        borderRadius: '20px', 
+                        border: `2px solid ${isActive ? '#bae6fd' : '#e2e8f0'}`,
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+                        <span style={{ fontSize: '0.75rem', fontWeight: 900, color: isActive ? '#0369a1' : '#94a3b8', textTransform: 'uppercase' }}>
+                          Slot {slot === 'left' ? 'Izquierdo' : 'Derecho'}
+                        </span>
+                        <div 
+                          onClick={() => {
+                            if (isActive) {
+                              setCountdowns(countdowns.filter(c => c.slot !== slot));
+                            } else {
+                              setCountdowns([...countdowns, {
+                                slot,
+                                title: { es: '', en: '', pt: '' },
+                                targetDate: new Date().toISOString().split('T')[0],
+                                isActive: true
+                              }]);
+                            }
+                          }}
+                          style={{ 
+                            width: '44px', height: '24px', borderRadius: '12px', 
+                            background: isActive ? '#0070f3' : '#cbd5e1',
+                            position: 'relative', cursor: 'pointer', transition: 'all 0.2s'
+                          }}
+                        >
+                          <div style={{ 
+                            width: '18px', height: '18px', borderRadius: '50%', background: 'white',
+                            position: 'absolute', top: '3px', left: isActive ? '23px' : '3px',
+                            transition: 'all 0.2s shadow 0.2s', boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                          }} />
+                        </div>
+                      </div>
+
+                      {isActive ? (
+                        <div className="space-y-4">
+                          <div>
+                            <label style={{ fontSize: '0.65rem', fontWeight: 800, color: '#64748b', display: 'block', marginBottom: '0.4rem' }}>
+                              TÍTULO ({activeLang.toUpperCase()})
+                            </label>
+                            <input 
+                              className="admin-input"
+                              style={{ padding: '0.6rem 0.8rem', fontSize: '0.85rem', background: 'white' }}
+                              value={cd.title[activeLang] || ''}
+                              onChange={e => {
+                                const newCds = [...countdowns];
+                                const index = newCds.findIndex(c => c.slot === slot);
+                                newCds[index].title = { ...newCds[index].title, [activeLang]: e.target.value };
+                                setCountdowns(newCds);
+                              }}
+                              placeholder="Ej: Final de Sistemas..."
+                            />
+                          </div>
+                          
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                            <div>
+                              <label style={{ fontSize: '0.65rem', fontWeight: 800, color: '#64748b', display: 'block', marginBottom: '0.4rem' }}>
+                                FECHA OBJETIVO
+                              </label>
+                              <input 
+                                type="date"
+                                className="admin-input"
+                                style={{ padding: '0.6rem 0.8rem', fontSize: '0.85rem', background: 'white' }}
+                                value={cd.targetDate ? new Date(cd.targetDate).toISOString().split('T')[0] : ''}
+                                onChange={e => {
+                                  const newCds = [...countdowns];
+                                  const index = newCds.findIndex(c => c.slot === slot);
+                                  newCds[index].targetDate = e.target.value;
+                                  setCountdowns(newCds);
+                                }}
+                              />
+                            </div>
+                            <div>
+                              <label style={{ fontSize: '0.65rem', fontWeight: 800, color: '#64748b', display: 'block', marginBottom: '0.4rem' }}>
+                                LINK AL CLICK (OPCIONAL)
+                              </label>
+                              <input 
+                                className="admin-input"
+                                style={{ padding: '0.6rem 0.8rem', fontSize: '0.85rem', background: 'white' }}
+                                value={cd.url || ''}
+                                onChange={e => {
+                                  const newCds = [...countdowns];
+                                  const index = newCds.findIndex(c => c.slot === slot);
+                                  newCds[index].url = e.target.value;
+                                  setCountdowns(newCds);
+                                }}
+                                placeholder="https://..."
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <p style={{ fontSize: '0.75rem', color: '#94a3b8', fontStyle: 'italic', margin: 0 }}>Desactivado para este post.</p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* 5. SEO */}
             <div style={{ padding: '2rem', background: '#f8fafc', borderRadius: '20px', border: '1px solid #e2e8f0', marginTop: '1rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
                 <Info size={16} className="text-accent" />

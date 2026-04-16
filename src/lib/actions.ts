@@ -187,7 +187,7 @@ export async function upsertPost(data: any) {
   const isUpdate = !!data.id;
   const title = data.title.es || 'Sin título';
 
-  const postData = {
+  const postData: any = {
     title: data.title,
     content: data.content,
     slug: data.slug,
@@ -197,14 +197,42 @@ export async function upsertPost(data: any) {
   };
 
   if (isUpdate) {
-    await db.post.update({
-      where: { id: data.id },
-      data: postData as any
-    });
+    // Handle countdowns update: delete existing for this post and create new ones
+    await db.$transaction([
+      db.countdown.deleteMany({ where: { postId: data.id } }),
+      db.post.update({
+        where: { id: data.id },
+        data: {
+          ...postData,
+          countdowns: {
+            create: data.countdowns?.map((c: any) => ({
+              slot: c.slot,
+              title: c.title,
+              targetDate: new Date(c.targetDate),
+              description: c.description,
+              url: c.url || null,
+              isActive: c.isActive
+            }))
+          }
+        }
+      })
+    ]);
     await logAction('UPDATE', 'post', `Actualizó el post: ${title}`);
   } else {
     await db.post.create({
-      data: postData as any
+      data: {
+        ...postData,
+        countdowns: {
+          create: data.countdowns?.map((c: any) => ({
+            slot: c.slot,
+            title: c.title,
+            targetDate: new Date(c.targetDate),
+            description: c.description,
+            url: c.url || null,
+            isActive: c.isActive
+          }))
+        }
+      }
     });
     await logAction('CREATE', 'post', `Creó un nuevo post: ${title}`);
   }
@@ -237,6 +265,7 @@ export async function upsertCountdown(data: any) {
         title: data.title,
         description: data.description,
         targetDate: new Date(data.targetDate),
+        url: data.url || null,
         isActive: data.isActive,
       }
     });
@@ -247,6 +276,7 @@ export async function upsertCountdown(data: any) {
         title: data.title,
         description: data.description,
         targetDate: new Date(data.targetDate),
+        url: data.url || null,
         isActive: data.isActive,
       }
     });

@@ -15,6 +15,7 @@ import LanguageSwitcher from '../../components/LanguageSwitcher';
 
 import NotificationBanners from '../../components/NotificationBanners';
 import CommentSection from '../../components/CommentSection';
+import CountdownWidget from '../../components/CountdownWidget';
 
 export default function Post() {
     const { slug } = useParams();
@@ -212,6 +213,7 @@ export default function Post() {
             )}
 
             <div className="container fade-in post-container">
+                <CountdownWidget countdowns={post?.countdowns} />
                 <NotificationBanners limitTo={
                     post.slug.includes('mate') ? 'mate' :
                         post.slug.includes('ivu') ? 'ivu' :

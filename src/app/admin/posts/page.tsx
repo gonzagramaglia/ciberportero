@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { Plus, FileText, Globe, Trash2, Edit, CheckCircle2, Languages } from "lucide-react";
+import { Plus, FileText, Globe, Trash2, Edit, CheckCircle2, Languages, Smile } from "lucide-react";
 import Link from "next/link";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 import { deletePost } from "@/lib/actions";
@@ -132,6 +132,31 @@ export default async function AdminPostsPage() {
           </tbody>
         </table>
       </div>
+      <a 
+        href="https://emojis.hoy.today" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="fab-button visible"
+        style={{ 
+          position: 'fixed', 
+          bottom: '2rem', 
+          right: '2rem', 
+          width: '56px', 
+          height: '56px', 
+          borderRadius: '50%', 
+          background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          boxShadow: '0 10px 25px rgba(245, 158, 11, 0.3)',
+          color: 'white',
+          zIndex: 1000,
+          textDecoration: 'none'
+        }}
+        title="Emojis"
+      >
+        <Smile size={24} />
+      </a>
     </div>
   );
 }

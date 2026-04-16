@@ -8,6 +8,7 @@ import { PostData } from '../lib/posts-client';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import { Github, Youtube, CheckCircle, BookOpen, Calendar, Info, Link as LinkIcon, X, ArrowRight, Layers, Star, Zap, Edit, ExternalLink } from 'lucide-react';
 import NotificationBanners from '../components/NotificationBanners';
+import CountdownWidget from '../components/CountdownWidget';
 import { useSession } from 'next-auth/react';
 import { SignInButton, SignOutButton } from '../components/AuthButtons';
 import { useMotivation } from '../hooks/useMotivation';
@@ -58,140 +59,10 @@ export default function Home() {
         return () => document.body.classList.remove('lightbox-open');
     }, [selectedImage]);
 
-    const [isFinished, setIsFinished] = useState(false);
-    const [isClassesFinished, setIsClassesFinished] = useState(false);
-    const [countdown, setCountdown] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
-    const [classesCountdown, setClassesCountdown] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
-
-    useEffect(() => {
-        const enrollmentTarget = new Date('2026-04-01T23:59:59-03:00').getTime();
-        const classesTarget = new Date('2026-04-08T09:00:00-03:00').getTime();
-
-        const updateCountdowns = () => {
-            const now = new Date().getTime();
-
-            // Enrollment Countdown
-            const eDistance = enrollmentTarget - now;
-            if (eDistance < 0) {
-                setCountdown({ days: 0, hours: 0, mins: 0, secs: 0 });
-                setIsFinished(true);
-            } else {
-                setCountdown({
-                    days: Math.floor(eDistance / (1000 * 60 * 60 * 24)),
-                    hours: Math.floor((eDistance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-                    mins: Math.floor((eDistance % (1000 * 60 * 60)) / (1000 * 60)),
-                    secs: Math.floor((eDistance % (1000 * 60)) / 1000)
-                });
-                setIsFinished(false);
-            }
-
-            // Classes Countdown
-            const cDistance = classesTarget - now;
-            if (cDistance < 0) {
-                setClassesCountdown({ days: 0, hours: 0, mins: 0, secs: 0 });
-                setIsClassesFinished(true);
-            } else {
-                setClassesCountdown({
-                    days: Math.floor(cDistance / (1000 * 60 * 60 * 24)),
-                    hours: Math.floor((cDistance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-                    mins: Math.floor((cDistance % (1000 * 60 * 60)) / (1000 * 60)),
-                    secs: Math.floor((cDistance % (1000 * 60)) / 1000)
-                });
-                setIsClassesFinished(false);
-            }
-        };
-
-        const timer = setInterval(updateCountdowns, 1000);
-        updateCountdowns();
-        return () => clearInterval(timer);
-    }, []);
 
     return (
         <div className="container fade-in home-container">
-            {/* Widget de Inscripciones (Izquierda) */}
-            <div className={`sidebar-widget sidebar-widget-left`}>
-                <div className="countdown-header">
-                    <Calendar size={14} />
-                    <span>{t.countdown.ivuTitle}</span>
-                </div>
-                {!isFinished ? (
-                    <>
-                        <div className="countdown-timer">
-                            <div className="countdown-unit">
-                                <span className="countdown-number">{countdown.hours}</span>
-                                <span className="countdown-label">{t.countdown.hours}</span>
-                            </div>
-                            <span className="countdown-sep">:</span>
-                            <div className="countdown-unit">
-                                <span className="countdown-number">{countdown.mins}</span>
-                                <span className="countdown-label">{t.countdown.minutes}</span>
-                            </div>
-                            <span className="countdown-sep">:</span>
-                            <div className="countdown-unit">
-                                <span className="countdown-number">{countdown.secs}</span>
-                                <span className="countdown-label">{t.countdown.seconds}</span>
-                            </div>
-                        </div>
-                        <p className="countdown-desc" style={{ color: '#fff', opacity: 0.9 }}>
-                            Cierre de inscripciones <strong>Hoy</strong> a las <strong>23:59hs</strong>.
-                        </p>
-                    </>
-                ) : (
-                    <div style={{ marginTop: '0.8rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        <p style={{ fontSize: '1.2rem', fontWeight: '800', margin: 0, lineHeight: '1.2', color: '#fff' }}>{t.countdown.enrollmentClosed}</p>
-                        <p style={{ fontSize: '0.7rem', opacity: 0.9, margin: 0, lineHeight: '1.4', color: '#fff' }}>{t.countdown.enrollmentClosedDesc}</p>
-                    </div>
-                )}
-            </div>
-
-            {/* Widget de Inicio de Clases (Derecha) */}
-            <div className={`sidebar-widget sidebar-widget-right`} style={{
-                background: 'linear-gradient(135deg, #1a4a6e 0%, #103253 100%)',
-                boxShadow: '0 8px 24px rgba(16, 50, 83, 0.35)',
-                padding: '1.1rem'
-            }}>
-                <div className="countdown-header">
-                    <Zap size={14} />
-                    <span>{t.countdown.classesTitle}</span>
-                </div>
-                {!isClassesFinished ? (
-                    <>
-                        <div className="countdown-timer">
-                            {classesCountdown.days > 0 && (
-                                <>
-                                    <div className="countdown-unit">
-                                        <span className="countdown-number">{classesCountdown.days}</span>
-                                        <span className="countdown-label">{t.countdown.days}</span>
-                                    </div>
-                                    <span className="countdown-sep">:</span>
-                                </>
-                            )}
-                            <div className="countdown-unit">
-                                <span className="countdown-number">{classesCountdown.hours}</span>
-                                <span className="countdown-label">{t.countdown.hours}</span>
-                            </div>
-                            <span className="countdown-sep">:</span>
-                            <div className="countdown-unit">
-                                <span className="countdown-number">{classesCountdown.mins}</span>
-                                <span className="countdown-label">{t.countdown.minutes}</span>
-                            </div>
-                            <span className="countdown-sep">:</span>
-                            <div className="countdown-unit">
-                                <span className="countdown-number">{classesCountdown.secs}</span>
-                                <span className="countdown-label">{t.countdown.seconds}</span>
-                            </div>
-                        </div>
-                        <p className="countdown-desc" style={{ color: '#fff', opacity: 0.9 }}>
-                            {t.countdown.classesDesc}
-                        </p>
-                    </>
-                ) : (
-                    <div style={{ marginTop: '0.8rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        <p style={{ fontSize: '1.2rem', fontWeight: '800', margin: 0, lineHeight: '1.2', color: '#fff' }}>{t.countdown.classesStarted}</p>
-                        <p style={{ fontSize: '0.7rem', opacity: 0.9, margin: 0, lineHeight: '1.4', color: '#fff' }}>{t.countdown.classesStartedDesc}</p>
-                    </div>
-                )}
-            </div>
+            <CountdownWidget />
 
             <NotificationBanners />
 

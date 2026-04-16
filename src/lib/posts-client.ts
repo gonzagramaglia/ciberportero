@@ -6,4 +6,5 @@ export interface PostData {
     description: string;
     content: string;
     availableLangs?: string[];
+    countdowns?: any[];
 }
