@@ -1,12 +1,13 @@
 'use client';
 
+import React, { useState, useEffect } from 'react';
+
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { ChevronLeft, Github, Youtube, ArrowUp, ArrowDown, X, Link2, Check, Edit } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { translations } from '../../lib/translations';
-import { useState, useEffect } from 'react';
 import { PostData } from '../../lib/posts-client';
 import { useParams, notFound } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -26,6 +27,58 @@ export default function Post() {
     const [copied, setCopied] = useState(false);
     const { data: session } = useSession();
     const t = translations[lang];
+
+    const slugify = (text: string) => {
+        return text
+            .toString()
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/[^\w-]+/g, '')
+            .replace(/--+/g, '-')
+            .replace(/^-+/, '')
+            .replace(/-+$/, '');
+    };
+
+    const getFullContent = () => {
+        if (!post) return '';
+        const trimmed = post.content.trim();
+        if (trimmed.startsWith('# ')) return post.content;
+        return `# ${post.title}\n\n${post.content}`;
+    };
+
+    const fullContent = getFullContent();
+
+    const getToc = (content: string) => {
+        const lines = content.split('\n');
+        const headers: { level: number; text: string; id: string }[] = [];
+        let inCodeBlock = false;
+
+        lines.forEach(line => {
+            if (line.startsWith('```')) {
+                inCodeBlock = !inCodeBlock;
+                return;
+            }
+            if (inCodeBlock) return;
+
+            const match = line.match(/^(#{1,6})\s+(.+)$/);
+            if (match) {
+                const level = match[1].length;
+                const text = match[2];
+                // Remove potential markdown formatting from TOC text
+                const cleanText = text.replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1').replace(/[*_~`]/g, '');
+                headers.push({
+                    level,
+                    text: cleanText,
+                    id: slugify(cleanText)
+                });
+            }
+        });
+        return headers;
+    };
+
+    const toc = getToc(fullContent);
 
     const handleCopy = () => {
         navigator.clipboard.writeText(window.location.href);
@@ -93,8 +146,57 @@ export default function Post() {
         return () => document.body.classList.remove('lightbox-open');
     }, [selectedImage]);
 
+    useEffect(() => {
+        if (!loading && post) {
+            const hash = window.location.hash;
+            if (hash) {
+                // Decode URI component to handle special characters correctly
+                const id = decodeURIComponent(hash.substring(1));
+                // Delay to ensure the DOM is fully rendered and browser has finished its initial layout
+                const timer = setTimeout(() => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        element.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }, 300);
+                return () => clearTimeout(timer);
+            }
+        }
+    }, [loading, post]);
+
     if (loading) return <div className="container fade-in"></div>;
     if (!post) return notFound();
+
+    const Heading = ({ level, children, ...props }: any) => {
+        const extractText = (node: any): string => {
+            if (typeof node === 'string') return node;
+            if (Array.isArray(node)) return node.map(extractText).join('');
+            if (node?.props?.children) return extractText(node.props.children);
+            return '';
+        };
+
+        const text = extractText(children);
+        const id = slugify(text);
+        const Tag = `h${level}` as any;
+        const style = level === 1 ? { display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' } : {};
+
+        if (level === 1) {
+            return (
+                <Tag id={id} {...props} style={style}>
+                    {children}
+                </Tag>
+            );
+        }
+
+        return (
+            <Tag id={id} {...props} className="post-header-anchor" style={style}>
+                <a href={`#${id}`} className="header-anchor-link">
+                    <Link2 size={18} />
+                </a>
+                {children}
+            </Tag>
+        );
+    };
 
     return (
         <>
@@ -123,69 +225,106 @@ export default function Post() {
                     <LanguageSwitcher availableLangs={post?.availableLangs} />
                 </div>
 
-                <article className="post-content">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
-                        <span className="post-date" style={{ margin: 0 }}>{new Date(post.date).toLocaleDateString(lang, {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                            timeZone: 'UTC'
-                        })}</span>
-                        {session?.user?.role === 'admin' && post.id && (
-                            <Link 
-                                href={`/admin/posts/${post.id}`}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="admin-edit-badge"
-                                style={{ 
-                                    display: 'flex', 
-                                    alignItems: 'center', 
-                                    gap: '0.4rem', 
-                                    fontSize: '0.7rem', 
-                                    fontWeight: 800, 
-                                    textTransform: 'uppercase',
-                                    background: '#f8fafc',
-                                    color: '#64748b',
-                                    padding: '0.2rem 0.6rem',
-                                    borderRadius: '6px',
-                                    border: '1px solid #e2e8f0',
-                                    textDecoration: 'none'
-                                }}
-                            >
-                                <Edit size={12} />
-                                <span>Editar</span>
-                            </Link>
+                <div className="post-body-layout">
+                    <article className="post-content">
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+                            <span className="post-date" style={{ margin: 0 }}>{new Date(post.date).toLocaleDateString(lang, {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                timeZone: 'UTC'
+                            })}</span>
+                            {session?.user?.role === 'admin' && post.id && (
+                                <Link
+                                    href={`/admin/posts/${post.id}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="admin-edit-badge"
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '0.4rem',
+                                        fontSize: '0.7rem',
+                                        fontWeight: 800,
+                                        textTransform: 'uppercase',
+                                        background: '#f8fafc',
+                                        color: '#64748b',
+                                        padding: '0.2rem 0.6rem',
+                                        borderRadius: '6px',
+                                        border: '1px solid #e2e8f0',
+                                        textDecoration: 'none'
+                                    }}
+                                >
+                                    <Edit size={12} />
+                                    <span>Editar</span>
+                                </Link>
+                            )}
+                        </div>
+
+                        <Heading level={1}>{post.title}</Heading>
+
+                        {toc.length > 2 && (
+                            <nav className="post-toc mobile-toc">
+                                <h3>{t.post.index}</h3>
+                                <ul>
+                                    {toc.map((header, i) => (
+                                        <li key={i} className={`toc-level-${header.level}`}>
+                                            <a href={`#${header.id}`}>{header.text}</a>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </nav>
                         )}
-                    </div>
-                    <ReactMarkdown
-                        remarkPlugins={[remarkGfm]}
-                        components={{
-                            a: ({ node, ...props }) => <a {...props} target="_blank" rel="noopener noreferrer" />,
-                            h1: ({ node, ...props }) => (
-                                <h1 {...props} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-                                    {props.children}
-                                </h1>
-                            ),
-                            img: ({ node, ...props }) => {
-                                const src = props.src as string;
-                                return (
-                                    <img
-                                        {...props}
-                                        style={{ cursor: 'zoom-in' }}
-                                        onClick={() => setSelectedImage(src || null)}
-                                    />
-                                );
-                            },
-                            del: ({ node, ...props }) => <span style={{ color: '#ca8a04', fontWeight: '800' }} {...props} />
-                        }}
-                    >
-                        {(() => {
-                            const trimmed = post.content.trim();
-                            if (trimmed.startsWith('# ')) return post.content;
-                            return `# ${post.title}\n\n${post.content}`;
-                        })()}
-                    </ReactMarkdown>
-                </article>
+
+                        <ReactMarkdown
+                            remarkPlugins={[remarkGfm]}
+                            components={{
+                                a: ({ node, ...props }) => <a {...props} target="_blank" rel="noopener noreferrer" />,
+                                h1: (props) => <Heading level={1} {...props} />,
+                                h2: (props) => <Heading level={2} {...props} />,
+                                h3: (props) => <Heading level={3} {...props} />,
+                                h4: (props) => <Heading level={4} {...props} />,
+                                h5: (props) => <Heading level={5} {...props} />,
+                                h6: (props) => <Heading level={6} {...props} />,
+                                img: ({ node, ...props }) => {
+                                    const src = props.src as string;
+                                    return (
+                                        <img
+                                            {...props}
+                                            style={{ cursor: 'zoom-in' }}
+                                            onClick={() => setSelectedImage(src || null)}
+                                        />
+                                    );
+                                },
+                                del: ({ node, ...props }) => <span style={{ color: '#ca8a04', fontWeight: '800' }} {...props} />
+                            }}
+                        >
+                            {(() => {
+                                const trimmed = post.content.trim();
+                                if (trimmed.startsWith('# ')) {
+                                    // Remove the first H1 if it matches the title or is just the first line
+                                    return trimmed.replace(/^# .*\n?/, '');
+                                }
+                                return post.content;
+                            })()}
+                        </ReactMarkdown>
+                    </article>
+
+                    {toc.length > 2 && (
+                        <aside className="post-sidebar">
+                            <nav className="post-toc desktop-toc">
+                                <h3>{t.post.index}</h3>
+                                <ul>
+                                    {toc.map((header, i) => (
+                                        <li key={i} className={`toc-level-${header.level}`}>
+                                            <a href={`#${header.id}`}>{header.text}</a>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </nav>
+                        </aside>
+                    )}
+                </div>
 
                 <div className="copy-container">
                     <button

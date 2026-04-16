@@ -41,6 +41,8 @@ export default function NotificationBanners({ limitTo = 'all' }: { limitTo?: 'iv
     // Filter out hidden ones
     const activeNotifications = dbNotifications.filter(n => !hiddenIds.includes(n.id));
 
+    if (activeNotifications.length === 0) return null;
+
     return (
         <div style={{ display: 'grid', gap: '0.75rem', marginBottom: '1.5rem' }}>
             {activeNotifications.map(notification => {

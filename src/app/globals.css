@@ -1563,3 +1563,290 @@ select {
   border-color: #bfdbfe !important;
   transform: translateY(-2px);
 }
+
+/* Post Table of Contents */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 2rem;
+}
+
+.post-toc {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin: 1rem 0 3rem 0;
+}
+
+.post-toc h3 {
+  font-size: 0.9rem !important;
+  margin-top: 0 !important;
+  margin-bottom: 1.25rem !important;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.1em;
+}
+
+.post-toc ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.post-toc li a {
+  font-size: 0.95rem;
+  color: #475569;
+  text-decoration: none !important;
+  transition: all 0.2s ease;
+  display: block;
+  line-height: 1.4;
+}
+
+.post-toc li a:hover {
+  color: var(--accent);
+  transform: translateX(4px);
+}
+
+.post-toc .toc-level-1 { display: none; }
+.post-toc .toc-level-3 { padding-left: 1.25rem; font-size: 0.9rem; opacity: 0.8; }
+.post-toc .toc-level-4 { padding-left: 2.25rem; font-size: 0.85rem; opacity: 0.7; }
+
+@media (max-width: 768px) {
+  .post-toc {
+    padding: 1.25rem;
+    margin-bottom: 2rem;
+  }
+}
+
+.post-header-anchor {
+  position: relative;
+  display: flex !important;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.header-anchor-link {
+  position: absolute;
+  left: -1.75rem;
+  opacity: 0;
+  transition: opacity 0.2s ease, color 0.2s ease;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none !important;
+}
+
+.post-header-anchor:hover .header-anchor-link {
+  opacity: 1;
+}
+
+.header-anchor-link:hover {
+  color: var(--accent);
+}
+
+@media (max-width: 1024px) {
+  .header-anchor-link {
+    position: static;
+    opacity: 0.5;
+    order: 2; /* Move it after the text on mobile if needed, or just keep it next to it */
+  }
+  .post-header-anchor {
+    gap: 0.75rem;
+  }
+}
+
+/* Post Layout for Sidebar */
+.post-body-layout {
+  display: flex;
+  gap: 4rem;
+  align-items: flex-start;
+  position: relative;
+}
+
+.post-content {
+  flex: 1;
+  min-width: 0; /* Prevents flex items from overflowing */
+}
+
+.post-sidebar {
+  width: 250px;
+  position: sticky;
+  top: 6rem;
+  flex-shrink: 0;
+}
+
+@media (max-width: 1100px) {
+  .post-body-layout {
+    flex-direction: column;
+    gap: 0;
+  }
+  .post-sidebar {
+    width: 100%;
+    position: static;
+    order: -1; /* Place it before content on mobile */
+    margin-bottom: 2rem;
+  }
+}
+
+/* Adjust post-toc for sidebar mode */
+.post-toc {
+  margin-top: 0;
+  background: transparent;
+  border: none;
+  border-left: 2px solid #f1f5f9;
+  border-radius: 0;
+  padding: 0 0 0 1.5rem;
+}
+
+.post-toc h3 {
+  color: #1a1a1a;
+  margin-bottom: 1.5rem !important;
+}
+
+.post-toc li a {
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.post-toc li a:hover {
+  color: var(--accent);
+  transform: none;
+}
+
+.post-toc .toc-level-3 {
+  padding-left: 1rem;
+}
+
+.post-toc .active-toc-item {
+  color: var(--accent) !important;
+  font-weight: 700;
+}
+
+/* Sidebar TOC refinements */
+.post-sidebar .post-toc {
+  border-left: 1px solid #e2e8f0;
+}
+
+.post-sidebar .post-toc li a {
+  padding: 2px 0;
+  border-left: 2px solid transparent;
+  margin-left: -1.6rem;
+  padding-left: 1.5rem;
+}
+
+.post-sidebar .post-toc li a:hover {
+  color: var(--accent);
+  background: rgba(0, 112, 243, 0.03);
+}
+
+@media (max-width: 1100px) {
+  .post-sidebar .post-toc {
+    border-left: none;
+    padding: 1.5rem;
+    background: #f8fafc;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+  }
+  .post-sidebar .post-toc li a {
+    margin-left: 0;
+    padding-left: 0;
+  }
+}
+
+/* Adjust TOC position to clear banners and align with title */
+.post-sidebar {
+  top: 11rem; 
+  margin-top: 5.5rem; /* Aligns with the title after date/edit badges */
+}
+
+@media (max-width: 1100px) {
+  .post-sidebar {
+    top: 0;
+    margin-top: 0;
+  }
+}
+
+/* Show/Hide TOC based on device */
+.mobile-toc {
+  display: none;
+}
+
+.desktop-toc {
+  display: block;
+}
+
+@media (max-width: 1100px) {
+  .post-container {
+    padding-top: 1.5rem !important;
+  }
+  
+  .nav-header-row {
+    margin-bottom: 1rem !important;
+  }
+
+  .post-content {
+    margin-top: 0.5rem !important;
+  }
+
+  .mobile-toc {
+    display: block;
+    margin: 1.5rem 0 3rem 0;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 1.5rem;
+  }
+  
+  .desktop-toc {
+    display: none;
+  }
+
+  .mobile-toc h3 {
+    font-size: 0.8rem !important;
+    color: #64748b;
+    margin-bottom: 1rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .mobile-toc ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .mobile-toc li a {
+    font-size: 0.95rem;
+    color: var(--accent);
+    padding: 0.6rem 0;
+    text-decoration: underline !important;
+    text-underline-offset: 4px;
+    text-decoration-color: rgba(0, 112, 243, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: all 0.2s ease;
+  }
+
+  .mobile-toc li a:active {
+    opacity: 0.7;
+  }
+
+  .mobile-toc .toc-level-3 { padding-left: 1.25rem; }
+  .mobile-toc .toc-level-4 { padding-left: 2.5rem; }
+}
+
+@media (min-width: 1101px) {
+  .post-sidebar {
+    position: sticky;
+    top: 11rem;
+  }
+}

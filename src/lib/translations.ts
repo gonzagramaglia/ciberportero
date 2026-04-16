@@ -73,6 +73,9 @@ export const translations = {
             copy: "Copiar enlace del post",
             copied: "¡Enlace del post copiado!"
         },
+        post: {
+            index: "Índice"
+        },
         studentPortal: {
             guestTitle: "Tu Avance",
             guestDesc: "<strong>Registrá y llevá un control de tus autoevaluaciones, tps y exámenes.</strong>",
@@ -310,6 +313,9 @@ export const translations = {
             copy: "Copy post link",
             copied: "Post link copied!"
         },
+        post: {
+            index: "Index"
+        },
         studentPortal: {
             guestTitle: "Your Progress",
             guestDesc: "<strong>Record and keep track of your self-assessments, TPs, and exams.</strong>",
@@ -546,6 +552,9 @@ export const translations = {
         share: {
             copy: "Copiar link do post",
             copied: "¡Link do post copiado!"
+        },
+        post: {
+            index: "Índice"
         },
         studentPortal: {
             guestTitle: "Seu Progresso",

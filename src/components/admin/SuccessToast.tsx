@@ -36,8 +36,9 @@ export default function SuccessToast() {
   return (
     <div style={{
       position: 'fixed',
-      bottom: '2rem',
-      right: '2rem',
+      top: '1.5rem',
+      left: '50%',
+      transform: 'translateX(-50%)',
       background: '#fff',
       border: '1px solid #e2e8f0',
       borderRadius: '20px',
@@ -46,9 +47,10 @@ export default function SuccessToast() {
       display: 'flex',
       alignItems: 'center',
       gap: '1rem',
-      zIndex: 1000,
-      animation: 'slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
-      maxWidth: '400px'
+      zIndex: 10000,
+      animation: 'slideInTop 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+      maxWidth: '400px',
+      width: 'calc(100% - 2rem)'
     }}>
       <div style={{ 
         background: '#ecfdf5', 
@@ -58,7 +60,8 @@ export default function SuccessToast() {
         borderRadius: '12px',
         display: 'flex',
         alignItems: 'center', 
-        justifyContent: 'center'
+        justifyContent: 'center',
+        flexShrink: 0
       }}>
         <CheckCircle size={24} />
       </div>
@@ -103,9 +106,9 @@ export default function SuccessToast() {
       </button>
 
       <style jsx>{`
-        @keyframes slideIn {
-          from { transform: translateX(100%) opacity: 0; }
-          to { transform: translateX(0) opacity: 1; }
+        @keyframes slideInTop {
+          from { transform: translate(-50%, -100%); opacity: 0; }
+          to { transform: translate(-50%, 0); opacity: 1; }
         }
       `}</style>
     </div>
