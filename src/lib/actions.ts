@@ -583,3 +583,21 @@ export async function deleteImage(id: string) {
 
   return { success: true };
 }
+
+export async function updateAdminNotes(id: string, type: 'notification' | 'post' | 'calendarEvent' | 'countdown', notes: string) {
+  try {
+    const table = type as any;
+    await (db[table] as any).update({
+      where: { id },
+      data: { adminNotes: notes }
+    });
+    revalidatePath('/admin');
+    revalidatePath('/admin/notifications');
+    revalidatePath('/admin/posts');
+    revalidatePath('/admin/calendar');
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { success: false };
+  }
+}

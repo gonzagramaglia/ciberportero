@@ -1,10 +1,10 @@
 import { db } from "@/lib/db";
-import { Plus, FileText, Globe, Trash2, Edit, CheckCircle2, Languages, Smile } from "lucide-react";
+import { Plus, FileText, Edit, CheckCircle2, Languages, Smile } from "lucide-react";
 import Link from "next/link";
 import { DeleteButton } from "@/components/admin/DeleteButton";
-import { deletePost } from "@/lib/actions";
 import SuccessToast from "@/components/admin/SuccessToast";
 import { Suspense } from "react";
+import AdminItemNotes from "@/components/admin/AdminItemNotes";
 
 export default async function AdminPostsPage() {
   const posts = await db.post.findMany({ orderBy: { date: 'desc' } });
@@ -36,7 +36,7 @@ export default async function AdminPostsPage() {
         <table className="admin-table">
           <thead>
             <tr>
-              <th>Título (ES)</th>
+              <th style={{ width: '50%' }}>Contenido</th>
               <th>Localización</th>
               <th>Estado</th>
               <th>Fecha</th>
@@ -46,34 +46,37 @@ export default async function AdminPostsPage() {
           <tbody>
             {posts.map((post) => {
               const titleObj = post.title as any;
-              const contentObj = post.content as any;
-              const hasEs = !!titleObj?.es && !!contentObj?.es;
-              const hasEn = !!titleObj?.en && !!contentObj?.en;
-              const hasPt = !!titleObj?.pt && !!contentObj?.pt;
+              const hasEs = !!titleObj?.es;
+              const hasEn = !!titleObj?.en;
+              const hasPt = !!titleObj?.pt;
 
               return (
                 <tr key={post.id}>
-                  <td>
-                    <div className="admin-flex-center">
-                      <div style={{ 
-                        width: '32px', height: '32px', borderRadius: '8px', 
-                        background: '#f8fafc', display: 'flex', alignItems: 'center', 
-                        justifyContent: 'center', color: '#64748b', border: '1px solid #e2e8f0' 
-                      }}>
-                        <FileText size={16} />
+                  <td style={{ verticalAlign: 'top' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      <div className="admin-flex-center">
+                        <div style={{ 
+                          width: '32px', height: '32px', borderRadius: '8px', 
+                          background: '#f8fafc', display: 'flex', alignItems: 'center', 
+                          justifyContent: 'center', color: '#64748b', border: '1px solid #e2e8f0',
+                          flexShrink: 0
+                        }}>
+                          <FileText size={16} />
+                        </div>
+                        <Link 
+                          href={`/${post.slug}`} 
+                          target="_blank" 
+                          style={{ fontWeight: 800, color: '#0f172a', textDecoration: 'none', lineHeight: 1.2 }}
+                          className="post-title-link"
+                        >
+                          {titleObj?.es || post.slug}
+                        </Link>
                       </div>
-                      <Link 
-                        href={`/${post.slug}`} 
-                        target="_blank" 
-                        style={{ fontWeight: 700, color: '#0f172a', textDecoration: 'none', whiteSpace: 'nowrap' }}
-                        className="post-title-link"
-                      >
-                        {titleObj?.es || post.slug}
-                      </Link>
+                      <AdminItemNotes id={post.id} type="post" initialNotes={post.adminNotes} />
                     </div>
                   </td>
-                  <td>
-                    <div style={{ display: 'flex', gap: '0.4rem' }}>
+                  <td style={{ verticalAlign: 'top' }}>
+                    <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.5rem' }}>
                       {['es', 'en', 'pt'].map(lang => {
                         const exists = lang === 'es' ? hasEs : lang === 'en' ? hasEn : hasPt;
                         return (
@@ -91,27 +94,29 @@ export default async function AdminPostsPage() {
                       })}
                     </div>
                   </td>
-                  <td>
-                    {post.published ? (
-                      <span style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', padding: '0.3rem 0.6rem', background: '#dcfce7', color: '#166534', borderRadius: '8px', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
-                        <CheckCircle2 size={12} /> Publicado
-                      </span>
-                    ) : (
-                      <span style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', padding: '0.3rem 0.6rem', background: '#fef3c7', color: '#92400e', borderRadius: '8px' }}>Borrador</span>
-                    )}
+                  <td style={{ verticalAlign: 'top' }}>
+                    <div style={{ marginTop: '0.5rem' }}>
+                      {post.published ? (
+                        <span style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', padding: '0.3rem 0.6rem', background: '#dcfce7', color: '#166534', borderRadius: '8px', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                          <CheckCircle2 size={12} /> Publicado
+                        </span>
+                      ) : (
+                        <span style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', padding: '0.3rem 0.6rem', background: '#fef3c7', color: '#92400e', borderRadius: '8px' }}>Borrador</span>
+                      )}
+                    </div>
                   </td>
-                  <td style={{ color: '#64748b', whiteSpace: 'nowrap', fontSize: '0.85rem' }}>{new Date(post.date || post.createdAt).toLocaleDateString()}</td>
-                  <td style={{ textAlign: 'right' }}>
+                  <td style={{ color: '#64748b', whiteSpace: 'nowrap', fontSize: '0.85rem', fontWeight: 600, verticalAlign: 'top', paddingTop: '1.25rem' }}>
+                    {new Date(post.date || post.createdAt).toLocaleDateString()}
+                  </td>
+                  <td style={{ textAlign: 'right', verticalAlign: 'top', paddingTop: '0.75rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
                       <Link 
                         href={`/admin/posts/${post.id}`} 
-                        className="admin-edit-btn"
                         style={{ 
                           width: '36px', height: '36px', borderRadius: '50%', background: 'white', 
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           color: '#94a3b8', border: '1px solid #e2e8f0', transition: 'all 0.2s'
                         }}
-                        title="Editar"
                       >
                         <Edit size={16} />
                       </Link>
@@ -121,14 +126,6 @@ export default async function AdminPostsPage() {
                 </tr>
               );
             })}
-            {posts.length === 0 && (
-              <tr>
-                <td colSpan={5} style={{ padding: '6rem 3rem', textAlign: 'center' }}>
-                  <Languages size={48} style={{ color: '#cbd5e1', marginBottom: '1rem', margin: '0 auto' }} />
-                  <p style={{ color: '#94a3b8', fontStyle: 'italic', fontWeight: 500 }}>No hay posts multilingües en la base de datos.</p>
-                </td>
-              </tr>
-            )}
           </tbody>
         </table>
       </div>
@@ -136,26 +133,11 @@ export default async function AdminPostsPage() {
         href="https://emojis.hoy.today" 
         target="_blank" 
         rel="noopener noreferrer"
-        className="fab-emoji-admin"
         style={{ 
-          position: 'fixed', 
-          bottom: '4rem', 
-          right: '4.5rem', 
-          width: '64px', 
-          height: '64px', 
-          borderRadius: '50%', 
-          background: 'white',
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center', 
-          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
-          color: '#0f172a',
-          zIndex: 9999,
-          textDecoration: 'none',
-          border: '2px solid #e2e8f0',
-          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+          position: 'fixed', bottom: '4rem', right: '4.5rem', width: '64px', height: '64px', borderRadius: '50%', background: 'white',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
+          color: '#0f172a', zIndex: 9999, border: '2px solid #e2e8f0'
         }}
-        title="Emojis"
       >
         <Smile size={32} />
       </a>
