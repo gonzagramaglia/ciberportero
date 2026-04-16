@@ -152,7 +152,6 @@ export async function upsertNotification(data: any) {
     type: data.type,
     active: data.active,
     url: data.url || null,
-    adminNotes: data.adminNotes || null,
   };
 
   if (isUpdate) {
@@ -196,31 +195,26 @@ export async function upsertPost(data: any) {
     alternativeSlug: data.alternativeSlug || null,
     description: data.description,
     published: data.published,
-    adminNotes: data.adminNotes || null,
   };
 
   if (isUpdate) {
-    // Handle countdowns update: delete existing for this post and create new ones
-    await db.$transaction([
-      db.countdown.deleteMany({ where: { postId: data.id } }),
-      db.post.update({
-        where: { id: data.id },
-        data: {
-          ...postData,
-          countdowns: {
-            create: data.countdowns?.map((c: any) => ({
-              slot: c.slot,
-              title: c.title,
-              targetDate: new Date(c.targetDate),
-              description: c.description,
-              url: c.url || null,
-              isActive: c.isActive,
-              adminNotes: c.adminNotes || null
-            }))
-          }
+    await db.post.update({
+      where: { id: data.id },
+      data: {
+        ...postData,
+        countdowns: {
+          deleteMany: {},
+          create: data.countdowns?.map((c: any) => ({
+            slot: c.slot,
+            title: c.title,
+            targetDate: new Date(c.targetDate),
+            description: c.description,
+            url: c.url || null,
+            isActive: c.isActive,
+          }))
         }
-      })
-    ]);
+      }
+    });
     await logAction('UPDATE', 'post', `Actualizó el post: ${title}`);
   } else {
     await db.post.create({
@@ -234,7 +228,6 @@ export async function upsertPost(data: any) {
             description: c.description,
             url: c.url || null,
             isActive: c.isActive,
-            adminNotes: c.adminNotes || null
           }))
         }
       }
@@ -273,7 +266,6 @@ export async function upsertCountdown(data: any) {
         url: data.url || null,
         slot: data.slot || 'left',
         isActive: data.isActive,
-        adminNotes: data.adminNotes || null,
       }
     });
     await logAction('UPDATE', 'countdown', `Actualizó el contador: ${titleEs}`);
@@ -286,7 +278,6 @@ export async function upsertCountdown(data: any) {
         url: data.url || null,
         slot: data.slot || 'left',
         isActive: data.isActive,
-        adminNotes: data.adminNotes || null,
       }
     });
     await logAction('CREATE', 'countdown', `Creó un nuevo contador: ${titleEs}`);
@@ -331,7 +322,6 @@ export async function upsertCalendarEvent(data: any) {
     period: data.period,
     type: data.type,
     subjectId: data.subjectId,
-    adminNotes: data.adminNotes || null,
   };
 
   if (isUpdate) {
@@ -351,6 +341,7 @@ export async function upsertCalendarEvent(data: any) {
   revalidatePath('/calendar');
 }
 
+/* --- PROGRESS ACTIONS --- */
 export async function getUserProgress() {
   const session = await auth();
   if (!session?.user?.id) return null;
@@ -506,9 +497,6 @@ export async function uploadImage(formData: FormData) {
 
   if (!file || !slug) return { error: "Faltan datos" };
 
-  // 1. Upload to Supabase Storage
-  // We use direct fetch if we want to avoid the library for the action, 
-  // but since we installed it, let's use it.
   const { supabaseAdmin } = await import('@/lib/supabase');
   
   const buffer = Buffer.from(await file.arrayBuffer());
@@ -516,7 +504,7 @@ export async function uploadImage(formData: FormData) {
   const filePath = `${slug}-${Date.now()}.${fileExt}`;
 
   const { data: storageData, error: storageError } = await supabaseAdmin.storage
-    .from('images') // You must create this bucket in Supabase as PUBLIC
+    .from('images')
     .upload(filePath, buffer, {
       contentType: file.type,
       upsert: true
@@ -527,12 +515,10 @@ export async function uploadImage(formData: FormData) {
     return { error: `Error subiendo a Supabase: ${storageError.message}` };
   }
 
-  // Get public URL
   const { data: { publicUrl } } = supabaseAdmin.storage
     .from('images')
     .getPublicUrl(filePath);
 
-  // 2. Save metadata in Prisma
   try {
     const image = await db.image.create({
       data: {
@@ -549,7 +535,7 @@ export async function uploadImage(formData: FormData) {
   } catch (error: any) {
     console.error('Prisma Error:', error);
     if (error.code === 'P2002') return { error: "El slug ya existe" };
-    return { error: `Error en DB: ${error.message || "Asegúrate de haber ejecutado npx prisma db push"}` };
+    return { error: `Error en DB: ${error.message}` };
   }
 }
 
@@ -571,7 +557,6 @@ export async function deleteImage(id: string) {
   const image = await db.image.findUnique({ where: { id } });
   if (!image) return { error: "Not found" };
 
-  // Delete from Storage
   const { supabaseAdmin } = await import('@/lib/supabase');
   const path = image.url.split('/').pop();
   if (path) {
@@ -584,12 +569,26 @@ export async function deleteImage(id: string) {
   return { success: true };
 }
 
-export async function updateAdminNotes(id: string, type: 'notification' | 'post' | 'calendarEvent' | 'countdown', notes: string) {
+/* --- ADMIN NOTES ACTIONS --- */
+export async function getAdminNote(section: string) {
   try {
-    const table = type as any;
-    await (db[table] as any).update({
-      where: { id },
-      data: { adminNotes: notes }
+    let note = await db.adminNote.findUnique({ where: { section } });
+    if (!note) {
+      note = await db.adminNote.create({ data: { section, content: "" } });
+    }
+    return note;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function updateAdminSectionNote(section: string, content: string) {
+  try {
+    await db.adminNote.upsert({
+      where: { section },
+      update: { content },
+      create: { section, content }
     });
     revalidatePath('/admin');
     revalidatePath('/admin/notifications');
@@ -598,6 +597,6 @@ export async function updateAdminNotes(id: string, type: 'notification' | 'post'
     return { success: true };
   } catch (error) {
     console.error(error);
-    return { success: false };
+    return { error: "Error al guardar la nota" };
   }
 }

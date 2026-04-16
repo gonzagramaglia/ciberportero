@@ -4,7 +4,6 @@ import { Plus, Bell, Edit, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 import { NotificationToggle } from "@/components/admin/NotificationToggle";
-import AdminItemNotes from "@/components/admin/AdminItemNotes";
 
 interface Props {
   notifications: any[];
@@ -40,7 +39,7 @@ export default function NotificationsList({ notifications }: Props) {
                   background: n.type === 'danger' ? '#fff1f2' : n.type === 'warning' ? '#fffbeb' : n.type === 'success' ? '#f0fdf4' : '#f8fafc',
                   borderColor: n.type === 'danger' ? '#fecdd3' : n.type === 'warning' ? '#fde68a' : n.type === 'success' ? '#bbf7d0' : '#e2e8f0',
                   color: n.type === 'danger' ? '#9f1239' : n.type === 'warning' ? '#92400e' : n.type === 'success' ? '#166534' : '#1e40af',
-                  marginBottom: '0' // We want the notes right below
+                  marginBottom: '0'
                 }}>
                   <div className="admin-flex-center" style={{ minWidth: 0, flex: 1 }}>
                     <Bell size={24} style={{ flexShrink: 0 }} />
@@ -68,8 +67,6 @@ export default function NotificationsList({ notifications }: Props) {
                     <DeleteButton id={n.id} type="notification" />
                   </div>
                 </div>
-
-                <AdminItemNotes id={n.id} type="notification" initialNotes={n.adminNotes} />
               </div>
             );
           })}

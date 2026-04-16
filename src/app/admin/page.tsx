@@ -1,9 +1,11 @@
 import { db } from "@/lib/db";
 import { Link as LinkIcon, FileText, Calendar, Bell, Clock, User as UserIcon } from "lucide-react";
 import Link from "next/link";
+import { getAdminNote } from "@/lib/actions";
+import AdminSectionNotes from "@/components/admin/AdminSectionNotes";
 
 export default async function AdminPage() {
-  const [counts, logs] = await Promise.all([
+  const [counts, logs, note] = await Promise.all([
     {
       links: await db.link.count(),
       posts: await db.post.count(),
@@ -15,7 +17,8 @@ export default async function AdminPage() {
       take: 10,
       orderBy: { createdAt: 'desc' },
       include: { user: true }
-    })
+    }),
+    getAdminNote('dashboard')
   ]);
 
   return (
@@ -87,6 +90,8 @@ export default async function AdminPage() {
           </table>
         </div>
       </section>
+
+      <AdminSectionNotes section="dashboard" initialContent={note?.content || ''} />
     </div>
   );
 }

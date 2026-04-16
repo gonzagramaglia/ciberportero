@@ -3,9 +3,14 @@ import { Plus, ExternalLink, Edit } from "lucide-react";
 import Link from "next/link";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 import { ReorderButtons } from "@/components/admin/ReorderButtons";
+import { getAdminNote } from "@/lib/actions";
+import AdminSectionNotes from "@/components/admin/AdminSectionNotes";
 
 export default async function AdminLinksPage() {
-  const links = await db.link.findMany();
+  const [links, note] = await Promise.all([
+    db.link.findMany({ orderBy: { order: 'asc' } }),
+    getAdminNote('links')
+  ]);
 
   return (
     <div className="space-y-6">

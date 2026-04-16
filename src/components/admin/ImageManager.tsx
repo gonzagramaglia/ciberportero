@@ -145,16 +145,7 @@ export default function ImageManager() {
             </div>
           </div>
         </div>
-        <div className="im-stat-card">
-          <div className="im-stat-icon" style={{ background: '#fffbeb', color: '#f59e0b' }}>
-            <Info size={24} />
-          </div>
-          <div className="im-stat-info">
-            <p>Tip de Uso</p>
-            <p style={{ fontSize: '0.8rem', fontWeight: 600, color: '#64748b' }}>
-              Slugs cortos = URLs limpias.
-            </p>
-          </div>
+        <div className="im-stat-card" style={{ visibility: 'hidden', opacity: 0 }}>
         </div>
       </div>
 

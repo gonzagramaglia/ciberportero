@@ -2,10 +2,14 @@ import { db } from "@/lib/db";
 import { Plus, Calendar as CalendarIcon, Edit } from "lucide-react";
 import Link from "next/link";
 import { DeleteButton } from "@/components/admin/DeleteButton";
-import AdminItemNotes from "@/components/admin/AdminItemNotes";
+import { getAdminNote } from "@/lib/actions";
+import AdminSectionNotes from "@/components/admin/AdminSectionNotes";
 
 export default async function AdminCalendarPage() {
-  const events = (await db.calendarEvent.findMany({ orderBy: { startDate: 'asc' } as any })) as any[];
+  const [events, note] = await Promise.all([
+    db.calendarEvent.findMany({ orderBy: { startDate: 'asc' } as any }),
+    getAdminNote('calendar')
+  ]);
 
   return (
     <div className="space-y-6 fade-in">
@@ -29,7 +33,7 @@ export default async function AdminCalendarPage() {
         <table className="admin-table">
           <thead>
             <tr>
-              <th style={{ width: '40%' }}>Evento y Notas</th>
+              <th style={{ width: '40%' }}>Evento</th>
               <th>Descripción</th>
               <th>Fecha</th>
               <th>Tipo</th>
@@ -41,18 +45,15 @@ export default async function AdminCalendarPage() {
             {events.map((event) => (
               <tr key={event.id}>
                 <td style={{ verticalAlign: 'top' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                    <div className="admin-flex-center">
-                      <div style={{ 
-                        width: '32px', height: '32px', borderRadius: '8px', 
-                        background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        color: '#64748b', flexShrink: 0
-                      }}>
-                        <CalendarIcon size={16} />
-                      </div>
-                      <span style={{ fontWeight: 800, color: '#0f172a', lineHeight: 1.2 }}>{(event.title as any)?.es || 'Sin título'}</span>
+                  <div className="admin-flex-center">
+                    <div style={{ 
+                      width: '32px', height: '32px', borderRadius: '8px', 
+                      background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      color: '#64748b', flexShrink: 0
+                    }}>
+                      <CalendarIcon size={16} />
                     </div>
-                    <AdminItemNotes id={event.id} type="calendarEvent" initialNotes={event.adminNotes} />
+                    <span style={{ fontWeight: 800, color: '#0f172a', lineHeight: 1.2 }}>{(event.title as any)?.es || 'Sin título'}</span>
                   </div>
                 </td>
                 <td style={{ verticalAlign: 'top', paddingTop: '1.25rem' }}>
@@ -104,6 +105,8 @@ export default async function AdminCalendarPage() {
           </tbody>
         </table>
       </div>
+
+      <AdminSectionNotes section="calendar" initialContent={note?.content || ''} />
     </div>
   );
 }

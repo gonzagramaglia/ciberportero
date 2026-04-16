@@ -135,7 +135,6 @@ model Post {
   description     Json?       // { "es": "...", "en": "...", "pt": "..." }
   published       Boolean     @default(false)
   date            DateTime    @default(now())
-  adminNotes      String?
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
   comments        Comment[]
@@ -201,7 +200,6 @@ model Notification {
   active      Boolean  @default(true)
   url         String?
   expiresAt   DateTime?
-  adminNotes  String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -218,7 +216,6 @@ model Countdown {
   description Json?    // { "es": "...", "en": "...", "pt": "..." }
   url         String?
   isActive    Boolean  @default(true)
-  adminNotes  String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -237,4 +234,13 @@ model AuditLog {
   user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@map("audit_logs")
+}
+
+model AdminNote {
+  id        String   @id @default(cuid())
+  section   String   @unique // 'notifications', 'posts', 'calendar', 'countdowns'
+  content   String   @default("") @db.Text
+  updatedAt DateTime @updatedAt
+
+  @@map("admin_notes")
 }

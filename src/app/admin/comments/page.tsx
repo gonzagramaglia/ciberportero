@@ -3,6 +3,8 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { MessageCircle, User as UserIcon, Calendar as CalendarIcon, FileText } from "lucide-react";
 import DeleteCommentButton from "@/components/DeleteCommentButton";
+import { getAdminNote } from "@/lib/actions";
+import AdminSectionNotes from "@/components/admin/AdminSectionNotes";
 
 export const dynamic = 'force-dynamic';
 
@@ -13,15 +15,16 @@ export default async function AdminCommentsPage() {
   const user = await db.user.findUnique({ where: { id: session.user.id } });
   if (user?.role !== 'admin') redirect("/");
 
-  const comments = await db.comment.findMany({
-    include: {
-      post: true,
-      user: {
-        select: { name: true, image: true }
-      }
-    },
-    orderBy: { createdAt: 'desc' }
-  });
+  const [comments, note] = await Promise.all([
+    db.comment.findMany({
+      include: {
+        post: true,
+        user: { select: { name: true, image: true } }
+      },
+      orderBy: { createdAt: 'desc' }
+    }),
+    getAdminNote('comments')
+  ]);
 
   return (
     <>
@@ -32,7 +35,7 @@ export default async function AdminCommentsPage() {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gap: '1rem' }}>
+      <div style={{ display: 'grid', gap: '1rem', marginBottom: '3rem' }}>
         {comments.length === 0 ? (
           <div style={{ padding: '4rem', textAlign: 'center', background: '#fff', borderRadius: '24px', border: '1px solid #eee' }}>
             <MessageCircle size={48} style={{ opacity: 0.1, marginBottom: '1rem' }} />
@@ -77,6 +80,8 @@ export default async function AdminCommentsPage() {
           ))
         )}
       </div>
+
+      <AdminSectionNotes section="comments" initialContent={note?.content || ''} />
     </>
   );
 }

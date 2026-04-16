@@ -1,13 +1,17 @@
 import { db } from "@/lib/db";
-import { Plus, FileText, Edit, CheckCircle2, Languages, Smile } from "lucide-react";
+import { Plus, FileText, CheckCircle2, Edit, Smile } from "lucide-react";
 import Link from "next/link";
-import { DeleteButton } from "@/components/admin/DeleteButton";
-import SuccessToast from "@/components/admin/SuccessToast";
 import { Suspense } from "react";
-import AdminItemNotes from "@/components/admin/AdminItemNotes";
+import SuccessToast from "@/components/admin/SuccessToast";
+import { DeleteButton } from "@/components/admin/DeleteButton";
+import { getAdminNote } from "@/lib/actions";
+import AdminSectionNotes from "@/components/admin/AdminSectionNotes";
 
 export default async function AdminPostsPage() {
-  const posts = await db.post.findMany({ orderBy: { date: 'desc' } });
+  const [posts, note] = await Promise.all([
+    db.post.findMany({ orderBy: { date: 'desc' } }),
+    getAdminNote('posts')
+  ]);
 
   return (
     <div className="space-y-6 fade-in">
@@ -72,7 +76,6 @@ export default async function AdminPostsPage() {
                           {titleObj?.es || post.slug}
                         </Link>
                       </div>
-                      <AdminItemNotes id={post.id} type="post" initialNotes={post.adminNotes} />
                     </div>
                   </td>
                   <td style={{ verticalAlign: 'top' }}>
@@ -141,6 +144,7 @@ export default async function AdminPostsPage() {
       >
         <Smile size={32} />
       </a>
+      <AdminSectionNotes section="posts" initialContent={note?.content || ''} />
     </div>
   );
 }
