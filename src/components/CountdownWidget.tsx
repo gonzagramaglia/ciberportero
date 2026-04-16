@@ -107,7 +107,7 @@ export default function CountdownWidget({ countdowns: initialCountdowns }: Count
                 if (!time) return null;
 
                 const content = (
-                    <div className={`sidebar-widget sidebar-widget-${cd.slot}`} style={{ cursor: cd.url ? 'pointer' : 'default' }}>
+                    <div className={`sidebar-widget sidebar-widget-${cd.slot} ${initialCountdowns ? 'post-specific' : ''}`} style={{ cursor: cd.url ? 'pointer' : 'default' }}>
                         <div className="countdown-header">
                             <Clock size={14} />
                             <span>{cd.title}</span>

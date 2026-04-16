@@ -994,12 +994,12 @@ footer a:hover {
   position: fixed;
   top: 5.5rem;
   width: 200px;
-  background: linear-gradient(135deg, #1a4a6e 0%, #103253 100%);
+  background: linear-gradient(135deg, #22c55e 0%, #10b981 100%);
   border-radius: 14px;
   padding: 1.1rem;
   color: white;
   z-index: 90;
-  box-shadow: 0 8px 24px rgba(16, 50, 83, 0.35);
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.25);
   transition: opacity 0.3s ease, filter 0.3s ease;
 }
 
@@ -1857,4 +1857,11 @@ html {
     position: sticky;
     top: 11rem;
   }
+}
+
+.fab-emoji-admin:hover {
+  transform: translateY(-5px) scale(1.1);
+  color: #eab308 !important;
+  border-color: #eab308 !important;
+  box-shadow: 0 15px 35px rgba(234, 179, 8, 0.2) !important;
 }

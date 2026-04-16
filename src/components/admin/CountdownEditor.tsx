@@ -29,6 +29,8 @@ export default function CountdownEditor({ countdown }: CountdownEditorProps) {
   );
   
   const [isActive, setIsActive] = useState(countdown?.isActive ?? true);
+  const [url, setUrl] = useState(countdown?.url || '');
+  const [slot, setSlot] = useState(countdown?.slot || 'left');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,7 +41,9 @@ export default function CountdownEditor({ countdown }: CountdownEditorProps) {
         title: { es: titleEs, en: titleEn, pt: titlePt },
         description: { es: descEs, en: descEn, pt: descPt },
         targetDate,
-        isActive
+        isActive,
+        url,
+        slot
       });
       router.push('/admin/notifications');
       router.refresh();
@@ -132,6 +136,47 @@ export default function CountdownEditor({ countdown }: CountdownEditorProps) {
               required 
               style={{ fontSize: '1.1rem', padding: '1rem' }}
             />
+            <div style={{ marginTop: '2rem' }}>
+              <label className="admin-label" style={{ color: '#1a1a1a', marginBottom: '0.75rem', display: 'block' }}>Posición del Widget</label>
+              <div style={{ display: 'flex', gap: '1rem' }}>
+                <button 
+                  type="button" 
+                  onClick={() => setSlot('left')}
+                  style={{ 
+                    flex: 1, padding: '0.75rem', borderRadius: '12px', border: '2px solid',
+                    background: slot === 'left' ? '#eff6ff' : 'white',
+                    borderColor: slot === 'left' ? '#3b82f6' : '#e2e8f0',
+                    fontWeight: 700, color: slot === 'left' ? '#1e40af' : '#64748b'
+                  }}
+                >
+                  Izquierda
+                </button>
+                <button 
+                  type="button" 
+                  onClick={() => setSlot('right')}
+                  style={{ 
+                    flex: 1, padding: '0.75rem', borderRadius: '12px', border: '2px solid',
+                    background: slot === 'right' ? '#eff6ff' : 'white',
+                    borderColor: slot === 'right' ? '#3b82f6' : '#e2e8f0',
+                    fontWeight: 700, color: slot === 'right' ? '#1e40af' : '#64748b'
+                  }}
+                >
+                  Derecha
+                </button>
+              </div>
+            </div>
+
+            <div style={{ marginTop: '2rem' }}>
+              <label className="admin-label" style={{ color: '#1a1a1a', marginBottom: '0.75rem', display: 'block' }}>Link al clickear (URL)</label>
+              <input 
+                type="url"
+                className="admin-input" 
+                value={url} 
+                onChange={e => setUrl(e.target.value)} 
+                placeholder="https://ejemplo.com"
+                style={{ fontSize: '1rem', padding: '0.8rem' }}
+              />
+            </div>
             <p style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '1rem' }}>
               El contador se actualizará automáticamente y llegará a cero en este instante exacto.
             </p>

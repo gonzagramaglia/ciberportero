@@ -266,6 +266,7 @@ export async function upsertCountdown(data: any) {
         description: data.description,
         targetDate: new Date(data.targetDate),
         url: data.url || null,
+        slot: data.slot || 'left',
         isActive: data.isActive,
       }
     });
@@ -277,6 +278,7 @@ export async function upsertCountdown(data: any) {
         description: data.description,
         targetDate: new Date(data.targetDate),
         url: data.url || null,
+        slot: data.slot || 'left',
         isActive: data.isActive,
       }
     });

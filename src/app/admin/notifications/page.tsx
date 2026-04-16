@@ -93,7 +93,7 @@ export default async function AdminNotificationsPage() {
           )}
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2rem' }}>
           {[0, 1].map((index) => {
             const c = countdowns[index];
             const slotName = index === 0 ? "Slot Izquierdo" : "Slot Derecho";

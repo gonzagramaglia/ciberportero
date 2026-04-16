@@ -13,14 +13,18 @@ export async function GET(request: Request) {
             }
         });
 
-        return NextResponse.json(countdowns.map(c => ({
-            id: c.id,
-            slot: c.slot,
-            title: (c.title as any)[lang] || (c.title as any)['es'],
-            targetDate: c.targetDate,
-            url: c.url,
-            isActive: c.isActive
-        })));
+        const filteredCountdowns = countdowns
+            .map(c => ({
+                id: c.id,
+                slot: c.slot,
+                title: (c.title as any)[lang]?.trim() || "",
+                targetDate: c.targetDate,
+                url: c.url,
+                isActive: c.isActive
+            }))
+            .filter(c => c.title !== "");
+
+        return NextResponse.json(filteredCountdowns);
     } catch (error) {
         console.error("Error fetching global countdowns:", error);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

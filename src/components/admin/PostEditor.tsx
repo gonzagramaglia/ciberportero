@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, X, Eye, Edit3, Globe, Languages, Info, CheckCircle, AlertCircle, ExternalLink } from 'lucide-react';
+import { Save, X, Eye, Edit3, Globe, Languages, Info, CheckCircle, AlertCircle, ExternalLink, Smile } from 'lucide-react';
 import { upsertPost } from '@/lib/actions';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -121,7 +121,8 @@ export default function PostEditor({ post }: PostEditorProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 fade-in">
+    <>
+      <form onSubmit={handleSubmit} className="space-y-6 fade-in">
       <div className="admin-header">
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
@@ -376,14 +377,14 @@ export default function PostEditor({ post }: PostEditorProps) {
                       key={slot}
                       style={{ 
                         padding: '1.5rem', 
-                        background: isActive ? '#f0f9ff' : '#f8fafc', 
+                        background: isActive ? '#f0fdf4' : '#f8fafc', 
                         borderRadius: '20px', 
-                        border: `2px solid ${isActive ? '#bae6fd' : '#e2e8f0'}`,
+                        border: `2px solid ${isActive ? '#bbf7d0' : '#e2e8f0'}`,
                         transition: 'all 0.2s'
                       }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-                        <span style={{ fontSize: '0.75rem', fontWeight: 900, color: isActive ? '#0369a1' : '#94a3b8', textTransform: 'uppercase' }}>
+                        <span style={{ fontSize: '0.75rem', fontWeight: 900, color: isActive ? '#166534' : '#94a3b8', textTransform: 'uppercase' }}>
                           Slot {slot === 'left' ? 'Izquierdo' : 'Derecho'}
                         </span>
                         <div 
@@ -401,7 +402,7 @@ export default function PostEditor({ post }: PostEditorProps) {
                           }}
                           style={{ 
                             width: '44px', height: '24px', borderRadius: '12px', 
-                            background: isActive ? '#0070f3' : '#cbd5e1',
+                            background: isActive ? '#22c55e' : '#cbd5e1',
                             position: 'relative', cursor: 'pointer', transition: 'all 0.2s'
                           }}
                         >
@@ -480,11 +481,12 @@ export default function PostEditor({ post }: PostEditorProps) {
             </div>
 
             {/* 5. SEO */}
-            <div style={{ padding: '2rem', background: '#f8fafc', borderRadius: '20px', border: '1px solid #e2e8f0', marginTop: '1rem' }}>
+            <div style={{ marginTop: '3rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
                 <Info size={16} className="text-accent" />
-                <h3 style={{ margin: 0, fontSize: '0.9rem', fontWeight: 900 }}>Descripción SEO ({activeLang})</h3>
+                <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 900 }}>Descripción SEO ({activeLang})</h3>
               </div>
+              <div style={{ padding: '2rem', background: '#f8fafc', borderRadius: '20px', border: '1px solid #e2e8f0' }}>
               <textarea 
                 className="admin-input"
                 style={{ minHeight: '100px', padding: '1.25rem', borderRadius: '14px', fontSize: '0.95rem', border: '1px solid #e2e8f0', background: 'white' }}
@@ -497,6 +499,35 @@ export default function PostEditor({ post }: PostEditorProps) {
           </div>
         </div>
       </div>
-    </form>
+    </div>
+  </form>
+      <a 
+        href="https://emojis.hoy.today" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="fab-emoji-admin"
+        style={{ 
+          position: 'fixed', 
+          bottom: '4rem', 
+          right: '4.5rem', 
+          width: '64px', 
+          height: '64px', 
+          borderRadius: '50%', 
+          background: 'white',
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
+          color: '#0f172a',
+          zIndex: 9999,
+          textDecoration: 'none',
+          border: '2px solid #e2e8f0',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+        }}
+        title="Emojis"
+      >
+        <Smile size={32} />
+      </a>
+    </>
   );
 }

@@ -136,26 +136,28 @@ export default async function AdminPostsPage() {
         href="https://emojis.hoy.today" 
         target="_blank" 
         rel="noopener noreferrer"
-        className="fab-button visible"
+        className="fab-emoji-admin"
         style={{ 
           position: 'fixed', 
-          bottom: '2rem', 
-          right: '2rem', 
-          width: '56px', 
-          height: '56px', 
+          bottom: '4rem', 
+          right: '4.5rem', 
+          width: '64px', 
+          height: '64px', 
           borderRadius: '50%', 
-          background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
+          background: 'white',
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'center', 
-          boxShadow: '0 10px 25px rgba(245, 158, 11, 0.3)',
-          color: 'white',
-          zIndex: 1000,
-          textDecoration: 'none'
+          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
+          color: '#0f172a',
+          zIndex: 9999,
+          textDecoration: 'none',
+          border: '2px solid #e2e8f0',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
         }}
         title="Emojis"
       >
-        <Smile size={24} />
+        <Smile size={32} />
       </a>
     </div>
   );
