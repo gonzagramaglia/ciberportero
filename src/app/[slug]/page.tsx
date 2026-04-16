@@ -190,10 +190,10 @@ export default function Post() {
 
         return (
             <Tag id={id} {...props} className="post-header-anchor" style={style}>
-                <a href={`#${id}`} className="header-anchor-link">
-                    <Link2 size={18} />
-                </a>
                 {children}
+                <a href={`#${id}`} className="header-anchor-link">
+                    <Link2 size={18} strokeWidth={3} />
+                </a>
             </Tag>
         );
     };
