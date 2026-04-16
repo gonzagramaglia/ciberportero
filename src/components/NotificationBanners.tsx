@@ -38,15 +38,21 @@ export default function NotificationBanners({ limitTo = 'all' }: { limitTo?: 'iv
 
     if (!isMounted) return null;
 
-    // Filter out hidden ones
-    const activeNotifications = dbNotifications.filter(n => !hiddenIds.includes(n.id));
+    // Filter out notifications that don't have a message in the current language
+    const activeNotifications = dbNotifications
+        .filter(n => !hiddenIds.includes(n.id))
+        .filter(n => {
+            const msg = typeof n.message === 'object' ? n.message[lang] : n.message;
+            return msg && msg.trim().length > 0;
+        });
 
     if (activeNotifications.length === 0) return null;
 
     return (
         <div style={{ display: 'grid', gap: '0.75rem', marginBottom: '1.5rem' }}>
             {activeNotifications.map(notification => {
-                const message = typeof notification.message === 'object' ? (notification.message[lang] || notification.message.es) : notification.message;
+                const message = typeof notification.message === 'object' ? notification.message[lang] : notification.message;
+                const description = typeof notification.description === 'object' ? notification.description[lang] : notification.description;
                 const type = notification.type || 'info';
                 
                 // Color mapping based on type
@@ -76,10 +82,10 @@ export default function NotificationBanners({ limitTo = 'all' }: { limitTo?: 'iv
                                     style={{ margin: 0, fontWeight: 800, fontSize: '0.95rem', letterSpacing: '-0.01em' }} 
                                     dangerouslySetInnerHTML={{ __html: message }} 
                                 />
-                                {notification.description && (
+                                {description && (
                                     <p 
                                         style={{ margin: '0.1rem 0 0', opacity: 0.9, fontSize: '0.85rem', fontWeight: 500 }} 
-                                        dangerouslySetInnerHTML={{ __html: typeof notification.description === 'object' ? (notification.description[lang] || notification.description.es) : notification.description }} 
+                                        dangerouslySetInnerHTML={{ __html: description }} 
                                     />
                                 )}
                             </div>

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, X, Bell, Globe } from 'lucide-react';
+import { Save, X, Bell } from 'lucide-react';
 import { upsertNotification } from '@/lib/actions';
 
 interface NotificationEditorProps {
@@ -12,27 +12,26 @@ interface NotificationEditorProps {
 export default function NotificationEditor({ notification }: NotificationEditorProps) {
   const router = useRouter();
   const [isPending, setIsPending] = useState(false);
+  const [activeLang, setActiveLang] = useState<'es' | 'en' | 'pt'>('es');
 
   // Form state
-  const [messageEs, setMessageEs] = useState(notification?.message?.es || '');
-  const [messageEn, setMessageEn] = useState(notification?.message?.en || '');
-  const [messagePt, setMessagePt] = useState(notification?.message?.pt || '');
-  
-  const [descriptionEs, setDescriptionEs] = useState(notification?.description?.es || '');
-  const [descriptionEn, setDescriptionEn] = useState(notification?.description?.en || '');
-  const [descriptionPt, setDescriptionPt] = useState(notification?.description?.pt || '');
-
+  const [messages, setMessages] = useState(notification?.message || { es: '', en: '', pt: '' });
+  const [descriptions, setDescriptions] = useState(notification?.description || { es: '', en: '', pt: '' });
   const [type, setType] = useState(notification?.type || 'info');
   const [active, setActive] = useState(notification?.active ?? true);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!messages.es) {
+      alert('La versión en español es obligatoria.');
+      return;
+    }
     setIsPending(true);
     try {
       await upsertNotification({
         id: notification?.id,
-        message: { es: messageEs, en: messageEn, pt: messagePt },
-        description: { es: descriptionEs, en: descriptionEn, pt: descriptionPt },
+        message: messages,
+        description: descriptions,
         type,
         active
       });
@@ -46,100 +45,123 @@ export default function NotificationEditor({ notification }: NotificationEditorP
     }
   };
 
+  const langNames = { es: 'Español', en: 'English', pt: 'Português' };
+
   return (
-    <form onSubmit={handleSubmit} style={{ width: '100%', paddingBottom: '5rem' }}>
-      <div className="admin-header" style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <form onSubmit={handleSubmit} className="space-y-6 fade-in">
+      <div className="admin-header">
         <div>
-          <h2 className="admin-title" style={{ fontSize: '2.5rem', fontWeight: 900, margin: 0, letterSpacing: '-0.02em' }}>
-            {notification ? 'Editar Alerta' : 'Nueva Alerta'}
-          </h2>
-          <p className="admin-subtitle" style={{ fontSize: '1.1rem', opacity: 0.6, margin: '0.5rem 0 0' }}>
-            Personaliza el banner superior en múltiples idiomas.
-          </p>
+          <h2 className="admin-title">{notification ? 'Editar Alerta' : 'Nueva Alerta'}</h2>
+          <p className="admin-subtitle">Configura el mensaje que aparecerá en el banner superior.</p>
         </div>
-        <div style={{ display: 'flex', gap: '1rem' }}>
-          <button type="button" onClick={() => router.back()} className="btn-secondary" style={{ padding: '0.8rem 1.5rem', borderRadius: '12px' }}>
+        <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <button type="button" onClick={() => router.back()} className="btn-secondary">
             <X size={18} />
             <span>Cancelar</span>
           </button>
-          <button type="submit" disabled={isPending} className="btn-primary" style={{ padding: '0.8rem 2rem', borderRadius: '12px', fontWeight: 700 }}>
+          <button type="submit" disabled={isPending} className="btn-primary">
             <Save size={18} />
             <span>{isPending ? 'Guardando...' : 'Guardar Alerta'}</span>
           </button>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 300px', gap: '2.5rem' }}>
-        {/* Contenido Principal */}
-        <div className="space-y-8">
-          {/* Idiomas */}
-          {[
-            { id: 'es', label: '🇦🇷 Español', msg: messageEs, setMsg: setMessageEs, desc: descriptionEs, setDesc: setDescriptionEs },
-            { id: 'en', label: '🇺🇸 Inglés', msg: messageEn, setMsg: setMessageEn, desc: descriptionEn, setDesc: setDescriptionEn },
-            { id: 'pt', label: '🇧🇷 Portugués', msg: messagePt, setMsg: setMessagePt, desc: descriptionPt, setDesc: setDescriptionPt },
-          ].map((lang) => (
-            <div key={lang.id} className="admin-card" style={{ padding: '2.5rem', borderRadius: '32px', background: 'white', border: '1px solid #eef2f6' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
-                <span style={{ fontSize: '11px', fontWeight: 900, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{lang.label}</span>
-              </div>
-              
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#64748b' }}>Título del mensaje</label>
-                  <input 
-                    required={lang.id === 'es'}
-                    style={{ width: '100%', padding: '1.1rem', borderRadius: '16px', border: '2px solid #f1f5f9', fontSize: '1.1rem', fontWeight: 700 }}
-                    value={lang.msg}
-                    onChange={e => lang.setMsg(e.target.value)}
-                    placeholder="Escribe el titular aquí..."
-                  />
-                </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#64748b' }}>Descripción (Opcional)</label>
-                  <textarea 
-                    style={{ width: '100%', padding: '1.1rem', borderRadius: '16px', border: '2px solid #f1f5f9', fontSize: '1rem', minHeight: '80px', fontFamily: 'inherit' }}
-                    value={lang.desc}
-                    onChange={e => lang.setDesc(e.target.value)}
-                    placeholder="Información adicional o instrucciones..."
-                  />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Barra Lateral de Configuración */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '2rem' }}>
         <div className="space-y-6">
-          <div className="admin-card" style={{ padding: '2rem', borderRadius: '32px', background: 'white', border: '1px solid #eef2f6', position: 'sticky', top: '2rem' }}>
-            <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', marginBottom: '1rem', letterSpacing: '0.05em' }}>Ajustes</label>
-            
+          {/* Selector de Idiomas */}
+          <div style={{ display: 'flex', gap: '0.5rem', padding: '0.5rem', background: '#f1f5f9', borderRadius: '16px', width: 'fit-content' }}>
+            {(['es', 'en', 'pt'] as const).map(l => (
+              <button
+                key={l}
+                type="button"
+                onClick={() => setActiveLang(l)}
+                style={{
+                  padding: '0.75rem 1.5rem', borderRadius: '12px', border: 'none',
+                  background: activeLang === l ? 'white' : 'transparent',
+                  color: activeLang === l ? '#0f172a' : '#64748b',
+                  fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s',
+                  boxShadow: activeLang === l ? '0 4px 12px rgba(0,0,0,0.05)' : 'none'
+                }}
+              >
+                {langNames[l]}
+              </button>
+            ))}
+          </div>
+
+          <section className="admin-card" style={{ padding: '2.5rem' }}>
+            <div style={{ marginBottom: '2rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '1rem' }}>
+              <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 800 }}>Contenido en {langNames[activeLang]}</h3>
+            </div>
+
             <div className="space-y-6">
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem' }}>Tipo de Alerta</label>
+                <label className="admin-label">Mensaje del Banner</label>
+                <input 
+                  className="admin-input"
+                  value={messages[activeLang] || ''}
+                  onChange={e => setMessages({...messages, [activeLang]: e.target.value})}
+                  placeholder="Ej: Inscripciones abiertas hasta el viernes"
+                  required={activeLang === 'es'}
+                />
+              </div>
+              <div>
+                <label className="admin-label">Descripción Detallada (Opcional)</label>
+                <textarea 
+                  className="admin-input"
+                  rows={3}
+                  value={descriptions[activeLang] || ''}
+                  onChange={e => setDescriptions({...descriptions, [activeLang]: e.target.value})}
+                  placeholder="Ej: Accede al SIU Guaraní para completar el trámite..."
+                />
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div className="space-y-6">
+          <section className="admin-card" style={{ padding: '2rem' }}>
+            <div style={{ marginBottom: '1.5rem' }}>
+              <h4 style={{ margin: 0, fontSize: '0.9rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase' }}>Configuración</h4>
+            </div>
+
+            <div className="space-y-6">
+              <div>
+                <label className="admin-label">Tipo de Alerta</label>
                 <select 
-                  style={{ width: '100%', padding: '1rem', borderRadius: '14px', border: '2px solid #f1f5f9', fontWeight: 600, fontSize: '0.9rem' }}
+                  className="admin-input"
                   value={type}
                   onChange={e => setType(e.target.value)}
                 >
                   <option value="info">Info (Azul)</option>
-                  <option value="warning">Warning (Amarillo)</option>
+                  <option value="warning">Aviso (Amarillo)</option>
                   <option value="danger">Danger (Rojo)</option>
+                  <option value="success">Éxito (Verde)</option>
                 </select>
               </div>
 
-              <div style={{ paddingTop: '1.5rem', borderTop: '2px solid #f8fafc' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '1rem', cursor: 'pointer' }}>
-                  <input 
-                    type="checkbox"
-                    checked={active}
-                    onChange={e => setActive(e.target.checked)}
-                    style={{ width: '24px', height: '24px', accentColor: 'var(--accent)', cursor: 'pointer' }}
-                  />
-                  <span style={{ fontWeight: 700 }}>Activar Banner</span>
-                </label>
+              <div 
+                onClick={() => setActive(!active)}
+                style={{ 
+                  cursor: 'pointer', padding: '1.25rem', borderRadius: '16px',
+                  background: active ? '#f0fdf4' : '#f8fafc',
+                  border: `2px solid ${active ? '#22c55e' : '#e2e8f0'}`,
+                  display: 'flex', alignItems: 'center', gap: '0.75rem', transition: 'all 0.2s'
+                }}
+              >
+                <div style={{ 
+                  width: '20px', height: '20px', borderRadius: '6px', 
+                  border: `2px solid ${active ? '#22c55e' : '#cbd5e1'}`,
+                  background: active ? '#22c55e' : 'white',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center'
+                }}>
+                  {active && <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'white' }} />}
+                </div>
+                <span style={{ fontWeight: 800, color: active ? '#166534' : '#64748b', fontSize: '0.85rem' }}>
+                  {active ? 'Alerta Habilitada' : 'Alerta Desactivada'}
+                </span>
               </div>
             </div>
-          </div>
+          </section>
         </div>
       </div>
 
@@ -148,41 +170,37 @@ export default function NotificationEditor({ notification }: NotificationEditorP
         <h3 style={{ fontSize: '11px', fontWeight: 900, color: '#94a3b8', textTransform: 'uppercase', marginBottom: '2rem', letterSpacing: '0.1em', textAlign: 'center' }}>Previsualización en Vivo</h3>
         
         <div style={{ display: 'grid', gap: '2rem' }}>
-          {[
-            { label: 'Español', msg: messageEs, desc: descriptionEs },
-            { label: 'English', msg: messageEn, desc: descriptionEn },
-            { label: 'Português', msg: messagePt, desc: descriptionPt }
-          ].filter(p => p.msg).map((prev, idx) => (
-            <div key={idx} style={{ position: 'relative' }}>
-              <span style={{ position: 'absolute', top: '-1rem', left: '1rem', fontSize: '10px', fontWeight: 800, background: '#f8fafc', padding: '0 0.5rem', borderRadius: '4px', border: '1px solid #e2e8f0', color: '#64748b' }}>{prev.label}</span>
-              <div style={{ 
-                padding: '1.5rem 2.5rem', 
-                borderRadius: '24px', 
-                border: '1px solid',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '2rem',
-                background: type === 'danger' ? '#fff1f2' : type === 'warning' ? '#fffbeb' : '#eff6ff',
-                borderColor: type === 'danger' ? '#fecdd3' : type === 'warning' ? '#fde68a' : '#bfdbfe',
-                color: type === 'danger' ? '#9f1239' : type === 'warning' ? '#92400e' : '#1e40af',
-                minHeight: '80px'
-              }}>
-                <Bell size={28} style={{ flexShrink: 0 }} />
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', overflow: 'hidden' }}>
-                  <span 
-                    style={{ fontWeight: 900, fontSize: '1.25rem', letterSpacing: '-0.02em', lineHeight: 1.1 }}
-                    dangerouslySetInnerHTML={{ __html: prev.msg || '' }}
-                  />
-                  {prev.desc && (
-                    <span 
-                      style={{ fontSize: '0.9rem', opacity: 0.8, fontWeight: 600 }}
-                      dangerouslySetInnerHTML={{ __html: prev.desc }}
-                    />
-                  )}
+          {(['es', 'en', 'pt'] as const).map((l, idx) => {
+            const msg = messages[l];
+            const desc = descriptions[l];
+            if (!msg) return null;
+
+            return (
+              <div key={idx} style={{ position: 'relative' }}>
+                <span style={{ position: 'absolute', top: '-1rem', left: '1rem', fontSize: '10px', fontWeight: 800, background: '#f8fafc', padding: '0 0.5rem', borderRadius: '4px', border: '1px solid #e2e8f0', color: '#64748b' }}>{langNames[l]}</span>
+                <div style={{ 
+                  padding: '1.5rem 2.5rem', 
+                  borderRadius: '24px', 
+                  border: '1px solid',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '1.5rem',
+                  background: type === 'danger' ? '#fff1f2' : type === 'warning' ? '#fffbeb' : type === 'success' ? '#f0fdf4' : '#eff6ff',
+                  borderColor: type === 'danger' ? '#fecdd3' : type === 'warning' ? '#fde68a' : type === 'success' ? '#bbf7d0' : '#bfdbfe',
+                  color: type === 'danger' ? '#9f1239' : type === 'warning' ? '#92400e' : type === 'success' ? '#166534' : '#1e40af',
+                  minHeight: '80px'
+                }}>
+                  <Bell size={28} style={{ flexShrink: 0 }} />
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', overflow: 'hidden' }}>
+                    <span style={{ fontWeight: 900, fontSize: '1.25rem', letterSpacing: '-0.02em', lineHeight: 1.1 }} dangerouslySetInnerHTML={{ __html: msg }} />
+                    {desc && (
+                      <span style={{ fontSize: '0.9rem', opacity: 0.8, fontWeight: 600 }} dangerouslySetInnerHTML={{ __html: desc }} />
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </form>
