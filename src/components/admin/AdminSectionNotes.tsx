@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { StickyNote, Save, X, Loader2, Sparkles } from 'lucide-react';
+import { StickyNote, Save, X, Loader2, Smile } from 'lucide-react';
 import { updateAdminSectionNote } from '@/lib/actions';
 
 interface Props {
@@ -34,7 +34,8 @@ export default function AdminSectionNotes({ section, initialContent }: Props) {
         borderRadius: '32px', 
         padding: '2.5rem',
         boxShadow: '0 20px 40px rgba(0, 0, 0, 0.03)',
-        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        position: 'relative'
       }} className="admin-notes-container">
         
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
@@ -52,6 +53,22 @@ export default function AdminSectionNotes({ section, initialContent }: Props) {
             </div>
           </div>
           
+          {isEditing && (
+            <a 
+              href="https://emojis.hoy.today" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{ 
+                padding: '0.5rem 1rem', borderRadius: '12px', background: '#f8fafc', 
+                border: '1px solid #e2e8f0', color: '#0f172a', display: 'flex', 
+                alignItems: 'center', gap: '0.5rem', textDecoration: 'none',
+                fontSize: '0.75rem', fontWeight: 800
+              }}
+            >
+              <Smile size={16} />
+              <span>Emojis</span>
+            </a>
+          )}
         </div>
 
         {isEditing ? (

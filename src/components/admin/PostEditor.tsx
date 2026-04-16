@@ -2,10 +2,11 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, X, Eye, Edit3, Globe, Languages, Info, CheckCircle, AlertCircle, ExternalLink, Smile } from 'lucide-react';
+import { Save, X, Languages, Edit3, ExternalLink, Smile, Clock, Plus, Trash2 } from 'lucide-react';
 import { upsertPost } from '@/lib/actions';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import LanguageTabs from './LanguageTabs';
 
 interface PostEditorProps {
   post?: any;
@@ -27,7 +28,6 @@ export default function PostEditor({ post }: PostEditorProps) {
   const [alternativeSlug, setAlternativeSlug] = useState(post?.alternativeSlug || '');
   const [published, setPublished] = useState(post?.published ?? true);
   const [countdowns, setCountdowns] = useState<any[]>(post?.countdowns || []);
-  const [adminNotes, setAdminNotes] = useState(post?.adminNotes || '');
 
   const isDirty = useMemo(() => {
     const initialTitles = post?.title || { es: '', en: '', pt: '' };
@@ -43,9 +43,8 @@ export default function PostEditor({ post }: PostEditorProps) {
            slug !== initialSlug ||
            alternativeSlug !== (post?.alternativeSlug || '') ||
            published !== initialPublished ||
-           adminNotes !== (post?.adminNotes || '') ||
            JSON.stringify(countdowns) !== JSON.stringify(initialCountdowns);
-  }, [titles, contents, descriptions, slug, alternativeSlug, published, countdowns, adminNotes, post]);
+  }, [titles, contents, descriptions, slug, alternativeSlug, published, countdowns, post]);
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -89,8 +88,7 @@ export default function PostEditor({ post }: PostEditorProps) {
         content: contents,
         description: descriptions,
         published,
-        countdowns,
-        adminNotes
+        countdowns
       });
       router.push(`/admin/posts?success=${encodeURIComponent(titles.es)}&slug=${slug}`);
       router.refresh();
@@ -100,6 +98,26 @@ export default function PostEditor({ post }: PostEditorProps) {
     } finally {
       setIsPending(false);
     }
+  };
+
+  const updateCountdown = (slot: 'left' | 'right', field: string, value: any) => {
+    const existing = countdowns.find(c => c.slot === slot);
+    if (existing) {
+      setCountdowns(countdowns.map(c => c.slot === slot ? { ...c, [field]: value } : c));
+    } else {
+      const newC = { 
+        slot, 
+        title: { es: '', en: '', pt: '' }, 
+        targetDate: new Date(), 
+        description: { es: '', en: '', pt: '' }, 
+        isActive: true 
+      };
+      setCountdowns([...countdowns, { ...newC, [field]: value }]);
+    }
+  };
+
+  const removeCountdown = (slot: 'left' | 'right') => {
+    setCountdowns(countdowns.filter(c => c.slot !== slot));
   };
 
   const langNames = { es: 'Español', en: 'English', pt: 'Português' };
@@ -134,30 +152,13 @@ export default function PostEditor({ post }: PostEditorProps) {
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.5rem', padding: '0.5rem', background: '#f1f5f9', borderRadius: '16px', width: 'fit-content' }}>
-          {(['es', 'en', 'pt'] as Lang[]).map(l => (
-            <button
-              key={l}
-              type="button"
-              onClick={() => setActiveLang(l)}
-              style={{
-                padding: '0.75rem 1.5rem', borderRadius: '12px', border: 'none',
-                background: activeLang === l ? 'white' : 'transparent',
-                color: activeLang === l ? '#0f172a' : '#64748b',
-                fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s'
-              }}
-            >
-              {langNames[l]}
-            </button>
-          ))}
-        </div>
+        <LanguageTabs active={activeLang} onChange={(l: any) => setActiveLang(l)} />
 
         <div className="space-y-6">
           <div className="admin-card" style={{ padding: '2.5rem', borderRadius: '24px' }}>
-            {/* Header de la Card */}
             <div style={{ marginBottom: '2rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 900, color: '#0f172a' }}>Contenido en {langNames[activeLang]}</h3>
+                <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 900, color: '#0f172a' }}>Contenido del Post</h3>
               </div>
               <button 
                 type="button" 
@@ -202,33 +203,83 @@ export default function PostEditor({ post }: PostEditorProps) {
                 </div>
               )}
 
-              {/* Countdown Post Context (si aplica) */}
-              <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '2rem' }}>
-                <h4 style={{ fontSize: '0.9rem', fontWeight: 900, marginBottom: '1rem' }}>Cuentas Regresivas (Slots locales)</h4>
-                {/* Visual simplification here, since countdowns are managed mostly in their own section now */}
-                <p style={{ fontSize: '0.8rem', color: '#64748b' }}>Las cuentas regresivas de este post se vinculan por slot.</p>
-              </div>
-
-              {/* NOTAS ADMIN */}
-              <div style={{ borderTop: '2px dashed #e2e8f0', paddingTop: '2rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-                  <Edit3 size={18} className="text-accent" />
-                  <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 900 }}>Notas de Administración (Privadas)</h4>
+              {/* Cuentas Regresivas Locales */}
+              <div style={{ borderTop: '2px dashed #f1f5f9', paddingTop: '2rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                  <Clock size={20} className="text-secondary" />
+                  <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 900 }}>Cuentas Regresivas Locales</h4>
+                  <p style={{ margin: 0, fontSize: '0.8rem', color: '#64748b', fontWeight: 600 }}>(Solo para este post)</p>
                 </div>
-                <textarea 
-                  className="admin-input" rows={4} value={adminNotes} onChange={e => setAdminNotes(e.target.value)} 
-                  placeholder="Escribe aquí recordatorios personales sobre este post..."
-                  style={{ background: '#fff', border: '1px solid #cbd5e1' }}
-                />
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                  {(['left', 'right'] as const).map(slot => {
+                    const c = countdowns.find(x => x.slot === slot);
+                    return (
+                      <div key={slot} style={{ 
+                        padding: '1.5rem', borderRadius: '24px', 
+                        background: c ? '#f8fafc' : 'rgba(241, 245, 249, 0.5)', 
+                        border: c ? '1px solid #e2e8f0' : '2px dashed #e2e8f0',
+                        transition: 'all 0.2s'
+                      }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                          <span style={{ fontSize: '10px', fontWeight: 900, background: '#0f172a', color: 'white', padding: '2px 8px', borderRadius: '6px', textTransform: 'uppercase' }}>
+                            SLOT {slot === 'left' ? 'IZQUIERDO' : 'DERECHO'}
+                          </span>
+                          {c && (
+                            <button type="button" onClick={() => removeCountdown(slot)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}>
+                              <Trash2 size={16} />
+                            </button>
+                          )}
+                        </div>
+
+                        {!c ? (
+                          <button 
+                            type="button" 
+                            onClick={() => updateCountdown(slot, 'title', { es: '', en: '', pt: '' })}
+                            style={{ 
+                              width: '100%', padding: '1rem', borderRadius: '12px', border: 'none',
+                              background: 'white', color: '#64748b', fontWeight: 800, fontSize: '0.85rem',
+                              cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                              boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+                            }}
+                          >
+                            <Plus size={16} /> Activar Slot
+                          </button>
+                        ) : (
+                          <div className="space-y-4">
+                            <div>
+                              <input 
+                                className="admin-input" 
+                                style={{ fontSize: '0.9rem', fontWeight: 800, padding: '0.5rem' }}
+                                value={c.title[activeLang] || ''} 
+                                onChange={e => {
+                                  const newTitles = { ...c.title, [activeLang]: e.target.value };
+                                  updateCountdown(slot, 'title', newTitles);
+                                }}
+                                placeholder="Título (Slot)"
+                              />
+                            </div>
+                            <div>
+                              <input 
+                                type="datetime-local"
+                                className="admin-input"
+                                style={{ fontSize: '0.8rem', padding: '0.5rem' }}
+                                value={c.targetDate ? new Date(c.targetDate).toISOString().slice(0, 16) : ''}
+                                onChange={e => updateCountdown(slot, 'targetDate', e.target.value)}
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>
         </div>
       </form>
 
-      <a href="https://emojis.hoy.today" target="_blank" rel="noopener noreferrer" style={{ position: 'fixed', bottom: '4rem', right: '4.5rem', width: '64px', height: '64px', borderRadius: '50%', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)', color: '#0f172a', zIndex: 9999, border: '2px solid #e2e8f0' }}>
-        <Smile size={32} />
-      </a>
     </>
   );
 }
