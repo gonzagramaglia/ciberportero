@@ -5,6 +5,8 @@ import { DeleteButton } from "@/components/admin/DeleteButton";
 import { ReorderButtons } from "@/components/admin/ReorderButtons";
 import { getAdminNote } from "@/lib/actions";
 import AdminSectionNotes from "@/components/admin/AdminSectionNotes";
+import SuccessToast from "@/components/admin/SuccessToast";
+import { Suspense } from "react";
 
 export default async function AdminLinksPage() {
   const [links, note] = await Promise.all([
@@ -14,6 +16,9 @@ export default async function AdminLinksPage() {
 
   return (
     <div className="space-y-6">
+      <Suspense fallback={null}>
+        <SuccessToast />
+      </Suspense>
       <div className="admin-header">
         <div>
           <h2 className="admin-title">Administrar Links</h2>

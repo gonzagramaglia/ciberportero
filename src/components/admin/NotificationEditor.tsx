@@ -34,7 +34,7 @@ export default function NotificationEditor({ notification }: NotificationEditorP
         active,
         url
       });
-      router.push('/admin/notifications');
+      router.push(`/admin/notifications?success=${encodeURIComponent(messages.es)}&message=${encodeURIComponent('Notificación guardada')}`);
       router.refresh();
     } catch (error) {
       console.error(error);

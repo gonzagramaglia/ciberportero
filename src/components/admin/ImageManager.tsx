@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { uploadImage, getImages, deleteImage } from '@/lib/actions';
 import { 
   Upload, X, Copy, Check, Trash2, 
@@ -12,6 +13,7 @@ import {
 import './images.css';
 
 export default function ImageManager() {
+  const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
   const [slug, setSlug] = useState('');
   const [isUploading, setIsUploading] = useState(false);
@@ -88,10 +90,13 @@ export default function ImageManager() {
 
     const result = await uploadImage(formData);
     if (result.success) {
+      const uploadedSlug = slug;
+      const imageUrl = result.image.url;
       setFile(null);
       setSlug('');
       if (fileInputRef.current) fileInputRef.current.value = '';
       fetchImages();
+      router.push(`/admin/images?success=${encodeURIComponent(uploadedSlug)}&message=${encodeURIComponent('Imagen subida con éxito')}&slug=${encodeURIComponent(imageUrl)}`);
     } else {
       alert(result.error);
     }

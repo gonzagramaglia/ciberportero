@@ -4,6 +4,8 @@ import Link from "next/link";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 import { getAdminNote } from "@/lib/actions";
 import AdminSectionNotes from "@/components/admin/AdminSectionNotes";
+import SuccessToast from "@/components/admin/SuccessToast";
+import { Suspense } from "react";
 
 export default async function AdminCalendarPage() {
   const [events, note] = await Promise.all([
@@ -13,6 +15,9 @@ export default async function AdminCalendarPage() {
 
   return (
     <div className="space-y-12 fade-in">
+      <Suspense fallback={null}>
+        <SuccessToast />
+      </Suspense>
       <div className="admin-header">
         <div>
           <h2 className="admin-title">Calendario Académico</h2>

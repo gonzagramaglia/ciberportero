@@ -1,35 +1,39 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { CheckCircle, ExternalLink, X } from 'lucide-react';
 
 export default function SuccessToast() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const pathname = usePathname();
   const [show, setShow] = useState(false);
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
+  const [customMessage, setCustomMessage] = useState('');
 
   useEffect(() => {
     const successTitle = searchParams.get('success');
     const successSlug = searchParams.get('slug');
+    const msg = searchParams.get('message');
     
-    if (successTitle) {
-      setTitle(successTitle);
+    if (successTitle || msg) {
+      setTitle(successTitle || '');
       setSlug(successSlug || '');
+      setCustomMessage(msg || '¡Guardado con éxito!');
       setShow(true);
       
-      // Auto hide after 8 seconds
+      // Auto hide after 6 seconds (slightly faster)
       const timer = setTimeout(() => {
         setShow(false);
-        // Clean URL
-        router.replace('/admin/posts');
-      }, 8000);
+        // Clean URL by removing search params but staying on same page
+        router.replace(pathname);
+      }, 6000);
       
       return () => clearTimeout(timer);
     }
-  }, [searchParams, router]);
+  }, [searchParams, router, pathname]);
 
   if (!show) return null;
 
@@ -68,15 +72,18 @@ export default function SuccessToast() {
       
       <div style={{ flex: 1 }}>
         <p style={{ margin: 0, fontWeight: 800, fontSize: '0.9rem', color: '#0f172a' }}>
-          ¡Publicado con éxito!
+          {customMessage}
         </p>
-        <p style={{ margin: '0.1rem 0 0.5rem', fontSize: '0.8rem', color: '#64748b', fontWeight: 500 }}>
-          "{title}" ya está disponible.
-        </p>
+        {title && (
+          <p style={{ margin: '0.1rem 0 0.5rem', fontSize: '0.8rem', color: '#64748b', fontWeight: 500 }}>
+            "{title}"
+          </p>
+        )}
         {slug && (
           <a 
-            href={`/${slug}`} 
+            href={slug.startsWith('http') ? slug : `/${slug}`} 
             target="_blank" 
+            rel="noopener noreferrer"
             style={{ 
               display: 'inline-flex', 
               alignItems: 'center', 
@@ -84,10 +91,11 @@ export default function SuccessToast() {
               fontSize: '0.75rem', 
               fontWeight: 800, 
               color: 'var(--accent)',
-              textDecoration: 'none'
+              textDecoration: 'none',
+              marginTop: title ? '0' : '0.5rem'
             }}
           >
-            VER POST <ExternalLink size={12} />
+            VER {slug.startsWith('http') ? 'IMAGEN' : 'CONTENIDO'} <ExternalLink size={12} />
           </a>
         )}
       </div>

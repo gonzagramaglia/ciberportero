@@ -39,7 +39,7 @@ export function LinkEditor({ initialData }: Props) {
         url,
         iconType,
       });
-      router.push('/admin/links');
+      router.push(`/admin/links?success=${encodeURIComponent(names.es)}&message=${encodeURIComponent('Link guardado correctamente')}`);
       router.refresh();
     } catch (error) {
       alert('Error al guardar el link');

@@ -1,6 +1,8 @@
 import ImageManager from "@/components/admin/ImageManager";
 import { getAdminNote } from "@/lib/actions";
 import AdminSectionNotes from "@/components/admin/AdminSectionNotes";
+import SuccessToast from "@/components/admin/SuccessToast";
+import { Suspense } from "react";
 
 export const metadata = {
   title: "Admin | Imágenes",
@@ -11,6 +13,9 @@ export default async function AdminImagesPage() {
 
   return (
     <div className="space-y-6">
+      <Suspense fallback={null}>
+        <SuccessToast />
+      </Suspense>
       <div className="admin-header">
         <div>
           <h2 className="admin-title">

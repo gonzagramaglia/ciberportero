@@ -38,7 +38,7 @@ export default function CountdownEditor({ countdown, slot }: CountdownEditorProp
         url,
         isActive
       });
-      router.push('/admin/countdowns');
+      router.push(`/admin/countdowns?success=${encodeURIComponent(titles.es)}&message=${encodeURIComponent('Cuenta regresiva guardada')}`);
       router.refresh();
     } catch (error) {
       console.error(error);

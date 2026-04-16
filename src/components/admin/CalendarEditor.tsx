@@ -38,7 +38,7 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
         period,
         subject
       });
-      router.push('/admin/calendar');
+      router.push(`/admin/calendar?success=${encodeURIComponent(titles.es)}&message=${encodeURIComponent('Evento guardado correctamente')}`);
       router.refresh();
     } catch (error) {
       console.error(error);
