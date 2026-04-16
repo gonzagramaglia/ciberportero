@@ -2,9 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, X, Calendar as CalendarIcon, Tag, Book } from 'lucide-react';
+import { Save, X, Calendar, Type, AlignLeft, Tag, BookOpen, GraduationCap, Clock, Layers } from 'lucide-react';
 import { upsertCalendarEvent } from '@/lib/actions';
-import { translations } from '@/lib/translations';
 import LanguageTabs from './LanguageTabs';
 
 interface CalendarEditorProps {
@@ -19,11 +18,11 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
   // Form state
   const [titles, setTitles] = useState<any>(event?.title || { es: '', en: '', pt: '' });
   const [descriptions, setDescriptions] = useState<any>(event?.description || { es: '', en: '', pt: '' });
-  const [startDate, setStartDate] = useState(event?.startDate ? new Date(event.startDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]);
-  const [endDate, setEndDate] = useState(event?.endDate ? new Date(event.endDate).toISOString().split('T')[0] : '');
-  const [period, setPeriod] = useState(event?.period || '1er cuatrimestre de 1er año');
-  const [type, setType] = useState(event?.type || 'event');
-  const [subjectId, setSubjectId] = useState<string | null>(event?.subjectId || null);
+  const [startDate, setStartDate] = useState(event?.startDate ? new Date(event.startDate).toISOString().slice(0, 10) : '');
+  const [endDate, setEndDate] = useState(event?.endDate ? new Date(event.endDate).toISOString().slice(0, 10) : '');
+  const [category, setCategory] = useState(event?.category || 'Otro');
+  const [period, setPeriod] = useState(event?.period || 'Evento General');
+  const [subject, setSubject] = useState(event?.subject || 'Evento General');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,11 +32,11 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
         id: event?.id,
         title: titles,
         description: descriptions,
-        startDate,
-        endDate: endDate || null,
+        startDate: new Date(startDate),
+        endDate: endDate ? new Date(endDate) : null,
+        category,
         period,
-        type,
-        subjectId,
+        subject
       });
       router.push('/admin/calendar');
       router.refresh();
@@ -57,20 +56,17 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
     setDescriptions({ ...descriptions, [activeLang]: val });
   };
 
-  const eventTypes = [
-    { id: 'exam', label: 'Examen / Parcial', color: '#ef4444', bg: '#fef2f2' },
-    { id: 'quiz_mandatory', label: 'Autoevaluación Obligatoria', color: '#f97316', bg: '#fff7ed' },
-    { id: 'enrollment', label: 'Tarea / Entrega', color: '#2563eb', bg: '#eff6ff' },
-    { id: 'classes', label: 'Clase', color: '#8b5cf6', bg: '#f5f3ff' },
-    { id: 'event', label: 'Otro', color: '#10b981', bg: '#ecfdf5' },
-  ];
+  const categories = ['Examen / Parcial', 'Autoevaluación Obligatoria', 'Tarea / Entrega', 'Clase', 'Otro'];
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 fade-in">
+    <form onSubmit={handleSubmit} className="space-y-12 fade-in">
       <div className="admin-header">
         <div>
-          <h2 className="admin-title">{event ? 'Editar Evento' : 'Nuevo Evento'}</h2>
-          <p className="admin-subtitle">Configura la fecha y los detalles del calendario académico.</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
+            <Calendar size={24} className="text-accent" />
+            <h2 className="admin-title">{event ? 'Editar Evento Académico' : 'Nuevo Evento Académico'}</h2>
+          </div>
+          <p className="admin-subtitle">Gestiona las fechas importantes del calendario universitario.</p>
         </div>
         <div style={{ display: 'flex', gap: '0.75rem' }}>
           <button type="button" onClick={() => router.back()} className="btn-secondary">
@@ -84,20 +80,26 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2.5rem' }}>
-        <div className="space-y-6">
+      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '3.5rem' }}>
+        <div className="space-y-10">
           <LanguageTabs active={activeLang} onChange={setActiveLang} />
 
-          <section className="admin-card" style={{ padding: '2.5rem', borderRadius: '24px' }}>
-            <div style={{ marginBottom: '2rem' }}>
-              <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 900 }}>Información General</h3>
+          <section className="admin-card" style={{ padding: '3rem', borderRadius: '32px' }}>
+            <div style={{ marginBottom: '2.5rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '1.25rem' }}>
+              <h3 style={{ margin: 0, fontSize: '1.35rem', fontWeight: 900, color: '#0f172a' }}>Información General</h3>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-10">
               <div>
-                <label className="admin-label">Título del Evento</label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
+                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3b82f6' }}>
+                    <Type size={18} />
+                  </div>
+                  <label className="admin-label" style={{ margin: 0, fontSize: '0.95rem' }}>TÍTULO DEL EVENTO ({activeLang})</label>
+                </div>
                 <input 
                   className="admin-input"
+                  style={{ fontSize: '1.5rem', fontWeight: 900, padding: '1.25rem', borderRadius: '16px' }}
                   value={titles[activeLang] || ''}
                   onChange={e => updateTitle(e.target.value)}
                   placeholder="Ej: Final de Álgebra"
@@ -106,80 +108,118 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
               </div>
 
               <div>
-                <label className="admin-label">Descripción Detallada (Opcional)</label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
+                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#fff7ed', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#f97316' }}>
+                    <AlignLeft size={18} />
+                  </div>
+                  <label className="admin-label" style={{ margin: 0, fontSize: '0.95rem' }}>DESCRIPCIÓN DETALLADA (OPCIONAL) ({activeLang})</label>
+                </div>
                 <textarea 
                   className="admin-input"
                   rows={4}
+                  style={{ fontSize: '1.1rem', fontWeight: 600, padding: '1.25rem', borderRadius: '16px', lineHeight: 1.6, background: '#f8fafc' }}
                   value={descriptions[activeLang] || ''}
                   onChange={e => updateDescription(e.target.value)}
                   placeholder="Instrucciones o detalles adicionales..."
                 />
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginTop: '1rem', paddingTop: '1.5rem', borderTop: '1px solid #f1f5f9' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginTop: '1.5rem' }}>
                 <div>
-                  <label className="admin-label">Fecha de Inicio</label>
-                  <input type="date" className="admin-input" value={startDate} onChange={e => setStartDate(e.target.value)} required />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                    <Clock size={16} className="text-accent" />
+                    <label className="admin-label" style={{ margin: 0, fontWeight: 800 }}>FECHA DE INICIO</label>
+                  </div>
+                  <input 
+                    type="date"
+                    className="admin-input"
+                    style={{ padding: '1rem', borderRadius: '14px', fontSize: '1rem', fontWeight: 700 }}
+                    value={startDate}
+                    onChange={e => setStartDate(e.target.value)}
+                    required
+                  />
                 </div>
                 <div>
-                  <label className="admin-label">Fecha de Fin (Opcional)</label>
-                  <input type="date" className="admin-input" value={endDate} onChange={e => setEndDate(e.target.value)} min={startDate} />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                    <Clock size={16} className="text-secondary" />
+                    <label className="admin-label" style={{ margin: 0, fontWeight: 800 }}>FECHA DE FIN (OPCIONAL)</label>
+                  </div>
+                  <input 
+                    type="date"
+                    className="admin-input"
+                    style={{ padding: '1rem', borderRadius: '14px', fontSize: '1rem', fontWeight: 700 }}
+                    value={endDate}
+                    onChange={e => setEndDate(e.target.value)}
+                  />
                 </div>
               </div>
             </div>
           </section>
 
-          <section className="admin-card" style={{ padding: '2.5rem', borderRadius: '24px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem' }}>
-              <Book size={20} className="text-secondary" />
-              <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 900 }}>Vínculo Académico</h3>
+          <section className="admin-card" style={{ padding: '3rem', borderRadius: '32px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2.5rem' }}>
+              <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: '#f5f3ff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8b5cf6' }}>
+                <BookOpen size={20} />
+              </div>
+              <h3 style={{ margin: 0, fontSize: '1.35rem', fontWeight: 900, color: '#0f172a' }}>Vínculo Académico</h3>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
               <div>
-                <label className="admin-label">Cuatrimestre / Periodo</label>
-                <select className="admin-input" value={period} onChange={e => setPeriod(e.target.value)}>
-                  <option value="all">Todos los periodos</option>
-                  <option value="1er cuatrimestre de 1er año">1er cuatrimestre de 1er año</option>
-                  <option value="2do cuatrimestre de 1er año">2do cuatrimestre de 1er año</option>
-                  <option value="1er cuatrimestre de 2do año">1er cuatrimestre de 2do año</option>
-                  <option value="2do cuatrimestre de 2do año">2do cuatrimestre de 2do año</option>
-                </select>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                  <Layers size={16} className="text-secondary" />
+                  <label className="admin-label" style={{ margin: 0, fontWeight: 800 }}>CUATRIMESTRE / PERIODO</label>
+                </div>
+                <input 
+                  className="admin-input"
+                  style={{ padding: '1rem', borderRadius: '14px', fontSize: '1rem', fontWeight: 700 }}
+                  value={period}
+                  onChange={e => setPeriod(e.target.value)}
+                  placeholder="Ej: 1er cuatrimestre de 1er año"
+                />
               </div>
-
               <div>
-                <label className="admin-label">Materia Específica (Opcional)</label>
-                <select className="admin-input" value={subjectId || ''} onChange={e => setSubjectId(e.target.value || null)}>
-                  <option value="">Evento General</option>
-                  {Object.entries((translations.es as any).plan.subjectNames).map(([id, name]) => (
-                    <option key={id} value={id}>[{id.padStart(2, '0')}] {name as string}</option>
-                  ))}
-                </select>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                  <GraduationCap size={16} className="text-secondary" />
+                  <label className="admin-label" style={{ margin: 0, fontWeight: 800 }}>MATERIA ESPECÍFICA (OPCIONAL)</label>
+                </div>
+                <input 
+                  className="admin-input"
+                  style={{ padding: '1rem', borderRadius: '14px', fontSize: '1rem', fontWeight: 700 }}
+                  value={subject}
+                  onChange={e => setSubject(e.target.value)}
+                  placeholder="Ej: Análisis Matemático I"
+                />
               </div>
             </div>
           </section>
         </div>
 
-        <div className="space-y-6" style={{ marginTop: '4.5rem' }}>
-          <section className="admin-card" style={{ padding: '2rem' }}>
-            <div style={{ marginBottom: '2rem' }}>
-              <h4 style={{ margin: 0, fontSize: '0.8rem', fontWeight: 900, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Categoría</h4>
+        <div className="space-y-8" style={{ marginTop: '3.9rem' }}>
+          <section className="admin-card" style={{ padding: '2.5rem', borderRadius: '28px' }}>
+            <div style={{ marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' }}>
+                <Tag size={18} />
+              </div>
+              <h4 style={{ margin: 0, fontSize: '0.9rem', fontWeight: 900, color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.05em' }}>CATEGORÍA</h4>
             </div>
 
-            <div className="space-y-4">
-              {eventTypes.map(t => (
+            <div className="space-y-3">
+              {categories.map(cat => (
                 <div 
-                  key={t.id}
-                  onClick={() => setType(t.id)}
+                  key={cat}
+                  onClick={() => setCategory(cat)}
                   style={{ 
-                    cursor: 'pointer', padding: '1rem', borderRadius: '14px',
-                    background: type === t.id ? t.bg : 'white',
-                    border: `2px solid ${type === t.id ? t.color : '#e2e8f0'}`,
-                    display: 'flex', alignItems: 'center', gap: '1rem', transition: 'all 0.2s'
+                    cursor: 'pointer', padding: '1.25rem', borderRadius: '16px', 
+                    background: category === cat ? '#f0fdf4' : '#fff',
+                    border: `2px solid ${category === cat ? '#22c55e' : '#f1f5f9'}`,
+                    display: 'flex', alignItems: 'center', gap: '0.75rem', transition: 'all 0.2s',
+                    fontWeight: 800, color: category === cat ? '#166534' : '#64748b', fontSize: '0.9rem',
+                    boxShadow: category === cat ? '0 4px 12px rgba(34, 197, 94, 0.1)' : 'none'
                   }}
                 >
-                  <Tag size={16} style={{ color: type === t.id ? t.color : '#94a3b8' }} />
-                  <span style={{ fontWeight: 800, color: type === t.id ? t.color : '#64748b', fontSize: '0.85rem' }}>{t.label}</span>
+                  <Tag size={16} style={{ opacity: category === cat ? 1 : 0.4 }} />
+                  {cat}
                 </div>
               ))}
             </div>

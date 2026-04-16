@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, X, Languages, Edit3, ExternalLink, Smile, Clock, Plus, Trash2, Link as LinkIcon, AlignLeft, Type, FileText } from 'lucide-react';
+import { Save, X, Languages, Edit3, ExternalLink, Smile, Clock, Plus, Trash2, Link as LinkIcon, AlignLeft, Type, FileText, Settings } from 'lucide-react';
 import { upsertPost } from '@/lib/actions';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -177,21 +177,6 @@ export default function PostEditor({ post }: PostEditorProps) {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '3.5rem' }}>
-              {/* Slugs y Estado */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem', background: '#f8fafc', padding: '2rem', borderRadius: '24px', border: '1px solid #f1f5f9' }}>
-                <div>
-                  <label className="admin-label">Slug Principal</label>
-                  <input className="admin-input" value={slug} onChange={e => setSlug(e.target.value)} required />
-                </div>
-                <div>
-                  <label className="admin-label">Slug Opcional</label>
-                  <input className="admin-input" value={alternativeSlug} onChange={e => setAlternativeSlug(e.target.value)} />
-                </div>
-                <div onClick={() => setPublished(!published)} style={{ cursor: 'pointer', padding: '0.5rem', borderRadius: '16px', background: published ? '#f0fdf4' : '#fff1f2', border: `2px solid ${published ? '#22c55e' : '#fecdd3'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
-                  <span style={{ fontWeight: 900, color: published ? '#166534' : '#9f1239', fontSize: '0.85rem' }}>{published ? 'PUBLICADO' : 'BORRADOR'}</span>
-                </div>
-              </div>
-
               {/* Título e Input */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
                 <div>
@@ -248,6 +233,29 @@ export default function PostEditor({ post }: PostEditorProps) {
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>{contents[activeLang]}</ReactMarkdown>
                     </div>
                   )}
+                </div>
+              </div>
+
+              {/* Slugs y Estado (MOVIDO AQUÍ) */}
+              <div style={{ borderTop: '2px dashed #f1f5f9', paddingTop: '3.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                  <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' }}>
+                    <Settings size={22} />
+                  </div>
+                  <h4 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 900 }}>Configuración de Slugs y Publicación</h4>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem', background: '#f8fafc', padding: '2rem', borderRadius: '24px', border: '1px solid #f1f5f9' }}>
+                  <div>
+                    <label className="admin-label">Slug Principal</label>
+                    <input className="admin-input" value={slug} onChange={e => setSlug(e.target.value)} required />
+                  </div>
+                  <div>
+                    <label className="admin-label">Slug Opcional</label>
+                    <input className="admin-input" value={alternativeSlug} onChange={e => setAlternativeSlug(e.target.value)} />
+                  </div>
+                  <div onClick={() => setPublished(!published)} style={{ cursor: 'pointer', padding: '0.5rem', borderRadius: '16px', background: published ? '#f0fdf4' : '#fff1f2', border: `2px solid ${published ? '#22c55e' : '#fecdd3'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
+                    <span style={{ fontWeight: 900, color: published ? '#166534' : '#9f1239', fontSize: '0.85rem' }}>{published ? 'PUBLICADO' : 'BORRADOR'}</span>
+                  </div>
                 </div>
               </div>
 

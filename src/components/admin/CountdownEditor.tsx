@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, X, Clock, Link as LinkIcon } from 'lucide-react';
+import { Save, X, Clock, Link as LinkIcon, Type, AlignLeft, Settings, Calendar } from 'lucide-react';
 import { upsertCountdown } from '@/lib/actions';
 import LanguageTabs from './LanguageTabs';
 
@@ -55,7 +55,7 @@ export default function CountdownEditor({ countdown, slot }: CountdownEditorProp
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 fade-in">
+    <form onSubmit={handleSubmit} className="space-y-12 fade-in">
       <div className="admin-header">
         <div>
           <h2 className="admin-title">{countdown ? 'Editar Cuenta Regresiva Global' : 'Nueva Cuenta Regresiva Global'}</h2>
@@ -73,69 +73,92 @@ export default function CountdownEditor({ countdown, slot }: CountdownEditorProp
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2.5rem' }}>
-        <div className="space-y-6">
+      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '3.5rem' }}>
+        <div className="space-y-8">
           <LanguageTabs active={activeLang} onChange={setActiveLang} />
 
-          <section className="admin-card" style={{ padding: '2.5rem', borderRadius: '24px' }}>
-            <div style={{ marginBottom: '2rem' }}>
-              <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 900 }}>Contenido de la Cuenta Regresiva</h3>
+          <section className="admin-card" style={{ padding: '3rem', borderRadius: '32px' }}>
+            <div style={{ marginBottom: '2.5rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '1.25rem' }}>
+              <h3 style={{ margin: 0, fontSize: '1.35rem', fontWeight: 900, color: '#0f172a' }}>Mensaje Principal</h3>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-10">
               <div>
-                <label className="admin-label">Título del mensaje</label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
+                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3b82f6' }}>
+                    <Type size={18} />
+                  </div>
+                  <label className="admin-label" style={{ margin: 0, fontSize: '0.95rem' }}>Título ({activeLang})</label>
+                </div>
                 <input 
                   className="admin-input"
+                  style={{ fontSize: '1.5rem', fontWeight: 900, padding: '1.25rem', borderRadius: '16px' }}
                   value={titles[activeLang] || ''}
                   onChange={e => updateTitle(e.target.value)}
-                  placeholder="Ej: Inicio de Clases"
+                  placeholder="Ej: Inicio de Inscripciones"
                   required={activeLang === 'es'}
                 />
               </div>
 
               <div>
-                <label className="admin-label">Texto descriptivo (Opcional)</label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
+                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#fff7ed', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#f97316' }}>
+                    <AlignLeft size={18} />
+                  </div>
+                  <label className="admin-label" style={{ margin: 0, fontSize: '0.95rem' }}>Descripción / Subtítulo ({activeLang})</label>
+                </div>
                 <textarea 
                   className="admin-input"
                   rows={3}
+                  style={{ fontSize: '1.1rem', fontWeight: 600, padding: '1.25rem', borderRadius: '16px', lineHeight: 1.6, background: '#f8fafc' }}
                   value={descriptions[activeLang] || ''}
                   onChange={e => updateDescription(e.target.value)}
-                  placeholder="Ej: Prepárate para el nuevo ciclo lectivo..."
+                  placeholder="Explica brevemente de qué se trata..."
                 />
               </div>
 
-              <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #f1f5f9' }}>
-                <label className="admin-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <LinkIcon size={14} /> URL LINK (OPCIONAL)
-                </label>
+              <div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '2px dashed #f1f5f9' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
+                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#f5f3ff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8b5cf6' }}>
+                    <LinkIcon size={18} />
+                  </div>
+                  <label className="admin-label" style={{ margin: 0, fontSize: '0.95rem' }}>URL LINK (OPCIONAL)</label>
+                </div>
                 <input 
                   type="url"
                   className="admin-input"
+                  style={{ fontSize: '1rem', fontWeight: 700, padding: '1.1rem', borderRadius: '16px' }}
                   value={url}
                   onChange={e => setUrl(e.target.value)}
-                  placeholder="https://ejemplo.com"
+                  placeholder="https://..."
                 />
-                <p style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.5rem' }}>
-                  Al hacer click en la cuenta regresiva, se abrirá este link.
+                <p style={{ fontSize: '0.85rem', color: '#64748b', marginTop: '0.75rem', fontStyle: 'italic', fontWeight: 500 }}>
+                  * Al hacer click en la cuenta regresiva, se abrirá este link en otra pestaña.
                 </p>
               </div>
             </div>
           </section>
         </div>
 
-        <div className="space-y-6" style={{ marginTop: '4.5rem' }}>
-          <section className="admin-card" style={{ padding: '2rem' }}>
-            <div style={{ marginBottom: '2.5rem' }}>
-              <h4 style={{ margin: 0, fontSize: '0.8rem', fontWeight: 900, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Configuración</h4>
+        <div className="space-y-8" style={{ marginTop: '3.9rem' }}>
+          <section className="admin-card" style={{ padding: '2.5rem', borderRadius: '28px' }}>
+            <div style={{ marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' }}>
+                <Settings size={18} />
+              </div>
+              <h4 style={{ margin: 0, fontSize: '0.9rem', fontWeight: 900, color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Configuración</h4>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
               <div>
-                <label className="admin-label">Fecha y Hora Objetivo</label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                  <Calendar size={14} className="text-accent" />
+                  <label className="admin-label" style={{ margin: 0 }}>Fecha y Hora Final</label>
+                </div>
                 <input 
                   type="datetime-local"
                   className="admin-input"
+                  style={{ fontSize: '0.95rem', fontWeight: 800, padding: '1rem', borderRadius: '12px' }}
                   value={targetDate}
                   onChange={e => setTargetDate(e.target.value)}
                   required
@@ -143,11 +166,13 @@ export default function CountdownEditor({ countdown, slot }: CountdownEditorProp
               </div>
 
               <div>
-                <label className="admin-label">Posición (Bloqueada)</label>
+                <label className="admin-label">Lado del Widget</label>
                 <div style={{ 
-                  padding: '0.75rem 1rem', background: '#f8fafc', borderRadius: '12px', 
-                  border: '1px solid #e2e8f0', color: '#64748b', fontWeight: 700, fontSize: '0.9rem' 
+                  padding: '1.25rem', background: '#f8fafc', borderRadius: '16px', 
+                  border: '1px solid #e2e8f0', color: '#0f172a', fontWeight: 900, fontSize: '0.9rem',
+                  display: 'flex', alignItems: 'center', gap: '0.75rem'
                 }}>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent)' }} />
                   { (slot || countdown?.slot) === 'left' ? 'LADO IZQUIERDO' : 'LADO DERECHO' }
                 </div>
               </div>
@@ -155,10 +180,10 @@ export default function CountdownEditor({ countdown, slot }: CountdownEditorProp
               <div 
                 onClick={() => setIsActive(!isActive)}
                 style={{ 
-                  cursor: 'pointer', padding: '1.25rem', borderRadius: '16px', 
+                  cursor: 'pointer', padding: '1.5rem', borderRadius: '20px', 
                   background: isActive ? '#f0fdf4' : '#fff1f2',
                   border: `2px solid ${isActive ? '#22c55e' : '#fecdd3'}`,
-                  display: 'flex', alignItems: 'center', gap: '1rem', transition: 'all 0.2s'
+                  display: 'flex', alignItems: 'center', gap: '1rem', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                 }}
               >
                 <div style={{ 
@@ -170,8 +195,8 @@ export default function CountdownEditor({ countdown, slot }: CountdownEditorProp
                     position: 'absolute', top: '3px', left: isActive ? '23px' : '3px', transition: 'all 0.2s' 
                   }} />
                 </div>
-                <span style={{ fontWeight: 800, color: isActive ? '#166534' : '#9f1239', fontSize: '0.9rem' }}>
-                  {isActive ? 'HABILITADO' : 'DESACTIVADO'}
+                <span style={{ fontWeight: 900, color: isActive ? '#166534' : '#9f1239', fontSize: '0.95rem' }}>
+                  {isActive ? 'WIDGET HABILITADO' : 'DESACTIVADO'}
                 </span>
               </div>
             </div>

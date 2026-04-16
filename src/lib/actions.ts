@@ -386,6 +386,7 @@ export async function updateUserProgress(completed: number[], inProgress: number
   return { success: true };
 }
 
+/* --- PERSONAL EVENTS --- */
 export async function createPersonalEvent(data: { title: string, startDate: string, endDate?: string, type: string, subjectId?: string, period?: string }) {
   const session = await auth();
   if (!session?.user?.id) return { error: "Not authenticated" };
@@ -406,7 +407,7 @@ export async function createPersonalEvent(data: { title: string, startDate: stri
   return { success: true };
 }
 
-
+/* --- COMMENTS ACTIONS --- */
 export async function getComments(postSlug: string) {
   const post = await db.post.findUnique({
     where: { slug: postSlug },
@@ -414,22 +415,22 @@ export async function getComments(postSlug: string) {
       comments: {
         where: { parentId: null }, // Only top-level comments
         include: { 
-          user: { select: { id: true, name: true, image: true } },
-          replies: {
-            include: {
-              user: { select: { id: true, name: true, image: true } },
-              replies: {
+            user: { select: { id: true, name: true, image: true } },
+            replies: {
                 include: {
-                  user: { select: { id: true, name: true, image: true } }
+                    user: { select: { id: true, name: true, image: true } },
+                    replies: {
+                        include: {
+                            user: { select: { id: true, name: true, image: true } }
+                        },
+                        orderBy: { createdAt: 'asc' } as any
+                    }
                 },
-                orderBy: { createdAt: 'asc' }
-              }
-            },
-            orderBy: { createdAt: 'asc' }
-          }
+                orderBy: { createdAt: 'asc' } as any
+            }
         },
-        orderBy: { createdAt: 'desc' }
-      }
+        orderBy: { createdAt: 'desc' } as any
+    }
     }
   });
   return post?.comments || [];
@@ -594,9 +595,46 @@ export async function updateAdminSectionNote(section: string, content: string) {
     revalidatePath('/admin/notifications');
     revalidatePath('/admin/posts');
     revalidatePath('/admin/calendar');
+    revalidatePath('/admin/users');
     return { success: true };
   } catch (error) {
     console.error(error);
     return { error: "Error al guardar la nota" };
   }
+}
+
+/* --- USERS ACTIONS --- */
+export async function getUsers() {
+    const session = await auth();
+    const user = await db.user.findUnique({ where: { id: session?.user?.id } });
+    if ((user as any)?.role !== 'admin') return [];
+  
+    return db.user.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: {
+        _count: {
+          select: {
+            comments: true,
+            links: true,
+            calendarEvents: true
+          }
+        }
+      }
+    });
+}
+  
+export async function updateUserRole(userId: string, role: string) {
+    const session = await auth();
+    const currentUser = await db.user.findUnique({ where: { id: session?.user?.id } });
+    if ((currentUser as any)?.role !== 'admin') return { error: "Unauthorized" };
+  
+    await db.user.update({
+      where: { id: userId },
+      data: { role }
+    });
+  
+    await logAction('UPDATE', 'user', `Cambió el rol del usuario ${userId} a ${role}`);
+    
+    revalidatePath('/admin/users');
+    return { success: true };
 }
