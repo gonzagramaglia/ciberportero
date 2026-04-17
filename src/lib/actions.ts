@@ -386,7 +386,7 @@ export async function updateUserProgress(completed: number[], inProgress: number
 }
 
 /* --- PERSONAL EVENTS --- */
-export async function createPersonalEvent(data: { title: string, startDate: string, endDate?: string, type: string, subjectId?: string, period?: string }) {
+export async function createPersonalEvent(data: { title: string, startDate: string, endDate?: string, type: string, subjectId?: string, period?: string, url?: string }) {
   const session = await auth();
   if (!session?.user?.id) return { error: "Not authenticated" };
 
