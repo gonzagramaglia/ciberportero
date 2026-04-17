@@ -83,7 +83,7 @@ export default function CountdownWidget({ countdowns: initialCountdowns, isInlin
             {time.days > 0 && (
                 <>
                     <div className="countdown-unit">
-                        <span className="countdown-number">{time.days}</span>
+                        <span className="countdown-number">{pad(time.days)}</span>
                         <span className="countdown-label">{t.days}</span>
                     </div>
                     <span className="countdown-sep">:</span>
