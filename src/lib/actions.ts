@@ -319,7 +319,7 @@ export async function upsertCalendarEvent(data: any) {
     endDate: data.endDate ? new Date(data.endDate) : null,
     period: data.period,
     type: data.type,
-    subjectId: data.subjectId,
+    subjectId: data.subject === 'all' ? null : data.subject,
   };
 
   if (isUpdate) {
