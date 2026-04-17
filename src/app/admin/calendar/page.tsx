@@ -58,11 +58,25 @@ export default async function AdminCalendarPage() {
                     }}>
                       <CalendarIcon size={18} />
                     </div>
-                    <Link href={`/admin/calendar/${event.id}`} style={{ textDecoration: 'none' }}>
-                      <span style={{ fontWeight: 800, color: '#0f172a', fontSize: '1rem', cursor: 'pointer' }} className="hover-link">
-                        {(event.title as any)?.es || 'Sin título'}
-                      </span>
-                    </Link>
+                    {(() => {
+                      const d = new Date(event.startDate);
+                      const day = d.getUTCDate().toString().padStart(2, '0');
+                      const month = (d.getUTCMonth() + 1).toString().padStart(2, '0');
+                      const year = d.getUTCFullYear();
+                      const currentYear = new Date().getFullYear();
+                      
+                      const publicLink = year === currentYear 
+                        ? `/calendar/${day}/${month}`
+                        : `/calendar/${day}/${month}/${year}`;
+                      
+                      return (
+                        <Link href={publicLink} target="_blank" style={{ textDecoration: 'none' }}>
+                          <span style={{ fontWeight: 800, color: '#0f172a', fontSize: '1rem', cursor: 'pointer' }} className="hover-link">
+                            {(event.title as any)?.es || 'Sin título'}
+                          </span>
+                        </Link>
+                      );
+                    })()}
                   </div>
                 </td>
                 <td style={{ color: '#64748b', fontSize: '0.85rem', fontWeight: 500 }}>

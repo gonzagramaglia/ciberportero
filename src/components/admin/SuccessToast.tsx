@@ -81,7 +81,7 @@ export default function SuccessToast() {
         )}
         {slug && (
           <a 
-            href={slug.startsWith('http') ? slug : `/${slug}`} 
+            href={slug.startsWith('http') ? slug : slug.startsWith('/') ? slug : `/${slug}`} 
             target="_blank" 
             rel="noopener noreferrer"
             style={{ 
