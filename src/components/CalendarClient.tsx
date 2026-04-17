@@ -398,7 +398,7 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
             </p>
           </div>
           {status === 'authenticated' && (
-            session?.user?.email === 'ciberportero@gmail.com' ? (
+            (session?.user?.role === 'admin' || session?.user?.email === 'ciberportero@gmail.com') ? (
               <Link
                 href="/admin/calendar/new"
                 className="add-event-btn"

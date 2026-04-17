@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from "react";
-import { Mail, Shield, Calendar, MessageSquare, Link as LinkIcon, Search, User as UserIcon } from "lucide-react";
+import { Mail, Shield, Calendar, MessageSquare, Link as LinkIcon, Search, User as UserIcon, CheckCircle } from "lucide-react";
 
 interface UsersListProps {
   initialUsers: any[];
@@ -111,6 +111,12 @@ export default function UsersList({ initialUsers }: UsersListProps) {
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#64748b', fontSize: '0.9rem', fontWeight: 800 }}>
                             <Calendar size={14} style={{ color: '#8b5cf6' }} />
                             {user._count?.calendarEvents || 0}
+                          </div>
+                        </div>
+                        <div style={{ textAlign: 'center' }} title="Progreso del Plan">
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#64748b', fontSize: '0.9rem', fontWeight: 800 }}>
+                            <CheckCircle size={14} style={{ color: 'var(--success)' }} />
+                            {Math.round(((user.examProgress?.length || 0) / 37) * 100)}%
                           </div>
                         </div>
                       </div>

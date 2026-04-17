@@ -115,28 +115,53 @@ export default function LinksPage() {
                         </h1>
                         <p style={{ color: 'var(--muted)', fontSize: '1.2rem', marginTop: '0.5rem', fontWeight: '500' }} dangerouslySetInnerHTML={{ __html: t.featured?.description || '' }} />
                     </div>
-                    {session && (
-                        <button 
-                            onClick={() => setIsAddModalOpen(true)}
-                            className="add-link-btn"
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '0.5rem',
-                                background: '#000',
-                                color: '#fff',
-                                padding: '0.8rem 1.5rem',
-                                borderRadius: '14px',
-                                border: 'none',
-                                fontWeight: '700',
-                                cursor: 'pointer',
-                                transition: 'all 0.2s',
-                                boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                            }}
-                        >
-                            <Plus size={20} />
-                            {(translations[lang] as any).addPersonalized}
-                        </button>
+                    {status === 'authenticated' && (
+                        (session?.user?.role === 'admin' || session?.user?.email === 'ciberportero@gmail.com') ? (
+                            <Link 
+                                href="/admin/links"
+                                className="add-link-btn"
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.5rem',
+                                    background: '#000',
+                                    color: '#fff',
+                                    padding: '0.8rem 1.5rem',
+                                    borderRadius: '14px',
+                                    border: 'none',
+                                    fontWeight: '700',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s',
+                                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                                    textDecoration: 'none'
+                                }}
+                            >
+                                <Plus size={20} />
+                                {lang === 'es' ? 'Agregar link' : lang === 'pt' ? 'Adicionar link' : 'Add link'}
+                            </Link>
+                        ) : (
+                            <button 
+                                onClick={() => setIsAddModalOpen(true)}
+                                className="add-link-btn"
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.5rem',
+                                    background: '#000',
+                                    color: '#fff',
+                                    padding: '0.8rem 1.5rem',
+                                    borderRadius: '14px',
+                                    border: 'none',
+                                    fontWeight: '700',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s',
+                                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                                }}
+                            >
+                                <Plus size={20} />
+                                {(translations[lang] as any).addPersonalized}
+                            </button>
+                        )
                     )}
                 </div>
             </header>

@@ -617,6 +617,10 @@ export async function getUsers() {
             links: true,
             calendarEvents: true
           }
+        },
+        examProgress: {
+          where: { completed: true },
+          select: { id: true }
         }
       }
     });
