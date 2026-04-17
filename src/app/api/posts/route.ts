@@ -86,7 +86,8 @@ export async function GET(request: Request) {
                     title: titleObj[lang],
                     description: descObj?.[lang] || '',
                     date: p.date,
-                    availableLangs: Object.keys(titleObj).filter(l => titleObj[l])
+                    availableLangs: Object.keys(titleObj).filter(l => titleObj[l]),
+                    alternativeSlug: p.alternativeSlug
                 };
             });
     } catch (error) {
@@ -96,8 +97,12 @@ export async function GET(request: Request) {
     // Fetch from Files (already filtered by getAllPosts(lang))
     const filePosts = getAllPosts(lang);
     
-    // Merge (Database takes priority if slug matches)
-    const dbSlugs = new Set(dbPosts.map(p => p.slug));
+    // Merge (Database takes priority if slug matches or if it matches alternativeSlug)
+    const dbSlugs = new Set();
+    dbPosts.forEach(p => {
+        dbSlugs.add(p.slug);
+        if (p.alternativeSlug) dbSlugs.add(p.alternativeSlug);
+    });
     const mergedPosts = [
         ...dbPosts,
         ...filePosts.filter(p => !dbSlugs.has(p.slug))

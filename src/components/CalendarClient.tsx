@@ -380,9 +380,39 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
   })
 
   const upcomingEvents = filteredEvents.filter(e => {
-      const d = new Date(e.startDate + 'T00:00:00');
-      return d >= new Date();
-  }).sort((a, b) => a.startDate.localeCompare(b.startDate)).slice(0, 5);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+      
+      const start = new Date(e.startDate + 'T00:00:00');
+      
+      // Caso 1: El evento empieza mañana o después
+      if (start >= tomorrow) return true;
+      
+      // Caso 2: El evento empezó antes pero sigue mañana (en curso)
+      if (e.endDate) {
+          const end = new Date(e.endDate + 'T23:59:59');
+          return end >= tomorrow && start <= today;
+      }
+      
+      return false;
+  }).map(e => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+      
+      const start = new Date(e.startDate + 'T00:00:00');
+      
+      // Si el evento ya empezó, para "Próximos" lo mostramos como que sigue mañana
+      let displayDate = e.startDate;
+      if (start < tomorrow) {
+          displayDate = tomorrow.toISOString().split('T')[0];
+      }
+      
+      return { ...e, displayDate };
+  }).sort((a, b) => (a as any).displayDate.localeCompare((b as any).displayDate)).slice(0, 5);
 
   const availableSubjects = useMemo(() => {
     // Mapping periods to subject ID ranges
@@ -805,7 +835,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
             </div>
             <div className="upcoming-list">
               {upcomingEvents.length > 0 ? upcomingEvents.map((event, idx) => {
-                  const d = new Date(event.startDate + 'T00:00:00');
+                  const d = new Date(((event as any).displayDate || event.startDate) + 'T12:00:00');
                   return (
                     <div key={idx} className="upcoming-item" onClick={() => {
                         setCurrentDate(new Date(d.getFullYear(), d.getMonth(), 1));
@@ -820,6 +850,15 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                               {event.title['es']}
                               {event.subjectId && event.subjectId !== 'all' && ` (${(st as any)[event.subjectId]})`}
                             </h4>
+                            {event.endDate && event.endDate !== event.startDate && (
+                                <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.2rem', fontWeight: 500 }}>
+                                    {lang === 'es' ? 'Hasta el ' : lang === 'pt' ? 'Até ' : 'Until '}
+                                    {(() => {
+                                        const ed = new Date(event.endDate + 'T12:00:00');
+                                        return `${ed.getDate()} de ${ct.months[ed.getMonth()]}`;
+                                    })()}
+                                </div>
+                            )}
                             <span className={`upcoming-tag tag-${event.type}`}>
                                 {ct.events[event.type as keyof typeof ct.events] || event.type}
                                 {event.userId && ` (${lang === 'es' ? 'personal' : lang === 'pt' ? 'pessoal' : 'personal'})`}
