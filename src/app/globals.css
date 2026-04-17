@@ -1007,6 +1007,7 @@ footer a:hover {
   background: linear-gradient(135deg, #22c55e 0%, #10b981 100%);
   box-shadow: 0 8px 24px rgba(16, 185, 129, 0.25);
   top: 15.5rem;
+  margin-top: 11rem;
 }
 
 .sidebar-widget-left {
@@ -1174,6 +1175,20 @@ footer a:hover {
     display: block;
     margin-left: 0 !important;
     margin-top: 0.35rem;
+  }
+  .countdown-timer {
+    gap: 0.2rem !important;
+  }
+  .countdown-number {
+    font-size: 1.1rem !important;
+  }
+  .countdown-label {
+    font-size: 0.5rem !important;
+    letter-spacing: 0 !important;
+  }
+  .countdown-header {
+    font-size: 0.65rem !important;
+    letter-spacing: 0.02em !important;
   }
 }
 
