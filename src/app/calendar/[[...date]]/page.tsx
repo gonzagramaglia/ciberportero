@@ -93,6 +93,7 @@ export default async function CalendarPage({
     desc: (event.description || { es: '', en: '', pt: '' }) as Record<string, string>,
     type: event.type,
     subjectId: event.subjectId || undefined,
+    url: event.url,
     userId: event.userId
   }));
 
