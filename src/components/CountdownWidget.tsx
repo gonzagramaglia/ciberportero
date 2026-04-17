@@ -18,9 +18,10 @@ interface CountdownData {
 
 interface CountdownWidgetProps {
     countdowns?: CountdownData[];
+    isInline?: boolean;
 }
 
-export default function CountdownWidget({ countdowns: initialCountdowns }: CountdownWidgetProps) {
+export default function CountdownWidget({ countdowns: initialCountdowns, isInline }: CountdownWidgetProps) {
     const { lang } = useLanguage();
     const t = translations[lang].countdown;
     const [isLoading, setIsLoading] = useState(!initialCountdowns);
@@ -105,6 +106,20 @@ export default function CountdownWidget({ countdowns: initialCountdowns }: Count
         </div>
     );
 
+    const processText = (text?: string) => {
+        if (!text) return null;
+        return text.split('\n').map((line, i) => (
+            <span key={i} style={{ display: 'block' }}>
+                {line.split(/(\*\*.*?\*\*)/).map((part, j) => {
+                    if (part.startsWith('**') && part.endsWith('**')) {
+                        return <strong key={j} style={{ fontWeight: 900 }}>{part.slice(2, -2)}</strong>;
+                    }
+                    return part;
+                })}
+            </span>
+        ));
+    };
+
     if (isLoading) {
         return (
             <>
@@ -120,26 +135,30 @@ export default function CountdownWidget({ countdowns: initialCountdowns }: Count
                 const time = times[cd.slot];
                 if (!time) return null;
 
+                const widgetClass = isInline 
+                    ? `inline-countdown ${initialCountdowns ? 'post-specific' : ''}` 
+                    : `sidebar-widget sidebar-widget-${cd.slot} ${initialCountdowns ? 'post-specific' : ''}`;
+
                 const content = (
-                    <div className={`sidebar-widget sidebar-widget-${cd.slot} ${initialCountdowns ? 'post-specific' : ''}`} style={{ cursor: cd.url ? 'pointer' : 'default' }}>
+                    <div className={widgetClass} style={{ cursor: cd.url ? 'pointer' : 'default' }}>
                         <div className="countdown-header" style={{ marginBottom: (cd.description || !time.expired) ? '0.5rem' : '0' }}>
                             <Clock size={14} />
-                            <span>{cd.title}</span>
+                            <span style={{ fontWeight: 900 }}>{processText(cd.title)}</span>
                         </div>
                         
                         {!time.expired ? (
                             <>
                                 {cd.description && (
                                     <p className="countdown-desc" style={{ fontSize: '0.75rem', opacity: 0.8, marginBottom: '0.5rem', fontWeight: 600 }}>
-                                        {cd.description}
+                                        {processText(cd.description)}
                                     </p>
                                 )}
                                 <TimerGrid time={time} />
                             </>
                         ) : (
-                            <p className="countdown-desc" style={{ fontWeight: 700, margin: 0, fontSize: '0.9rem' }}>
-                                {cd.expiredMessage || t.available}
-                            </p>
+                            <div className="countdown-desc" style={{ fontWeight: 700, margin: 0, fontSize: '0.9rem' }}>
+                                {processText(cd.expiredMessage) || t.available}
+                            </div>
                         )}
                     </div>
                 );

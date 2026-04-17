@@ -12,6 +12,7 @@ import { PostData } from '../../lib/posts-client';
 import { useParams, notFound } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
+import { timeAgo } from '../../lib/utils';
 
 import NotificationBanners from '../../components/NotificationBanners';
 import CommentSection from '../../components/CommentSection';
@@ -229,13 +230,23 @@ export default function Post() {
 
                 <div className="post-body-layout">
                     <article className="post-content">
+                        <div className="mobile-only-countdown">
+                            <CountdownWidget countdowns={post?.countdowns} isInline />
+                        </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
-                            <span className="post-date" style={{ margin: 0 }}>{new Date(post.date).toLocaleDateString(lang, {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric',
-                                timeZone: 'UTC'
-                            })}</span>
+                            <span className="post-date" style={{ margin: 0 }}>
+                                {new Date(post.date).toLocaleDateString(lang, {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    timeZone: 'UTC'
+                                })}
+                                {post.updatedAt && (
+                                    <span style={{ fontSize: '0.85rem', opacity: 0.7, fontWeight: 500, marginLeft: '0.5rem' }}>
+                                        ({lang === 'es' ? 'Última actualización' : lang === 'pt' ? 'Última atualização' : 'Last update'}: {timeAgo(post.updatedAt, lang)})
+                                    </span>
+                                )}
+                            </span>
                             {session?.user?.role === 'admin' && post.id && (
                                 <Link
                                     href={`/admin/posts/${post.id}`}

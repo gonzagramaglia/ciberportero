@@ -31,6 +31,7 @@ export async function GET(request: Request) {
                     content: contentObj[lang] || contentObj['es'] || contentObj['en'] || '',
                     description: descObj?.[lang] || descObj?.['es'] || descObj?.['en'] || '',
                     date: dbPost.date,
+                    updatedAt: dbPost.updatedAt,
                     availableLangs: Object.keys(titleObj).filter(l => titleObj[l] && contentObj[l]),
                     countdowns: dbPost.countdowns.map(c => ({
                         slot: c.slot,

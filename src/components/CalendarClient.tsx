@@ -398,27 +398,52 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
             </p>
           </div>
           {status === 'authenticated' && (
-            <button 
-              onClick={() => setIsAddModalOpen(true)}
-              className="add-event-btn"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                background: '#000',
-                color: '#fff',
-                padding: '0.8rem 1.5rem',
-                borderRadius: '14px',
-                border: 'none',
-                fontWeight: '700',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-              }}
-            >
-              <Plus size={20} />
-              {(translations[lang] as any).calendar.addPersonalized}
-            </button>
+            session?.user?.email === 'ciberportero@gmail.com' ? (
+              <Link
+                href="/admin/calendar/new"
+                className="add-event-btn"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  background: '#000',
+                  color: '#fff',
+                  padding: '0.8rem 1.5rem',
+                  borderRadius: '14px',
+                  border: 'none',
+                  fontWeight: '700',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                  textDecoration: 'none'
+                }}
+              >
+                <Plus size={20} />
+                {lang === 'es' ? 'Agregar evento' : lang === 'pt' ? 'Adicionar evento' : 'Add event'}
+              </Link>
+            ) : (
+              <button 
+                onClick={() => setIsAddModalOpen(true)}
+                className="add-event-btn"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  background: '#000',
+                  color: '#fff',
+                  padding: '0.8rem 1.5rem',
+                  borderRadius: '14px',
+                  border: 'none',
+                  fontWeight: '700',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                }}
+              >
+                <Plus size={20} />
+                {(translations[lang] as any).calendar.addPersonalized}
+              </button>
+            )
           )}
         </div>
       </header>
