@@ -209,7 +209,7 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
                   <option value="all">Todas las materias / Evento General</option>
                   {availableSubjects.map(sub => (
                     <option key={sub.id} value={sub.id.toString()}>
-                      [{sub.id.toString().padStart(2, '0')}] {translations.es.plan.subjectNames[sub.id]}
+                      [{sub.id.toString().padStart(2, '0')}] {(translations.es.plan.subjectNames as any)[sub.id]}
                     </option>
                   ))}
                 </select>
