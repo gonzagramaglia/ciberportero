@@ -174,7 +174,7 @@ export const translations = {
                 upcoming: "Próximos eventos",
                 exam: "Examen",
                 quizMandatory: "Autoevaluación Obligatoria",
-                enrollment: "Tarea a entregar",
+                enrollment: "Tarea / Entrega",
                 classes: "Clase",
                 admin: "Administrativo",
                 others: "Otro",

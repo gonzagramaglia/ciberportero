@@ -7,7 +7,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher"
 import { useLanguage } from "@/context/LanguageContext"
 import { useSession } from "next-auth/react"
 import { createPersonalEvent, deleteCalendarEvent } from "@/lib/actions"
-import { ArrowLeft, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, Bell, Github, Youtube, Search, Filter, Copy, Check, Info, Lock, Plus, Trash2, X as CloseIcon, GraduationCap, Zap, Tag, ExternalLink, FileText } from "lucide-react"
+import { ArrowLeft, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, Bell, Github, Youtube, Search, Filter, Copy, Check, Info, Lock, Plus, Trash2, X as CloseIcon, GraduationCap, Zap, Tag, ExternalLink, FileText, Edit2 } from "lucide-react"
 import NotificationBanners from "@/components/NotificationBanners"
 import CountdownWidget from "@/components/CountdownWidget"
 import SyncedBadge from "@/components/SyncedBadge"
@@ -30,9 +30,10 @@ interface AcademicEvent {
 interface CalendarClientProps {
   initialEvents: AcademicEvent[];
   lang: string;
+  initialDate?: string | null;
 }
 
-export default function CalendarClient({ initialEvents, lang: langProp }: CalendarClientProps) {
+export default function CalendarClient({ initialEvents, lang: langProp, initialDate }: CalendarClientProps) {
   const { data: session, status } = useSession()
   const { lang: contextLang } = useLanguage()
   const lang = (contextLang || langProp || 'es') as Locale;
@@ -82,6 +83,28 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
   const [typeFilter, setTypeFilter] = useState('all')
   const [periodFilter, setPeriodFilter] = useState('all')
   const [emailCopied, setEmailCopied] = useState(false)
+  
+  // Set initial date from props
+  useEffect(() => {
+    if (initialDate) {
+      // Fix for timezone issues: append T12:00:00
+      const d = new Date(initialDate + 'T12:00:00');
+      if (!isNaN(d.getTime())) {
+        setCurrentDate(d);
+        setSelectedDate(d);
+        
+        // Scroll to the day after a short delay to ensure rendering
+        setTimeout(() => {
+          const el = document.getElementById(`day-${initialDate}`);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.classList.add('flash-focus');
+            setTimeout(() => el.classList.remove('flash-focus'), 2000);
+          }
+        }, 800);
+      }
+    }
+  }, [initialDate]);
 
   const handleSaveEvent = async () => {
     if (!newEvent.title || !newEvent.startDate) return;
@@ -289,6 +312,7 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
       days.push(
         <div 
           key={day} 
+          id={`day-${dateStr}`}
           className={`calendar-day ${hasEvent ? `event-${dayEvents[0].type}` : ''} ${hasPersonalEvent ? 'has-personal' : ''} ${isSelected ? 'selected' : ''} ${isSelected && hasEvent ? `selected-${dayEvents[0].type}` : ''} ${isToday ? 'today' : ''} ${!hasEvent && (searchTerm || subjectFilter !== 'all') ? 'dimmed' : ''}`}
           onClick={() => setSelectedDate(new Date(year, month, day))}
         >
@@ -638,10 +662,22 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
                         {(session?.user?.id === event.userId || session?.user?.email === 'ciberportero@gmail.com') && (
                           <button 
                             onClick={() => handleDeleteEvent(event.id)}
-                            style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: '#ef4444', opacity: 0.6, padding: '4px', marginLeft: 'auto' }}
+                            style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: '#ef4444', opacity: 0.6, padding: '4px', marginLeft: '0.5rem' }}
                           >
                             <Trash2 size={16} />
                           </button>
+                        )}
+                        {(session?.user?.role === 'admin' || session?.user?.email === 'gonzalogramagia@gmail.com' || session?.user?.email === 'ciberportero@gmail.com') && (
+                          <a 
+                            href={`/admin/calendar?edit=${event.id}`}
+                            style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '0.35rem', color: 'var(--accent)', textDecoration: 'none', fontSize: '0.75rem', fontWeight: 800, padding: '0.4rem 0.8rem', borderRadius: '8px', background: 'rgba(34, 211, 238, 0.08)', border: '1px solid rgba(34, 211, 238, 0.2)', transition: 'all 0.2s' }}
+                            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(34, 211, 238, 0.15)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(34, 211, 238, 0.08)'; e.currentTarget.style.transform = 'none'; }}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <Edit2 size={14} />
+                            {lang === 'es' ? 'EDITAR' : lang === 'pt' ? 'EDITAR' : 'EDIT'}
+                          </a>
                         )}
                       </div>
                       {event.subjectId && (event.subjectId !== 'all') && (

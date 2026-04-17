@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Save, X } from 'lucide-react';
 import { upsertCalendarEvent } from '@/lib/actions';
@@ -20,13 +20,51 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
   const [descriptions, setDescriptions] = useState<any>(event?.description || { es: '', en: '', pt: '' });
   const [startDate, setStartDate] = useState(event?.startDate ? new Date(event.startDate).toISOString().slice(0, 10) : '');
   const [endDate, setEndDate] = useState(event?.endDate ? new Date(event.endDate).toISOString().slice(0, 10) : '');
-  const [category, setCategory] = useState(event?.category || 'Otro');
+  
+  const typeToCategory: Record<string, string> = {
+    'exam': 'Examen / Parcial',
+    'quiz_mandatory': 'Autoevaluación Obligatoria',
+    'enrollment': 'Tarea / Entrega',
+    'classes': 'Clase',
+    'event': 'Otro'
+  };
+  
+  const [category, setCategory] = useState(event?.type ? typeToCategory[event.type] || 'Otro' : 'Otro');
   const [period, setPeriod] = useState(event?.period || 'Evento General');
-  const [subject, setSubject] = useState(event?.subject || 'Evento General');
+  const [subject, setSubject] = useState(event?.subjectId || 'all');
+
+  const availableSubjects = useMemo(() => {
+    const ct = translations.es.calendar;
+    // Mapping periods to subject ID ranges
+    const rangeMap: Record<string, { start: number; end: number }> = {
+      [ct.firstPeriod]: { start: 1, end: 5 },
+      [ct.secondPeriod]: { start: 6, end: 10 },
+      [ct.thirdPeriod]: { start: 11, end: 15 },
+      [ct.fourthPeriod]: { start: 16, end: 20 },
+      'Evento General': { start: 1, end: 37 },
+      'Anual': { start: 1, end: 37 },
+      '1er Cuatrimestre': { start: 1, end: 37 },
+      '2do Cuatrimestre': { start: 1, end: 37 }
+    };
+
+    const range = rangeMap[period] || { start: 1, end: 37 };
+    return curriculum.filter(sub => {
+      const numId = parseInt(sub.id.toString());
+      return numId >= range.start && numId <= range.end;
+    });
+  }, [period]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsPending(true);
+    const typeMap: Record<string, string> = {
+      'Examen / Parcial': 'exam',
+      'Autoevaluación Obligatoria': 'quiz_mandatory',
+      'Tarea / Entrega': 'enrollment',
+      'Clase': 'classes',
+      'Otro': 'event'
+    };
+
     try {
       await upsertCalendarEvent({
         id: event?.id,
@@ -34,7 +72,7 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
         description: descriptions,
         startDate: new Date(startDate),
         endDate: endDate ? new Date(endDate) : null,
-        category,
+        type: typeMap[category] || 'event',
         period,
         subject
       });
@@ -160,7 +198,7 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
                   onChange={e => setSubject(e.target.value)}
                 >
                   <option value="all">Todas las materias / Evento General</option>
-                  {curriculum.map(sub => (
+                  {availableSubjects.map(sub => (
                     <option key={sub.id} value={sub.id.toString()}>
                       [{sub.id.toString().padStart(2, '0')}] {translations.es.plan.subjectNames[sub.id as keyof typeof translations.es.plan.subjectNames]}
                     </option>
