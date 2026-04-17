@@ -86,7 +86,13 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
       });
 
       const dateParts = startDate.split('-'); // YYYY-MM-DD
-      const calendarLink = `/calendar/${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+      const now = new Date();
+      const currentYear = now.getFullYear().toString();
+      
+      let calendarLink = `/calendar/${dateParts[2]}/${dateParts[1]}`;
+      if (dateParts[0] !== currentYear) {
+        calendarLink += `/${dateParts[0]}`;
+      }
 
       router.push(`/admin/calendar?success=${encodeURIComponent(titles.es)}&message=${encodeURIComponent('Evento guardado correctamente')}&slug=${encodeURIComponent(calendarLink)}`);
       router.refresh();

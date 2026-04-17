@@ -58,9 +58,11 @@ export default async function AdminCalendarPage() {
                     }}>
                       <CalendarIcon size={18} />
                     </div>
-                    <span style={{ fontWeight: 800, color: '#0f172a', fontSize: '1rem' }}>
-                      {(event.title as any)?.es || 'Sin título'}
-                    </span>
+                    <Link href={`/admin/calendar/${event.id}`} style={{ textDecoration: 'none' }}>
+                      <span style={{ fontWeight: 800, color: '#0f172a', fontSize: '1rem', cursor: 'pointer' }} className="hover-link">
+                        {(event.title as any)?.es || 'Sin título'}
+                      </span>
+                    </Link>
                   </div>
                 </td>
                 <td style={{ color: '#64748b', fontSize: '0.85rem', fontWeight: 500 }}>
