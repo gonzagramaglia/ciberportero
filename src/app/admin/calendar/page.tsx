@@ -78,12 +78,16 @@ export default async function AdminCalendarPage() {
                     fontSize: '10px', 
                     fontWeight: 900, 
                     textTransform: 'uppercase',
-                    background: event.type === 'exam' ? '#fff1f2' : event.type === 'quiz' ? '#fffbeb' : event.type === 'class' ? '#eff6ff' : event.type === 'admin' ? '#f5f3ff' : '#f1f5f9',
-                    color: event.type === 'exam' ? '#be123c' : event.type === 'quiz' ? '#b45309' : event.type === 'class' ? '#1d4ed8' : event.type === 'admin' ? '#7c3aed' : '#475569',
+                    background: event.type === 'exam' ? '#fff1f2' : (event.type === 'quiz' || event.type === 'quiz_mandatory') ? '#fffbeb' : event.type === 'classes' ? '#eff6ff' : event.type === 'admin' ? '#f5f3ff' : '#f1f5f9',
+                    color: event.type === 'exam' ? '#be123c' : (event.type === 'quiz' || event.type === 'quiz_mandatory') ? '#b45309' : event.type === 'classes' ? '#1d4ed8' : event.type === 'admin' ? '#7c3aed' : '#475569',
                     border: '1px solid currentColor',
                     opacity: 0.8
                   }}>
-                    {event.type}
+                    {event.type === 'exam' ? 'Examen' : 
+                     (event.type === 'quiz' || event.type === 'quiz_mandatory') ? 'Autoevaluación' : 
+                     event.type === 'enrollment' ? 'Tarea / Entrega' :
+                     event.type === 'classes' ? 'Clase' : 
+                     event.type === 'admin' ? 'Administrativo' : 'Otro'}
                   </span>
                 </td>
                 <td>

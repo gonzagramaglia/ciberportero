@@ -676,7 +676,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                         )}
                         {(session?.user?.role === 'admin' || session?.user?.email === 'gonzalogramagia@gmail.com' || session?.user?.email === 'ciberportero@gmail.com') && (
                           <a 
-                            href={`/admin/calendar?edit=${event.id}`}
+                            href={`/admin/calendar/${event.id}`}
                             style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '0.35rem', color: 'var(--accent)', textDecoration: 'none', fontSize: '0.75rem', fontWeight: 800, padding: '0.4rem 0.8rem', borderRadius: '8px', background: 'rgba(34, 211, 238, 0.08)', border: '1px solid rgba(34, 211, 238, 0.2)', transition: 'all 0.2s' }}
                             onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(34, 211, 238, 0.15)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
                             onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(34, 211, 238, 0.08)'; e.currentTarget.style.transform = 'none'; }}

@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Save, X } from 'lucide-react';
 import { upsertCalendarEvent } from '@/lib/actions';
 import { curriculum } from '@/data/curriculum';
 import { translations } from '@/lib/translations';
+import LanguageTabs from './LanguageTabs';
 
 interface CalendarEditorProps {
   event?: any;
@@ -14,6 +15,7 @@ interface CalendarEditorProps {
 export default function CalendarEditor({ event }: CalendarEditorProps) {
   const router = useRouter();
   const [isPending, setIsPending] = useState(false);
+  const [activeLang, setActiveLang] = useState<'es' | 'en' | 'pt'>('es');
 
   // Form state
   const [titles, setTitles] = useState<any>(event?.title || { es: '', en: '', pt: '' });
@@ -34,25 +36,31 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
   const [subject, setSubject] = useState(event?.subjectId || 'all');
 
   const availableSubjects = useMemo(() => {
-    const ct = translations.es.calendar;
-    // Mapping periods to subject ID ranges
-    const rangeMap: Record<string, { start: number; end: number }> = {
-      [ct.firstPeriod]: { start: 1, end: 5 },
-      [ct.secondPeriod]: { start: 6, end: 10 },
-      [ct.thirdPeriod]: { start: 11, end: 15 },
-      [ct.fourthPeriod]: { start: 16, end: 20 },
-      'Evento General': { start: 1, end: 37 },
-      'Anual': { start: 1, end: 37 },
-      '1er Cuatrimestre': { start: 1, end: 37 },
-      '2do Cuatrimestre': { start: 1, end: 37 }
-    };
-
-    const range = rangeMap[period] || { start: 1, end: 37 };
     return curriculum.filter(sub => {
-      const numId = parseInt(sub.id.toString());
-      return numId >= range.start && numId <= range.end;
+      // General cases
+      if (period === 'Evento General' || period === 'Anual' || period === 'all') return true;
+      
+      // Half-year filters (any year)
+      if (period === '1er Cuatrimestre') return sub.term === 1;
+      if (period === '2do Cuatrimestre') return sub.term === 2;
+      
+      // Specific period filters
+      const ct = translations.es.calendar;
+      if (period === ct.firstPeriod || period === '1er cuatrimestre de 1er año') return sub.year === 1 && sub.term === 1;
+      if (period === ct.secondPeriod || period === '2do cuatrimestre de 1er año') return sub.year === 1 && sub.term === 2;
+      if (period === ct.thirdPeriod || period === '1er cuatrimestre de 2do año') return sub.year === 2 && sub.term === 1;
+      if (period === ct.fourthPeriod || period === '2do cuatrimestre de 2do año') return sub.year === 2 && sub.term === 2;
+      
+      return true;
     });
   }, [period]);
+
+  // Reset subject if it's no longer available in the select period
+  useEffect(() => {
+    if (subject !== 'all' && !availableSubjects.some(s => s.id.toString() === subject)) {
+      setSubject('all');
+    }
+  }, [availableSubjects, subject]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,7 +84,11 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
         period,
         subject
       });
-      router.push(`/admin/calendar?success=${encodeURIComponent(titles.es)}&message=${encodeURIComponent('Evento guardado correctamente')}`);
+      
+      const dateParts = startDate.split('-'); // YYYY-MM-DD
+      const calendarLink = `/calendar/${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+      
+      router.push(`/admin/calendar?success=${encodeURIComponent(titles.es)}&message=${encodeURIComponent('Evento guardado correctamente')}&slug=${encodeURIComponent(calendarLink)}`);
       router.refresh();
     } catch (error) {
       console.error(error);
@@ -109,6 +121,8 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
 
       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '3.5rem' }}>
         <div className="space-y-10">
+          <LanguageTabs active={activeLang} onChange={setActiveLang} />
+          
           <section className="admin-card" style={{ padding: '3rem', borderRadius: '32px' }}>
             <div style={{ marginBottom: '2.5rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '1.25rem' }}>
               <h3 style={{ margin: 0, fontSize: '1.35rem', fontWeight: 900, color: '#0f172a' }}>Información General</h3>
@@ -116,25 +130,25 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
 
             <div className="space-y-10">
               <div>
-                <label className="admin-label" style={{ marginBottom: '1rem', fontSize: '0.95rem' }}>TÍTULO DEL EVENTO</label>
+                <label className="admin-label" style={{ marginBottom: '1rem', fontSize: '0.95rem' }}>TÍTULO DEL EVENTO ({activeLang.toUpperCase()})</label>
                 <input 
                   className="admin-input"
                   style={{ fontSize: '1.5rem', fontWeight: 900, padding: '1.25rem', borderRadius: '16px' }}
-                  value={titles.es || ''}
-                  onChange={e => setTitles({ ...titles, es: e.target.value })}
+                  value={titles[activeLang] || ''}
+                  onChange={e => setTitles({ ...titles, [activeLang]: e.target.value })}
                   placeholder="Ej: Final de Álgebra"
-                  required
+                  required={activeLang === 'es'}
                 />
               </div>
 
               <div>
-                <label className="admin-label" style={{ marginBottom: '1rem', fontSize: '0.95rem' }}>DESCRIPCIÓN DETALLADA</label>
+                <label className="admin-label" style={{ marginBottom: '1rem', fontSize: '0.95rem' }}>DESCRIPCIÓN DETALLADA ({activeLang.toUpperCase()})</label>
                 <textarea 
                   className="admin-input"
                   rows={4}
                   style={{ fontSize: '1.1rem', fontWeight: 600, padding: '1.25rem', borderRadius: '16px', lineHeight: 1.6, background: '#f8fafc' }}
-                  value={descriptions.es || ''}
-                  onChange={e => setDescriptions({ ...descriptions, es: e.target.value })}
+                  value={descriptions[activeLang] || ''}
+                  onChange={e => setDescriptions({ ...descriptions, [activeLang]: e.target.value })}
                   placeholder="Instrucciones o detalles adicionales..."
                 />
               </div>
@@ -200,7 +214,7 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
                   <option value="all">Todas las materias / Evento General</option>
                   {availableSubjects.map(sub => (
                     <option key={sub.id} value={sub.id.toString()}>
-                      [{sub.id.toString().padStart(2, '0')}] {translations.es.plan.subjectNames[sub.id as keyof typeof translations.es.plan.subjectNames]}
+                      [{sub.id.toString().padStart(2, '0')}] {(translations[activeLang] as any).plan.subjectNames[sub.id]}
                     </option>
                   ))}
                 </select>
