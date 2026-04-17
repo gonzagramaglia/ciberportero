@@ -171,9 +171,13 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
 
   const formatEventDate = (dateStr: string) => {
     if (!dateStr) return '';
-    const parts = dateStr.split('-');
+    const parts = dateStr.split('-'); // YYYY-MM-DD
     if (parts.length !== 3) return dateStr;
-    return `${parts[2]}-${parts[1]}-${parts[0]}`;
+    const currentYear = new Date().getFullYear().toString();
+    if (parts[0] === currentYear) {
+      return `${parts[2]}/${parts[1]}`;
+    }
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
   };
 
   const getGoogleCalendarUrl = (event: AcademicEvent) => {
@@ -718,7 +722,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                         {event.title['es']}
                         {event.subjectId && event.subjectId !== 'all' && ` (${(st as any)[event.subjectId]})`}
                       </h4>
-                      <p>{event.desc['es']}</p>
+                      <p style={{ whiteSpace: 'pre-wrap' }}>{event.desc['es']}</p>
                       
                       {event.url && (
                         <a 
@@ -737,7 +741,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                           }}
                         >
                           <ExternalLink size={14} />
-                          {lang === 'es' ? 'Ver enlace del evento' : lang === 'pt' ? 'Ver link do evento' : 'View event link'}
+                          {lang === 'es' ? 'Ir al enlace del evento' : lang === 'pt' ? 'Ir para o link do evento' : 'Go to event link'}
                         </a>
                       )}
                       
