@@ -242,7 +242,7 @@ export default function Post() {
                                     timeZone: 'UTC'
                                 })}
                                 {post.updatedAt && (
-                                    <span style={{ fontSize: '0.85rem', opacity: 0.7, fontWeight: 500, marginLeft: '0.5rem' }}>
+                                    <span className="last-updated" style={{ fontSize: '0.85rem', opacity: 0.7, fontWeight: 500, marginLeft: '0.5rem' }}>
                                         ({lang === 'es' ? 'Última actualización' : lang === 'pt' ? 'Última atualização' : 'Last update'}: {timeAgo(post.updatedAt, lang)})
                                     </span>
                                 )}

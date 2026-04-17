@@ -1006,7 +1006,7 @@ footer a:hover {
 .sidebar-widget.post-specific {
   background: linear-gradient(135deg, #22c55e 0%, #10b981 100%);
   box-shadow: 0 8px 24px rgba(16, 185, 129, 0.25);
-  top: 13rem;
+  top: 15.5rem;
 }
 
 .sidebar-widget-left {
@@ -1078,7 +1078,7 @@ footer a:hover {
 .countdown-timer {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 0.35rem;
   margin-bottom: 0.75rem;
 }
@@ -1156,12 +1156,24 @@ footer a:hover {
   box-shadow: 0 8px 24px rgba(16, 185, 129, 0.15);
 }
 
+.inline-countdown .countdown-number {
+  font-size: 1.1rem;
+}
+
 @media (max-width: 1720px) {
   .sidebar-widget {
     display: none;
   }
   .mobile-only-countdown {
     display: flex;
+  }
+}
+
+@media (max-width: 600px) {
+  .last-updated {
+    display: block;
+    margin-left: 0 !important;
+    margin-top: 0.35rem;
   }
 }
 
@@ -1886,6 +1898,14 @@ html {
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
+}
+
+.post-content ul li, .post-content ol li {
+  margin-bottom: 0.7rem;
+}
+
+.post-content ul li:last-child, .post-content ol li:last-child {
+  margin-bottom: 1.2rem;
 }
 
 .post-toc li a {
