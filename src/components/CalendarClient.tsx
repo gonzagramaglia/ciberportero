@@ -95,13 +95,20 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
         
         // Scroll to the day after a short delay to ensure rendering
         setTimeout(() => {
-          const el = document.getElementById(`day-${initialDate}`);
-          if (el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            el.classList.add('flash-focus');
-            setTimeout(() => el.classList.remove('flash-focus'), 2000);
+          const card = document.getElementById('selected-events-card');
+          if (card) {
+            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            card.classList.add('flash-focus');
+            setTimeout(() => card.classList.remove('flash-focus'), 2000);
+          } else {
+            const el = document.getElementById(`day-${initialDate}`);
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              el.classList.add('flash-focus');
+              setTimeout(() => el.classList.remove('flash-focus'), 2000);
+            }
           }
-        }, 800);
+        }, 1000);
       }
     }
   }, [initialDate]);
@@ -545,7 +552,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                     <option value="quiz_mandatory">{ct.events.quizMandatory}</option>
                     <option value="enrollment">{ct.events.enrollment}</option>
                     <option value="classes">{ct.events.classes}</option>
-                    <option value="event">{ct.events.others}</option>
+                    <option value="event">{ct.events.event}</option>
                   </select>
               </div>
           </div>
@@ -580,7 +587,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                 <div className="legend-item"><div className="legend-dot quiz_mandatory"></div> <span>{ct.events.quizMandatory}</span></div>
                 <div className="legend-item"><div className="legend-dot enrollment"></div> <span>{ct.events.enrollment}</span></div>
                 <div className="legend-item"><div className="legend-dot classes"></div> <span>{ct.events.classes}</span></div>
-                <div className="legend-item"><div className="legend-dot event"></div> <span>{ct.events.others}</span></div>
+                <div className="legend-item"><div className="legend-dot event"></div> <span>{ct.events.event}</span></div>
               </div>
 
               <button 
@@ -621,7 +628,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
 
         <div className="calendar-sidebar">
           {selectedDate && (
-            <div className={`selection-card ${selectedEvents.some(e => e.userId) ? 'is-personal' : ''}`}>
+            <div id="selected-events-card" className={`selection-card ${selectedEvents.some(e => e.userId) ? 'is-personal' : ''}`}>
               <div className="selection-header">
                 <Clock size={16} />
                 <h3>
@@ -1210,7 +1217,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                     <option value="quiz_mandatory">{ct.events.quizMandatory}</option>
                     <option value="enrollment">{ct.events.enrollment}</option>
                     <option value="classes">{ct.events.classes}</option>
-                    <option value="event">{ct.events.others}</option>
+                    <option value="event">{ct.events.event}</option>
                   </select>
                 </div>
                 

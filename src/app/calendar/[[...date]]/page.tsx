@@ -20,8 +20,16 @@ export async function generateMetadata({
   const t = translations[lang as keyof typeof translations];
 
   let title = `Ciberportero | ${t.calendar.shortTitle}`;
-  if (date && date.length === 3) {
-    title = `Ciberportero | ${date[0]}/${date[1]}/${date[2]} - ${t.calendar.shortTitle}`;
+  if (date) {
+    if (date.length === 3) {
+      title = `${date[0]}/${date[1]}/${date[2]} - Ciberportero`;
+    } else if (date.length === 2) {
+      const year = new Date().getFullYear();
+      title = `${date[0]}/${date[1]}/${year} - Ciberportero`;
+    } else if (date.length === 1) {
+      const now = new Date();
+      title = `${date[0]}/${now.getMonth() + 1}/${now.getFullYear()} - Ciberportero`;
+    }
   }
 
   return { title };
@@ -41,10 +49,21 @@ export default async function CalendarPage({
   const lang = resolvedSearchParams.lang || cookieStore.get('lang')?.value || 'es';
 
   let initialDate = null;
-  if (date && date.length === 3) {
-    const [day, month, year] = date;
-    // Format: YYYY-MM-DD
-    initialDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  if (date) {
+    const now = new Date();
+    if (date.length === 3) {
+      const [day, month, year] = date;
+      initialDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    } else if (date.length === 2) {
+      const [day, month] = date;
+      const year = now.getFullYear();
+      initialDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    } else if (date.length === 1) {
+      const [day] = date;
+      const month = (now.getMonth() + 1).toString().padStart(2, '0');
+      const year = now.getFullYear();
+      initialDate = `${year}-${month}-${day.padStart(2, '0')}`;
+    }
   }
 
   const events = (await db.calendarEvent.findMany({
