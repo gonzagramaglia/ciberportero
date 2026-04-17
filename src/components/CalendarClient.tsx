@@ -24,6 +24,7 @@ interface AcademicEvent {
   period?: string | null;
   subjectId?: string | null;
   desc: Record<string, string>;
+  url?: string | null;
   userId?: string | null;
 }
 
@@ -695,16 +696,32 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                           </a>
                         )}
                       </div>
-                      {event.subjectId && (event.subjectId !== 'all') && (
-                        <div style={{ fontSize: '0.7rem', opacity: 0.6, fontWeight: 800, marginBottom: '0.5rem', color: 'var(--accent)' }}>
-                           [{event.subjectId.padStart(2, '0')}] {(st as any)[event.subjectId]}
-                        </div>
-                      )}
                       <h4 style={{ margin: 0 }}>
                         {event.title['es']}
                         {event.subjectId && event.subjectId !== 'all' && ` (${(st as any)[event.subjectId]})`}
                       </h4>
                       <p>{event.desc['es']}</p>
+                      
+                      {event.url && (
+                        <a 
+                          href={event.url.startsWith('http') ? event.url : `https://${event.url}`} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.4rem',
+                            marginTop: '0.5rem',
+                            color: 'var(--accent)',
+                            fontSize: '0.85rem',
+                            fontWeight: 700,
+                            textDecoration: 'underline'
+                          }}
+                        >
+                          <ExternalLink size={14} />
+                          {lang === 'es' ? 'Ver enlace del evento' : lang === 'pt' ? 'Ver link do evento' : 'View event link'}
+                        </a>
+                      )}
                       
                         {(() => {
                           const style = getTypeStyle(event.type);

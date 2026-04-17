@@ -20,6 +20,7 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
   const [descriptions, setDescriptions] = useState<any>(event?.description || { es: '', en: '', pt: '' });
   const [startDate, setStartDate] = useState(event?.startDate ? new Date(event.startDate).toISOString().slice(0, 10) : '');
   const [endDate, setEndDate] = useState(event?.endDate ? new Date(event.endDate).toISOString().slice(0, 10) : '');
+  const [url, setUrl] = useState(event?.url || '');
 
   const typeToCategory: Record<string, string> = {
     'exam': 'Examen / Parcial',
@@ -80,7 +81,8 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
         endDate: endDate ? new Date(endDate) : null,
         type: typeMap[category] || 'event',
         period,
-        subject
+        subject,
+        url
       });
 
       const dateParts = startDate.split('-'); // YYYY-MM-DD
@@ -150,6 +152,17 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
                   onChange={e => setDescriptions({ ...descriptions, es: e.target.value })}
                   placeholder="Instrucciones o detalles adicionales..."
                 />
+
+                <div style={{ marginTop: '2rem' }}>
+                  <label className="admin-label" style={{ marginBottom: '1rem', fontSize: '0.95rem' }}>LINK / URL DEL EVENTO (OPCIONAL)</label>
+                  <input
+                    className="admin-input"
+                    style={{ fontSize: '1.1rem', fontWeight: 600, padding: '1.25rem', borderRadius: '16px', background: '#f8fafc' }}
+                    value={url}
+                    onChange={e => setUrl(e.target.value)}
+                    placeholder="https://..."
+                  />
+                </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginTop: '1.5rem' }}>
                 <div>

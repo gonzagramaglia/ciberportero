@@ -320,6 +320,7 @@ export async function upsertCalendarEvent(data: any) {
     period: data.period,
     type: data.type,
     subjectId: data.subject === 'all' ? null : data.subject,
+    url: data.url || null,
   };
 
   if (isUpdate) {
@@ -396,6 +397,7 @@ export async function createPersonalEvent(data: { title: string, startDate: stri
       endDate: data.endDate ? new Date(data.endDate) : null,
       type: data.type,
       subjectId: data.subjectId === 'all' ? null : data.subjectId,
+      url: data.url || null,
       period: data.period || 'all',
       userId: session.user.id
     } as any

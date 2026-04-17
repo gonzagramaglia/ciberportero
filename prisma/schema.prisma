@@ -184,6 +184,7 @@ model CalendarEvent {
   period      String?  // e.g., "1st Semester", "Full Year"
   type        String   @default("event") // "exam", "class", "admin", "event"
   subjectId   String?  // ID related to subjectNames in translations
+  url         String?
   userId      String?  // Personal event for a user
   user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
