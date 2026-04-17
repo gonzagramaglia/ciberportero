@@ -85,7 +85,7 @@ export default async function AdminCalendarPage() {
                   }}>
                     {event.type === 'exam' ? 'Examen' : 
                      (event.type === 'quiz' || event.type === 'quiz_mandatory') ? 'Autoevaluación' : 
-                     event.type === 'enrollment' ? 'Tarea / Entrega' :
+                     event.type === 'enrollment' ? 'Tarea' :
                      event.type === 'classes' ? 'Clase' : 
                      event.type === 'admin' ? 'Administrativo' : 'Otro'}
                   </span>

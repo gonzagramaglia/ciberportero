@@ -22,15 +22,15 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
   const [descriptions, setDescriptions] = useState<any>(event?.description || { es: '', en: '', pt: '' });
   const [startDate, setStartDate] = useState(event?.startDate ? new Date(event.startDate).toISOString().slice(0, 10) : '');
   const [endDate, setEndDate] = useState(event?.endDate ? new Date(event.endDate).toISOString().slice(0, 10) : '');
-  
+
   const typeToCategory: Record<string, string> = {
     'exam': 'Examen / Parcial',
-    'quiz_mandatory': 'Autoevaluación Obligatoria',
-    'enrollment': 'Tarea / Entrega',
+    'quiz_mandatory': 'Autoevaluación (obligatoria)',
+    'enrollment': 'Tarea',
     'classes': 'Clase',
     'event': 'Otro'
   };
-  
+
   const [category, setCategory] = useState(event?.type ? typeToCategory[event.type] || 'Otro' : 'Otro');
   const [period, setPeriod] = useState(event?.period || 'Evento General');
   const [subject, setSubject] = useState(event?.subjectId || 'all');
@@ -39,18 +39,18 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
     return curriculum.filter(sub => {
       // General cases
       if (period === 'Evento General' || period === 'Anual' || period === 'all') return true;
-      
+
       // Half-year filters (any year)
       if (period === '1er Cuatrimestre') return sub.term === 1;
       if (period === '2do Cuatrimestre') return sub.term === 2;
-      
+
       // Specific period filters
       const ct = translations.es.calendar;
       if (period === ct.firstPeriod || period === '1er cuatrimestre de 1er año') return sub.year === 1 && sub.term === 1;
       if (period === ct.secondPeriod || period === '2do cuatrimestre de 1er año') return sub.year === 1 && sub.term === 2;
       if (period === ct.thirdPeriod || period === '1er cuatrimestre de 2do año') return sub.year === 2 && sub.term === 1;
       if (period === ct.fourthPeriod || period === '2do cuatrimestre de 2do año') return sub.year === 2 && sub.term === 2;
-      
+
       return true;
     });
   }, [period]);
@@ -67,8 +67,8 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
     setIsPending(true);
     const typeMap: Record<string, string> = {
       'Examen / Parcial': 'exam',
-      'Autoevaluación Obligatoria': 'quiz_mandatory',
-      'Tarea / Entrega': 'enrollment',
+      'Autoevaluación (obligatoria)': 'quiz_mandatory',
+      'Tarea': 'enrollment',
       'Clase': 'classes',
       'Otro': 'event'
     };
@@ -84,10 +84,10 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
         period,
         subject
       });
-      
+
       const dateParts = startDate.split('-'); // YYYY-MM-DD
       const calendarLink = `/calendar/${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
-      
+
       router.push(`/admin/calendar?success=${encodeURIComponent(titles.es)}&message=${encodeURIComponent('Evento guardado correctamente')}&slug=${encodeURIComponent(calendarLink)}`);
       router.refresh();
     } catch (error) {
@@ -98,7 +98,7 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
     }
   };
 
-  const categories = ['Examen / Parcial', 'Autoevaluación Obligatoria', 'Tarea / Entrega', 'Clase', 'Otro'];
+  const categories = ['Examen / Parcial', 'Autoevaluación (obligatoria)', 'Tarea', 'Clase', 'Otro'];
 
   return (
     <form onSubmit={handleSubmit} className="space-y-12 fade-in">
@@ -122,7 +122,7 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '3.5rem' }}>
         <div className="space-y-10">
           <LanguageTabs active={activeLang} onChange={setActiveLang} />
-          
+
           <section className="admin-card" style={{ padding: '3rem', borderRadius: '32px' }}>
             <div style={{ marginBottom: '2.5rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '1.25rem' }}>
               <h3 style={{ margin: 0, fontSize: '1.35rem', fontWeight: 900, color: '#0f172a' }}>Información General</h3>
@@ -131,7 +131,7 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
             <div className="space-y-10">
               <div>
                 <label className="admin-label" style={{ marginBottom: '1rem', fontSize: '0.95rem' }}>TÍTULO DEL EVENTO ({activeLang.toUpperCase()})</label>
-                <input 
+                <input
                   className="admin-input"
                   style={{ fontSize: '1.5rem', fontWeight: 900, padding: '1.25rem', borderRadius: '16px' }}
                   value={titles[activeLang] || ''}
@@ -143,7 +143,7 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
 
               <div>
                 <label className="admin-label" style={{ marginBottom: '1rem', fontSize: '0.95rem' }}>DESCRIPCIÓN DETALLADA ({activeLang.toUpperCase()})</label>
-                <textarea 
+                <textarea
                   className="admin-input"
                   rows={4}
                   style={{ fontSize: '1.1rem', fontWeight: 600, padding: '1.25rem', borderRadius: '16px', lineHeight: 1.6, background: '#f8fafc' }}
@@ -156,7 +156,7 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginTop: '1.5rem' }}>
                 <div>
                   <label className="admin-label" style={{ marginBottom: '0.75rem', fontWeight: 800 }}>FECHA DE INICIO</label>
-                  <input 
+                  <input
                     type="date"
                     className="admin-input"
                     style={{ padding: '1rem', borderRadius: '14px', fontSize: '1rem', fontWeight: 700 }}
@@ -167,7 +167,7 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
                 </div>
                 <div>
                   <label className="admin-label" style={{ marginBottom: '0.75rem', fontWeight: 800 }}>FECHA DE FIN (OPCIONAL)</label>
-                  <input 
+                  <input
                     type="date"
                     className="admin-input"
                     style={{ padding: '1rem', borderRadius: '14px', fontSize: '1rem', fontWeight: 700 }}
@@ -187,16 +187,13 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
               <div>
                 <label className="admin-label" style={{ marginBottom: '0.75rem', fontWeight: 800 }}>CUATRIMESTRE / PERIODO</label>
-                <select 
+                <select
                   className="admin-input"
                   style={{ padding: '1rem', borderRadius: '14px', fontSize: '1rem', fontWeight: 700, appearance: 'none', background: '#fff url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2364748b\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'/%3E%3C/svg%3E") no-repeat right 1rem center / 1.5rem' }}
                   value={period}
                   onChange={e => setPeriod(e.target.value)}
                 >
                   <option value="Evento General">Evento General</option>
-                  <option value="1er Cuatrimestre">1er Cuatrimestre</option>
-                  <option value="2do Cuatrimestre">2do Cuatrimestre</option>
-                  <option value="Anual">Anual</option>
                   <option value="1er cuatrimestre de 1er año">1er cuatrimestre de 1er año</option>
                   <option value="2do cuatrimestre de 1er año">2do cuatrimestre de 1er año</option>
                   <option value="1er cuatrimestre de 2do año">1er cuatrimestre de 2do año</option>
@@ -205,7 +202,7 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
               </div>
               <div>
                 <label className="admin-label" style={{ marginBottom: '0.75rem', fontWeight: 800 }}>MATERIA ESPECÍFICA</label>
-                <select 
+                <select
                   className="admin-input"
                   style={{ padding: '1rem', borderRadius: '14px', fontSize: '1rem', fontWeight: 700, appearance: 'none', background: '#fff url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2364748b\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'/%3E%3C/svg%3E") no-repeat right 1rem center / 1.5rem' }}
                   value={subject}
@@ -229,13 +226,13 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
               <h4 style={{ margin: 0, fontSize: '0.9rem', fontWeight: 900, color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.05em' }}>CATEGORÍA</h4>
             </div>
 
-            <div className="space-y-3">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {categories.map(cat => (
-                <div 
+                <div
                   key={cat}
                   onClick={() => setCategory(cat)}
-                  style={{ 
-                    cursor: 'pointer', padding: '1.25rem', borderRadius: '16px', 
+                  style={{
+                    cursor: 'pointer', padding: '1.25rem', borderRadius: '16px',
                     background: category === cat ? '#f0fdf4' : '#fff',
                     border: `2px solid ${category === cat ? '#22c55e' : '#f1f5f9'}`,
                     display: 'flex', alignItems: 'center', transition: 'all 0.2s',

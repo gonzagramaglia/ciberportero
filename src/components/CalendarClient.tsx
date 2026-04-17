@@ -549,7 +549,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                   >
                     <option value="all">{ct.allTypes}</option>
                     <option value="exam">{ct.events.exam}</option>
-                    <option value="quiz_mandatory">{ct.events.quizMandatory}</option>
+                    <option value="quiz_mandatory">{ct.events.quiz_mandatory}</option>
                     <option value="enrollment">{ct.events.enrollment}</option>
                     <option value="classes">{ct.events.classes}</option>
                     <option value="event">{ct.events.event}</option>
@@ -584,7 +584,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
           <div className="calendar-legend" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
               <div style={{ display: 'flex', gap: '1.2rem', flexWrap: 'wrap' }}>
                 <div className="legend-item"><div className="legend-dot exam"></div> <span>{ct.events.exam}</span></div>
-                <div className="legend-item"><div className="legend-dot quiz_mandatory"></div> <span>{ct.events.quizMandatory}</span></div>
+                <div className="legend-item"><div className="legend-dot quiz_mandatory"></div> <span>{ct.events.quiz_mandatory}</span></div>
                 <div className="legend-item"><div className="legend-dot enrollment"></div> <span>{ct.events.enrollment}</span></div>
                 <div className="legend-item"><div className="legend-dot classes"></div> <span>{ct.events.classes}</span></div>
                 <div className="legend-item"><div className="legend-dot event"></div> <span>{ct.events.event}</span></div>
@@ -943,7 +943,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                             >
                               <option value="all">{ct.allTypes}</option>
                               <option value="exam">{ct.events.exam}</option>
-                              <option value="quiz_mandatory">{ct.events.quizMandatory}</option>
+                              <option value="quiz_mandatory">{ct.events.quiz_mandatory}</option>
                               <option value="enrollment">{ct.events.enrollment}</option>
                               <option value="classes">{ct.events.classes}</option>
                             </select>
@@ -1214,7 +1214,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                     style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
                   >
                     <option value="exam">{ct.events.exam}</option>
-                    <option value="quiz_mandatory">{ct.events.quizMandatory}</option>
+                    <option value="quiz_mandatory">{ct.events.quiz_mandatory}</option>
                     <option value="enrollment">{ct.events.enrollment}</option>
                     <option value="classes">{ct.events.classes}</option>
                     <option value="event">{ct.events.event}</option>
