@@ -6,7 +6,6 @@ import { Save, X } from 'lucide-react';
 import { upsertCalendarEvent } from '@/lib/actions';
 import { curriculum } from '@/data/curriculum';
 import { translations } from '@/lib/translations';
-import LanguageTabs from './LanguageTabs';
 
 interface CalendarEditorProps {
   event?: any;
@@ -15,7 +14,6 @@ interface CalendarEditorProps {
 export default function CalendarEditor({ event }: CalendarEditorProps) {
   const router = useRouter();
   const [isPending, setIsPending] = useState(false);
-  const [activeLang, setActiveLang] = useState<'es' | 'en' | 'pt'>('es');
 
   // Form state
   const [titles, setTitles] = useState<any>(event?.title || { es: '', en: '', pt: '' });
@@ -127,37 +125,31 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
 
       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '3.5rem' }}>
         <div className="space-y-10">
-          <LanguageTabs active={activeLang} onChange={setActiveLang} />
-
           <section className="admin-card" style={{ padding: '3rem', borderRadius: '32px' }}>
             <div style={{ marginBottom: '2.5rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '1.25rem' }}>
               <h3 style={{ margin: 0, fontSize: '1.35rem', fontWeight: 900, color: '#0f172a' }}>Información General</h3>
             </div>
 
             <div className="space-y-10">
-              <div>
-                <label className="admin-label" style={{ marginBottom: '1rem', fontSize: '0.95rem' }}>TÍTULO DEL EVENTO ({activeLang.toUpperCase()})</label>
+                <label className="admin-label" style={{ marginBottom: '1rem', fontSize: '0.95rem' }}>TÍTULO DEL EVENTO</label>
                 <input
                   className="admin-input"
                   style={{ fontSize: '1.5rem', fontWeight: 900, padding: '1.25rem', borderRadius: '16px' }}
-                  value={titles[activeLang] || ''}
-                  onChange={e => setTitles({ ...titles, [activeLang]: e.target.value })}
+                  value={titles.es || ''}
+                  onChange={e => setTitles({ ...titles, es: e.target.value })}
                   placeholder="Ej: Final de Álgebra"
-                  required={activeLang === 'es'}
+                  required
                 />
-              </div>
 
-              <div>
-                <label className="admin-label" style={{ marginBottom: '1rem', fontSize: '0.95rem' }}>DESCRIPCIÓN DETALLADA ({activeLang.toUpperCase()})</label>
+                <label className="admin-label" style={{ marginBottom: '1rem', fontSize: '0.95rem' }}>DESCRIPCIÓN DETALLADA</label>
                 <textarea
                   className="admin-input"
                   rows={4}
                   style={{ fontSize: '1.1rem', fontWeight: 600, padding: '1.25rem', borderRadius: '16px', lineHeight: 1.6, background: '#f8fafc' }}
-                  value={descriptions[activeLang] || ''}
-                  onChange={e => setDescriptions({ ...descriptions, [activeLang]: e.target.value })}
+                  value={descriptions.es || ''}
+                  onChange={e => setDescriptions({ ...descriptions, es: e.target.value })}
                   placeholder="Instrucciones o detalles adicionales..."
                 />
-              </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginTop: '1.5rem' }}>
                 <div>
@@ -217,7 +209,7 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
                   <option value="all">Todas las materias / Evento General</option>
                   {availableSubjects.map(sub => (
                     <option key={sub.id} value={sub.id.toString()}>
-                      [{sub.id.toString().padStart(2, '0')}] {(translations[activeLang] as any).plan.subjectNames[sub.id]}
+                      [{sub.id.toString().padStart(2, '0')}] {translations.es.plan.subjectNames[sub.id]}
                     </option>
                   ))}
                 </select>

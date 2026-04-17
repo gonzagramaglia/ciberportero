@@ -158,7 +158,11 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
   };
 
   const getGoogleCalendarUrl = (event: AcademicEvent) => {
-    const title = encodeURIComponent(event.title['es'] || '');
+    let titleText = event.title['es'] || '';
+    if (event.subjectId && event.subjectId !== 'all') {
+      titleText += ` (${(st as any)[event.subjectId]})`;
+    }
+    const title = encodeURIComponent(titleText);
     const details = encodeURIComponent(event.desc['es'] || '');
     
     // Format: YYYYMMDD
@@ -246,7 +250,11 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
         end = d.toISOString().split('T')[0].replace(/-/g, '');
       }
       
-      const title = event.title['es'] || '';
+      let titleText = event.title['es'] || '';
+      if (event.subjectId && event.subjectId !== 'all') {
+        titleText += ` (${(st as any)[event.subjectId]})`;
+      }
+      const title = titleText;
       const description = (event.desc['es'] || '').replace(/\n/g, '\\n');
       
       icsContent += "BEGIN:VEVENT\n";
@@ -692,7 +700,10 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                            [{event.subjectId.padStart(2, '0')}] {(st as any)[event.subjectId]}
                         </div>
                       )}
-                      <h4 style={{ margin: 0 }}>{event.title['es']}</h4>
+                      <h4 style={{ margin: 0 }}>
+                        {event.title['es']}
+                        {event.subjectId && event.subjectId !== 'all' && ` (${(st as any)[event.subjectId]})`}
+                      </h4>
                       <p>{event.desc['es']}</p>
                       
                         {(() => {
@@ -766,7 +777,10 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                             <span className="upcoming-month">{ct.months[d.getMonth()].slice(0, 3)}</span>
                         </div>
                         <div className="upcoming-info">
-                            <h4>{event.title['es']}</h4>
+                            <h4>
+                              {event.title['es']}
+                              {event.subjectId && event.subjectId !== 'all' && ` (${(st as any)[event.subjectId]})`}
+                            </h4>
                             <span className={`upcoming-tag tag-${event.type}`}>
                                 {ct.events[event.type as keyof typeof ct.events] || event.type}
                                 {event.userId && ` (${lang === 'es' ? 'personal' : lang === 'pt' ? 'pessoal' : 'personal'})`}
