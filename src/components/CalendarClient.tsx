@@ -109,8 +109,8 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
 
   const filteredEvents = useMemo(() => {
     return allEvents.filter(event => {
-      const title = event.title[lang] || event.title['es'] || '';
-      const desc = event.desc[lang] || event.desc['es'] || '';
+      const title = event.title['es'] || '';
+      const desc = event.desc['es'] || '';
       const matchesSearch = title.toLowerCase().includes(searchTerm.toLowerCase()) || 
                             desc.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesSubject = subjectFilter === 'all' || event.subjectId === subjectFilter;
@@ -128,8 +128,8 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
   };
 
   const getGoogleCalendarUrl = (event: AcademicEvent) => {
-    const title = encodeURIComponent(event.title[lang] || event.title['es'] || '');
-    const details = encodeURIComponent(event.desc[lang] || event.desc['es'] || '');
+    const title = encodeURIComponent(event.title['es'] || '');
+    const details = encodeURIComponent(event.desc['es'] || '');
     
     // Format: YYYYMMDD
     const start = event.startDate.replace(/-/g, '');
@@ -216,8 +216,8 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
         end = d.toISOString().split('T')[0].replace(/-/g, '');
       }
       
-      const title = event.title[lang] || event.title['es'] || '';
-      const description = (event.desc[lang] || event.desc['es'] || '').replace(/\n/g, '\\n');
+      const title = event.title['es'] || '';
+      const description = (event.desc['es'] || '').replace(/\n/g, '\\n');
       
       icsContent += "BEGIN:VEVENT\n";
       icsContent += `SUMMARY:${title}\n`;
@@ -296,7 +296,7 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
           {hasEvent && (
               <div className="day-event-preview">
                   <span className="preview-dot"></span>
-                  <span className="preview-text">{dayEvents[0].title[lang] || dayEvents[0].title['es']}</span>
+                  <span className="preview-text">{dayEvents[0].title['es']}</span>
               </div>
           )}
         </div>
@@ -649,8 +649,8 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
                            [{event.subjectId.padStart(2, '0')}] {(st as any)[event.subjectId]}
                         </div>
                       )}
-                      <h4 style={{ margin: 0 }}>{event.title[lang] || event.title['es']}</h4>
-                      <p>{event.desc[lang] || event.desc['es']}</p>
+                      <h4 style={{ margin: 0 }}>{event.title['es']}</h4>
+                      <p>{event.desc['es']}</p>
                       
                         {(() => {
                           const style = getTypeStyle(event.type);
@@ -723,7 +723,7 @@ export default function CalendarClient({ initialEvents, lang: langProp }: Calend
                             <span className="upcoming-month">{ct.months[d.getMonth()].slice(0, 3)}</span>
                         </div>
                         <div className="upcoming-info">
-                            <h4>{event.title[lang] || event.title['es']}</h4>
+                            <h4>{event.title['es']}</h4>
                             <span className={`upcoming-tag tag-${event.type}`}>
                                 {ct.events[event.type as keyof typeof ct.events] || event.type}
                                 {event.userId && ` (${lang === 'es' ? 'personal' : lang === 'pt' ? 'pessoal' : 'personal'})`}
