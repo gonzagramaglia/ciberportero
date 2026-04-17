@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { translations, Locale } from "@/lib/translations"
 import LanguageSwitcher from "@/components/LanguageSwitcher"
 import { useLanguage } from "@/context/LanguageContext"
@@ -113,6 +114,23 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
       }
     }
   }, [initialDate]);
+
+  useEffect(() => {
+    if (selectedDate) {
+      const day = selectedDate.getDate().toString().padStart(2, '0');
+      const month = (selectedDate.getMonth() + 1).toString().padStart(2, '0');
+      const year = selectedDate.getFullYear().toString();
+      const currentYear = new Date().getFullYear().toString();
+      
+      const newPath = year === currentYear 
+        ? `/calendar/${day}/${month}` 
+        : `/calendar/${day}/${month}/${year}`;
+      
+      if (window.location.pathname !== newPath) {
+        window.history.replaceState(null, '', newPath);
+      }
+    }
+  }, [selectedDate]);
 
   const handleSaveEvent = async () => {
     if (!newEvent.title || !newEvent.startDate) return;
