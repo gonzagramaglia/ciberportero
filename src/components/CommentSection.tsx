@@ -104,36 +104,71 @@ function ReplyForm({ onSubmit, onCancel, lang, userImage, userName }: {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', marginTop: '0.8rem' }}>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '0.8rem', alignItems: 'flex-start' }}>
-        <Avatar src={userImage} name={userName} size={32} />
-        <div style={{ flex: 1, background: '#f8f9fa', borderRadius: '16px', border: '1px solid #e5e7eb', display: 'flex', flexWrap: 'wrap', gap: '0.5rem', padding: '0.5rem 0.8rem', transition: 'all 0.2s' }} className="reply-input-wrapper">
-          <textarea
-            autoFocus
-            value={text}
-            onChange={e => setText(e.target.value)}
-            placeholder={lang === 'es' ? 'Escribe tu respuesta...' : lang === 'pt' ? 'Escreva sua respuesta...' : 'Write your reply...'}
-            style={{ flex: 1, border: 'none', background: 'transparent', outline: 'none', fontSize: '0.95rem', resize: 'none', minHeight: '40px', fontFamily: 'inherit', lineHeight: 1.5, width: '100%' }}
-          />
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'flex-end', marginLeft: 'auto' }}>
-            <label style={{ cursor: selectedImages.length >= 2 ? 'not-allowed' : 'pointer', color: selectedImages.length >= 2 ? '#eee' : '#999', display: 'flex', padding: '0.3rem' }}>
-              <ImageIcon size={18} />
-              <input type="file" hidden multiple accept="image/*" onChange={handleImageChange} disabled={selectedImages.length >= 2 || submitting} />
-            </label>
-            <button type="submit" disabled={submitting || isUploading || (!text.trim() && selectedImages.length === 0)} style={{ background: (text.trim() || selectedImages.length > 0) ? '#000' : '#e5e7eb', color: '#fff', width: '34px', height: '34px', borderRadius: '10px', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s' }}>
-              {submitting || isUploading ? <Loader2 size={14} className="spin" /> : <Send size={14} />}
+    <div className="input-wrapper-outer" style={{ width: '100%', marginTop: '1rem', transform: 'scale(0.98)', transformOrigin: 'top left' }}>
+      <form onSubmit={handleSubmit} className="input-wrapper">
+        <div className="avatar-wrapper">
+          <Avatar src={userImage} name={userName} size={32} />
+        </div>
+        <textarea
+          autoFocus
+          value={text}
+          onChange={e => setText(e.target.value)}
+          placeholder={lang === 'es' ? 'Escribe tu respuesta...' : lang === 'pt' ? 'Escreva sua respuesta...' : 'Write your reply...'}
+          className="comment-textarea"
+          style={{ minHeight: '80px', fontSize: '0.95rem' }}
+        />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', padding: '0.5rem 0.3rem', width: '100%', borderTop: '1px solid rgba(0,0,0,0.03)', marginTop: '0.5rem' }}>
+          <label style={{ 
+            cursor: (selectedImages.length >= 2 || submitting) ? 'not-allowed' : 'pointer', 
+            color: (selectedImages.length >= 2 || submitting) ? '#eee' : '#94a3b8',
+            display: 'flex',
+            padding: '0.5rem',
+            background: '#fff',
+            borderRadius: '10px',
+            border: '1px solid #f1f5f9'
+          }} title={selectedImages.length >= 2 ? 'Máximo 2 imágenes' : 'Adjuntar imágenes'}>
+            <ImageIcon size={18} />
+            <input type="file" hidden multiple accept="image/*" onChange={handleImageChange} disabled={selectedImages.length >= 2 || submitting} />
+          </label>
+          
+          <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.5rem' }}>
+            <button 
+              type="button" 
+              onClick={onCancel}
+              style={{ background: 'none', border: 'none', color: '#999', fontSize: '0.85rem', fontWeight: '600', cursor: 'pointer', padding: '0 1rem' }}
+            >
+              {lang === 'es' ? 'Cancelar' : 'Cancel'}
+            </button>
+            <button 
+              disabled={submitting || isUploading || (!text.trim() && selectedImages.length === 0)} 
+              type="submit" 
+              className="submit-comment-btn"
+              style={{ padding: '0.5rem 1.2rem' }}
+            >
+              {submitting || isUploading ? (
+                <Loader2 size={16} className="spin" />
+              ) : (
+                <>
+                  <span style={{ fontSize: '0.85rem' }}>{lang === 'es' ? 'Responder' : 'Reply'}</span>
+                  <Send size={16} />
+                </>
+              )}
             </button>
           </div>
         </div>
       </form>
       
       {selectedImages.length > 0 && (
-        <div style={{ display: 'flex', gap: '0.6rem', marginTop: '0.6rem', marginLeft: '3rem' }}>
+        <div className="comment-previews" style={{ display: 'flex', gap: '0.6rem', marginTop: '1rem', paddingLeft: '2.5rem' }}>
           {selectedImages.map((file, i) => (
-            <div key={i} style={{ position: 'relative', width: '60px', height: '60px', borderRadius: '10px', overflow: 'hidden', border: '1px solid #e5e7eb' }}>
-              <img src={URL.createObjectURL(file)} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              <button onClick={() => removeImage(i)} style={{ position: 'absolute', top: '2px', right: '2px', background: 'rgba(0,0,0,0.5)', color: '#fff', border: 'none', borderRadius: '50%', width: '14px', height: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-                <X size={8} />
+            <div key={i} style={{ position: 'relative', width: '60px', height: '60px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #f0f0f0' }}>
+              <img src={URL.createObjectURL(file)} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Preview" />
+              <button 
+                type="button"
+                onClick={() => removeImage(i)} 
+                style={{ position: 'absolute', top: '2px', right: '2px', background: 'rgba(0,0,0,0.6)', color: '#fff', border: 'none', borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+              >
+                <X size={10} />
               </button>
             </div>
           ))}
