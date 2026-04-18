@@ -182,7 +182,17 @@ function CommentCard({ comment, depth, lang, session, postSlug, onRefresh, onIma
           </span>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#bbb' }}>
             <span style={{ fontSize: '0.7rem', fontWeight: '600', textTransform: 'capitalize' }}>
-              {new Date(comment.createdAt).toLocaleDateString((translations[lang as keyof typeof translations] as any).comments.dateLocale, { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}
+              {(() => {
+                const date = new Date(comment.createdAt);
+                const dayName = date.toLocaleDateString(lang, { weekday: 'long' });
+                const dayNumber = date.getDate();
+                const monthName = date.toLocaleDateString(lang, { month: 'long' });
+                const time = date.toLocaleTimeString(lang, { hour: '2-digit', minute: '2-digit', hour12: true });
+                
+                if (lang === 'es') return `El ${dayName} ${dayNumber} de ${monthName} a las ${time}`;
+                if (lang === 'pt') return `No ${dayName}, ${dayNumber} de ${monthName} às ${time}`;
+                return `On ${dayName}, ${monthName} ${dayNumber} at ${time}`;
+              })()}
             </span>
           </div>
           {session?.user?.id === comment.userId && (
@@ -602,7 +612,7 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
 
           @media (min-width: 768px) {
             .comment-images-grid {
-              grid-template-columns: repeat(2, 1fr);
+              grid-template-columns: repeat(3, 1fr);
             }
           }
 

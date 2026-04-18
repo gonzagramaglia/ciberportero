@@ -1,6 +1,4 @@
-'use client';
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
@@ -167,22 +165,9 @@ export default function Post() {
                                 setActiveHash(id);
                                 setIsHighlighting(true);
                                 
-                                const elementsToHighlight: HTMLElement[] = [element];
-                                let next = element.nextElementSibling;
-                                while (next && !['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(next.tagName)) {
-                                    elementsToHighlight.push(next as HTMLElement);
-                                    next = next.nextElementSibling;
-                                }
-
-                                // Apply class to siblings (Header will be handled by state)
-                                elementsToHighlight.forEach(el => el.classList.add('section-focus'));
-                                
                                 setTimeout(() => {
                                     setIsHighlighting(false);
                                     setActiveHash(null);
-                                    setTimeout(() => {
-                                        elementsToHighlight.forEach(el => el.classList.remove('section-focus'));
-                                    }, 600); 
                                 }, 1200);
                             }
                         }
@@ -199,6 +184,27 @@ export default function Post() {
             return () => window.removeEventListener('hashchange', handleHash);
         }
     }, [loading, post]);
+
+    useLayoutEffect(() => {
+        if (isHighlighting && activeHash) {
+            const element = document.getElementById(activeHash);
+            if (element) {
+                const elements: HTMLElement[] = [];
+                let next = element.nextElementSibling;
+                while (next && !['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(next.tagName)) {
+                    elements.push(next as HTMLElement);
+                    next = next.nextElementSibling;
+                }
+                
+                elements.forEach(el => el.classList.add('section-focus'));
+                
+                return () => {
+                    // This cleanup might run when isHighlighting becomes false or hash changes
+                    elements.forEach(el => el.classList.remove('section-focus'));
+                };
+            }
+        }
+    }, [isHighlighting, activeHash]);
 
     if (loading) return <div className="container fade-in"></div>;
     if (!post) return notFound();
@@ -458,10 +464,10 @@ export default function Post() {
 
                 :global(.section-focus) {
                     position: relative;
-                    z-index: 100;
+                    z-index: 100 !important;
                     opacity: 1 !important;
                     filter: none !important;
-                    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
                     transform: scale(1.01) translateX(10px);
                     background: white;
                     padding: 0.5rem 1rem;
@@ -476,48 +482,50 @@ export default function Post() {
 
                 .subject-navigator {
                     position: fixed;
-                    left: 2rem;
+                    left: 4.5rem;
                     bottom: 3.5rem;
                     display: flex;
                     flex-direction: column;
-                    gap: 0.8rem;
-                    z-index: 100;
-                    pointer-events: none; /* Container doesn't block */
+                    gap: 1rem;
+                    z-index: 999;
+                    pointer-events: none;
                 }
 
                 .subject-nav-item {
-                    pointer-events: auto; /* Buttons do block */
-                    width: 56px;
-                    height: 56px;
+                    pointer-events: auto;
+                    width: 62px;
+                    height: 62px;
                     border-radius: 50%;
-                    background: rgba(255, 255, 255, 0.9);
-                    backdrop-filter: blur(10px);
-                    border: 1px solid var(--border);
+                    background: #ffffff;
+                    border: 1px solid #e2e8f0;
                     color: #1e293b;
                     display: flex;
                     align-items: center;
                     justify-content: center;
                     cursor: pointer;
-                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-                    font-size: 1.1rem;
+                    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+                    font-size: 1.3rem;
                     font-weight: 900;
                     text-decoration: none !important;
                 }
 
-                .subject-nav-item:hover {
-                    background: white;
-                    color: var(--accent);
-                    border-color: var(--accent);
-                    transform: translateY(-4px) scale(1.1);
-                    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+                .subject-nav-item:not(.active):hover {
+                    background: #facc15; /* Amarillo vibrante */
+                    color: #000;
+                    transform: translateY(-5px) scale(1.1);
+                    box-shadow: 0 15px 30px rgba(250, 204, 21, 0.3);
+                    border-color: #facc15;
                 }
 
                 .subject-nav-item.active {
-                    background: var(--accent);
-                    color: white;
-                    border-color: var(--accent);
-                    box-shadow: 0 8px 25px rgba(0, 112, 243, 0.35);
+                    background: #f1f5f9;
+                    color: #cbd5e1;
+                    border-color: #e2e8f0;
+                    cursor: default;
+                    pointer-events: none;
+                    box-shadow: none;
+                    opacity: 0.8;
                 }
 
                 @media (max-width: 1024px) {
