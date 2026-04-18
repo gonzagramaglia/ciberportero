@@ -164,6 +164,7 @@ model Comment {
   postId    String
   userId    String
   parentId  String?
+  images    Json?    @default("[]")
   parent    Comment? @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
   replies   Comment[] @relation("CommentReplies")
   createdAt DateTime @default(now())

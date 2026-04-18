@@ -115,8 +115,16 @@ export default function UsersList({ initialUsers }: UsersListProps) {
                         </div>
                         <div style={{ textAlign: 'center' }} title="Progreso del Plan">
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#64748b', fontSize: '0.9rem', fontWeight: 800 }}>
-                            <CheckCircle size={14} style={{ color: 'var(--success)' }} />
-                            {Math.round(((user.examProgress?.length || 0) / 37) * 100)}%
+                            {(() => {
+                              const completedCount = user.examProgress?.filter((p: any) => p.completed).length || 0;
+                              const hasInProgress = user.examProgress?.some((p: any) => !p.completed);
+                              return (
+                                <>
+                                  <CheckCircle size={14} style={{ color: hasInProgress ? '#eab308' : 'var(--success)' }} />
+                                  {Math.round((completedCount / 37) * 100)}%
+                                </>
+                              );
+                            })()}
                           </div>
                         </div>
                       </div>

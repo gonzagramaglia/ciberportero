@@ -27,6 +27,7 @@ export default function Post() {
     const [showBottom, setShowBottom] = useState(true);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [copied, setCopied] = useState(false);
+    const [isHighlighting, setIsHighlighting] = useState(false);
     const { data: session } = useSession();
     const t = translations[lang];
 
@@ -150,19 +151,46 @@ export default function Post() {
 
     useEffect(() => {
         if (!loading && post) {
-            const hash = window.location.hash;
-            if (hash) {
-                // Decode URI component to handle special characters correctly
-                const id = decodeURIComponent(hash.substring(1));
-                // Delay to ensure the DOM is fully rendered and browser has finished its initial layout
-                const timer = setTimeout(() => {
-                    const element = document.getElementById(id);
-                    if (element) {
-                        element.scrollIntoView({ behavior: 'smooth' });
-                    }
-                }, 300);
-                return () => clearTimeout(timer);
-            }
+            const handleHash = () => {
+                const hash = window.location.hash;
+                if (hash) {
+                    const id = decodeURIComponent(hash.substring(1));
+                    const timer = setTimeout(() => {
+                        const element = document.getElementById(id);
+                        if (element) {
+                            element.scrollIntoView({ behavior: 'smooth' });
+                            
+                            // Highlight effect for large screens
+                            if (window.innerWidth >= 1024) {
+                                const elementsToHighlight: HTMLElement[] = [element];
+                                let next = element.nextElementSibling;
+                                while (next && !['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(next.tagName)) {
+                                    elementsToHighlight.push(next as HTMLElement);
+                                    next = next.nextElementSibling;
+                                }
+
+                                setIsHighlighting(true);
+                                elementsToHighlight.forEach(el => el.classList.add('section-focus'));
+                                
+                                setTimeout(() => {
+                                    setIsHighlighting(false);
+                                    setTimeout(() => {
+                                        elementsToHighlight.forEach(el => el.classList.remove('section-focus'));
+                                    }, 600); // Wait for fade out transition
+                                }, 1200);
+                            }
+                        }
+                    }, 300);
+                    return () => clearTimeout(timer);
+                }
+            };
+
+            // Run on initial load
+            handleHash();
+
+            // Listen for hash changes
+            window.addEventListener('hashchange', handleHash);
+            return () => window.removeEventListener('hashchange', handleHash);
         }
     }, [loading, post]);
 
@@ -229,7 +257,7 @@ export default function Post() {
                 </div>
 
                 <div className="post-body-layout">
-                    <article className="post-content">
+                    <article className={`post-content ${isHighlighting ? 'highlight-active' : ''}`}>
                         <div className="mobile-only-countdown">
                             <CountdownWidget countdowns={post?.countdowns} isInline />
                         </div>
@@ -378,6 +406,27 @@ export default function Post() {
                     <ArrowDown size={20} />
                 </button>
             </div>
+            <style jsx>{`
+                .post-content.highlight-active > :global(*:not(.section-focus)) {
+                    opacity: 0.15 !important;
+                    filter: blur(1px) grayscale(0.6);
+                    transition: all 0.5s ease;
+                    pointer-events: none;
+                }
+
+                :global(.section-focus) {
+                    position: relative;
+                    z-index: 50;
+                    opacity: 1 !important;
+                    filter: none !important;
+                    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+                    transform: translateX(8px);
+                }
+
+                .post-content {
+                    transition: all 0.5s ease;
+                }
+            `}</style>
         </>
     );
 }

@@ -436,7 +436,7 @@ export async function getComments(postSlug: string) {
   return post?.comments || [];
 }
 
-export async function addComment(postSlug: string, content: string, parentId?: string) {
+export async function addComment(postSlug: string, content: string, parentId?: string, images: string[] = []) {
   const session = await auth();
   if (!session?.user?.id) return { error: "Not authenticated" };
 
@@ -459,6 +459,7 @@ export async function addComment(postSlug: string, content: string, parentId?: s
       content,
       postId: post.id,
       userId: session.user.id,
+      images,
       ...(parentId ? { parentId } : {})
     }
   });
@@ -621,8 +622,7 @@ export async function getUsers() {
           }
         },
         examProgress: {
-          where: { completed: true },
-          select: { id: true }
+          select: { id: true, completed: true }
         }
       }
     });
