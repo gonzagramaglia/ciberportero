@@ -135,7 +135,7 @@ function ReplyForm({ onSubmit, onCancel, lang, userImage, userName }: {
               <button 
                 disabled={submitting || isUploading || (!text.trim() && selectedImages.length === 0)} 
                 type="submit" 
-                className="submit-comment-btn"
+                className={`submit-comment-btn ${(text.trim() || selectedImages.length > 0) ? 'ready' : ''}`}
               >
                 {submitting || isUploading ? (
                   <Loader2 size={18} className="spin" />
@@ -401,7 +401,7 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
                 <button 
                   disabled={isSubmitting || isUploading || (!newComment.trim() && selectedImages.length === 0)} 
                   type="submit" 
-                  className="submit-comment-btn"
+                  className={`submit-comment-btn ${(newComment.trim() || selectedImages.length > 0) ? 'ready' : ''}`}
                   style={{ marginLeft: 'auto' }}
                 >
                   {isSubmitting || isUploading ? (
@@ -579,11 +579,21 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
 
         .submit-comment-btn:hover:not(:disabled) {
           transform: translateY(-3px);
-          box-shadow: 0 8px 20px rgba(250, 204, 21, 0.4);
-          background: #facc15;
-          color: #000;
-          border-color: #facc15;
+          box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+          background: #e2e8f0;
+          color: #1e293b;
           opacity: 1;
+        }
+
+        .submit-comment-btn.ready {
+          background: #000;
+          color: #fff;
+          opacity: 1;
+        }
+
+        .submit-comment-btn.ready:hover {
+          background: #333;
+          box-shadow: 0 8px 25px rgba(0,0,0,0.2);
         }
  transformation: all 0.3s;
 
@@ -651,9 +661,10 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
         }
 
         .avatar-wrapper {
-          padding: 0.5rem;
+          padding: 0.6rem;
           display: flex;
           align-items: center;
+          gap: 0.9rem;
         }
 
         .user-name-mobile {

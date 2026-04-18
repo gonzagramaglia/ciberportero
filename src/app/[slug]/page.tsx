@@ -169,7 +169,7 @@ export default function Post() {
                                 
                                 setTimeout(() => {
                                     setIsHighlighting(false);
-                                }, 1200);
+                                }, 800);
                             }
                         }
                     }, 350);
@@ -199,7 +199,11 @@ export default function Post() {
             if (element) {
                 const elements: HTMLElement[] = [];
                 let next = element.nextElementSibling;
-                while (next && !['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(next.tagName)) {
+                while (next && 
+                       !['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(next.tagName) && 
+                       next.tagName !== 'FOOTER' && 
+                       !next.classList.contains('footer-main') &&
+                       !next.classList.contains('copy-container')) {
                     elements.push(next as HTMLElement);
                     next = next.nextElementSibling;
                 }
@@ -444,23 +448,6 @@ export default function Post() {
                             key={s.id} 
                             href={`/${s.slug}`} 
                             className={`subject-nav-item ${slug === s.slug ? 'active' : ''}`}
-                            style={{
-                                width: '62px',
-                                height: '62px',
-                                borderRadius: '50%',
-                                background: slug === s.slug ? '#f1f5f9' : '#ffffff',
-                                border: '1px solid #e2e8f0',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                boxShadow: slug === s.slug ? 'none' : '0 10px 25px rgba(0, 0, 0, 0.1)',
-                                color: slug === s.slug ? '#cbd5e1' : '#1e293b',
-                                fontWeight: '900',
-                                fontSize: '1.3rem',
-                                textDecoration: 'none',
-                                pointerEvents: slug === s.slug ? 'none' : 'auto',
-                                opacity: '0.8'
-                            }}
                         >
                             {s.id}
                         </Link>
@@ -474,25 +461,6 @@ export default function Post() {
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="hoy-today-link"
-                style={{
-                    position: 'fixed',
-                    right: '4.5rem',
-                    bottom: '3.5rem',
-                    width: '62px',
-                    height: '62px',
-                    borderRadius: '50%',
-                    background: '#ffffff',
-                    border: '1px solid #e2e8f0',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
-                    color: '#1e293b',
-                    zIndex: 1000,
-                    transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                    textDecoration: 'none',
-                    opacity: '0.8'
-                }}
             >
                 <ClipboardClock size={28} />
             </a>
@@ -555,7 +523,28 @@ export default function Post() {
                 }
 
                 .subject-nav-item {
+                    width: 62px;
+                    height: 62px;
+                    border-radius: 50%;
+                    background: #ffffff;
+                    border: 1px solid #e2e8f0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+                    color: #1e293b;
+                    font-weight: 900;
+                    font-size: 1.3rem;
+                    text-decoration: none;
+                    opacity: 0.8;
                     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                }
+
+                .subject-nav-item.active {
+                    background: #f1f5f9;
+                    box-shadow: none;
+                    color: #cbd5e1;
+                    pointer-events: none;
                 }
 
                 .subject-nav-item:not(.active):hover {
@@ -567,22 +556,24 @@ export default function Post() {
                     opacity: 1 !important;
                 }
 
-                @media (max-width: 1024px) {
-                    .subject-navigator {
-                        display: none;
-                    }
-                }
-
-                @media (min-width: 1025px) {
-                    .fab-container {
-                        display: none !important;
-                    }
-                }
-
-                @media (max-width: 1024px) {
-                    .hoy-today-link {
-                        display: none !important;
-                    }
+                .hoy-today-link {
+                    position: fixed;
+                    right: 4.5rem;
+                    bottom: 3.5rem;
+                    width: 62px;
+                    height: 62px;
+                    border-radius: 50%;
+                    background: #ffffff;
+                    border: 1px solid #e2e8f0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+                    color: #1e293b;
+                    z-index: 1000;
+                    opacity: 0.8;
+                    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    text-decoration: none;
                 }
 
                 .hoy-today-link:hover {
@@ -592,6 +583,18 @@ export default function Post() {
                     box-shadow: 0 15px 30px rgba(250, 204, 21, 0.3) !important;
                     border-color: #facc15 !important;
                     opacity: 1 !important;
+                }
+
+                @media (max-width: 1024px) {
+                    .subject-navigator, .hoy-today-link {
+                        display: none !important;
+                    }
+                }
+
+                @media (min-width: 1025px) {
+                    .fab-container {
+                        display: none !important;
+                    }
                 }
                 .hoy-today-link:hover :global(svg) {
                     opacity: 1 !important;
