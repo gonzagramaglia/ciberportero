@@ -329,6 +329,9 @@ export default function Post() {
                                             <a href={`#${header.id}`}>{header.text}</a>
                                         </li>
                                     ))}
+                                    <li className="toc-level-2">
+                                        <a href="#comments">💬 {lang === 'es' ? 'Comentarios' : lang === 'pt' ? 'Comentários' : 'Comments'}</a>
+                                    </li>
                                 </ul>
                             </nav>
                         )}
@@ -377,6 +380,11 @@ export default function Post() {
                                             <a href={`#${header.id}`}>{header.text}</a>
                                         </li>
                                     ))}
+                                    <li className="toc-level-2" style={{ marginTop: '0.5rem', borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '0.5rem' }}>
+                                        <a href="#comments" style={{ fontWeight: '700', color: '#64748b' }}>
+                                            💬 {lang === 'es' ? 'Comentarios' : lang === 'pt' ? 'Comentários' : 'Comments'}
+                                        </a>
+                                    </li>
                                 </ul>
                             </nav>
                         </aside>
@@ -536,7 +544,14 @@ export default function Post() {
                     flex-direction: column;
                     gap: 1rem;
                     z-index: 1000;
-                    pointer-events: none;
+                }
+
+                /* Focus effect: dim others when hovering one */
+                .subject-navigator:hover .subject-nav-item {
+                    opacity: 0.3 !important;
+                }
+                .subject-navigator .subject-nav-item:hover {
+                    opacity: 1 !important;
                 }
 
                 .subject-nav-item {
@@ -546,7 +561,7 @@ export default function Post() {
                 .subject-nav-item:not(.active):hover {
                     background: #facc15 !important;
                     color: #000 !important;
-                    transform: translateY(-5px) scale(1.1);
+                    transform: translateY(-5px);
                     box-shadow: 0 15px 30px rgba(250, 204, 21, 0.3) !important;
                     border-color: #facc15 !important;
                     opacity: 1 !important;
@@ -573,7 +588,7 @@ export default function Post() {
                 .hoy-today-link:hover {
                     background: #facc15 !important;
                     color: #000 !important;
-                    transform: translateY(-5px) scale(1.1);
+                    transform: translateY(-5px);
                     box-shadow: 0 15px 30px rgba(250, 204, 21, 0.3) !important;
                     border-color: #facc15 !important;
                     opacity: 1 !important;

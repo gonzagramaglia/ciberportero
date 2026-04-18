@@ -370,7 +370,7 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
   }
 
   return (
-    <section className="comments-container">
+    <section id="comments" className="comments-container">
       <div className="comments-header">
         <MessageSquare size={28} className="header-icon" />
         <h2 className="header-title">
@@ -578,7 +578,7 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
         }
 
         .submit-comment-btn:hover:not(:disabled) {
-          transform: translateY(-3px) scale(1.02);
+          transform: translateY(-3px);
           box-shadow: 0 8px 20px rgba(250, 204, 21, 0.4);
           background: #facc15;
           color: #000;
@@ -657,11 +657,14 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
         }
 
         .user-name-mobile {
-          display: none;
+          font-weight: 800;
+          font-size: 1rem;
+          color: #1e293b;
         }
 
         .btn-text-mobile {
-          display: none;
+          font-weight: 800;
+          font-size: 0.95rem;
         }
 
         .spin { animation: spin 1s linear infinite; }
@@ -690,12 +693,9 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
             gap: 0.8rem;
             margin-bottom: 0.5rem;
           }
-          .user-name-mobile {
-            display: block;
-            font-weight: 800;
-            font-size: 1rem;
-            color: #1e293b;
-          }
+           .user-name-mobile {
+             font-size: 0.95rem;
+           }
           .submit-comment-btn {
             flex: initial;
             height: auto;
@@ -706,8 +706,6 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
             padding: 0.7rem 1.5rem;
           }
           .btn-text-mobile {
-            display: block;
-            font-weight: 800;
             font-size: 0.9rem;
           }
           :global(.comment-images-grid) {
