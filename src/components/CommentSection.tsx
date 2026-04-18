@@ -182,7 +182,7 @@ function CommentCard({ comment, depth, lang, session, postSlug, onRefresh, onIma
           </span>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#bbb' }}>
             <span style={{ fontSize: '0.7rem', fontWeight: '600', textTransform: 'capitalize' }}>
-              {new Date(comment.createdAt).toLocaleDateString((translations[lang as keyof typeof translations] as any).comments.dateLocale, { weekday: 'long', day: 'numeric', month: 'long' })}
+              {new Date(comment.createdAt).toLocaleDateString((translations[lang as keyof typeof translations] as any).comments.dateLocale, { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}
             </span>
           </div>
           {session?.user?.id === comment.userId && (
@@ -204,17 +204,15 @@ function CommentCard({ comment, depth, lang, session, postSlug, onRefresh, onIma
         }}>
           <div>{comment.content}</div>
           
-          {comment.images && Array.isArray(comment.images) && comment.images.length > 0 && (
-            <div className="comment-images-grid" style={{ 
-              marginTop: '0.8rem', 
-              display: 'grid', 
-              gridTemplateColumns: comment.images.length === 1 ? '1fr' : '1fr 1fr',
-              gap: '0.5rem'
-            }}>
-              {comment.images.map((img: string, i: number) => (
-                <div key={i} style={{ borderRadius: '12px', overflow: 'hidden', cursor: 'zoom-in', border: '1px solid #eee', aspectRatio: '16/9' }} onClick={() => onImageClick(img)}>
-                  <img src={img} alt="Comment attachment" style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'} />
-                </div>
+          {comment.images && (comment.images as string[]).length > 0 && (
+            <div className="comment-images-grid">
+              {(comment.images as string[]).map((img, i) => (
+                <img 
+                  key={i} 
+                  src={img} 
+                  alt="Comment attachment" 
+                  className="comment-attachment"
+                />
               ))}
             </div>
           )}
@@ -255,6 +253,7 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [selectedImages, setSelectedImages] = useState<File[]>([])
+  const [previewUrls, setPreviewUrls] = useState<string[]>([])
   const [isUploading, setIsUploading] = useState(false)
   const [selectedImageForLightbox, setSelectedImageForLightbox] = useState<string | null>(null)
 
@@ -275,11 +274,13 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
     if (e.target.files) {
       const files = Array.from(e.target.files)
       setSelectedImages(prev => [...prev, ...files].slice(0, 2))
+      setPreviewUrls(prev => [...prev, ...files.map(f => URL.createObjectURL(f))].slice(0, 2))
     }
   }
 
   const removeImage = (index: number) => {
     setSelectedImages(prev => prev.filter((_, i) => i !== index))
+    setPreviewUrls(prev => prev.filter((_, i) => i !== index))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -310,11 +311,20 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
         }
       }
 
-      const res = await addComment(postSlug, newComment, undefined, uploadedUrls)
-      if (res.success) {
-        setNewComment("")
-        setSelectedImages([])
-        await fetchComments()
+      const result = await addComment(postSlug, newComment, undefined, uploadedUrls)
+      if (result.success) {
+        setNewComment('');
+        setSelectedImages([]);
+        setPreviewUrls([]);
+        fetchComments();
+        
+        // Scroll to the newest comment after a short delay to allow rendering
+        setTimeout(() => {
+          const commentsContainer = document.querySelector('.comments-list');
+          if (commentsContainer) {
+            commentsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 500);
       }
     } catch (err) {
       console.error("Upload error:", err)
@@ -583,6 +593,31 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
             padding: 0.5rem 0;
             width: 100%;
           }
+          .comment-images-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+          }
+
+          @media (min-width: 768px) {
+            .comment-images-grid {
+              grid-template-columns: repeat(2, 1fr);
+            }
+          }
+
+          .comment-attachment {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 12px;
+            transition: transform 0.2s;
+          }
+
+          .comment-attachment:hover {
+            transform: scale(1.02);
+          }
+
           .submit-comment-btn {
             width: auto;
             flex: 1;

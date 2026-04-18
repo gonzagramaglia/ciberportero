@@ -29,6 +29,7 @@ export default function Post() {
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [copied, setCopied] = useState(false);
     const [isHighlighting, setIsHighlighting] = useState(false);
+    const [activeHash, setActiveHash] = useState<string | null>(null);
     const { data: session } = useSession();
     const t = translations[lang];
 
@@ -163,6 +164,9 @@ export default function Post() {
                             
                             // Highlight effect for large screens
                             if (window.innerWidth >= 1024) {
+                                setActiveHash(id);
+                                setIsHighlighting(true);
+                                
                                 const elementsToHighlight: HTMLElement[] = [element];
                                 let next = element.nextElementSibling;
                                 while (next && !['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(next.tagName)) {
@@ -170,14 +174,15 @@ export default function Post() {
                                     next = next.nextElementSibling;
                                 }
 
-                                setIsHighlighting(true);
+                                // Apply class to siblings (Header will be handled by state)
                                 elementsToHighlight.forEach(el => el.classList.add('section-focus'));
                                 
                                 setTimeout(() => {
                                     setIsHighlighting(false);
+                                    setActiveHash(null);
                                     setTimeout(() => {
                                         elementsToHighlight.forEach(el => el.classList.remove('section-focus'));
-                                    }, 600); // Wait for fade out transition
+                                    }, 600); 
                                 }, 1200);
                             }
                         }
@@ -209,18 +214,19 @@ export default function Post() {
         const text = extractText(children);
         const id = slugify(text);
         const Tag = `h${level}` as any;
+        const isActive = activeHash === id;
         const style = level === 1 ? { display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' } : {};
 
         if (level === 1) {
             return (
-                <Tag id={id} {...props} style={style}>
+                <Tag id={id} {...props} style={style} className={isActive ? 'section-focus' : ''}>
                     {children}
                 </Tag>
             );
         }
 
         return (
-            <Tag id={id} {...props} className="post-header-anchor" style={style}>
+            <Tag id={id} {...props} className={`post-header-anchor ${isActive ? 'section-focus' : ''}`} style={style}>
                 {children}
                 <a href={`#${id}`} className="header-anchor-link">
                     <Link2 size={18} strokeWidth={3} />
@@ -436,7 +442,6 @@ export default function Post() {
                 .post-container.highlight-active :global(.post-date),
                 .post-container.highlight-active :global(.admin-edit-badge),
                 .post-container.highlight-active :global(.copy-container),
-                .post-container.highlight-active :global(.comments-container),
                 .post-container.highlight-active :global(.countdown-widget-container) {
                     opacity: 0.1 !important;
                     filter: blur(2px) grayscale(1);
@@ -471,31 +476,32 @@ export default function Post() {
 
                 .subject-navigator {
                     position: fixed;
-                    right: 2rem;
-                    top: 50%;
-                    transform: translateY(-50%);
+                    left: 2rem;
+                    bottom: 3.5rem;
                     display: flex;
                     flex-direction: column;
-                    gap: 0.75rem;
+                    gap: 0.8rem;
                     z-index: 100;
+                    pointer-events: none; /* Container doesn't block */
                 }
 
                 .subject-nav-item {
-                    width: 44px;
-                    height: 44px;
+                    pointer-events: auto; /* Buttons do block */
+                    width: 56px;
+                    height: 56px;
                     border-radius: 50%;
-                    background: rgba(255, 255, 255, 0.8);
-                    backdrop-filter: blur(8px);
+                    background: rgba(255, 255, 255, 0.9);
+                    backdrop-filter: blur(10px);
                     border: 1px solid var(--border);
-                    color: var(--muted);
+                    color: #1e293b;
                     display: flex;
                     align-items: center;
                     justify-content: center;
                     cursor: pointer;
-                    transition: all 0.2s ease;
-                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-                    font-size: 0.8rem;
-                    font-weight: 800;
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+                    font-size: 1.1rem;
+                    font-weight: 900;
                     text-decoration: none !important;
                 }
 
@@ -503,14 +509,15 @@ export default function Post() {
                     background: white;
                     color: var(--accent);
                     border-color: var(--accent);
-                    transform: scale(1.1);
+                    transform: translateY(-4px) scale(1.1);
+                    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
                 }
 
                 .subject-nav-item.active {
                     background: var(--accent);
                     color: white;
                     border-color: var(--accent);
-                    box-shadow: 0 8px 20px rgba(0, 112, 243, 0.3);
+                    box-shadow: 0 8px 25px rgba(0, 112, 243, 0.35);
                 }
 
                 @media (max-width: 1024px) {
