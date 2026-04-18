@@ -545,39 +545,47 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
         .cancel-btn {
           background: none;
           border: none;
-          color: #94a3b8;
-          font-weight: 600;
-          font-size: 0.9rem;
+          color: #64748b;
+          font-weight: 700;
+          font-size: 0.95rem;
           cursor: pointer;
-          padding: 0.5rem 1rem;
-          border-radius: 10px;
+          padding: 0.6rem 1.2rem;
+          border-radius: 12px;
           transition: all 0.2s;
+          opacity: 0.8;
         }
 
         .cancel-btn:hover {
-          background: #f1f5f9;
-          color: #64748b;
+          background: #facc15;
+          color: #000;
+          box-shadow: 0 5px 15px rgba(250, 204, 21, 0.3);
+          opacity: 1;
         }
 
         .submit-comment-btn {
-          background: #000;
-          color: #fff;
-          border: none;
-          border-radius: 14px;
-          padding: 0.7rem 1.5rem;
+          background: #eef2f7;
+          color: #64748b;
+          border: 1px solid transparent;
+          border-radius: 100px;
+          padding: 0.7rem 1.8rem;
           font-weight: 700;
           display: flex;
           align-items: center;
-          gap: 0.6rem;
+          gap: 0.8rem;
           cursor: pointer;
-          transition: all 0.3s;
+          transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          opacity: 0.8;
         }
 
         .submit-comment-btn:hover:not(:disabled) {
-          transform: translateY(-2px);
-          box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-          background: #222;
+          transform: translateY(-3px) scale(1.02);
+          box-shadow: 0 8px 20px rgba(250, 204, 21, 0.4);
+          background: #facc15;
+          color: #000;
+          border-color: #facc15;
+          opacity: 1;
         }
+ transformation: all 0.3s;
 
         .submit-comment-btn:disabled {
           background: #e2e8f0;
@@ -689,13 +697,13 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
             color: #1e293b;
           }
           .submit-comment-btn {
-            width: auto;
-            flex: 1;
-            height: 48px;
+            flex: initial;
+            height: auto;
+            min-height: 48px;
             border-radius: 14px;
             margin: 0;
             gap: 0.8rem;
-            padding: 0 1.5rem;
+            padding: 0.7rem 1.5rem;
           }
           .btn-text-mobile {
             display: block;

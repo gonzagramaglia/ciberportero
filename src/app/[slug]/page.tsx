@@ -451,7 +451,7 @@ export default function Post() {
                                 fontSize: '1.3rem',
                                 textDecoration: 'none',
                                 pointerEvents: slug === s.slug ? 'none' : 'auto',
-                                opacity: slug === s.slug ? '0.8' : '1'
+                                opacity: '0.8'
                             }}
                         >
                             {s.id}
@@ -482,10 +482,11 @@ export default function Post() {
                     color: '#1e293b',
                     zIndex: 1000,
                     transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                    textDecoration: 'none'
+                    textDecoration: 'none',
+                    opacity: '0.8'
                 }}
             >
-                <ClipboardClock size={28} style={{ opacity: 0.7 }} />
+                <ClipboardClock size={28} />
             </a>
             <style jsx>{`
                 /* Dim everything else when highlighting */
@@ -548,6 +549,7 @@ export default function Post() {
                     transform: translateY(-5px) scale(1.1);
                     box-shadow: 0 15px 30px rgba(250, 204, 21, 0.3) !important;
                     border-color: #facc15 !important;
+                    opacity: 1 !important;
                 }
 
                 @media (max-width: 1024px) {
@@ -574,6 +576,7 @@ export default function Post() {
                     transform: translateY(-5px) scale(1.1);
                     box-shadow: 0 15px 30px rgba(250, 204, 21, 0.3) !important;
                     border-color: #facc15 !important;
+                    opacity: 1 !important;
                 }
                 .hoy-today-link:hover :global(svg) {
                     opacity: 1 !important;
