@@ -241,7 +241,7 @@ export default function Post() {
                 </div>
             )}
 
-            <div className="container fade-in post-container">
+            <div className={`container fade-in post-container ${isHighlighting ? 'highlight-active' : ''}`}>
                 <CountdownWidget countdowns={post?.countdowns} />
                 <NotificationBanners limitTo={
                     post.slug.includes('mate') ? 'mate' :
@@ -407,24 +407,44 @@ export default function Post() {
                 </button>
             </div>
             <style jsx>{`
+                /* Dim everything else when highlighting */
+                .post-container.highlight-active :global(.nav-header-row),
+                .post-container.highlight-active :global(.footer-main),
+                .post-container.highlight-active :global(.post-sidebar),
+                .post-container.highlight-active :global(.post-date),
+                .post-container.highlight-active :global(.admin-edit-badge),
+                .post-container.highlight-active :global(.copy-container),
+                .post-container.highlight-active :global(.comments-container),
+                .post-container.highlight-active :global(.countdown-widget-container) {
+                    opacity: 0.1 !important;
+                    filter: blur(2px) grayscale(1);
+                    transition: all 0.6s ease;
+                    pointer-events: none;
+                }
+
                 .post-content.highlight-active > :global(*:not(.section-focus)) {
-                    opacity: 0.15 !important;
-                    filter: blur(1px) grayscale(0.6);
-                    transition: all 0.5s ease;
+                    opacity: 0.1 !important;
+                    filter: blur(1.5px) grayscale(0.8);
+                    transition: all 0.6s ease;
                     pointer-events: none;
                 }
 
                 :global(.section-focus) {
                     position: relative;
-                    z-index: 50;
+                    z-index: 100;
                     opacity: 1 !important;
                     filter: none !important;
-                    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-                    transform: translateX(8px);
+                    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                    transform: scale(1.01) translateX(10px);
+                    background: white;
+                    padding: 0.5rem 1rem;
+                    margin-left: -1rem;
+                    border-radius: 12px;
+                    box-shadow: 0 20px 40px rgba(0,0,0,0.05);
                 }
 
                 .post-content {
-                    transition: all 0.5s ease;
+                    transition: all 0.6s ease;
                 }
             `}</style>
         </>

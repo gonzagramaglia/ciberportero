@@ -350,19 +350,27 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
                 placeholder={lang === 'es' ? "Escribe lo que piensas..." : lang === 'pt' ? "Escreva o que pensa..." : "Write what you think..."}
                 className="comment-textarea"
               />
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', padding: '0.3rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.5rem 0.3rem', width: '100%', borderTop: '1px solid rgba(0,0,0,0.03)', marginTop: '0.5rem' }}>
                 <label style={{ 
-                  cursor: selectedImages.length >= 2 ? 'not-allowed' : 'pointer', 
-                  color: selectedImages.length >= 2 ? '#eee' : '#999',
+                  cursor: (selectedImages.length >= 2 || isSubmitting) ? 'not-allowed' : 'pointer', 
+                  color: (selectedImages.length >= 2 || isSubmitting) ? '#eee' : '#94a3b8',
                   transition: 'all 0.2s',
                   display: 'flex',
-                  padding: '0.5rem'
+                  padding: '0.6rem',
+                  background: '#fff',
+                  borderRadius: '12px',
+                  border: '1px solid #f1f5f9'
                 }} title={selectedImages.length >= 2 ? 'Máximo 2 imágenes' : 'Adjuntar imágenes'}>
                   <ImageIcon size={22} />
                   <input type="file" hidden multiple accept="image/*" onChange={handleImageChange} disabled={selectedImages.length >= 2 || isSubmitting} />
                 </label>
                 
-                <button disabled={isSubmitting || isUploading || (!newComment.trim() && selectedImages.length === 0)} type="submit" className="submit-comment-btn">
+                <button 
+                  disabled={isSubmitting || isUploading || (!newComment.trim() && selectedImages.length === 0)} 
+                  type="submit" 
+                  className="submit-comment-btn"
+                  style={{ marginLeft: 'auto', flex: window.innerWidth < 768 ? 1 : 'initial' }}
+                >
                   {isSubmitting || isUploading ? (
                     <Loader2 size={20} className="spin" />
                   ) : (
@@ -376,7 +384,7 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
             </div>
             
             {selectedImages.length > 0 && (
-              <div className="comment-previews" style={{ display: 'flex', gap: '0.8rem', marginTop: '1rem', paddingLeft: '4rem' }}>
+              <div className="comment-previews" style={{ display: 'flex', gap: '0.8rem', marginTop: '1rem', paddingLeft: '3.1rem' }}>
                 {selectedImages.map((file, i) => (
                   <div key={i} style={{ position: 'relative', width: '90px', height: '90px', borderRadius: '16px', overflow: 'hidden', border: '2px solid #f0f0f0', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
                     <img src={URL.createObjectURL(file)} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Preview" />
@@ -576,12 +584,13 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
             width: 100%;
           }
           .submit-comment-btn {
-            width: 100%;
+            width: auto;
+            flex: 1;
             height: 48px;
-            border-radius: 12px;
-            margin: 0.5rem 0 0.5rem 0;
-            align-self: center;
-            gap: 0.6rem;
+            border-radius: 14px;
+            margin: 0;
+            gap: 0.8rem;
+            padding: 0 1.5rem;
           }
           .btn-text-mobile {
             display: block;
