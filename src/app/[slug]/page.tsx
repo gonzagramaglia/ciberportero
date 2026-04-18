@@ -5,7 +5,7 @@ import React, { useState, useEffect, useLayoutEffect } from 'react';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { ChevronLeft, Github, Youtube, ArrowUp, ArrowDown, X, Link2, Check, Edit } from 'lucide-react';
+import { ChevronLeft, Github, Youtube, ArrowUp, ArrowDown, X, Link2, Check, Edit, ClipboardClock } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { translations } from '../../lib/translations';
 import { PostData } from '../../lib/posts-client';
@@ -459,6 +459,34 @@ export default function Post() {
                     ))}
                 </div>
             )}
+
+            {/* Floating button for hoy.today (Mirrored to the right) */}
+            <a 
+                href={lang === 'en' ? 'https://hoy.today/en' : 'https://hoy.today'} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hoy-today-link"
+                style={{
+                    position: 'fixed',
+                    right: '4.5rem',
+                    bottom: '3.5rem',
+                    width: '62px',
+                    height: '62px',
+                    borderRadius: '50%',
+                    background: '#ffffff',
+                    border: '1px solid #e2e8f0',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
+                    color: '#1e293b',
+                    zIndex: 1000,
+                    transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                    textDecoration: 'none'
+                }}
+            >
+                <ClipboardClock size={28} style={{ opacity: 0.7 }} />
+            </a>
             <style jsx>{`
                 /* Dim everything else when highlighting */
                 .post-container.highlight-active :global(.nav-header-row),
@@ -526,6 +554,29 @@ export default function Post() {
                     .subject-navigator {
                         display: none;
                     }
+                }
+
+                @media (min-width: 1025px) {
+                    .fab-container {
+                        display: none !important;
+                    }
+                }
+
+                @media (max-width: 1024px) {
+                    .hoy-today-link {
+                        display: none !important;
+                    }
+                }
+
+                .hoy-today-link:hover {
+                    background: #facc15 !important;
+                    color: #000 !important;
+                    transform: translateY(-5px) scale(1.1);
+                    box-shadow: 0 15px 30px rgba(250, 204, 21, 0.3) !important;
+                    border-color: #facc15 !important;
+                }
+                .hoy-today-link:hover :global(svg) {
+                    opacity: 1 !important;
                 }
             `}</style>
         </>
