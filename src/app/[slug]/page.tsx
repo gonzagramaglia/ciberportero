@@ -23,6 +23,7 @@ export default function Post() {
     const { lang } = useLanguage();
     const [post, setPost] = useState<PostData | null>(null);
     const [loading, setLoading] = useState(true);
+    const subjectSlugs = ['sistemas-operativos-1', 'ingles-1', 'gsi', 'algebra-1', 'analisis-1'];
     const [showTop, setShowTop] = useState(false);
     const [showBottom, setShowBottom] = useState(true);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -406,6 +407,27 @@ export default function Post() {
                     <ArrowDown size={20} />
                 </button>
             </div>
+
+            {subjectSlugs.includes(slug as string) && (
+                <div className="subject-navigator">
+                    {[
+                        { id: '05', slug: 'sistemas-operativos-1' },
+                        { id: '04', slug: 'ingles-1' },
+                        { id: '03', slug: 'gsi' },
+                        { id: '02', slug: 'algebra-1' },
+                        { id: '01', slug: 'analisis-1' }
+                    ].map((s) => (
+                        <Link 
+                            key={s.id} 
+                            href={`/${s.slug}`} 
+                            className={`subject-nav-item ${slug === s.slug ? 'active' : ''}`}
+                            title={s.slug.replace(/-/g, ' ').toUpperCase()}
+                        >
+                            {s.id}
+                        </Link>
+                    ))}
+                </div>
+            )}
             <style jsx>{`
                 /* Dim everything else when highlighting */
                 .post-container.highlight-active :global(.nav-header-row),
@@ -445,6 +467,56 @@ export default function Post() {
 
                 .post-content {
                     transition: all 0.6s ease;
+                }
+
+                .subject-navigator {
+                    position: fixed;
+                    right: 2rem;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.75rem;
+                    z-index: 100;
+                }
+
+                .subject-nav-item {
+                    width: 44px;
+                    height: 44px;
+                    border-radius: 50%;
+                    background: rgba(255, 255, 255, 0.8);
+                    backdrop-filter: blur(8px);
+                    border: 1px solid var(--border);
+                    color: var(--muted);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+                    font-size: 0.8rem;
+                    font-weight: 800;
+                    text-decoration: none !important;
+                }
+
+                .subject-nav-item:hover {
+                    background: white;
+                    color: var(--accent);
+                    border-color: var(--accent);
+                    transform: scale(1.1);
+                }
+
+                .subject-nav-item.active {
+                    background: var(--accent);
+                    color: white;
+                    border-color: var(--accent);
+                    box-shadow: 0 8px 20px rgba(0, 112, 243, 0.3);
+                }
+
+                @media (max-width: 1024px) {
+                    .subject-navigator {
+                        display: none;
+                    }
                 }
             `}</style>
         </>
