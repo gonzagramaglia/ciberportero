@@ -105,55 +105,48 @@ function ReplyForm({ onSubmit, onCancel, lang, userImage, userName }: {
 
   return (
     <div className="input-wrapper-outer" style={{ width: '100%', marginTop: '1rem', transform: 'scale(0.98)', transformOrigin: 'top left' }}>
-      <form onSubmit={handleSubmit} className="input-wrapper">
+      <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '1rem' }}>
         <div className="avatar-wrapper">
           <Avatar src={userImage} name={userName} size={32} />
         </div>
-        <textarea
-          autoFocus
-          value={text}
-          onChange={e => setText(e.target.value)}
-          placeholder={lang === 'es' ? 'Escribe tu respuesta...' : lang === 'pt' ? 'Escreva sua respuesta...' : 'Write your reply...'}
-          className="comment-textarea"
-          style={{ minHeight: '80px', fontSize: '0.95rem' }}
-        />
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', padding: '0.5rem 0.3rem', width: '100%', borderTop: '1px solid rgba(0,0,0,0.03)', marginTop: '0.5rem' }}>
-          <label style={{ 
-            cursor: (selectedImages.length >= 2 || submitting) ? 'not-allowed' : 'pointer', 
-            color: (selectedImages.length >= 2 || submitting) ? '#eee' : '#94a3b8',
-            display: 'flex',
-            padding: '0.5rem',
-            background: '#fff',
-            borderRadius: '10px',
-            border: '1px solid #f1f5f9'
-          }} title={selectedImages.length >= 2 ? 'Máximo 2 imágenes' : 'Adjuntar imágenes'}>
-            <ImageIcon size={18} />
-            <input type="file" hidden multiple accept="image/*" onChange={handleImageChange} disabled={selectedImages.length >= 2 || submitting} />
-          </label>
-          
-          <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.5rem' }}>
-            <button 
-              type="button" 
-              onClick={onCancel}
-              style={{ background: 'none', border: 'none', color: '#999', fontSize: '0.85rem', fontWeight: '600', cursor: 'pointer', padding: '0 1rem' }}
-            >
-              {lang === 'es' ? 'Cancelar' : 'Cancel'}
-            </button>
-            <button 
-              disabled={submitting || isUploading || (!text.trim() && selectedImages.length === 0)} 
-              type="submit" 
-              className="submit-comment-btn"
-              style={{ padding: '0.5rem 1.2rem' }}
-            >
-              {submitting || isUploading ? (
-                <Loader2 size={16} className="spin" />
-              ) : (
-                <>
-                  <span style={{ fontSize: '0.85rem' }}>{lang === 'es' ? 'Responder' : 'Reply'}</span>
-                  <Send size={16} />
-                </>
-              )}
-            </button>
+        <div className="input-wrapper">
+          <textarea
+            autoFocus
+            value={text}
+            onChange={e => setText(e.target.value)}
+            placeholder={lang === 'es' ? 'Escribe tu respuesta...' : lang === 'pt' ? 'Escreva sua respuesta...' : 'Write your reply...'}
+            className="comment-textarea"
+            style={{ minHeight: '100px' }}
+          />
+          <div className="input-toolbar">
+            <label className="image-upload-label" title={selectedImages.length >= 2 ? 'Máximo 2 imágenes' : 'Adjuntar imágenes'}>
+              <ImageIcon size={20} />
+              <input type="file" hidden multiple accept="image/*" onChange={handleImageChange} disabled={selectedImages.length >= 2 || submitting} />
+            </label>
+            
+            <div className="button-group">
+              <button 
+                type="button" 
+                onClick={onCancel}
+                className="cancel-btn"
+              >
+                {lang === 'es' ? 'Cancelar' : 'Cancel'}
+              </button>
+              <button 
+                disabled={submitting || isUploading || (!text.trim() && selectedImages.length === 0)} 
+                type="submit" 
+                className="submit-comment-btn"
+              >
+                {submitting || isUploading ? (
+                  <Loader2 size={18} className="spin" />
+                ) : (
+                  <>
+                    <span className="btn-text">{lang === 'es' ? 'Responder' : 'Reply'}</span>
+                    <Send size={18} />
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </form>
@@ -210,19 +203,19 @@ function CommentCard({ comment, depth, lang, session, postSlug, onRefresh, onIma
     <div style={{ display: 'flex', gap: '0.9rem', position: 'relative' }}>
       <Avatar src={comment.user.image} name={comment.user.name} size={isNested ? 34 : 44} />
       <div style={{ flex: 1 }}>
-        {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.3rem' }}>
           <span style={{ fontWeight: '800', fontSize: isNested ? '0.9rem' : '1rem', color: '#000' }}>
             {getFirstName(comment.user.name)}
           </span>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#bbb' }}>
-            <span style={{ fontSize: '0.7rem', fontWeight: '600', textTransform: 'capitalize' }}>
+            <span style={{ fontSize: '0.7rem', fontWeight: '600' }}>
               {(() => {
                 const date = new Date(comment.createdAt);
-                const dayName = date.toLocaleDateString(lang, { weekday: 'long' });
+                const dayName = date.toLocaleDateString(lang, { weekday: 'long' }).toLowerCase();
                 const dayNumber = date.getDate();
-                const monthName = date.toLocaleDateString(lang, { month: 'long' });
-                const time = date.toLocaleTimeString(lang, { hour: '2-digit', minute: '2-digit', hour12: true });
+                const monthNameRaw = date.toLocaleDateString(lang, { month: 'long' });
+                const monthName = monthNameRaw.charAt(0).toUpperCase() + monthNameRaw.slice(1);
+                const time = date.toLocaleTimeString(lang, { hour: '2-digit', minute: '2-digit', hour12: true }).toLowerCase();
                 
                 if (lang === 'es') return `El ${dayName} ${dayNumber} de ${monthName} a las ${time}`;
                 if (lang === 'pt') return `No ${dayName}, ${dayNumber} de ${monthName} às ${time}`;
@@ -237,7 +230,6 @@ function CommentCard({ comment, depth, lang, session, postSlug, onRefresh, onIma
           )}
         </div>
 
-        {/* Bubble */}
         <div style={{ 
           background: isNested ? '#f8f9fa' : '#fcfcfc', 
           padding: isNested ? '0.7rem 1rem' : '1rem 1.2rem', 
@@ -257,13 +249,13 @@ function CommentCard({ comment, depth, lang, session, postSlug, onRefresh, onIma
                   src={img} 
                   alt="Comment attachment" 
                   className="comment-attachment"
+                  onClick={() => onImageClick(img)}
                 />
               ))}
             </div>
           )}
         </div>
 
-        {/* Actions */}
         {canReply && (
           <div style={{ marginTop: '0.4rem' }}>
             <button onClick={() => setShowReplyForm(!showReplyForm)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.75rem', fontWeight: '700', color: showReplyForm ? '#000' : '#999', display: 'flex', alignItems: 'center', gap: '0.3rem', transition: 'color 0.2s' }}>
@@ -273,12 +265,10 @@ function CommentCard({ comment, depth, lang, session, postSlug, onRefresh, onIma
           </div>
         )}
 
-        {/* Inline reply form */}
         {showReplyForm && (
           <ReplyForm onSubmit={handleReply} onCancel={() => setShowReplyForm(false)} lang={lang} userImage={session?.user?.image} userName={session?.user?.name} />
         )}
 
-        {/* Nested replies */}
         {'replies' in comment && comment.replies && comment.replies.length > 0 && (
           <div style={{ marginTop: '1rem', paddingLeft: '0.5rem', borderLeft: '2px solid #f0f0f0', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {comment.replies.map((reply: Reply) => (
@@ -363,7 +353,6 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
         setPreviewUrls([]);
         fetchComments();
         
-        // Scroll to the newest comment after a short delay to allow rendering
         setTimeout(() => {
           const commentsContainer = document.querySelector('.comments-list');
           if (commentsContainer) {
@@ -382,7 +371,6 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
 
   return (
     <section className="comments-container">
-      {/* Header */}
       <div className="comments-header">
         <MessageSquare size={28} className="header-icon" />
         <h2 className="header-title">
@@ -390,12 +378,11 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
         </h2>
       </div>
 
-      {/* New comment form */}
       {session ? (
         <form onSubmit={handleSubmit} style={{ marginBottom: '3.5rem' }}>
           <div className="input-wrapper-outer">
             <div className="input-wrapper">
-              <div className="avatar-wrapper">
+              <div className="avatar-wrapper" style={{ marginBottom: '0.5rem' }}>
                 <Avatar src={session.user.image} name={session.user.name} size={40} />
                 <span className="user-name-mobile">{getFirstName(session.user.name ?? null)}</span>
               </div>
@@ -405,17 +392,8 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
                 placeholder={lang === 'es' ? "Escribe lo que piensas..." : lang === 'pt' ? "Escreva o que pensa..." : "Write what you think..."}
                 className="comment-textarea"
               />
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.5rem 0.3rem', width: '100%', borderTop: '1px solid rgba(0,0,0,0.03)', marginTop: '0.5rem' }}>
-                <label style={{ 
-                  cursor: (selectedImages.length >= 2 || isSubmitting) ? 'not-allowed' : 'pointer', 
-                  color: (selectedImages.length >= 2 || isSubmitting) ? '#eee' : '#94a3b8',
-                  transition: 'all 0.2s',
-                  display: 'flex',
-                  padding: '0.6rem',
-                  background: '#fff',
-                  borderRadius: '12px',
-                  border: '1px solid #f1f5f9'
-                }} title={selectedImages.length >= 2 ? 'Máximo 2 imágenes' : 'Adjuntar imágenes'}>
+              <div className="input-toolbar">
+                <label className="image-upload-label" title={selectedImages.length >= 2 ? 'Máximo 2 imágenes' : 'Adjuntar imágenes'}>
                   <ImageIcon size={22} />
                   <input type="file" hidden multiple accept="image/*" onChange={handleImageChange} disabled={selectedImages.length >= 2 || isSubmitting} />
                 </label>
@@ -424,7 +402,7 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
                   disabled={isSubmitting || isUploading || (!newComment.trim() && selectedImages.length === 0)} 
                   type="submit" 
                   className="submit-comment-btn"
-                  style={{ marginLeft: 'auto', flex: window.innerWidth < 768 ? 1 : 'initial' }}
+                  style={{ marginLeft: 'auto' }}
                 >
                   {isSubmitting || isUploading ? (
                     <Loader2 size={20} className="spin" />
@@ -467,7 +445,6 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
         </div>
       )}
 
-      {/* Comments list */}
       <div style={{ display: 'grid', gap: '2rem' }}>
         {isLoading ? (
           <div style={{ textAlign: 'center', padding: '2rem' }}>
@@ -484,7 +461,6 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
         )}
       </div>
 
-      {/* Lightbox */}
       {selectedImageForLightbox && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,0.92)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', backdropFilter: 'blur(8px)' }} onClick={() => setSelectedImageForLightbox(null)}>
           <button style={{ position: 'absolute', top: '2rem', right: '2rem', background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff', width: '50px', height: '50px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s' }} onClick={() => setSelectedImageForLightbox(null)} className="lightbox-close-btn">
@@ -493,6 +469,147 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
           <img src={selectedImageForLightbox} alt="Expanded view" style={{ maxWidth: '100%', maxHeight: '100%', borderRadius: '12px', boxShadow: '0 30px 60px rgba(0,0,0,0.5)', objectFit: 'contain' }} onClick={e => e.stopPropagation()} />
         </div>
       )}
+
+      <style jsx global>{`
+        .input-wrapper-outer {
+          margin-bottom: 2rem;
+          width: 100%;
+        }
+
+        .input-wrapper {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          background: #fcfcfc;
+          border-radius: 20px;
+          border: 1px solid #f0f0f0;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+          transition: all 0.3s ease;
+          padding: 1rem;
+          position: relative;
+        }
+
+        .input-wrapper:focus-within {
+          border-color: #000;
+          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+          background: #fff;
+        }
+
+        .comment-textarea {
+          width: 100%;
+          border: none;
+          background: transparent;
+          outline: none;
+          font-family: inherit;
+          font-size: 1.05rem;
+          line-height: 1.6;
+          color: #333;
+          resize: none;
+          min-height: 120px;
+          padding: 0.5rem;
+        }
+
+        .input-toolbar {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          padding-top: 0.8rem;
+          border-top: 1px solid rgba(0,0,0,0.04);
+          margin-top: 0.5rem;
+        }
+
+        .image-upload-label {
+          cursor: pointer;
+          color: #94a3b8;
+          display: flex;
+          padding: 0.6rem;
+          background: #fff;
+          border-radius: 12px;
+          border: 1px solid #f1f5f9;
+          transition: all 0.2s;
+        }
+
+        .image-upload-label:hover {
+          color: #000;
+          background: #f8f8f8;
+          border-color: #ddd;
+        }
+
+        .button-group {
+          margin-left: auto;
+          display: flex;
+          gap: 0.8rem;
+          align-items: center;
+        }
+
+        .cancel-btn {
+          background: none;
+          border: none;
+          color: #94a3b8;
+          font-weight: 600;
+          font-size: 0.9rem;
+          cursor: pointer;
+          padding: 0.5rem 1rem;
+          border-radius: 10px;
+          transition: all 0.2s;
+        }
+
+        .cancel-btn:hover {
+          background: #f1f5f9;
+          color: #64748b;
+        }
+
+        .submit-comment-btn {
+          background: #000;
+          color: #fff;
+          border: none;
+          border-radius: 14px;
+          padding: 0.7rem 1.5rem;
+          font-weight: 700;
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+          cursor: pointer;
+          transition: all 0.3s;
+        }
+
+        .submit-comment-btn:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+          background: #222;
+        }
+
+        .submit-comment-btn:disabled {
+          background: #e2e8f0;
+          color: #94a3b8;
+          cursor: not-allowed;
+        }
+
+        .comment-images-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 1.2rem;
+          margin-top: 1.2rem;
+        }
+
+        @media (min-width: 768px) {
+          .comment-images-grid {
+            grid-template-columns: repeat(3, 1fr);
+          }
+        }
+
+        .comment-attachment {
+          width: 100%;
+          height: auto;
+          max-height: 450px;
+          object-fit: contain;
+          background: #fdfdfd;
+          border: 1px solid #f0f0f0;
+          border-radius: 16px;
+          transition: transform 0.2s;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+      `}</style>
 
       <style jsx>{`
         .comments-container {
@@ -525,17 +642,6 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
           marginLeft: 0.4rem;
         }
 
-        .input-wrapper {
-          display: flex;
-          gap: 1rem;
-          background: #f8f9fa;
-          padding: 0.8rem;
-          border-radius: 24px;
-          border: 2px solid transparent;
-          transition: all 0.3s;
-          box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
-        }
-
         .avatar-wrapper {
           padding: 0.5rem;
           display: flex;
@@ -550,48 +656,9 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
           display: none;
         }
 
-        .comment-textarea {
-          flex: 1;
-          background: transparent;
-          border: none;
-          outline: none;
-          padding: 0.8rem 0;
-          fontSize: 1.05rem;
-          minHeight: 60px;
-          resize: none;
-          font-family: inherit;
-        }
-
-        .submit-comment-btn {
-          width: 45px;
-          height: 45px;
-          border-radius: 15px;
-          border: none;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          transition: all 0.2s;
-          align-self: flex-end;
-          margin: 0.3rem;
-          background: #eee;
-          color: #fff;
-        }
-
-        .submit-comment-btn:not(:disabled) {
-          background: #000;
-        }
-
         .spin { animation: spin 1s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         
-        .input-wrapper:focus-within { 
-          border-color: #000 !important; 
-          background: #fff !important; 
-          box-shadow: 0 10px 30px rgba(0,0,0,0.04);
-        }
-        
-        .reply-input-wrapper:focus-within { border-color: #000 !important; background: #fff !important; }
         .delete-comment-btn:hover { opacity: 1 !important; }
 
         @media (max-width: 768px) {
@@ -610,13 +677,6 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
             width: 20px;
             height: 20px;
           }
-          .input-wrapper {
-            padding: 1rem;
-            gap: 0;
-            border-radius: 20px;
-            flex-direction: column;
-            align-items: flex-start;
-          }
           .avatar-wrapper {
             padding: 0;
             gap: 0.8rem;
@@ -628,41 +688,6 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
             font-size: 1rem;
             color: #1e293b;
           }
-          :global(.input-wrapper img), :global(.input-wrapper .avatar-fallback) {
-            width: 32px !important;
-            height: 32px !important;
-          }
-          .comment-textarea {
-            font-size: 0.95rem;
-            min-height: 80px;
-            padding: 0.5rem 0;
-            width: 100%;
-          }
-          .comment-images-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1rem;
-            margin-top: 1rem;
-          }
-
-          @media (min-width: 768px) {
-            .comment-images-grid {
-              grid-template-columns: repeat(3, 1fr);
-            }
-          }
-
-          .comment-attachment {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-            border-radius: 12px;
-            transition: transform 0.2s;
-          }
-
-          .comment-attachment:hover {
-            transform: scale(1.02);
-          }
-
           .submit-comment-btn {
             width: auto;
             flex: 1;

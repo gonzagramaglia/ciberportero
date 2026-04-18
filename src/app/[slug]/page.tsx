@@ -169,11 +169,10 @@ export default function Post() {
                                 
                                 setTimeout(() => {
                                     setIsHighlighting(false);
-                                    setActiveHash(null);
                                 }, 1200);
                             }
                         }
-                    }, 300);
+                    }, 350);
                     return () => clearTimeout(timer);
                 }
             };
@@ -188,7 +187,14 @@ export default function Post() {
     }, [loading, post]);
 
     useLayoutEffect(() => {
-        if (isHighlighting && activeHash) {
+        // Clear ALL previous highlights first to ensure only one section is focused
+        document.querySelectorAll('.section-focus').forEach(el => {
+            if (!el.tagName.startsWith('H')) { // Don't touch headers handled by React state
+                el.classList.remove('section-focus');
+            }
+        });
+
+        if (activeHash) {
             const element = document.getElementById(activeHash);
             if (element) {
                 const elements: HTMLElement[] = [];
@@ -199,14 +205,9 @@ export default function Post() {
                 }
                 
                 elements.forEach(el => el.classList.add('section-focus'));
-                
-                return () => {
-                    // This cleanup might run when isHighlighting becomes false or hash changes
-                    elements.forEach(el => el.classList.remove('section-focus'));
-                };
             }
         }
-    }, [isHighlighting, activeHash]);
+    }, [activeHash]);
 
     if (loading) return <div className="container fade-in"></div>;
     if (!post) return notFound();
@@ -435,7 +436,23 @@ export default function Post() {
                             key={s.id} 
                             href={`/${s.slug}`} 
                             className={`subject-nav-item ${slug === s.slug ? 'active' : ''}`}
-                            title={s.slug.replace(/-/g, ' ').toUpperCase()}
+                            style={{
+                                width: '62px',
+                                height: '62px',
+                                borderRadius: '50%',
+                                background: slug === s.slug ? '#f1f5f9' : '#ffffff',
+                                border: '1px solid #e2e8f0',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                boxShadow: slug === s.slug ? 'none' : '0 10px 25px rgba(0, 0, 0, 0.1)',
+                                color: slug === s.slug ? '#cbd5e1' : '#1e293b',
+                                fontWeight: '900',
+                                fontSize: '1.3rem',
+                                textDecoration: 'none',
+                                pointerEvents: slug === s.slug ? 'none' : 'auto',
+                                opacity: slug === s.slug ? '0.8' : '1'
+                            }}
                         >
                             {s.id}
                         </Link>
@@ -489,45 +506,20 @@ export default function Post() {
                     display: flex;
                     flex-direction: column;
                     gap: 1rem;
-                    z-index: 999;
+                    z-index: 1000;
                     pointer-events: none;
                 }
 
                 .subject-nav-item {
-                    pointer-events: auto;
-                    width: 62px;
-                    height: 62px;
-                    border-radius: 50%;
-                    background: #ffffff;
-                    border: 1px solid #e2e8f0;
-                    color: #1e293b;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    cursor: pointer;
                     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-                    font-size: 1.3rem;
-                    font-weight: 900;
-                    text-decoration: none !important;
                 }
 
                 .subject-nav-item:not(.active):hover {
-                    background: #facc15; /* Amarillo vibrante */
-                    color: #000;
+                    background: #facc15 !important;
+                    color: #000 !important;
                     transform: translateY(-5px) scale(1.1);
-                    box-shadow: 0 15px 30px rgba(250, 204, 21, 0.3);
-                    border-color: #facc15;
-                }
-
-                .subject-nav-item.active {
-                    background: #f1f5f9;
-                    color: #cbd5e1;
-                    border-color: #e2e8f0;
-                    cursor: default;
-                    pointer-events: none;
-                    box-shadow: none;
-                    opacity: 0.8;
+                    box-shadow: 0 15px 30px rgba(250, 204, 21, 0.3) !important;
+                    border-color: #facc15 !important;
                 }
 
                 @media (max-width: 1024px) {
