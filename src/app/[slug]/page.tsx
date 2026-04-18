@@ -464,7 +464,7 @@ export default function Post() {
             >
                 <ClipboardClock size={28} />
             </a>
-            <style jsx>{`
+            <style jsx global>{`
                 /* Dim everything else when highlighting */
                 .post-container.highlight-active :global(.nav-header-row),
                 .post-container.highlight-active :global(.footer-main),
@@ -550,7 +550,6 @@ export default function Post() {
                 .subject-nav-item:not(.active):hover {
                     background: #facc15 !important;
                     color: #000 !important;
-                    transform: translateY(-5px);
                     box-shadow: 0 15px 30px rgba(250, 204, 21, 0.3) !important;
                     border-color: #facc15 !important;
                     opacity: 1 !important;
@@ -579,7 +578,6 @@ export default function Post() {
                 .hoy-today-link:hover {
                     background: #facc15 !important;
                     color: #000 !important;
-                    transform: translateY(-5px);
                     box-shadow: 0 15px 30px rgba(250, 204, 21, 0.3) !important;
                     border-color: #facc15 !important;
                     opacity: 1 !important;
