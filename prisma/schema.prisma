@@ -151,6 +151,7 @@ model Podcast {
   slug        String   @unique
   audioUrl    String
   subjectId   String?  // ID related to subjectNames in translations
+  links       Json?    // Array of { title, url }
   published   Boolean  @default(false)
   date        DateTime @default(now())
   createdAt   DateTime @default(now())

@@ -20,7 +20,7 @@ export default function PodcastCard({ podcast, forcedLang }: { podcast: any, for
                 </div>
                 <div className="podcast-card-content">
                     <div className="podcast-card-meta">
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', alignItems: 'flex-start' }}>
                             <span className="podcast-card-date">
                                 {lang === 'es' ? 'Audio del ' : lang === 'pt' ? 'Áudio de ' : 'Audio from '}
                                 {new Date(podcast.date || podcast.createdAt).toLocaleDateString(lang, {
@@ -34,11 +34,12 @@ export default function PodcastCard({ podcast, forcedLang }: { podcast: any, for
                                     fontSize: '0.7rem', 
                                     fontWeight: 900, 
                                     background: 'rgba(0, 112, 243, 0.08)', 
-                                    padding: '0.25rem 0.6rem', 
+                                    padding: '0.3rem 0.75rem', 
                                     borderRadius: '6px', 
                                     color: 'var(--accent)',
                                     textTransform: 'uppercase',
-                                    letterSpacing: '0.05em'
+                                    letterSpacing: '0.05em',
+                                    display: 'inline-block'
                                 }}>
                                     {(translations[lang] as any).plan.subjectNames[podcast.subjectId]}
                                 </span>

@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, X, ExternalLink, Speaker, Upload, Check, Loader2 } from 'lucide-react';
+import { Save, X, ExternalLink, Speaker, Upload, Check, Loader2, Plus, Trash2 } from 'lucide-react';
 import { upsertPodcast } from '@/lib/actions';
 import LanguageTabs from './LanguageTabs';
 import { supabase } from '@/lib/supabase';
@@ -22,6 +22,7 @@ export default function PodcastEditor({ podcast }: PodcastEditorProps) {
   const [slug, setSlug] = useState(podcast?.slug || '');
   const [audioUrl, setAudioUrl] = useState(podcast?.audioUrl || '');
   const [subjectId, setSubjectId] = useState(podcast?.subjectId || '');
+  const [links, setLinks] = useState<{ title: string, url: string }[]>(podcast?.links || []);
   const [published, setPublished] = useState(podcast?.published ?? true);
 
   // UI state
@@ -83,14 +84,18 @@ export default function PodcastEditor({ podcast }: PodcastEditorProps) {
     const initialDescription = podcast?.description?.es || '';
     const initialSlug = podcast?.slug || '';
     const initialAudioUrl = podcast?.audioUrl || '';
+    const initialSubjectId = podcast?.subjectId || '';
     const initialPublished = podcast?.published ?? true;
+    const initialLinks = JSON.stringify(podcast?.links || []);
 
     return title !== initialTitle ||
            description !== initialDescription ||
            slug !== initialSlug ||
            audioUrl !== initialAudioUrl ||
-           published !== initialPublished;
-  }, [title, description, slug, audioUrl, published, podcast]);
+           subjectId !== initialSubjectId ||
+           published !== initialPublished ||
+           JSON.stringify(links) !== initialLinks;
+  }, [title, description, slug, audioUrl, subjectId, published, links, podcast]);
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -137,6 +142,7 @@ export default function PodcastEditor({ podcast }: PodcastEditorProps) {
         description: { es: description, en: description, pt: description },
         audioUrl,
         subjectId: subjectId === 'none' ? null : subjectId,
+        links: links.filter(l => l.url.trim()),
         published,
       });
       router.push(`/admin/podcast?success=${encodeURIComponent(title)}&slug=podcast/${slug}`);
@@ -226,6 +232,80 @@ export default function PodcastEditor({ podcast }: PodcastEditorProps) {
                 <option key={id} value={id}>[{id}] {name}</option>
               ))}
             </select>
+          </div>
+
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+              <label className="admin-label" style={{ margin: 0 }}>Links Asociados (Opcional - Máx 3)</label>
+              {links.length < 3 && (
+                <button 
+                  type="button" 
+                  onClick={() => setLinks([...links, { title: '', url: '' }])}
+                  className="btn-secondary"
+                  style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', borderRadius: '10px' }}
+                >
+                  <Plus size={14} />
+                  <span>Agregar link</span>
+                </button>
+              )}
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {links.length === 0 && (
+                <div style={{ padding: '1.5rem', border: '1px dashed #e2e8f0', borderRadius: '16px', textAlign: 'center', color: '#94a3b8', fontSize: '0.9rem' }}>
+                  No hay links asociados.
+                </div>
+              )}
+              {links.map((link, idx) => (
+                <div key={idx} style={{ 
+                  display: 'flex', 
+                  gap: '1rem', 
+                  alignItems: 'center', 
+                  background: '#f8fafc', 
+                  padding: '1rem', 
+                  borderRadius: '16px',
+                  border: '1px solid #e2e8f0',
+                  animation: 'slideUp 0.3s ease'
+                }}>
+                  <div style={{ flex: 1 }}>
+                    <input 
+                      placeholder="Título del link (Ej: Diapositivas)" 
+                      className="admin-input" 
+                      style={{ padding: '0.6rem', background: '#fff' }}
+                      value={link.title}
+                      onChange={e => {
+                        const newLinks = [...links];
+                        newLinks[idx].title = e.target.value;
+                        setLinks(newLinks);
+                      }}
+                    />
+                  </div>
+                  <div style={{ flex: 2 }}>
+                    <input 
+                      placeholder="https://..." 
+                      className="admin-input" 
+                      style={{ padding: '0.6rem', background: '#fff' }}
+                      value={link.url}
+                      onChange={e => {
+                        const newLinks = [...links];
+                        newLinks[idx].url = e.target.value;
+                        setLinks(newLinks);
+                      }}
+                    />
+                  </div>
+                  <button 
+                    type="button" 
+                    onClick={() => setLinks(links.filter((_, i) => i !== idx))}
+                    style={{ 
+                      width: '36px', height: '36px', borderRadius: '50%', background: '#fff1f2', 
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      color: '#ef4444', border: '1px solid #fecdd3', cursor: 'pointer'
+                    }}
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div>
