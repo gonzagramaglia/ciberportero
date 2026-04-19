@@ -1,19 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { ThumbsUp, ThumbsDown, Share2, Play, Pause, Volume2, Check } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/lib/translations';
 import { votePodcast } from '@/lib/actions';
 import { useSession } from 'next-auth/react';
 
-export default function PodcastPlayer({ podcast, initialLikes, initialDislikes, userVote }: { 
+export default function PodcastPlayer({ podcast, initialLikes, initialDislikes, userVote, forcedLang }: { 
     podcast: any, 
     initialLikes: number, 
     initialDislikes: number,
-    userVote?: 'LIKE' | 'DISLIKE' | null
+    userVote?: 'LIKE' | 'DISLIKE' | null,
+    forcedLang?: string
 }) {
-    const { lang } = useLanguage();
+    const { lang: contextLang } = useLanguage();
+    const lang = (forcedLang || contextLang) as 'es' | 'en' | 'pt';
     const { data: session } = useSession();
     const t = translations[lang].podcast;
     const [isPlaying, setIsPlaying] = useState(false);
@@ -21,6 +23,15 @@ export default function PodcastPlayer({ podcast, initialLikes, initialDislikes, 
     const [dislikes, setDislikes] = useState(initialDislikes);
     const [currentVote, setCurrentVote] = useState(userVote);
     const [isSharing, setIsSharing] = useState(false);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+
+    useEffect(() => {
+        if (audioRef.current) {
+            audioRef.current.play().catch(e => {
+                console.log("Autoplay blocked by browser:", e);
+            });
+        }
+    }, []);
 
     const handleVote = async (type: 'LIKE' | 'DISLIKE') => {
         if (!session) {
@@ -55,14 +66,17 @@ export default function PodcastPlayer({ podcast, initialLikes, initialDislikes, 
         setTimeout(() => setIsSharing(false), 2000);
     };
 
+
     return (
         <div className="podcast-player-container">
             <div className="player-card">
                 <div className="player-main">
                     <div className="audio-wrapper">
                         <audio 
+                            ref={audioRef}
                             src={podcast.audioUrl} 
                             controls 
+                            autoPlay
                             className="native-audio"
                             onPlay={() => setIsPlaying(true)}
                             onPause={() => setIsPlaying(false)}

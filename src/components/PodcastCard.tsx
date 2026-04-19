@@ -5,8 +5,9 @@ import { Play, Speaker } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/lib/translations';
 
-export default function PodcastCard({ podcast }: { podcast: any }) {
-    const { lang } = useLanguage();
+export default function PodcastCard({ podcast, forcedLang }: { podcast: any, forcedLang?: string }) {
+    const { lang: contextLang } = useLanguage();
+    const lang = (forcedLang || contextLang) as 'es' | 'en' | 'pt';
     const t = translations[lang].podcast;
     const title = (podcast.title as any)[lang] || (podcast.title as any)['es'] || podcast.slug;
     const description = (podcast.description as any)[lang] || (podcast.description as any)['es'] || "";
@@ -32,10 +33,12 @@ export default function PodcastCard({ podcast }: { podcast: any }) {
                                 <span style={{ 
                                     fontSize: '0.7rem', 
                                     fontWeight: 900, 
-                                    background: '#f1f5f9', 
+                                    background: 'rgba(0, 112, 243, 0.08)', 
                                     padding: '0.25rem 0.6rem', 
                                     borderRadius: '6px', 
-                                    color: '#64748b' 
+                                    color: 'var(--accent)',
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.05em'
                                 }}>
                                     {(translations[lang] as any).plan.subjectNames[podcast.subjectId]}
                                 </span>
@@ -132,8 +135,8 @@ export default function PodcastCard({ podcast }: { podcast: any }) {
                     display: inline-flex;
                     align-items: center;
                     gap: 0.6rem;
-                    background: #f1f5f9;
-                    color: #475569;
+                    background: rgba(0, 112, 243, 0.08);
+                    color: var(--accent);
                     padding: 0.6rem 1.2rem;
                     border-radius: 12px;
                     font-size: 0.9rem;

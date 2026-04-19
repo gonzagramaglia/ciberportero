@@ -41,7 +41,7 @@ export default async function PodcastDetailPage({ params }: { params: { slug: st
     const slug = resolvedParams.slug;
 
     const cookieStore = await cookies();
-    const lang = (cookieStore.get("lang")?.value as "es" | "en" | "pt") || "es";
+    const lang = "es";
     const t = translations[lang];
 
     let podcast = null;
@@ -86,40 +86,38 @@ export default async function PodcastDetailPage({ params }: { params: { slug: st
                     <ArrowLeft size={18} />
                     {lang === 'es' ? 'Volver a Podcast' : lang === 'pt' ? 'Voltar ao Podcast' : 'Back to Podcast'}
                 </Link>
-                <LanguageSwitcher />
+                <div style={{ width: '1px' }} />
             </div>
                 
-            <div className="podcast-grid">
-                <div className="content-side">
+            <div className="podcast-header-grid">
+                <div className="info-side">
                     <header style={{ marginBottom: '2.5rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--muted)', fontSize: '0.9rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                                    <Calendar size={14} />
-                                    <span>
-                                        {lang === 'es' ? 'Audio del ' : lang === 'pt' ? 'Áudio de ' : 'Audio from '}
-                                        {new Date(podcast.date || podcast.createdAt).toLocaleDateString(lang, {
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric'
-                                        })}
-                                    </span>
-                                </div>
-                                {podcast.subjectId && (
-                                    <div style={{ 
-                                        fontSize: '0.75rem', 
-                                        fontWeight: 900, 
-                                        background: 'rgba(0, 112, 243, 0.08)', 
-                                        padding: '0.3rem 0.75rem', 
-                                        borderRadius: '8px', 
-                                        color: 'var(--accent)',
-                                        textTransform: 'uppercase',
-                                        letterSpacing: '0.05em'
-                                    }}>
-                                        {(translations[lang] as any).plan.subjectNames[podcast.subjectId]}
-                                    </div>
-                                )}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--muted)', fontSize: '0.9rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                <Calendar size={14} />
+                                <span>
+                                    {lang === 'es' ? 'Audio del ' : lang === 'pt' ? 'Áudio de ' : 'Audio from '}
+                                    {new Date(podcast.date || podcast.createdAt).toLocaleDateString(lang, {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric'
+                                    })}
+                                </span>
                             </div>
+                            {podcast.subjectId && (
+                                <div style={{ 
+                                    fontSize: '0.75rem', 
+                                    fontWeight: 900, 
+                                    background: 'rgba(0, 112, 243, 0.08)', 
+                                    padding: '0.3rem 0.75rem', 
+                                    borderRadius: '8px', 
+                                    color: 'var(--accent)',
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.05em'
+                                }}>
+                                    {(translations[lang] as any).plan.subjectNames[podcast.subjectId]}
+                                </div>
+                            )}
                             {session?.user?.role === 'admin' && (
                                 <Link
                                     href={`/admin/podcast/${podcast.id}`}
@@ -151,23 +149,24 @@ export default async function PodcastDetailPage({ params }: { params: { slug: st
                         </h1>
                     </header>
 
-                    <main>
-                        <p className="podcast-description-full" style={{ fontSize: '1.2rem', lineHeight: 1.7, color: '#334155', whiteSpace: 'pre-wrap', marginBottom: '2.5rem' }}>
-                            {description}
-                        </p>
-                        
-                        <PodcastPlayer 
-                            podcast={podcast} 
-                            initialLikes={likes} 
-                            initialDislikes={dislikes}
-                            userVote={userVote as any}
-                        />
-                    </main>
+                    <p className="podcast-description-full" style={{ fontSize: '1.2rem', lineHeight: 1.7, color: '#334155', whiteSpace: 'pre-wrap' }}>
+                        {description}
+                    </p>
                 </div>
 
                 <aside className="comments-side">
                     <CommentSection podcastSlug={slug} lang={lang} />
                 </aside>
+            </div>
+
+            <div className="player-section-full" style={{ marginTop: '3rem' }}>
+                <PodcastPlayer 
+                    podcast={podcast} 
+                    initialLikes={likes} 
+                    initialDislikes={dislikes}
+                    userVote={userVote as any}
+                    forcedLang="es"
+                />
             </div>
 
             <footer className="footer-main" style={{ marginTop: '5rem', borderTop: '1px solid #f1f5f9', paddingTop: '2.5rem', marginBottom: '2rem' }}>
@@ -181,35 +180,35 @@ export default async function PodcastDetailPage({ params }: { params: { slug: st
             </footer>
 
             <style dangerouslySetInnerHTML={{ __html: `
-                .podcast-grid {
+                .podcast-header-grid {
                     display: grid;
-                    grid-template-columns: 4fr 6fr;
+                    grid-template-columns: 5.5fr 4.5fr;
                     gap: 3rem;
                     align-items: start;
                 }
                 .podcast-detail-title {
-                    font-size: 3.5rem;
+                    font-size: 2.8rem;
+                }
+                .player-section-full :global(.podcast-player-container) {
+                    max-width: 100% !important;
+                    margin: 0 !important;
                 }
                 /* Align comments with date */
                 .comments-side :global(.comments-container) {
                     margin-top: 0 !important;
-                    padding: 2.5rem !important;
+                    padding: 2rem !important;
+                    border-radius: 32px !important;
                 }
                 @media (max-width: 1100px) {
-                    .podcast-grid {
+                    .podcast-header-grid {
                         grid-template-columns: 1fr;
-                        gap: 0.5rem !important;
+                        gap: 2rem !important;
                     }
                     .podcast-detail-title {
                         font-size: 2.25rem !important;
                     }
-                    .comments-side {
-                        border-top: 1px solid #f1f5f9;
-                        padding-top: 1.5rem;
-                    }
-                    /* Remove player's bottom margin in mobile */
-                    .comments-side :global(.podcast-player-container) {
-                        margin-bottom: 0 !important;
+                    .player-section-full {
+                        margin-top: 2rem !important;
                     }
                 }
             `}} />

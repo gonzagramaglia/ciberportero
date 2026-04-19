@@ -8,7 +8,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export default async function PodcastListPage() {
     const cookieStore = await cookies();
-    const lang = (cookieStore.get("lang")?.value as "es" | "en" | "pt") || "es";
+    const lang = "es";
     const t = translations[lang];
 
     let podcasts = [];
@@ -40,7 +40,7 @@ export default async function PodcastListPage() {
                     <ArrowLeft size={18} />
                     {lang === 'es' ? 'Volver al inicio' : lang === 'pt' ? 'Voltar ao início' : 'Back to home'}
                 </Link>
-                <LanguageSwitcher />
+                <div style={{ width: '1px' }} />
             </div>
 
             <header style={{ marginBottom: '3.5rem' }}>
@@ -61,7 +61,7 @@ export default async function PodcastListPage() {
                         </div>
                     ) : (
                         podcasts.map((podcast: any) => (
-                            <PodcastCard key={podcast.id} podcast={podcast} />
+                            <PodcastCard key={podcast.id} podcast={podcast} forcedLang="es" />
                         ))
                     )}
                 </div>
