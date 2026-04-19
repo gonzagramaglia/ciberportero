@@ -137,7 +137,7 @@ export default function PodcastEditor({ podcast }: PodcastEditorProps) {
         audioUrl,
         published,
       });
-      router.push(`/admin/podcast?success=${encodeURIComponent(title)}&slug=${slug}`);
+      router.push(`/admin/podcast?success=${encodeURIComponent(title)}&slug=podcast/${slug}`);
       router.refresh();
     } catch (error) {
       console.error(error);
