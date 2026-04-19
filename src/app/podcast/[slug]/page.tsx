@@ -9,8 +9,14 @@ import CommentSection from "@/components/CommentSection";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { auth } from "@/auth";
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function PodcastDetailPage({ params }: { params: { slug: string } }) {
     const session = await auth();
+    const resolvedParams = await params;
+    const slug = resolvedParams.slug;
+    
     const cookieStore = await cookies();
     const lang = (cookieStore.get("lang")?.value as "es" | "en" | "pt") || "es";
     const t = translations[lang];
@@ -19,7 +25,7 @@ export default async function PodcastDetailPage({ params }: { params: { slug: st
     try {
         if (db && (db as any).podcast) {
             podcast = await (db as any).podcast.findUnique({
-                where: { slug: params.slug },
+                where: { slug: slug },
                 include: {
                     votes: true
                 }
@@ -89,7 +95,7 @@ export default async function PodcastDetailPage({ params }: { params: { slug: st
                             <User size={24} />
                             {t.comments.title}
                         </h2>
-                        <CommentSection podcastSlug={params.slug} lang={lang} />
+                        <CommentSection podcastSlug={slug} lang={lang} />
                     </div>
                 </div>
             </main>

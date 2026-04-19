@@ -202,7 +202,6 @@ export default function PodcastEditor({ podcast }: PodcastEditorProps) {
             />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 200px', gap: '1.5rem', alignItems: 'flex-end' }}>
           <div>
             <label className="admin-label">Archivo de Audio</label>
             <div style={{ 
@@ -214,20 +213,71 @@ export default function PodcastEditor({ podcast }: PodcastEditorProps) {
               transition: 'all 0.2s'
             }}>
               {audioUrl ? (
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: '#fff', padding: '0.75rem 1.5rem', borderRadius: '12px', border: '1px solid #e2e8f0', maxWidth: '100%' }}>
-                    <Speaker size={20} className="text-accent" />
-                    <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#334155', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {audioUrl.split('/').pop()}
-                    </span>
-                    {uploadSuccess && <Check size={18} color="#22c55e" />}
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem' }}>
+                  <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '1rem', 
+                    background: '#fff', 
+                    padding: '1rem 1.5rem', 
+                    borderRadius: '20px', 
+                    border: '2px solid var(--accent)', 
+                    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.05)',
+                    maxWidth: '100%',
+                    animation: 'slideUp 0.3s ease'
+                  }}>
+                    <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'rgba(var(--accent-rgb), 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Speaker size={20} className="text-accent" />
+                    </div>
+                    <div style={{ textAlign: 'left', minWidth: 0 }}>
+                      <p style={{ margin: 0, fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Audio cargado</p>
+                      <p style={{ margin: 0, fontSize: '0.95rem', fontWeight: 800, color: '#1e293b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {audioUrl.split('/').pop()}
+                      </p>
+                    </div>
+                    {uploadSuccess && (
+                      <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
+                        <Check size={14} strokeWidth={3} />
+                      </div>
+                    )}
                   </div>
-                  <div style={{ display: 'flex', gap: '1rem' }}>
-                    <label htmlFor="audio-upload" style={{ cursor: 'pointer', fontSize: '0.85rem', fontWeight: 700, color: 'var(--accent)' }}>
-                      Cambiar archivo
+
+                  <div style={{ display: 'flex', gap: '0.75rem' }}>
+                    <label 
+                      htmlFor="audio-upload" 
+                      className="btn-secondary"
+                      style={{ 
+                        cursor: 'pointer', 
+                        padding: '0.6rem 1.25rem', 
+                        fontSize: '0.85rem', 
+                        borderRadius: '12px',
+                        background: '#f8fafc',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem'
+                      }}
+                    >
+                      <Upload size={14} />
+                      <span>Cambiar archivo</span>
                     </label>
-                    <button type="button" onClick={() => setAudioUrl('')} style={{ fontSize: '0.85rem', fontWeight: 700, color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer' }}>
-                      Eliminar
+                    <button 
+                      type="button" 
+                      onClick={() => setAudioUrl('')} 
+                      className="btn-secondary"
+                      style={{ 
+                        padding: '0.6rem 1.25rem', 
+                        fontSize: '0.85rem', 
+                        borderRadius: '12px',
+                        color: '#ef4444', 
+                        borderColor: '#fee2e2',
+                        background: '#fff1f2',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem'
+                      }}
+                    >
+                      <X size={14} />
+                      <span>Eliminar</span>
                     </button>
                   </div>
                 </div>
@@ -247,7 +297,7 @@ export default function PodcastEditor({ podcast }: PodcastEditorProps) {
                   <label 
                     htmlFor="audio-upload" 
                     className={`btn-primary ${isUploading ? 'loading' : ''}`}
-                    style={{ marginTop: '1rem', cursor: isUploading ? 'not-allowed' : 'pointer' }}
+                    style={{ marginTop: '0.5rem', cursor: isUploading ? 'not-allowed' : 'pointer' }}
                   >
                     {isUploading ? <Loader2 size={18} className="animate-spin" /> : <Upload size={18} />}
                     <span>{isUploading ? 'Subiendo...' : 'Seleccionar Archivo'}</span>
@@ -264,39 +314,53 @@ export default function PodcastEditor({ podcast }: PodcastEditorProps) {
               />
             </div>
           </div>
-            <div>
-              <label className="admin-label">Slug</label>
+
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            gap: '2.5rem', 
+            marginTop: '1rem',
+            padding: '2rem',
+            background: '#f8fafc',
+            borderRadius: '24px',
+            border: '1px solid #e2e8f0'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <label className="admin-label" style={{ margin: 0, whiteSpace: 'nowrap' }}>Slug del audio:</label>
               <input 
                 className="admin-input" 
+                style={{ width: '250px', background: '#fff' }}
                 value={slug} 
                 onChange={e => setSlug(e.target.value.toLowerCase().replace(/\s+/g, '-'))} 
                 placeholder="slug-del-audio"
                 required 
               />
             </div>
-          </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-             <button 
-                type="button"
-                onClick={() => setPublished(!published)}
-                style={{ 
-                  padding: '1rem 2rem', 
-                  borderRadius: '16px', 
-                  background: published ? '#f0fdf4' : '#fff1f2', 
-                  border: `2px solid ${published ? '#22c55e' : '#fecdd3'}`,
-                  color: published ? '#166534' : '#9f1239',
-                  fontWeight: 900,
-                  fontSize: '0.9rem',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s'
-                }}
-             >
-               {published ? 'PUBLICADO' : 'BORRADOR'}
-             </button>
-             <span style={{ fontSize: '0.85rem', color: '#64748b' }}>
-               {published ? 'Cualquiera podrá ver este audio.' : 'Solo tú puedes ver este audio.'}
-             </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+               <button 
+                  type="button"
+                  onClick={() => setPublished(!published)}
+                  style={{ 
+                    padding: '0.8rem 1.5rem', 
+                    borderRadius: '14px', 
+                    background: published ? '#f0fdf4' : '#fff1f2', 
+                    border: `2px solid ${published ? '#22c55e' : '#fecdd3'}`,
+                    color: published ? '#166534' : '#9f1239',
+                    fontWeight: 900,
+                    fontSize: '0.85rem',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    minWidth: '130px'
+                  }}
+               >
+                 {published ? 'PUBLICADO' : 'BORRADOR'}
+               </button>
+               <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 600, maxWidth: '200px' }}>
+                 {published ? 'Visible para todos.' : 'Solo tú puedes verlo.'}
+               </span>
+            </div>
           </div>
         </div>
       </div>
