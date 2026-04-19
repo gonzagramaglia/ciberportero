@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import { translations } from "@/lib/translations";
 import { cookies } from "next/headers";
 import Link from "next/link";
-import { ArrowLeft, Speaker, Github, Youtube } from "lucide-react";
+import { ArrowLeft, Speaker, Github, Youtube, Disc } from "lucide-react";
 import PodcastCard from "@/components/PodcastCard";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 
@@ -67,6 +67,17 @@ export default async function PodcastListPage() {
                 </div>
             </main>
 
+            {/* Floating button for playlist.hoy.today */}
+            <a 
+                href="https://playlist.hoy.today/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="playlist-floating-link"
+                title="Ir a Playlist Hoy"
+            >
+                <Disc size={30} />
+            </a>
+
             <footer className="footer-main" style={{ marginTop: '8rem', borderTop: '1px solid #f1f5f9', paddingTop: '3rem', marginBottom: '2rem' }}>
                 <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
                     <Github size={18} />
@@ -82,6 +93,40 @@ export default async function PodcastListPage() {
                     display: grid;
                     grid-template-columns: repeat(2, 1fr);
                     gap: 2.5rem;
+                }
+                .playlist-floating-link {
+                    position: fixed;
+                    right: 4.5rem;
+                    bottom: 3.5rem;
+                    width: 62px;
+                    height: 62px;
+                    border-radius: 50%;
+                    background: #ffffff;
+                    border: 1px solid #e2e8f0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+                    color: #1e293b;
+                    z-index: 1000;
+                    opacity: 0.8;
+                    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    text-decoration: none;
+                }
+
+                .playlist-floating-link:hover {
+                    background: #facc15 !important;
+                    color: #000 !important;
+                    box-shadow: 0 15px 30px rgba(250, 204, 21, 0.3) !important;
+                    border-color: #facc15 !important;
+                    opacity: 1 !important;
+                    transform: scale(1.1) rotate(15deg);
+                }
+
+                @media (max-width: 1024px) {
+                    .playlist-floating-link {
+                        display: none !important;
+                    }
                 }
                 @media (max-width: 900px) {
                     .podcast-list-grid {
