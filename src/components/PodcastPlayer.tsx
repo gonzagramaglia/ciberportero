@@ -117,26 +117,26 @@ export default function PodcastPlayer({ podcast, initialLikes, initialDislikes, 
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    flex-wrap: wrap;
-                    gap: 1rem;
+                    gap: 0.75rem;
                 }
                 .vote-actions {
                     display: flex;
-                    gap: 0.5rem;
+                    gap: 0.4rem;
                 }
                 .action-btn {
                     display: flex;
                     align-items: center;
-                    gap: 0.6rem;
-                    padding: 0.6rem 1.2rem;
+                    gap: 0.5rem;
+                    padding: 0.5rem 0.9rem;
                     border-radius: 12px;
                     border: 1px solid var(--border);
                     background: white;
                     color: #475569;
                     font-weight: 700;
-                    font-size: 0.9rem;
+                    font-size: 0.85rem;
                     cursor: pointer;
                     transition: all 0.2s ease;
+                    white-space: nowrap;
                 }
                 .action-btn:hover {
                     background: #f1f5f9;
@@ -156,6 +156,7 @@ export default function PodcastPlayer({ podcast, initialLikes, initialDislikes, 
                     background: var(--accent);
                     color: white;
                     border: none;
+                    flex-shrink: 0;
                 }
                 .share-btn:hover {
                     background: #0060d1;

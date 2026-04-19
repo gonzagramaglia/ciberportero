@@ -73,22 +73,20 @@ export default async function PodcastDetailPage({ params }: { params: { slug: st
 
     return (
         <div className="container fade-in">
-            <div className="home-lang-container">
-                <LanguageSwitcher />
-            </div>
-
-            <div style={{ marginBottom: '2rem' }}>
-                <Link href="/podcast" className="back-link" style={{ 
+            <div className="nav-header-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', paddingTop: '1rem' }}>
+                <Link href="/" className="back-link" style={{ 
                     display: 'inline-flex', 
                     alignItems: 'center', 
-                    gap: '0.4rem', 
-                    color: 'var(--muted)', 
+                    gap: '0.6rem', 
+                    color: '#64748b', 
                     textDecoration: 'none', 
-                    fontWeight: 700,
+                    fontWeight: 600,
+                    fontSize: '1rem'
                 }}>
-                    <ArrowLeft size={16} />
-                    {t.podcast.title}
+                    <ArrowLeft size={18} />
+                    {lang === 'es' ? 'Volver al inicio' : lang === 'pt' ? 'Voltar ao início' : 'Back to home'}
                 </Link>
+                <LanguageSwitcher />
             </div>
                 
             <div className="podcast-grid">
@@ -168,24 +166,33 @@ export default async function PodcastDetailPage({ params }: { params: { slug: st
             <style dangerouslySetInnerHTML={{ __html: `
                 .podcast-grid {
                     display: grid;
-                    grid-template-columns: 3fr 5fr;
-                    gap: 4rem;
+                    grid-template-columns: 4fr 6fr;
+                    gap: 3rem;
                     align-items: start;
                 }
                 .podcast-detail-title {
                     font-size: 3.5rem;
                 }
+                /* Align comments with date */
+                .comments-side :global(.comments-container) {
+                    margin-top: 0 !important;
+                    padding: 2.5rem !important;
+                }
                 @media (max-width: 1100px) {
                     .podcast-grid {
                         grid-template-columns: 1fr;
-                        gap: 2rem !important;
+                        gap: 0.5rem !important;
                     }
                     .podcast-detail-title {
                         font-size: 2.25rem !important;
                     }
                     .comments-side {
                         border-top: 1px solid #f1f5f9;
-                        padding-top: 2rem;
+                        padding-top: 1.5rem;
+                    }
+                    /* Remove player's bottom margin in mobile */
+                    .comments-side :global(.podcast-player-container) {
+                        margin-bottom: 0 !important;
                     }
                 }
             `}} />
