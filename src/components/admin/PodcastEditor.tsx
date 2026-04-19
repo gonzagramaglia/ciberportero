@@ -15,21 +15,27 @@ type Lang = 'es' | 'en' | 'pt';
 
 export default function PodcastEditor({ podcast }: PodcastEditorProps) {
   const router = useRouter();
+  
+  // Form state
+  const [title, setTitle] = useState(podcast?.title?.es || '');
+  const [description, setDescription] = useState(podcast?.description?.es || '');
+  const [slug, setSlug] = useState(podcast?.slug || '');
+  const [audioUrl, setAudioUrl] = useState(podcast?.audioUrl || '');
+  const [published, setPublished] = useState(podcast?.published ?? true);
+
+  // UI state
   const [isPending, setIsPending] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
-  const [activeLang, setActiveLang] = useState<Lang>('es');
-
-  // Form state
-  // ... (keep common state)
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    console.log("File selected:", file?.name, file?.type);
     if (!file) return;
 
     // Check if it's an audio file
-    if (!file.type.startsWith('audio/')) {
-        alert('Por favor selecciona un archivo de audio válido.');
+    if (!file.type.startsWith('audio/') && !file.name.endsWith('.mp3') && !file.name.endsWith('.wav')) {
+        alert('Por favor selecciona un archivo de audio válido (.mp3, .wav, etc)');
         return;
     }
 
@@ -37,36 +43,39 @@ export default function PodcastEditor({ podcast }: PodcastEditorProps) {
     setUploadSuccess(false);
 
     try {
+        console.log("Starting upload to podcasts bucket...");
         const fileExt = file.name.split('.').pop();
         const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
-        const filePath = `podcasts/${fileName}`;
+        const filePath = `${fileName}`; // Removed redundant 'podcasts/' prefix if bucket name is already 'podcasts'
 
-        const { error: uploadError } = await supabase.storage
+        const { data, error: uploadError } = await supabase.storage
             .from('podcasts')
-            .upload(filePath, file);
+            .upload(filePath, file, {
+              cacheControl: '3600',
+              upsert: false
+            });
 
-        if (uploadError) throw uploadError;
+        if (uploadError) {
+          console.error("Upload error details:", uploadError);
+          throw uploadError;
+        }
 
+        console.log("Upload successful, getting public URL...");
         const { data: { publicUrl } } = supabase.storage
             .from('podcasts')
             .getPublicUrl(filePath);
 
+        console.log("Public URL received:", publicUrl);
         setAudioUrl(publicUrl);
         setUploadSuccess(true);
         setTimeout(() => setUploadSuccess(false), 3000);
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error uploading audio:', error);
-        alert('Error al subir el audio. Asegúrate de que el bucket "podcasts" existe en Supabase y es público.');
+        alert(`Error al subir: ${error.message || 'Desconocido'}. Verifica las políticas de Supabase.`);
     } finally {
         setIsUploading(false);
     }
   };
-
-  const [title, setTitle] = useState(podcast?.title?.es || '');
-  const [description, setDescription] = useState(podcast?.description?.es || '');
-  const [slug, setSlug] = useState(podcast?.slug || '');
-  const [audioUrl, setAudioUrl] = useState(podcast?.audioUrl || '');
-  const [published, setPublished] = useState(podcast?.published ?? true);
 
   const isDirty = useMemo(() => {
     const initialTitle = podcast?.title?.es || '';
@@ -194,55 +203,67 @@ export default function PodcastEditor({ podcast }: PodcastEditorProps) {
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 200px', gap: '1.5rem', alignItems: 'flex-end' }}>
-            <div style={{ flex: 1 }}>
-              <label className="admin-label">Archivo de Audio (URL o Subir)</label>
-              <div style={{ display: 'flex', gap: '0.75rem' }}>
-                <div style={{ position: 'relative', flex: 1 }}>
-                  <Speaker size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
-                  <input 
-                    className="admin-input" 
-                    style={{ paddingLeft: '3rem' }}
-                    value={audioUrl} 
-                    onChange={e => setAudioUrl(e.target.value)} 
-                    placeholder="https://ejemplo.com/audio.mp3 o sube uno ->" 
-                    required
-                  />
+          <div>
+            <label className="admin-label">Archivo de Audio</label>
+            <div style={{ 
+              border: '2px dashed #e2e8f0', 
+              borderRadius: '24px', 
+              padding: '2rem', 
+              textAlign: 'center',
+              background: audioUrl ? '#f8fafc' : '#fff',
+              transition: 'all 0.2s'
+            }}>
+              {audioUrl ? (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: '#fff', padding: '0.75rem 1.5rem', borderRadius: '12px', border: '1px solid #e2e8f0', maxWidth: '100%' }}>
+                    <Speaker size={20} className="text-accent" />
+                    <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#334155', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {audioUrl.split('/').pop()}
+                    </span>
+                    {uploadSuccess && <Check size={18} color="#22c55e" />}
+                  </div>
+                  <div style={{ display: 'flex', gap: '1rem' }}>
+                    <label htmlFor="audio-upload" style={{ cursor: 'pointer', fontSize: '0.85rem', fontWeight: 700, color: 'var(--accent)' }}>
+                      Cambiar archivo
+                    </label>
+                    <button type="button" onClick={() => setAudioUrl('')} style={{ fontSize: '0.85rem', fontWeight: 700, color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer' }}>
+                      Eliminar
+                    </button>
+                  </div>
                 </div>
-                <div style={{ position: 'relative' }}>
-                  <input 
-                    type="file" 
-                    id="audio-upload" 
-                    accept="audio/*" 
-                    style={{ display: 'none' }} 
-                    onChange={handleFileUpload}
-                    disabled={isUploading}
-                  />
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                  <div style={{ width: '64px', height: '64px', borderRadius: '20px', background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}>
+                    <Upload size={32} />
+                  </div>
+                  <div>
+                    <p style={{ margin: 0, fontWeight: 800, color: '#1e293b' }}>
+                      {isUploading ? 'Subiendo audio...' : 'Haz clic para subir un audio'}
+                    </p>
+                    <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.85rem', color: '#64748b' }}>
+                      MP3, WAV o similar
+                    </p>
+                  </div>
                   <label 
                     htmlFor="audio-upload" 
-                    className={`btn-secondary ${isUploading ? 'loading' : ''} ${uploadSuccess ? 'success' : ''}`}
-                    style={{ 
-                      height: '100%', 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: '0.4rem', 
-                      cursor: isUploading ? 'not-allowed' : 'pointer',
-                      background: uploadSuccess ? '#f0fdf4' : '',
-                      borderColor: uploadSuccess ? '#22c55e' : '',
-                      color: uploadSuccess ? '#166534' : ''
-                    }}
+                    className={`btn-primary ${isUploading ? 'loading' : ''}`}
+                    style={{ marginTop: '1rem', cursor: isUploading ? 'not-allowed' : 'pointer' }}
                   >
-                    {isUploading ? (
-                      <Loader2 size={18} className="animate-spin" />
-                    ) : uploadSuccess ? (
-                      <Check size={18} />
-                    ) : (
-                      <Upload size={18} />
-                    )}
-                    <span>{isUploading ? 'Subiendo...' : uploadSuccess ? 'Subido' : 'Subir'}</span>
+                    {isUploading ? <Loader2 size={18} className="animate-spin" /> : <Upload size={18} />}
+                    <span>{isUploading ? 'Subiendo...' : 'Seleccionar Archivo'}</span>
                   </label>
                 </div>
-              </div>
+              )}
+              <input 
+                type="file" 
+                id="audio-upload" 
+                accept="audio/*" 
+                style={{ display: 'none' }} 
+                onChange={handleFileUpload}
+                disabled={isUploading}
+              />
             </div>
+          </div>
             <div>
               <label className="admin-label">Slug</label>
               <input 
