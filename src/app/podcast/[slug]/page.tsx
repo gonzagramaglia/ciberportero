@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import { translations } from "@/lib/translations";
 import { cookies } from "next/headers";
 import Link from "next/link";
-import { ArrowLeft, Calendar, User, Edit } from "lucide-react";
+import { ArrowLeft, Calendar, User, Edit, Github, Youtube } from "lucide-react";
 import { notFound } from "next/navigation";
 import PodcastPlayer from "@/components/PodcastPlayer";
 import CommentSection from "@/components/CommentSection";
@@ -136,34 +136,55 @@ export default async function PodcastDetailPage({ params }: { params: { slug: st
             </header>
 
             <main>
-                <div className="podcast-content" style={{ maxWidth: '900px' }}>
-                    <p className="podcast-description-full" style={{ fontSize: '1.2rem', lineHeight: 1.7, color: '#334155', whiteSpace: 'pre-wrap', marginBottom: '3rem' }}>
-                        {description}
-                    </p>
-                    
-                    <PodcastPlayer 
-                        podcast={podcast} 
-                        initialLikes={likes} 
-                        initialDislikes={dislikes}
-                        userVote={userVote as any}
-                    />
+                <div className="podcast-grid" style={{ display: 'grid', gap: '3rem', marginTop: '2rem' }}>
+                    <div className="audio-section">
+                        <p className="podcast-description-full" style={{ fontSize: '1.2rem', lineHeight: 1.7, color: '#334155', whiteSpace: 'pre-wrap', marginBottom: '2.5rem' }}>
+                            {description}
+                        </p>
+                        
+                        <PodcastPlayer 
+                            podcast={podcast} 
+                            initialLikes={likes} 
+                            initialDislikes={dislikes}
+                            userVote={userVote as any}
+                        />
+                    </div>
 
-                    <div style={{ marginTop: '5rem', borderTop: '1px solid #f1f5f9', paddingTop: '4rem' }}>
+                    <div className="comments-section" style={{ borderTop: '1px solid #f1f5f9', paddingTop: '2.5rem' }}>
                         <CommentSection podcastSlug={slug} lang={lang} />
                     </div>
                 </div>
             </main>
 
+            <footer className="footer-main" style={{ marginTop: '5rem', borderTop: '1px solid #f1f5f9', paddingTop: '2.5rem', marginBottom: '2rem' }}>
+                <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+                    <Github size={18} />
+                </a>
+                <span>{t.footer}</span>
+                <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+                    <Youtube size={22} />
+                </a>
+            </footer>
+
             <style dangerouslySetInnerHTML={{ __html: `
+                .podcast-grid {
+                    grid-template-columns: 1fr 400px;
+                    align-items: start;
+                }
                 .podcast-detail-title {
                     font-size: 3.5rem;
                 }
-                @media (max-width: 768px) {
+                @media (max-width: 1100px) {
+                    .podcast-grid {
+                        grid-template-columns: 1fr;
+                        gap: 1.5rem !important;
+                    }
+                    .comments-section {
+                        margin-top: 1rem !important;
+                        padding-top: 2rem !important;
+                    }
                     .podcast-detail-title {
                         font-size: 2.25rem !important;
-                    }
-                    .podcast-content {
-                        max-width: 100% !important;
                     }
                 }
             `}} />
