@@ -237,9 +237,82 @@ export async function upsertPost(data: any) {
     await logAction('CREATE', 'post', `Creó un nuevo post: ${title}`);
   }
   
-  revalidatePath('/admin/posts');
+  revalidatePath(`/admin/posts`);
   revalidatePath('/');
   revalidatePath(`/${data.slug}`);
+}
+
+/* --- PODCAST ACTIONS --- */
+export async function deletePodcast(id: string) {
+  const podcast = await db.podcast.findUnique({ where: { id } });
+  const title = (podcast?.title as any)?.es || 'Sin título';
+  
+  await db.podcast.delete({ where: { id } });
+  await logAction('DELETE', 'podcast', `Eliminó el podcast: ${title}`);
+  
+  revalidatePath('/admin/podcast');
+  revalidatePath('/podcast');
+  revalidatePath(`/podcast/${podcast?.slug}`);
+}
+
+export async function upsertPodcast(data: any) {
+  const isUpdate = !!data.id;
+  const title = data.title.es || 'Sin título';
+
+  const podcastData: any = {
+    title: data.title,
+    description: data.description,
+    slug: data.slug,
+    audioUrl: data.audioUrl,
+    published: data.published,
+  };
+
+  if (isUpdate) {
+    await db.podcast.update({
+      where: { id: data.id },
+      data: podcastData
+    });
+    await logAction('UPDATE', 'podcast', `Actualizó el podcast: ${title}`);
+  } else {
+    await db.podcast.create({
+      data: podcastData
+    });
+    await logAction('CREATE', 'podcast', `Creó un nuevo podcast: ${title}`);
+  }
+  
+  revalidatePath('/admin/podcast');
+  revalidatePath('/podcast');
+  revalidatePath(`/podcast/${data.slug}`);
+}
+
+export async function votePodcast(podcastId: string, type: 'LIKE' | 'DISLIKE') {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "Not authenticated" };
+
+  const userId = session.user.id;
+
+  const existingVote = await db.podcastVote.findUnique({
+    where: { userId_podcastId: { userId, podcastId } }
+  });
+
+  if (existingVote) {
+    if (existingVote.type === type) {
+      await db.podcastVote.delete({ where: { id: existingVote.id } });
+    } else {
+      await db.podcastVote.update({
+        where: { id: existingVote.id },
+        data: { type }
+      });
+    }
+  } else {
+    await db.podcastVote.create({
+      data: { userId, podcastId, type }
+    });
+  }
+
+  const podcast = await db.podcast.findUnique({ where: { id: podcastId } });
+  revalidatePath(`/podcast/${podcast?.slug}`);
+  return { success: true };
 }
 
 /* --- COUNTDOWN ACTIONS --- */
@@ -408,63 +481,111 @@ export async function createPersonalEvent(data: { title: string, startDate: stri
 }
 
 /* --- COMMENTS ACTIONS --- */
-export async function getComments(postSlug: string) {
-  const post = await db.post.findUnique({
-    where: { slug: postSlug },
-    include: {
-      comments: {
-        where: { parentId: null }, // Only top-level comments
-        include: { 
-            user: { select: { id: true, name: true, image: true } },
-            replies: {
-                include: {
-                    user: { select: { id: true, name: true, image: true } },
-                    replies: {
-                        include: {
-                            user: { select: { id: true, name: true, image: true } }
-                        },
-                        orderBy: { createdAt: 'asc' } as any
-                    }
-                },
-                orderBy: { createdAt: 'asc' } as any
-            }
-        },
-        orderBy: { createdAt: 'desc' } as any
-    }
-    }
-  });
-  return post?.comments || [];
+export async function getComments(postSlug?: string, podcastSlug?: string) {
+  if (postSlug) {
+    const post = await db.post.findUnique({
+      where: { slug: postSlug },
+      include: {
+        comments: {
+          where: { parentId: null, podcastId: null }, // Only top-level post comments
+          include: { 
+              user: { select: { id: true, name: true, image: true } },
+              replies: {
+                  include: {
+                      user: { select: { id: true, name: true, image: true } },
+                      replies: {
+                          include: {
+                              user: { select: { id: true, name: true, image: true } }
+                          },
+                          orderBy: { createdAt: 'asc' } as any
+                      }
+                  },
+                  orderBy: { createdAt: 'asc' } as any
+              }
+          },
+          orderBy: { createdAt: 'desc' } as any
+        }
+      }
+    });
+    return post?.comments || [];
+  }
+  
+  if (podcastSlug) {
+    const podcast = await db.podcast.findUnique({
+      where: { slug: podcastSlug },
+      include: {
+        comments: {
+          where: { parentId: null }, // Only top-level podcast comments
+          include: { 
+              user: { select: { id: true, name: true, image: true } },
+              replies: {
+                  include: {
+                      user: { select: { id: true, name: true, image: true } },
+                      replies: {
+                          include: {
+                              user: { select: { id: true, name: true, image: true } }
+                          },
+                          orderBy: { createdAt: 'asc' } as any
+                      }
+                  },
+                  orderBy: { createdAt: 'asc' } as any
+              }
+          },
+          orderBy: { createdAt: 'desc' } as any
+        }
+      }
+    });
+    return podcast?.comments || [];
+  }
+  
+  return [];
 }
 
-export async function addComment(postSlug: string, content: string, parentId?: string, images: string[] = []) {
+export async function addComment(slug: string, content: string, parentId?: string, images: string[] = [], isPodcast: boolean = false) {
   const session = await auth();
   if (!session?.user?.id) return { error: "Not authenticated" };
 
-  // Find or create post in DB to link comments
-  let post = await db.post.findUnique({ where: { slug: postSlug } });
-  
-  if (!post) {
-    post = await db.post.create({
+  if (isPodcast) {
+    const podcast = await db.podcast.findUnique({ where: { slug } });
+    if (!podcast) return { error: "Podcast not found" };
+
+    await db.comment.create({
       data: {
-        slug: postSlug,
-        title: { es: postSlug, en: postSlug, pt: postSlug },
-        content: { es: "Draft from markdown sync", en: "Draft from markdown sync", pt: "Draft from markdown sync" },
-        published: true
-      } as any
+        content,
+        podcastId: podcast.id,
+        userId: session.user.id,
+        images,
+        ...(parentId ? { parentId } : {})
+      }
     });
+    revalidatePath(`/podcast/${slug}`);
+  } else {
+    // Find or create post in DB to link comments
+    let post = await db.post.findUnique({ where: { slug } });
+    
+    if (!post) {
+      post = await db.post.create({
+        data: {
+          slug,
+          title: { es: slug, en: slug, pt: slug },
+          content: { es: "Draft from markdown sync", en: "Draft from markdown sync", pt: "Draft from markdown sync" },
+          published: true
+        } as any
+      });
+    }
+
+    await db.comment.create({
+      data: {
+        content,
+        postId: post.id,
+        userId: session.user.id,
+        images,
+        ...(parentId ? { parentId } : {})
+      }
+    });
+    revalidatePath(`/${slug}`);
   }
 
-  await db.comment.create({
-    data: {
-      content,
-      postId: post.id,
-      userId: session.user.id,
-      images,
-      ...(parentId ? { parentId } : {})
-    }
-  });
-
-  revalidatePath(`/${postSlug}`);
   return { success: true };
 }
 
@@ -474,7 +595,7 @@ export async function deleteComment(commentId: string) {
 
   const comment = await db.comment.findUnique({ 
     where: { id: commentId },
-    include: { post: true }
+    include: { post: true, podcast: true }
   });
   if (!comment) return { error: "Not found" };
 
@@ -484,7 +605,10 @@ export async function deleteComment(commentId: string) {
   }
 
   await db.comment.delete({ where: { id: commentId } });
-  revalidatePath(`/${comment.post.slug}`);
+  
+  if (comment.post) revalidatePath(`/${comment.post.slug}`);
+  if (comment.podcast) revalidatePath(`/podcast/${comment.podcast.slug}`);
+  
   return { success: true };
 }
 

@@ -7,7 +7,10 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.warn('Supabase credentials missing. Check your .env file.');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Ensure strings are provided even if empty to prevent createClient from throwing
+export const supabase = supabaseUrl 
+  ? createClient(supabaseUrl, supabaseAnonKey || 'dummy')
+  : null as any;
 
 // Admin client for server-side operations (bypasses RLS)
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';

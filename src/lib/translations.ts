@@ -76,6 +76,18 @@ export const translations = {
         post: {
             index: "Índice"
         },
+        podcast: {
+            title: "Podcast & Audios",
+            description: "Acompañá tus estudios con material en audio.",
+            empty: "No hay audios disponibles.",
+            listen: "Escuchar ahora",
+            share: "Compartir audio",
+            copied: "¡Enlace copiado!",
+            votes: {
+                like: "Me gusta",
+                dislike: "No me gusta"
+            }
+        },
         studentPortal: {
             guestTitle: "Tu Avance",
             guestDesc: "<strong>Registrá y llevá un control de tus autoevaluaciones, tps y exámenes.</strong>",
@@ -316,6 +328,18 @@ export const translations = {
         post: {
             index: "Index"
         },
+        podcast: {
+            title: "Podcast & Audios",
+            description: "Supplement your studies with audio material.",
+            empty: "No audios available.",
+            listen: "Listen now",
+            share: "Share audio",
+            copied: "Link copied!",
+            votes: {
+                like: "Like",
+                dislike: "Dislike"
+            }
+        },
         studentPortal: {
             guestTitle: "Your Progress",
             guestDesc: "<strong>Record and keep track of your self-assessments, TPs, and exams.</strong>",
@@ -555,6 +579,18 @@ export const translations = {
         },
         post: {
             index: "Índice"
+        },
+        podcast: {
+            title: "Podcast & Audios",
+            description: "Acompanhe seus estudos com material em áudio.",
+            empty: "Não há áudios disponíveis.",
+            listen: "Ouvir agora",
+            share: "Compartilhar áudio",
+            copied: "Link copiado!",
+            votes: {
+                like: "Gostei",
+                dislike: "Não gostei"
+            }
         },
         studentPortal: {
             guestTitle: "Seu Progresso",

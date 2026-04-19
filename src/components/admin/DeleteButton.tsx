@@ -1,11 +1,11 @@
 'use client';
 
 import { Trash2 } from "lucide-react";
-import { deleteLink, deleteNotification, deletePost, deleteCalendarEvent } from "@/lib/actions";
+import { deleteLink, deleteNotification, deletePost, deleteCalendarEvent, deletePodcast } from "@/lib/actions";
 
 interface Props {
   id: string;
-  type: 'link' | 'notification' | 'post' | 'event';
+  type: 'link' | 'notification' | 'post' | 'event' | 'podcast';
 }
 
 export function DeleteButton({ id, type }: Props) {
@@ -15,6 +15,7 @@ export function DeleteButton({ id, type }: Props) {
       if (type === 'notification') await deleteNotification(id);
       if (type === 'post') await deletePost(id);
       if (type === 'event') await deleteCalendarEvent(id);
+      if (type === 'podcast') await deletePodcast(id);
     }
   };
 

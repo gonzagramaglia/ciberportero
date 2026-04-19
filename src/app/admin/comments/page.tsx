@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import { MessageCircle, User as UserIcon, Calendar as CalendarIcon, FileText } from "lucide-react";
+import { MessageCircle, User as UserIcon, Calendar as CalendarIcon, FileText, Speaker } from "lucide-react";
 import DeleteCommentButton from "@/components/DeleteCommentButton";
 import { getAdminNote } from "@/lib/actions";
 import AdminSectionNotes from "@/components/admin/AdminSectionNotes";
@@ -19,6 +19,7 @@ export default async function AdminCommentsPage() {
     db.comment.findMany({
       include: {
         post: true,
+        podcast: true,
         user: { select: { name: true, image: true } }
       },
       orderBy: { createdAt: 'desc' }
@@ -61,9 +62,11 @@ export default async function AdminCommentsPage() {
                     <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>{new Date(comment.createdAt).toLocaleDateString()}</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#64748b' }}>
-                    <FileText size={12} />
+                    {comment.post ? <FileText size={12} /> : <Speaker size={12} />}
                     <span style={{ fontSize: '0.75rem', fontWeight: '700', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px' }}>
-                      {(comment.post.title as any)?.es || comment.post.slug}
+                      {comment.post 
+                        ? (comment.post.title as any)?.es || comment.post.slug 
+                        : (comment.podcast?.title as any)?.es || comment.podcast?.slug || 'Podcast'}
                     </span>
                   </div>
                 </div>

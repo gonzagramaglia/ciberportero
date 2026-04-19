@@ -171,19 +171,21 @@ function ReplyForm({ onSubmit, onCancel, lang, userImage, userName }: {
   )
 }
 
-function CommentCard({ comment, depth, lang, session, postSlug, onRefresh, onImageClick }: {
+function CommentCard({ comment, depth, lang, session, postSlug, podcastSlug, onRefresh, onImageClick }: {
   comment: Comment | Reply
   depth: number
   lang: string
   session: any
-  postSlug: string
+  postSlug?: string
+  podcastSlug?: string
   onRefresh: () => void
   onImageClick: (src: string) => void
 }) {
   const [showReplyForm, setShowReplyForm] = useState(false)
 
   const handleReply = async (content: string, images?: string[]) => {
-    const res = await addComment(postSlug, content, comment.id, images)
+    const slug = postSlug || podcastSlug!
+    const res = await addComment(slug, content, comment.id, images, !!podcastSlug)
     if (res.success) {
       setShowReplyForm(false)
       onRefresh()
@@ -272,7 +274,7 @@ function CommentCard({ comment, depth, lang, session, postSlug, onRefresh, onIma
         {'replies' in comment && comment.replies && comment.replies.length > 0 && (
           <div style={{ marginTop: '1rem', paddingLeft: '0.5rem', borderLeft: '2px solid #f0f0f0', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {comment.replies.map((reply: Reply) => (
-              <CommentCard key={reply.id} comment={reply} depth={depth + 1} lang={lang} session={session} postSlug={postSlug} onRefresh={onRefresh} onImageClick={onImageClick} />
+              <CommentCard key={reply.id} comment={reply} depth={depth + 1} lang={lang} session={session} postSlug={postSlug} podcastSlug={podcastSlug} onRefresh={onRefresh} onImageClick={onImageClick} />
             ))}
           </div>
         )}
@@ -281,7 +283,7 @@ function CommentCard({ comment, depth, lang, session, postSlug, onRefresh, onIma
   )
 }
 
-export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: string; lang?: string }) {
+export default function CommentSection({ postSlug, podcastSlug, lang = 'es' }: { postSlug?: string; podcastSlug?: string; lang?: string }) {
   const { data: session } = useSession()
   const [comments, setComments] = useState<Comment[]>([])
   const [newComment, setNewComment] = useState("")
@@ -293,12 +295,12 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
   const [selectedImageForLightbox, setSelectedImageForLightbox] = useState<string | null>(null)
 
   const fetchComments = async () => {
-    const data = await getComments(postSlug)
+    const data = await getComments(postSlug, podcastSlug)
     setComments(data as any)
     setIsLoading(false)
   }
 
-  useEffect(() => { fetchComments() }, [postSlug])
+  useEffect(() => { fetchComments() }, [postSlug, podcastSlug])
 
   const totalCount = comments.reduce((acc, c) => {
     const replyCount = (c.replies || []).reduce((a: number, r: Reply) => a + 1 + (r.replies?.length || 0), 0)
@@ -346,7 +348,8 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
         }
       }
 
-      const result = await addComment(postSlug, newComment, undefined, uploadedUrls)
+      const slug = postSlug || podcastSlug!
+      const result = await addComment(slug, newComment, undefined, uploadedUrls, !!podcastSlug)
       if (result.success) {
         setNewComment('');
         setSelectedImages([]);
@@ -456,7 +459,7 @@ export default function CommentSection({ postSlug, lang = 'es' }: { postSlug: st
           </div>
         ) : (
           comments.map(comment => (
-            <CommentCard key={comment.id} comment={comment} depth={0} lang={lang} session={session} postSlug={postSlug} onRefresh={fetchComments} onImageClick={setSelectedImageForLightbox} />
+            <CommentCard key={comment.id} comment={comment} depth={0} lang={lang} session={session} postSlug={postSlug} podcastSlug={podcastSlug} onRefresh={fetchComments} onImageClick={setSelectedImageForLightbox} />
           ))
         )}
       </div>
