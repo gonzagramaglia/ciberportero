@@ -116,7 +116,7 @@ export default async function PodcastDetailPage({ params }: { params: { slug: st
                                         textTransform: 'uppercase',
                                         letterSpacing: '0.05em'
                                     }}>
-                                        {translations[lang].plan.subjectNames[podcast.subjectId as any]}
+                                        {(translations[lang] as any).plan.subjectNames[podcast.subjectId]}
                                     </div>
                                 )}
                             </div>
