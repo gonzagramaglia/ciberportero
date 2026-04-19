@@ -149,7 +149,7 @@ export default function PodcastEditor({ podcast }: PodcastEditorProps) {
       router.refresh();
     } catch (error) {
       console.error(error);
-      alert('Error al guardar el podcast');
+      alert('Error al guardar el audio');
     } finally {
       setIsPending(false);
     }
@@ -159,12 +159,12 @@ export default function PodcastEditor({ podcast }: PodcastEditorProps) {
     <form onSubmit={handleSubmit} className="space-y-6 fade-in">
       <div className="admin-header">
         <div>
-          <h2 className="admin-title">{podcast ? 'Editar Podcast' : 'Nuevo Podcast'}</h2>
+          <h2 className="admin-title">{podcast ? 'Editar Audio' : 'Nuevo Audio'}</h2>
           {slug && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.4rem' }}>
-              <span style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 600 }}>Acceso al podcast público:</span>
+              <span style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 600 }}>Acceso al audio público:</span>
               <a href={`/podcast/${slug}`} target="_blank" rel="noreferrer" style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--accent)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                Ver podcast <ExternalLink size={14} />
+                Ver audio <ExternalLink size={14} />
               </a>
             </div>
           )}
@@ -176,7 +176,7 @@ export default function PodcastEditor({ podcast }: PodcastEditorProps) {
           </button>
           <button type="submit" disabled={isPending} className="btn-primary">
             <Save size={18} />
-            <span>{isPending ? 'Guardando...' : 'Guardar Podcast'}</span>
+            <span>{isPending ? 'Guardando...' : 'Guardar Audio'}</span>
           </button>
         </div>
       </div>
@@ -210,29 +210,6 @@ export default function PodcastEditor({ podcast }: PodcastEditorProps) {
             />
           </div>
 
-          <div>
-            <label className="admin-label">Materia / Categoría</label>
-            <select 
-              className="admin-input"
-              style={{ fontSize: '1.1rem', padding: '1rem', borderRadius: '16px', background: '#fff' }}
-              value={subjectId || 'none'}
-              onChange={e => setSubjectId(e.target.value)}
-            >
-              <option value="none">Sin materia (General)</option>
-              {Object.entries({
-                1: "Análisis Matemático I", 2: "Álgebra I", 3: "Gestión de Servicios de Información", 4: "Inglés I", 5: "Sistemas Operativos I",
-                6: "Sistemas de Tratamiento de Datos", 7: "Infraestructura de Telecomunicaciones", 8: "Sociedad y Estado", 9: "Sistemas Operativos II", 10: "Lenguajes de Programación",
-                11: "Análisis Matemático II", 12: "Álgebra II", 13: "Probabilidad y Estadística", 14: "Inglés II", 15: "Tecnología Operacional",
-                16: "Programación Segura", 17: "Ciberseguridad Aplicada", 18: "Dispositivos Remotos e Internet de las Cosas", 19: "Ética Profesional", 20: "Gestión de Seguridad de la Información",
-                21: "Protección de Infraestructuras Críticas", 22: "Metodologías de Análisis de Riesgos", 23: "Análisis de Escenarios y Capacidades", 24: "Gobierno y Políticas Públicas", 25: "Informática Forense",
-                26: "Relaciones Internacionales", 27: "IA y Aprendizaje de Máquina", 28: "Geopolítica", 29: "Derecho a la Defensa Nacional", 30: "Sistema de Inteligencia Nacional",
-                31: "Investigación Operativa", 32: "Criptografía Aplicada", 33: "Gestión de Proyectos", 34: "Instrumento Militar y Sistemas de Armas", 35: "Modelos y Simulación",
-                36: "Prospectiva Estratégica", 37: "Actores en el Quinto Dominio"
-              }).map(([id, name]) => (
-                <option key={id} value={id}>[{id}] {name}</option>
-              ))}
-            </select>
-          </div>
 
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
@@ -463,9 +440,26 @@ export default function PodcastEditor({ podcast }: PodcastEditorProps) {
                >
                  {published ? 'PUBLICADO' : 'BORRADOR'}
                </button>
-               <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 600, maxWidth: '200px' }}>
-                 {published ? 'Visible para todos.' : 'Solo tú puedes verlo.'}
-               </span>
+               <select 
+                  className="admin-input"
+                  style={{ fontSize: '0.85rem', padding: '0.8rem', borderRadius: '14px', background: '#fff', fontWeight: 700, width: '250px' }}
+                  value={subjectId || 'none'}
+                  onChange={e => setSubjectId(e.target.value)}
+                >
+                  <option value="none">📍 Sin categoría</option>
+                  {Object.entries({
+                    1: "Análisis Matemático I", 2: "Álgebra I", 3: "Gestión de Servicios de Información", 4: "Inglés I", 5: "Sistemas Operativos I",
+                    6: "Sistemas de Tratamiento de Datos", 7: "Infraestructura de Telecomunicaciones", 8: "Sociedad y Estado", 9: "Sistemas Operativos II", 10: "Lenguajes de Programación",
+                    11: "Análisis Matemático II", 12: "Álgebra II", 13: "Probabilidad y Estadística", 14: "Inglés II", 15: "Tecnología Operacional",
+                    16: "Programación Segura", 17: "Ciberseguridad Aplicada", 18: "Dispositivos Remotos e Internet de las Cosas", 19: "Ética Profesional", 20: "Gestión de Seguridad de la Información",
+                    21: "Protección de Infraestructuras Críticas", 22: "Metodologías de Análisis de Riesgos", 23: "Análisis de Escenarios y Capacidades", 24: "Gobierno y Políticas Públicas", 25: "Informática Forense",
+                    26: "Relaciones Internacionales", 27: "IA y Aprendizaje de Máquina", 28: "Geopolítica", 29: "Derecho a la Defensa Nacional", 30: "Sistema de Inteligencia Nacional",
+                    31: "Investigación Operativa", 32: "Criptografía Aplicada", 33: "Gestión de Proyectos", 34: "Instrumento Militar y Sistemas de Armas", 35: "Modelos y Simulación",
+                    36: "Prospectiva Estratégica", 37: "Actores en el Quinto Dominio"
+                  }).map(([id, name]) => (
+                    <option key={id} value={id}>[{id}] {name}</option>
+                  ))}
+               </select>
             </div>
           </div>
         </div>

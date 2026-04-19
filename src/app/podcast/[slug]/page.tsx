@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import { translations } from "@/lib/translations";
 import { cookies } from "next/headers";
 import Link from "next/link";
-import { ArrowLeft, Calendar, User, Edit, Github, Youtube, ExternalLink, Disc } from "lucide-react";
+import { ArrowLeft, Calendar, User, Edit, Github, Youtube, ExternalLink, Disc3 } from "lucide-react";
 import { notFound } from "next/navigation";
 import PodcastPlayer from "@/components/PodcastPlayer";
 import CommentSection from "@/components/CommentSection";
@@ -217,7 +217,7 @@ export default async function PodcastDetailPage({ params }: { params: { slug: st
                 className="playlist-floating-link"
                 title="Ir a Playlist Hoy"
             >
-                <Disc size={30} />
+                <Disc3 size={30} />
             </a>
 
             <footer className="footer-main" style={{ marginTop: '5rem', borderTop: '1px solid #f1f5f9', paddingTop: '2.5rem', marginBottom: '2rem' }}>
@@ -244,7 +244,7 @@ export default async function PodcastDetailPage({ params }: { params: { slug: st
                 .comments-side { grid-area: comments; }
                 .player-section-full { 
                     grid-area: player; 
-                    margin-top: 3rem;
+                    margin-top: 1.5rem;
                 }
 
                 .podcast-detail-title {
@@ -267,13 +267,14 @@ export default async function PodcastDetailPage({ params }: { params: { slug: st
                             "info"
                             "player"
                             "comments";
-                        gap: 2rem !important;
+                        gap: 1.25rem !important;
                     }
                     .podcast-detail-title {
                         font-size: 2.25rem !important;
                     }
                     .player-section-full {
-                        margin-top: 1rem !important;
+                        margin-top: 0.5rem !important;
+                        margin-bottom: 0.5rem !important;
                     }
                 }
                 .podcast-link-item:hover {

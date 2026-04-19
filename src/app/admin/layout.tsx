@@ -42,7 +42,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <AdminNavLink href="/admin" icon={<LayoutDashboard size={20} />} label="Dashboard" />
           <AdminNavLink href="/admin/links" icon={<LinkIcon size={20} />} label="Links" />
           <AdminNavLink href="/admin/posts" icon={<FileText size={20} />} label="Posts" />
-          <AdminNavLink href="/admin/podcast" icon={<Speaker size={20} />} label="Podcast" />
+          <AdminNavLink href="/admin/podcast" icon={<Speaker size={20} />} label="Audios" />
           <AdminNavLink href="/admin/calendar" icon={<Calendar size={20} />} label="Calendario" />
           <AdminNavLink href="/admin/notifications" icon={<Bell size={20} />} label="Notificaciones" />
           <AdminNavLink href="/admin/countdowns" icon={<Clock size={20} />} label="Cuentas Regresivas" />

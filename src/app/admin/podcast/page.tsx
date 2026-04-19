@@ -16,18 +16,18 @@ export default async function AdminPodcastPage() {
       <div className="admin-header">
         <div>
           <div style={{ marginBottom: '0.25rem' }}>
-            <h2 className="admin-title">Podcasts / Audios</h2>
+            <h2 className="admin-title">Podcast / Audios</h2>
           </div>
           <p className="admin-subtitle">
             Gestión de archivos de audio y episodios. Ver{" "}
             <Link href="/podcast" target="_blank" style={{ color: 'var(--accent)', fontWeight: 700, textDecoration: 'underline' }}>
-              Podcast Público
+              Podcast
             </Link>.
           </p>
         </div>
         <Link href="/admin/podcast/new" className="btn-primary" style={{ textDecoration: 'none', boxShadow: '0 4px 12px rgba(0, 112, 243, 0.2)' }}>
           <Plus size={18} />
-          <span>Nuevo Podcast</span>
+          <span>Nuevo Audio</span>
         </Link>
       </div>
 
@@ -35,8 +35,7 @@ export default async function AdminPodcastPage() {
         <table className="admin-table">
           <thead>
             <tr>
-              <th style={{ width: '50%' }}>Audio</th>
-              <th>Localización</th>
+              <th style={{ width: '60%' }}>Audio</th>
               <th>Estado</th>
               <th>Fecha</th>
               <th style={{ textAlign: 'right' }}>Acciones</th>
@@ -77,25 +76,6 @@ export default async function AdminPodcastPage() {
                             {titleObj?.es || podcast.slug}
                           </Link>
                         </div>
-                      </div>
-                    </td>
-                    <td style={{ verticalAlign: 'top' }}>
-                      <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.5rem' }}>
-                        {['es', 'en', 'pt'].map(lang => {
-                          const exists = lang === 'es' ? hasEs : lang === 'en' ? hasEn : hasPt;
-                          return (
-                            <span key={lang} style={{ 
-                              fontSize: '9px', fontWeight: 900, textTransform: 'uppercase', 
-                              padding: '0.15rem 0.4rem', borderRadius: '4px',
-                              background: exists ? '#f1f5f9' : '#fff1f2',
-                              color: exists ? '#475569' : '#e11d48',
-                              border: `1px solid ${exists ? '#e2e8f0' : '#fecdd3'}`,
-                              opacity: exists ? 1 : 0.6
-                            }}>
-                              {lang}
-                            </span>
-                          );
-                        })}
                       </div>
                     </td>
                     <td style={{ verticalAlign: 'top' }}>

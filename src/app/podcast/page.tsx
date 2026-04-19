@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import { translations } from "@/lib/translations";
 import { cookies } from "next/headers";
 import Link from "next/link";
-import { ArrowLeft, Speaker, Github, Youtube, Disc } from "lucide-react";
+import { ArrowLeft, Speaker, Github, Youtube, Disc3 } from "lucide-react";
 import PodcastCard from "@/components/PodcastCard";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 
@@ -75,7 +75,7 @@ export default async function PodcastListPage() {
                 className="playlist-floating-link"
                 title="Ir a Playlist Hoy"
             >
-                <Disc size={30} />
+                <Disc3 size={30} />
             </a>
 
             <footer className="footer-main" style={{ marginTop: '8rem', borderTop: '1px solid #f1f5f9', paddingTop: '3rem', marginBottom: '2rem' }}>
