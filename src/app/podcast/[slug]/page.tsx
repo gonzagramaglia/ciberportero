@@ -77,7 +77,7 @@ export default async function PodcastDetailPage({ params }: { params: { slug: st
                 <LanguageSwitcher />
             </div>
 
-            <header style={{ marginBottom: '2.5rem' }}>
+            <div style={{ marginBottom: '2rem' }}>
                 <Link href="/podcast" className="back-link" style={{ 
                     display: 'inline-flex', 
                     alignItems: 'center', 
@@ -85,59 +85,58 @@ export default async function PodcastDetailPage({ params }: { params: { slug: st
                     color: 'var(--muted)', 
                     textDecoration: 'none', 
                     fontWeight: 700,
-                    marginBottom: '1rem'
                 }}>
                     <ArrowLeft size={16} />
                     {t.podcast.title}
                 </Link>
+            </div>
                 
-                <div style={{ marginTop: '1rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--muted)', fontSize: '0.9rem', fontWeight: 600 }}>
-                            <Calendar size={14} />
-                            <span>
-                                {new Date(podcast.date || podcast.createdAt).toLocaleDateString(lang, {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric'
-                                })}
-                            </span>
+            <div className="podcast-grid">
+                <div className="content-side">
+                    <header style={{ marginBottom: '2.5rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--muted)', fontSize: '0.9rem', fontWeight: 600 }}>
+                                <Calendar size={14} />
+                                <span>
+                                    {new Date(podcast.date || podcast.createdAt).toLocaleDateString(lang, {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric'
+                                    })}
+                                </span>
+                            </div>
+                            {session?.user?.role === 'admin' && (
+                                <Link
+                                    href={`/admin/podcast/${podcast.id}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="admin-edit-badge"
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '0.4rem',
+                                        fontSize: '0.7rem',
+                                        fontWeight: 800,
+                                        textTransform: 'uppercase',
+                                        background: '#f8fafc',
+                                        color: '#64748b',
+                                        padding: '0.2rem 0.6rem',
+                                        borderRadius: '6px',
+                                        border: '1px solid #e2e8f0',
+                                        textDecoration: 'none'
+                                    }}
+                                >
+                                    <Edit size={12} />
+                                    <span>Editar</span>
+                                </Link>
+                            )}
                         </div>
-                        {session?.user?.role === 'admin' && (
-                            <Link
-                                href={`/admin/podcast/${podcast.id}`}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="admin-edit-badge"
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.4rem',
-                                    fontSize: '0.7rem',
-                                    fontWeight: 800,
-                                    textTransform: 'uppercase',
-                                    background: '#f8fafc',
-                                    color: '#64748b',
-                                    padding: '0.2rem 0.6rem',
-                                    borderRadius: '6px',
-                                    border: '1px solid #e2e8f0',
-                                    textDecoration: 'none'
-                                }}
-                            >
-                                <Edit size={12} />
-                                <span>Editar</span>
-                            </Link>
-                        )}
-                    </div>
-                    <h1 className="podcast-detail-title" style={{ margin: 0, fontWeight: 900, color: '#000', lineHeight: 1.1, letterSpacing: '-0.02em' }}>
-                        {title}
-                    </h1>
-                </div>
-            </header>
+                        <h1 className="podcast-detail-title" style={{ margin: 0, fontWeight: 900, color: '#000', lineHeight: 1.1, letterSpacing: '-0.02em' }}>
+                            {title}
+                        </h1>
+                    </header>
 
-            <main>
-                <div className="podcast-grid" style={{ display: 'grid', gap: '3rem', marginTop: '2rem' }}>
-                    <div className="audio-section">
+                    <main>
                         <p className="podcast-description-full" style={{ fontSize: '1.2rem', lineHeight: 1.7, color: '#334155', whiteSpace: 'pre-wrap', marginBottom: '2.5rem' }}>
                             {description}
                         </p>
@@ -148,13 +147,13 @@ export default async function PodcastDetailPage({ params }: { params: { slug: st
                             initialDislikes={dislikes}
                             userVote={userVote as any}
                         />
-                    </div>
-
-                    <div className="comments-section" style={{ borderTop: '1px solid #f1f5f9', paddingTop: '2.5rem' }}>
-                        <CommentSection podcastSlug={slug} lang={lang} />
-                    </div>
+                    </main>
                 </div>
-            </main>
+
+                <aside className="comments-side">
+                    <CommentSection podcastSlug={slug} lang={lang} />
+                </aside>
+            </div>
 
             <footer className="footer-main" style={{ marginTop: '5rem', borderTop: '1px solid #f1f5f9', paddingTop: '2.5rem', marginBottom: '2rem' }}>
                 <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
@@ -168,7 +167,9 @@ export default async function PodcastDetailPage({ params }: { params: { slug: st
 
             <style dangerouslySetInnerHTML={{ __html: `
                 .podcast-grid {
-                    grid-template-columns: 1fr 400px;
+                    display: grid;
+                    grid-template-columns: 3fr 5fr;
+                    gap: 4rem;
                     align-items: start;
                 }
                 .podcast-detail-title {
@@ -177,14 +178,14 @@ export default async function PodcastDetailPage({ params }: { params: { slug: st
                 @media (max-width: 1100px) {
                     .podcast-grid {
                         grid-template-columns: 1fr;
-                        gap: 1.5rem !important;
-                    }
-                    .comments-section {
-                        margin-top: 1rem !important;
-                        padding-top: 2rem !important;
+                        gap: 2rem !important;
                     }
                     .podcast-detail-title {
                         font-size: 2.25rem !important;
+                    }
+                    .comments-side {
+                        border-top: 1px solid #f1f5f9;
+                        padding-top: 2rem;
                     }
                 }
             `}} />
