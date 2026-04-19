@@ -21,6 +21,7 @@ export default function PodcastEditor({ podcast }: PodcastEditorProps) {
   const [description, setDescription] = useState(podcast?.description?.es || '');
   const [slug, setSlug] = useState(podcast?.slug || '');
   const [audioUrl, setAudioUrl] = useState(podcast?.audioUrl || '');
+  const [subjectId, setSubjectId] = useState(podcast?.subjectId || '');
   const [published, setPublished] = useState(podcast?.published ?? true);
 
   // UI state
@@ -135,6 +136,7 @@ export default function PodcastEditor({ podcast }: PodcastEditorProps) {
         slug,
         description: { es: description, en: description, pt: description },
         audioUrl,
+        subjectId: subjectId === 'none' ? null : subjectId,
         published,
       });
       router.push(`/admin/podcast?success=${encodeURIComponent(title)}&slug=podcast/${slug}`);
@@ -200,6 +202,30 @@ export default function PodcastEditor({ podcast }: PodcastEditorProps) {
               onChange={e => setDescription(e.target.value)} 
               placeholder="De qué trata este audio..."
             />
+          </div>
+
+          <div>
+            <label className="admin-label">Materia / Categoría</label>
+            <select 
+              className="admin-input"
+              style={{ fontSize: '1.1rem', padding: '1rem', borderRadius: '16px', background: '#fff' }}
+              value={subjectId || 'none'}
+              onChange={e => setSubjectId(e.target.value)}
+            >
+              <option value="none">Sin materia (General)</option>
+              {Object.entries({
+                1: "Análisis Matemático I", 2: "Álgebra I", 3: "Gestión de Servicios de Información", 4: "Inglés I", 5: "Sistemas Operativos I",
+                6: "Sistemas de Tratamiento de Datos", 7: "Infraestructura de Telecomunicaciones", 8: "Sociedad y Estado", 9: "Sistemas Operativos II", 10: "Lenguajes de Programación",
+                11: "Análisis Matemático II", 12: "Álgebra II", 13: "Probabilidad y Estadística", 14: "Inglés II", 15: "Tecnología Operacional",
+                16: "Programación Segura", 17: "Ciberseguridad Aplicada", 18: "Dispositivos Remotos e Internet de las Cosas", 19: "Ética Profesional", 20: "Gestión de Seguridad de la Información",
+                21: "Protección de Infraestructuras Críticas", 22: "Metodologías de Análisis de Riesgos", 23: "Análisis de Escenarios y Capacidades", 24: "Gobierno y Políticas Públicas", 25: "Informática Forense",
+                26: "Relaciones Internacionales", 27: "IA y Aprendizaje de Máquina", 28: "Geopolítica", 29: "Derecho a la Defensa Nacional", 30: "Sistema de Inteligencia Nacional",
+                31: "Investigación Operativa", 32: "Criptografía Aplicada", 33: "Gestión de Proyectos", 34: "Instrumento Militar y Sistemas de Armas", 35: "Modelos y Simulación",
+                36: "Prospectiva Estratégica", 37: "Actores en el Quinto Dominio"
+              }).map(([id, name]) => (
+                <option key={id} value={id}>[{id}] {name}</option>
+              ))}
+            </select>
           </div>
 
           <div>

@@ -150,6 +150,7 @@ model Podcast {
   description Json?    // { "es": "...", "en": "...", "pt": "..." }
   slug        String   @unique
   audioUrl    String
+  subjectId   String?  // ID related to subjectNames in translations
   published   Boolean  @default(false)
   date        DateTime @default(now())
   createdAt   DateTime @default(now())

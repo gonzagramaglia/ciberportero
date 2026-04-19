@@ -93,16 +93,32 @@ export default async function PodcastDetailPage({ params }: { params: { slug: st
                 <div className="content-side">
                     <header style={{ marginBottom: '2.5rem' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--muted)', fontSize: '0.9rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                                <Calendar size={14} />
-                                <span>
-                                    {lang === 'es' ? 'Audio del ' : lang === 'pt' ? 'Áudio de ' : 'Audio from '}
-                                    {new Date(podcast.date || podcast.createdAt).toLocaleDateString(lang, {
-                                        year: 'numeric',
-                                        month: 'long',
-                                        day: 'numeric'
-                                    })}
-                                </span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--muted)', fontSize: '0.9rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                    <Calendar size={14} />
+                                    <span>
+                                        {lang === 'es' ? 'Audio del ' : lang === 'pt' ? 'Áudio de ' : 'Audio from '}
+                                        {new Date(podcast.date || podcast.createdAt).toLocaleDateString(lang, {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric'
+                                        })}
+                                    </span>
+                                </div>
+                                {podcast.subjectId && (
+                                    <div style={{ 
+                                        fontSize: '0.75rem', 
+                                        fontWeight: 900, 
+                                        background: 'rgba(0, 112, 243, 0.08)', 
+                                        padding: '0.3rem 0.75rem', 
+                                        borderRadius: '8px', 
+                                        color: 'var(--accent)',
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '0.05em'
+                                    }}>
+                                        {translations[lang].plan.subjectNames[podcast.subjectId as any]}
+                                    </div>
+                                )}
                             </div>
                             {session?.user?.role === 'admin' && (
                                 <Link

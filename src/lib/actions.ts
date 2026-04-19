@@ -264,6 +264,7 @@ export async function upsertPodcast(data: any) {
     description: data.description,
     slug: data.slug,
     audioUrl: data.audioUrl,
+    subjectId: data.subjectId || null,
     published: data.published,
   };
 

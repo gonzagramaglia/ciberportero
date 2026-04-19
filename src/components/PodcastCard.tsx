@@ -19,14 +19,28 @@ export default function PodcastCard({ podcast }: { podcast: any }) {
                 </div>
                 <div className="podcast-card-content">
                     <div className="podcast-card-meta">
-                        <span className="podcast-card-date">
-                            {lang === 'es' ? 'Audio del ' : lang === 'pt' ? 'Áudio de ' : 'Audio from '}
-                            {new Date(podcast.date || podcast.createdAt).toLocaleDateString(lang, {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric'
-                            })}
-                        </span>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span className="podcast-card-date">
+                                {lang === 'es' ? 'Audio del ' : lang === 'pt' ? 'Áudio de ' : 'Audio from '}
+                                {new Date(podcast.date || podcast.createdAt).toLocaleDateString(lang, {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                })}
+                            </span>
+                            {podcast.subjectId && (
+                                <span style={{ 
+                                    fontSize: '0.7rem', 
+                                    fontWeight: 900, 
+                                    background: '#f1f5f9', 
+                                    padding: '0.25rem 0.6rem', 
+                                    borderRadius: '6px', 
+                                    color: '#64748b' 
+                                }}>
+                                    {(translations[lang] as any).plan.subjectNames[podcast.subjectId]}
+                                </span>
+                            )}
+                        </div>
                     </div>
                     <h3 className="podcast-card-title">{title}</h3>
                     <p className="podcast-card-desc">{description}</p>
