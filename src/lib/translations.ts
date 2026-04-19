@@ -235,6 +235,7 @@ export const translations = {
         },
         comments: {
             title: "Comentarios",
+            submit: "Comentar",
             dateLocale: "es-AR"
         },
         motivations: [
@@ -487,6 +488,7 @@ export const translations = {
         },
         comments: {
             title: "Comments",
+            submit: "Comment",
             dateLocale: "en-US"
         },
         motivations: [
@@ -739,6 +741,7 @@ export const translations = {
         },
         comments: {
             title: "Comentários",
+            submit: "Comentar",
             dateLocale: "pt-BR"
         },
         motivations: [

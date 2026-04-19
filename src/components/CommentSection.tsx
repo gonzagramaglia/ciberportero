@@ -350,6 +350,7 @@ export default function CommentSection({ postSlug, podcastSlug, lang = 'es' }: {
 
       const slug = postSlug || podcastSlug!
       const result = await addComment(slug, newComment, undefined, uploadedUrls, !!podcastSlug)
+      
       if (result.success) {
         setNewComment('');
         setSelectedImages([]);
@@ -362,10 +363,12 @@ export default function CommentSection({ postSlug, podcastSlug, lang = 'es' }: {
             commentsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
         }, 500);
+      } else if (result.error) {
+        alert(result.error)
       }
     } catch (err) {
-      console.error("Upload error:", err)
-      alert(lang === 'es' ? "Error al subir las imágenes" : "Error uploading images")
+      console.error("Comment submission error:", err)
+      alert(lang === 'es' ? "Error al publicar. Probá de nuevo." : "Error posting. Try again.")
     } finally {
       setIsSubmitting(false)
       setIsUploading(false)
@@ -411,7 +414,7 @@ export default function CommentSection({ postSlug, podcastSlug, lang = 'es' }: {
                     <Loader2 size={20} className="spin" />
                   ) : (
                     <>
-                      <span className="btn-text-mobile">{lang === 'es' ? 'Postear comentario' : lang === 'pt' ? 'Postar comentário' : 'Post comment'}</span>
+                      <span className="btn-text-mobile">{(translations[lang as keyof typeof translations] as any).comments.submit}</span>
                       <Send className="btn-icon" size={20} />
                     </>
                   )}
