@@ -20,6 +20,7 @@ export default function PodcastCard({ podcast }: { podcast: any }) {
                 <div className="podcast-card-content">
                     <div className="podcast-card-meta">
                         <span className="podcast-card-date">
+                            {lang === 'es' ? 'Audio del ' : lang === 'pt' ? 'Áudio de ' : 'Audio from '}
                             {new Date(podcast.date || podcast.createdAt).toLocaleDateString(lang, {
                                 year: 'numeric',
                                 month: 'long',

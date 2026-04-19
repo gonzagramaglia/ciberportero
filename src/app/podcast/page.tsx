@@ -43,21 +43,21 @@ export default async function PodcastListPage() {
                 <LanguageSwitcher />
             </div>
 
-            <header style={{ marginBottom: '4rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1.2rem', marginBottom: '0.5rem' }}>
+            <header style={{ marginBottom: '3.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
                     <div style={{ 
-                        width: '64px', height: '64px', background: 'var(--accent)', 
-                        borderRadius: '16px', display: 'flex', alignItems: 'center', 
+                        width: '56px', height: '56px', background: 'var(--accent)', 
+                        borderRadius: '14px', display: 'flex', alignItems: 'center', 
                         justifyContent: 'center', color: 'white',
-                        boxShadow: '0 10px 25px rgba(0, 112, 243, 0.2)'
+                        boxShadow: '0 4px 12px rgba(0, 112, 243, 0.1)'
                     }}>
-                        <Speaker size={32} />
+                        <Speaker size={28} strokeWidth={2.5} />
                     </div>
-                    <h1 style={{ margin: 0, fontSize: '3.5rem', fontWeight: '950', color: '#000', letterSpacing: '-0.04em', lineHeight: 0.9 }}>
+                    <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em', lineHeight: 1 }}>
                         {t.podcast.title}
                     </h1>
                 </div>
-                <p style={{ color: 'var(--muted)', fontSize: '1.4rem', marginTop: '1.5rem', fontWeight: '500', maxWidth: '800px', lineHeight: 1.4 }}>
+                <p style={{ color: 'var(--muted)', fontSize: '1.2rem', marginTop: '0.5rem', fontWeight: '500', maxWidth: '700px', lineHeight: 1.5 }}>
                     {t.podcast.description}
                 </p>
             </header>
@@ -90,10 +90,15 @@ export default async function PodcastListPage() {
             <style dangerouslySetInnerHTML={{ __html: `
                 .podcast-list-grid {
                     display: grid;
-                    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
-                    gap: 2.5rem;
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 2rem;
                 }
-                @media (max-width: 1100px) {
+                @media (max-width: 1200px) {
+                    .podcast-list-grid {
+                        grid-template-columns: repeat(2, 1fr);
+                    }
+                }
+                @media (max-width: 900px) {
                     .podcast-list-grid {
                         grid-template-columns: 1fr;
                         gap: 1.5rem;

@@ -77,7 +77,7 @@ export const translations = {
             index: "Índice"
         },
         podcast: {
-            title: "Podcast & Audios",
+            title: "Podcast",
             description: "Acompañá tus estudios con material en audio.",
             empty: "No hay audios disponibles.",
             listen: "Escuchar ahora",
@@ -329,7 +329,7 @@ export const translations = {
             index: "Index"
         },
         podcast: {
-            title: "Podcast & Audios",
+            title: "Podcast",
             description: "Supplement your studies with audio material.",
             empty: "No audios available.",
             listen: "Listen now",
@@ -581,7 +581,7 @@ export const translations = {
             index: "Índice"
         },
         podcast: {
-            title: "Podcast & Audios",
+            title: "Podcast",
             description: "Acompanhe seus estudos com material em áudio.",
             empty: "Não há áudios disponíveis.",
             listen: "Ouvir agora",

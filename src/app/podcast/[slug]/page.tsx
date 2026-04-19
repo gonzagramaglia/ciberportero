@@ -84,7 +84,7 @@ export default async function PodcastDetailPage({ params }: { params: { slug: st
                     fontSize: '1rem'
                 }}>
                     <ArrowLeft size={18} />
-                    {lang === 'es' ? 'Podcast & Audios' : lang === 'pt' ? 'Podcast & Áudios' : 'Podcast & Audios'}
+                    {lang === 'es' ? 'Volver a Podcast' : lang === 'pt' ? 'Voltar ao Podcast' : 'Back to Podcast'}
                 </Link>
                 <LanguageSwitcher />
             </div>
@@ -93,9 +93,10 @@ export default async function PodcastDetailPage({ params }: { params: { slug: st
                 <div className="content-side">
                     <header style={{ marginBottom: '2.5rem' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--muted)', fontSize: '0.9rem', fontWeight: 600 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--muted)', fontSize: '0.9rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                                 <Calendar size={14} />
                                 <span>
+                                    {lang === 'es' ? 'Audio del ' : lang === 'pt' ? 'Áudio de ' : 'Audio from '}
                                     {new Date(podcast.date || podcast.createdAt).toLocaleDateString(lang, {
                                         year: 'numeric',
                                         month: 'long',
