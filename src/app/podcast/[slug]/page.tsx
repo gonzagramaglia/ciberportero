@@ -74,7 +74,7 @@ export default async function PodcastDetailPage({ params }: { params: { slug: st
     return (
         <div className="container fade-in">
             <div className="nav-header-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', paddingTop: '1rem' }}>
-                <Link href="/" className="back-link" style={{ 
+                <Link href="/podcast" className="back-link" style={{ 
                     display: 'inline-flex', 
                     alignItems: 'center', 
                     gap: '0.6rem', 
@@ -84,7 +84,7 @@ export default async function PodcastDetailPage({ params }: { params: { slug: st
                     fontSize: '1rem'
                 }}>
                     <ArrowLeft size={18} />
-                    {lang === 'es' ? 'Volver al inicio' : lang === 'pt' ? 'Voltar ao início' : 'Back to home'}
+                    {lang === 'es' ? 'Podcast & Audios' : lang === 'pt' ? 'Podcast & Áudios' : 'Podcast & Audios'}
                 </Link>
                 <LanguageSwitcher />
             </div>

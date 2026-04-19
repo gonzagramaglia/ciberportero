@@ -15,23 +15,23 @@ export default function PodcastCard({ podcast }: { podcast: any }) {
         <Link href={`/podcast/${podcast.slug}`} className="podcast-card-link">
             <div className="podcast-card">
                 <div className="podcast-card-icon">
-                    <Speaker size={32} />
+                    <Speaker size={32} strokeWidth={2.5} />
                 </div>
                 <div className="podcast-card-content">
-                    <div className="podcast-card-header">
+                    <div className="podcast-card-meta">
                         <span className="podcast-card-date">
                             {new Date(podcast.date || podcast.createdAt).toLocaleDateString(lang, {
                                 year: 'numeric',
-                                month: 'short',
+                                month: 'long',
                                 day: 'numeric'
                             })}
                         </span>
                     </div>
                     <h3 className="podcast-card-title">{title}</h3>
                     <p className="podcast-card-desc">{description}</p>
-                    <div className="podcast-card-footer">
+                    <div className="podcast-card-action">
                         <span className="podcast-card-btn">
-                            <Play size={16} fill="currentColor" />
+                            <Play size={14} fill="currentColor" />
                             {t.listen}
                         </span>
                     </div>
@@ -43,95 +43,103 @@ export default function PodcastCard({ podcast }: { podcast: any }) {
                     text-decoration: none;
                     color: inherit;
                     display: block;
-                    transition: transform 0.2s ease;
-                }
-                .podcast-card-link:hover {
-                    transform: translateY(-4px);
                 }
                 .podcast-card {
                     background: white;
-                    border: 1px solid var(--border);
-                    border-radius: 16px;
-                    padding: 1.5rem;
+                    border: 1px solid #f1f5f9;
+                    border-radius: 24px;
+                    padding: 2rem;
                     display: flex;
                     gap: 1.5rem;
                     height: 100%;
-                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-                    transition: all 0.2s ease;
+                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+                    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
                 }
                 .podcast-card-link:hover .podcast-card {
+                    transform: translateY(-8px) scale(1.02);
                     border-color: var(--accent);
-                    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+                    box-shadow: 0 20px 40px rgba(0, 112, 243, 0.1);
                 }
                 .podcast-card-icon {
-                    width: 64px;
-                    height: 64px;
-                    background: #f1f5f9;
-                    border-radius: 12px;
+                    width: 72px;
+                    height: 72px;
+                    background: #f8fafc;
+                    border-radius: 18px;
                     display: flex;
-                    alignItems: center;
+                    align-items: center;
                     justify-content: center;
-                    color: var(--accent);
+                    color: #94a3b8;
                     flex-shrink: 0;
+                    transition: all 0.4s ease;
+                }
+                .podcast-card-link:hover .podcast-card-icon {
+                    background: var(--accent);
+                    color: white;
+                    transform: rotate(-5deg);
                 }
                 .podcast-card-content {
                     display: flex;
                     flex-direction: column;
                     flex-grow: 1;
                 }
-                .podcast-card-header {
-                    margin-bottom: 0.5rem;
+                .podcast-card-meta {
+                    margin-bottom: 0.75rem;
                 }
                 .podcast-card-date {
-                    font-size: 0.8rem;
+                    font-size: 0.85rem;
                     color: var(--muted);
-                    font-weight: 500;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
                 }
                 .podcast-card-title {
-                    margin: 0 0 0.5rem 0;
-                    font-size: 1.25rem;
-                    font-weight: 800;
+                    margin: 0 0 0.75rem 0;
+                    font-size: 1.5rem;
+                    font-weight: 900;
                     color: #0f172a;
-                    line-height: 1.2;
+                    line-height: 1.1;
+                    letter-spacing: -0.02em;
                 }
                 .podcast-card-desc {
-                    margin: 0 0 1rem 0;
-                    font-size: 0.95rem;
-                    color: #64748b;
+                    margin: 0 0 1.5rem 0;
+                    font-size: 1.05rem;
+                    color: #475569;
                     display: -webkit-box;
                     -webkit-line-clamp: 2;
                     -webkit-box-orient: vertical;
                     overflow: hidden;
                     line-height: 1.5;
                 }
-                .podcast-card-footer {
+                .podcast-card-action {
                     margin-top: auto;
                 }
                 .podcast-card-btn {
                     display: inline-flex;
                     align-items: center;
-                    gap: 0.5rem;
-                    background: #f8fafc;
-                    color: var(--accent);
-                    padding: 0.5rem 1rem;
-                    border-radius: 8px;
-                    font-size: 0.85rem;
-                    font-weight: 700;
-                    transition: all 0.2s ease;
+                    gap: 0.6rem;
+                    background: #f1f5f9;
+                    color: #475569;
+                    padding: 0.6rem 1.2rem;
+                    border-radius: 12px;
+                    font-size: 0.9rem;
+                    font-weight: 800;
+                    transition: all 0.3s ease;
                 }
                 .podcast-card-link:hover .podcast-card-btn {
-                    background: var(--accent);
+                    background: #000;
                     color: white;
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
                 }
 
                 @media (max-width: 640px) {
                     .podcast-card {
                         flex-direction: column;
-                        gap: 1rem;
+                        gap: 1.25rem;
+                        padding: 1.5rem;
                     }
                     .podcast-card-icon {
-                        width: 48px;
-                        height: 48px;
+                        width: 56px;
+                        height: 56px;
                     }
                 }
             `}</style>
