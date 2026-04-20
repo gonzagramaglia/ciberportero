@@ -1156,6 +1156,11 @@ footer a:hover {
   box-shadow: 0 8px 24px rgba(16, 185, 129, 0.15);
 }
 
+.single-countdown-wrapper {
+  flex: 1 1 100% !important;
+  max-width: 100% !important;
+}
+
 .inline-countdown.single-countdown {
   width: 100% !important;
   max-width: 100% !important;

@@ -149,7 +149,7 @@ export default function CountdownWidget({ countdowns: initialCountdowns, isInlin
                     ? `inline-countdown ${initialCountdowns ? 'post-specific' : ''} ${isSingle ? 'single-countdown' : ''}` 
                     : `sidebar-widget sidebar-widget-${cd.slot} ${initialCountdowns ? 'post-specific' : ''}`;
 
-                const content = (
+                const itemContent = (
                     <div className={widgetClass} style={{ cursor: cd.url ? 'pointer' : 'default' }}>
                         <div className="countdown-header" style={{ marginBottom: (cd.description || !time.expired) ? '0.5rem' : '0' }}>
                             <Clock size={14} />
@@ -180,14 +180,19 @@ export default function CountdownWidget({ countdowns: initialCountdowns, isInlin
                             href={cd.url} 
                             target="_blank" 
                             rel="noopener noreferrer" 
+                            className={isSingle && isInline ? 'single-countdown-wrapper' : ''}
                             style={{ textDecoration: 'none', color: 'inherit' }}
                         >
-                            {content}
+                            {itemContent}
                         </a>
                     );
                 }
 
-                return <div key={cd.slot}>{content}</div>;
+                return (
+                    <div key={cd.slot} className={isSingle && isInline ? 'single-countdown-wrapper' : ''}>
+                        {itemContent}
+                    </div>
+                );
             })}
         </>
     );
