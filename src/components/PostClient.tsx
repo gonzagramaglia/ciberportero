@@ -97,10 +97,9 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
     const postTitle = getLocalizedField(post.title);
     const postContent = getLocalizedField(post.content);
 
-    // FIX: Automatically wrap URLs ending with underscores in < > to prevent Markdown from cutting them
+    // FIX: Robustly wrap plain text URLs containing underscores in < > to prevent Markdown italics
     const processedContent = String(postContent)
-        .replace(/(\*\*)(https?:\/\/[^\s*]+_)(\*\*)/g, '$1<$2>$3')
-        .replace(/([^\(<]|^)(https?:\/\/[^\s<*]+_)([^\)>*]|$)/g, '$1<$2>$3');
+        .replace(/(^|\s)(https?:\/\/[^\s<*>]+_[^\s<*>]*)/g, '$1<$2>');
 
     const slugify = (text: any) => {
         const str = String(text || '');
