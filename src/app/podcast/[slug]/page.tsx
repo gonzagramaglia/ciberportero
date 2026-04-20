@@ -1,5 +1,6 @@
+import { Metadata } from 'next';
 import { db } from "@/lib/db";
-import { translations } from "@/lib/translations";
+import { translations, Locale } from "@/lib/translations";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { ArrowLeft, Calendar, User, Edit, Github, Youtube, ExternalLink, Disc3 } from "lucide-react";
@@ -12,50 +13,50 @@ import { auth } from "@/auth";
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-    const resolvedParams = await params;
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const { slug } = await params;
+    const cookieStore = await cookies();
+    const lang = (cookieStore.get('lang')?.value as Locale) || 'es';
+    
     const podcast = await db.podcast.findUnique({
-        where: { slug: resolvedParams.slug }
+        where: { slug }
     });
 
     if (!podcast) return { title: 'Podcast no encontrado' };
 
-    const lang = 'es'; // Default to ES for metadata if not specified
-    const title = (podcast.title as any)[lang] || (podcast.title as any)['es'] || podcast.slug;
-    const description = (podcast.description as any)[lang] || (podcast.description as any)['es'] || "";
+    const titleObj = podcast.title as any;
+    const descObj = podcast.description as any;
+    const title = titleObj[lang] || titleObj['es'] || titleObj['en'] || slug;
+    const description = descObj?.[lang] || descObj?.['es'] || descObj?.['en'] || "";
 
     return {
-        title: `${title} | Ciberportero`,
+        title: `Ciberportero | ${title}`,
         description: description.slice(0, 160),
         openGraph: {
             title,
             description,
             type: 'music.song',
+            url: `https://ciberportero.com/podcast/${slug}`,
         }
     };
 }
 
-export default async function PodcastDetailPage({ params }: { params: { slug: string } }) {
+export default async function PodcastDetailPage({ params }: { params: Promise<{ slug: string }> }) {
     const session = await auth();
-    const resolvedParams = await params;
-    const slug = resolvedParams.slug;
+    const { slug } = await params;
 
     const cookieStore = await cookies();
-    const lang = "es";
+    const lang = (cookieStore.get('lang')?.value as Locale) || 'es';
     const t = translations[lang];
 
     let podcast = null;
     try {
-        if (db && (db as any).podcast) {
-            podcast = await (db as any).podcast.findUnique({
-                where: { slug: slug },
-                include: {
-                    votes: true
-                }
-            });
-        } else {
-            console.warn("Prisma: podcast model not found in DB client.");
-        }
+        podcast = await db.podcast.findUnique({
+            where: { slug },
+            include: {
+                votes: true
+            }
+        });
     } catch (e) {
         console.error("Database connection failed:", e);
     }

@@ -1,0 +1,199 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { useLanguage } from '../context/LanguageContext';
+import { translations } from '../lib/translations';
+import { Github, Youtube, BookOpen, Calendar, Info, Link as LinkIcon, X, Zap, ClipboardClock } from 'lucide-react';
+import NotificationBanners from './NotificationBanners';
+import CountdownWidget from './CountdownWidget';
+import { useSession } from 'next-auth/react';
+import { SignInButton, SignOutButton } from './AuthButtons';
+import { useMotivation } from '../hooks/useMotivation';
+import LanguageSwitcher from './LanguageSwitcher';
+
+interface HomeClientProps {
+    initialPosts: any[];
+}
+
+export default function HomeClient({ initialPosts }: HomeClientProps) {
+    const { lang } = useLanguage();
+    const { data: session, status } = useSession();
+    const motivation = useMotivation(lang);
+    const [posts, setPosts] = useState(initialPosts);
+    const [isLoadingPosts, setIsLoadingPosts] = useState(false);
+    const t = translations[lang];
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+    const handleImageClick = (src: string) => {
+        if (typeof window !== 'undefined' && window.innerWidth < 768 && src === '/cyberdefense-fadena-undef.png') {
+            window.open('https://undef.edu.ar/fadena/carreras-de-grado/licciberdefensa/', '_blank');
+            return;
+        }
+        setSelectedImage(src);
+    };
+
+    useEffect(() => {
+        const fetchPosts = async () => {
+            setIsLoadingPosts(true);
+            try {
+                const response = await fetch(`/api/posts?lang=${lang}`);
+                const data = await response.json();
+                setPosts(data);
+            } finally {
+                setIsLoadingPosts(false);
+            }
+        };
+        // Initial posts are from server, but refetch if language changes client-side
+        if (lang) fetchPosts();
+    }, [lang]);
+
+    useEffect(() => {
+        if (selectedImage) document.body.classList.add('lightbox-open');
+        else document.body.classList.remove('lightbox-open');
+        return () => document.body.classList.remove('lightbox-open');
+    }, [selectedImage]);
+
+    return (
+        <div className="container fade-in home-container">
+            <CountdownWidget />
+            <NotificationBanners />
+
+            {selectedImage && (
+                <div className="lightbox-overlay" onClick={() => setSelectedImage(null)}>
+                    <div className="lightbox-content">
+                        <button className="lightbox-close" onClick={() => setSelectedImage(null)}><X size={24} /></button>
+                        <img src={selectedImage} alt="Enlarged view" onClick={() => setSelectedImage(null)} style={{ cursor: 'zoom-out' }} />
+                    </div>
+                </div>
+            )}
+
+            <div className="home-lang-container">
+                <LanguageSwitcher />
+            </div>
+
+            <header style={{ marginBottom: '3rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '1.2rem', marginBottom: '0.5rem' }}>
+                    <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em' }}>{t.title}</h1>
+                    <div style={{
+                        marginTop: '0.6rem',
+                        minHeight: '45px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        opacity: status === 'loading' ? 0 : 1,
+                        transition: 'opacity 0.2s ease-in-out'
+                    }}>
+                        {status !== 'loading' && (session ? <SignOutButton /> : <SignInButton />)}
+                    </div>
+                </div>
+                <p style={{ color: 'var(--muted)', fontSize: '1.1rem', marginTop: '0.2rem', fontWeight: '500' }}>
+                    {session ? (
+                        <>
+                            <span style={{ color: 'var(--accent)', fontWeight: '700' }}>{t.dashboard.welcome} {session.user.name?.split(' ')[0] || 'Estudiante'}!</span>{' '}
+                            <span style={{ opacity: 0.9, fontStyle: 'italic' }}>{motivation}</span>
+                        </>
+                    ) : (
+                        <span style={{ fontStyle: 'italic', opacity: 0.9 }}>{motivation || t.description}</span>
+                    )}
+                </p>
+            </header>
+
+            <main style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div className="featured-grid">
+                    <Link href="/links" className="post-item featured roadmap-block links-card" style={{ display: 'block', textDecoration: 'none', border: '1px solid var(--success)', background: 'rgba(16, 185, 129, 0.03)' }}>
+                        <span className="featured-tag" style={{ background: 'var(--success)', color: 'white' }}>{t.featured?.tag || 'Destaque'}</span>
+                        <span className="post-title" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: 'var(--success)' }}>
+                            <LinkIcon size={28} className="bell-animation" color="var(--success)" />
+                            {t.featured?.title}
+                        </span>
+                        <p className="post-description" dangerouslySetInnerHTML={{ __html: t.featured?.description || '' }} style={{ margin: 0 }} />
+                    </Link>
+
+                    <Link href="/plan" className="post-item featured roadmap-block plan-card" style={{ display: 'block', textDecoration: 'none', border: '1px solid var(--accent)', background: 'rgba(0,112,243,0.02)' }}>
+                        <span className="featured-tag" style={{ background: 'var(--accent)', color: 'white' }}>{t.featured?.tag || 'Destaque'}</span>
+                        <span className="post-title" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: 'var(--accent)' }}>
+                            <Zap size={28} className="bell-animation" fill="var(--accent)" />
+                            {t.plan?.title}
+                        </span>
+                        <p className="post-description" dangerouslySetInnerHTML={{ __html: t.plan?.description || '' }} style={{ margin: 0 }} />
+                    </Link>
+
+                    <Link href="/calendar" className="post-item featured roadmap-block calendar-card" style={{ display: 'block', textDecoration: 'none', border: '1px solid #eab308', background: 'rgba(234, 179, 8, 0.02)' }}>
+                        <span className="featured-tag" style={{ background: '#eab308', color: 'white' }}>{t.featured?.tag || 'Destaque'}</span>
+                        <span className="post-title" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: '#eab308' }}>
+                            <Calendar size={28} style={{ color: '#eab308' }} className="bell-animation" />
+                            {t.calendar?.title}
+                        </span>
+                        <p className="post-description" dangerouslySetInnerHTML={{ __html: t.calendar?.description || '' }} style={{ margin: 0 }} />
+                    </Link>
+                </div>
+
+                <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+                    <span className="featured-tag" style={{ background: '#f8fafc', color: 'var(--muted)', border: '1px solid var(--border)', marginBottom: '1rem' }}>Feed</span>
+                    <h2 style={{ fontSize: '1.8rem', fontWeight: '700', color: '#000', display: 'flex', alignItems: 'center', gap: '0.8rem', margin: 0 }}>
+                        <BookOpen size={26} style={{ color: 'var(--muted)' }} />
+                        Blog
+                    </h2>
+                </div>
+
+                <ul className="post-list">
+                    {isLoadingPosts ? (
+                        [1, 2, 3].map(i => (
+                            <li key={i} className="post-item" style={{ pointerEvents: 'none' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                                    <div style={{ width: '120px', height: '14px', borderRadius: '8px', background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.4s infinite' }} />
+                                    <div style={{ width: `${60 + i * 10}%`, height: '20px', borderRadius: '8px', background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.4s infinite' }} />
+                                </div>
+                            </li>
+                        ))
+                    ) : posts.map((post: any) => (
+                        <li key={post.slug} className="post-item">
+                            <Link href={`/${post.slug}`}>
+                                <span className="post-date">{new Date(post.date).toLocaleDateString(lang, { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })}</span>
+                                <span className="post-title">{post.title}</span>
+                                <p className="post-description">{post.description}</p>
+                            </Link>
+                        </li>
+                    ))}
+                </ul>
+
+                {lang === 'es' && (
+                    <>
+                        <div style={{ marginTop: '1.5rem', marginBottom: '0.8rem' }}>
+                            <span className="featured-tag" style={{ background: '#f8fafc', color: 'var(--muted)', border: '1px solid var(--border)', marginBottom: '1rem' }}>Info</span>
+                            <h2 style={{ fontSize: '1.8rem', fontWeight: '700', color: '#000', display: 'flex', alignItems: 'center', gap: '0.8rem', margin: 0 }}>
+                                <Info size={26} style={{ color: 'var(--muted)' }} />
+                                <span className="mobile-hide">Información de la Carrera</span>
+                                <span className="mobile-only">Info de la Carrera</span>
+                            </h2>
+                        </div>
+                        <a href="https://undef.edu.ar/fadena/carreras-de-grado/licciberdefensa/" target="_blank" rel="noopener noreferrer" className="intro-cover"><img src="/cyberdefense-fadena-undef.png" alt="Cyberdefense FADENA UNDEF" style={{ width: '100%', borderRadius: '12px' }} /></a>
+                        <Link href="/links" className="intro-cover"><img src="/moodle-siu.png" alt="Moodle y SIU" style={{ width: '100%', borderRadius: '12px' }} /></Link>
+                        <div style={{ marginTop: '1.5rem', marginBottom: '0.8rem' }}>
+                            <span className="featured-tag" style={{ background: '#f8fafc', color: 'var(--muted)', border: '1px solid var(--border)', marginBottom: '1rem' }}>Info</span>
+                            <h2 style={{ fontSize: '1.8rem', fontWeight: '700', color: '#000', display: 'flex', alignItems: 'center', gap: '0.8rem', margin: 0 }}>
+                                <Calendar size={26} style={{ color: 'var(--muted)' }} />
+                                Calendario Tentativo
+                            </h2>
+                        </div>
+                        <div className="intro-cover" onClick={() => handleImageClick('/intro.png')}><img src="/intro.png" alt="Calendario Académico de Grado 2026" style={{ width: '100%', borderRadius: '12px', cursor: 'zoom-in' }} /></div>
+                    </>
+                )}
+            </main>
+
+            <div className="home-cover">
+                <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer"><img src="/blog.png" alt="Ciberportero Blog Cover" style={{ width: '100%', borderRadius: '12px', cursor: 'pointer' }} /></a>
+            </div>
+
+            <footer className="footer-main">
+                <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Github size={18} /></a>
+                <span>{t.footer}</span>
+                <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Youtube size={22} /></a>
+            </footer>
+
+            <style jsx>{`
+                @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+            `}</style>
+        </div>
+    );
+}
