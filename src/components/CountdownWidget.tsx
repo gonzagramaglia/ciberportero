@@ -106,8 +106,18 @@ export default function CountdownWidget({ countdowns: initialCountdowns, isInlin
         </div>
     );
 
-    const processText = (text?: string) => {
+    const isSingle = countdowns.length === 1;
+
+    const processText = (text?: string, ignoreNewlines?: boolean) => {
         if (!text) return null;
+        if (ignoreNewlines) {
+            return text.split(/(\*\*.*?\*\*)/).map((part, j) => {
+                if (part.startsWith('**') && part.endsWith('**')) {
+                    return <strong key={j} style={{ fontWeight: 900 }}>{part.slice(2, -2)}</strong>;
+                }
+                return part;
+            });
+        }
         return text.split('\n').map((line, i) => (
             <span key={i} style={{ display: 'block' }}>
                 {line.split(/(\*\*.*?\*\*)/).map((part, j) => {
@@ -136,8 +146,8 @@ export default function CountdownWidget({ countdowns: initialCountdowns, isInlin
                 if (!time) return null;
 
                 const widgetClass = isInline 
-                    ? `inline-countdown ${initialCountdowns ? 'post-specific' : ''}` 
-                    : `sidebar-widget sidebar-widget-${cd.slot} ${initialCountdowns ? 'post-specific' : ''}`;
+                    ? `inline-countdown ${initialCountdowns ? 'post-specific' : ''} ${isSingle ? 'single-countdown' : ''}` 
+                    : `sidebar-widget sidebar-widget-${cd.slot} ${initialCountdowns ? 'post-specific' : ''} ${isSingle ? 'single-countdown' : ''}`;
 
                 const content = (
                     <div className={widgetClass} style={{ cursor: cd.url ? 'pointer' : 'default' }}>
@@ -150,14 +160,14 @@ export default function CountdownWidget({ countdowns: initialCountdowns, isInlin
                             <>
                                 {cd.description && (
                                     <p className="countdown-desc" style={{ fontSize: '0.75rem', opacity: 0.8, marginBottom: '0.5rem', fontWeight: 600 }}>
-                                        {processText(cd.description)}
+                                        {processText(cd.description, isSingle)}
                                     </p>
                                 )}
                                 <TimerGrid time={time} />
                             </>
                         ) : (
                             <div className="countdown-desc" style={{ fontWeight: 700, margin: 0, fontSize: '0.9rem' }}>
-                                {processText(cd.expiredMessage) || t.available}
+                                {processText(cd.expiredMessage, isSingle) || t.available}
                             </div>
                         )}
                     </div>

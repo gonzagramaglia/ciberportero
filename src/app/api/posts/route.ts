@@ -14,7 +14,8 @@ export async function GET(request: Request) {
                 where: { 
                     OR: [
                         { slug },
-                        { alternativeSlug: slug }
+                        { alternativeSlug: slug },
+                        { alternativeSlug2: slug }
                     ]
                 },
                 include: { countdowns: true }

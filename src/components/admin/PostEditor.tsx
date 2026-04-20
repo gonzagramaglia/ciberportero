@@ -26,6 +26,7 @@ export default function PostEditor({ post }: PostEditorProps) {
   const [descriptions, setDescriptions] = useState<Record<Lang, string>>(post?.description || { es: '', en: '', pt: '' });
   const [slug, setSlug] = useState(post?.slug || '');
   const [alternativeSlug, setAlternativeSlug] = useState(post?.alternativeSlug || '');
+  const [alternativeSlug2, setAlternativeSlug2] = useState(post?.alternativeSlug2 || '');
   const [published, setPublished] = useState(post?.published ?? true);
   const [countdowns, setCountdowns] = useState<any[]>(post?.countdowns || []);
 
@@ -42,6 +43,7 @@ export default function PostEditor({ post }: PostEditorProps) {
            JSON.stringify(descriptions) !== JSON.stringify(initialDescriptions) ||
            slug !== initialSlug ||
            alternativeSlug !== (post?.alternativeSlug || '') ||
+           alternativeSlug2 !== (post?.alternativeSlug2 || '') ||
            published !== initialPublished ||
            JSON.stringify(countdowns) !== JSON.stringify(initialCountdowns);
   }, [titles, contents, descriptions, slug, alternativeSlug, published, countdowns, post]);
@@ -85,6 +87,7 @@ export default function PostEditor({ post }: PostEditorProps) {
         title: titles,
         slug,
         alternativeSlug,
+        alternativeSlug2,
         content: contents,
         description: descriptions,
         published,
@@ -224,8 +227,12 @@ export default function PostEditor({ post }: PostEditorProps) {
                     <input className="admin-input" value={slug} onChange={e => setSlug(e.target.value)} required />
                   </div>
                   <div>
-                    <label className="admin-label">Slug Opcional</label>
+                    <label className="admin-label">Slug Opcional 1</label>
                     <input className="admin-input" value={alternativeSlug} onChange={e => setAlternativeSlug(e.target.value)} />
+                  </div>
+                  <div>
+                    <label className="admin-label">Slug Opcional 2</label>
+                    <input className="admin-input" value={alternativeSlug2} onChange={e => setAlternativeSlug2(e.target.value)} />
                   </div>
                   <div onClick={() => setPublished(!published)} style={{ cursor: 'pointer', padding: '0.5rem', borderRadius: '16px', background: published ? '#f0fdf4' : '#fff1f2', border: `2px solid ${published ? '#22c55e' : '#fecdd3'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
                     <span style={{ fontWeight: 900, color: published ? '#166534' : '#9f1239', fontSize: '0.85rem' }}>{published ? 'PUBLICADO' : 'BORRADOR'}</span>

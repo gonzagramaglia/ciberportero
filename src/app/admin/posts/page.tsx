@@ -75,6 +75,12 @@ export default async function AdminPostsPage() {
                         >
                           {titleObj?.es || post.slug}
                         </Link>
+                        {(post.alternativeSlug || post.alternativeSlug2) && (
+                          <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.1rem' }}>
+                            {post.alternativeSlug && <span style={{ fontSize: '10px', color: '#94a3b8', fontStyle: 'italic' }}>Alt 1: {post.alternativeSlug}</span>}
+                            {post.alternativeSlug2 && <span style={{ fontSize: '10px', color: '#94a3b8', fontStyle: 'italic' }}>Alt 2: {post.alternativeSlug2}</span>}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </td>

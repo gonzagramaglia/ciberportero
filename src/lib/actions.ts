@@ -193,6 +193,7 @@ export async function upsertPost(data: any) {
     content: data.content,
     slug: data.slug,
     alternativeSlug: data.alternativeSlug || null,
+    alternativeSlug2: data.alternativeSlug2 || null,
     description: data.description,
     published: data.published,
   };

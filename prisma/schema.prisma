@@ -132,7 +132,8 @@ model Post {
   title           Json        // { "es": "...", "en": "...", "pt": "..." }
   content         Json        // { "es": "...", "en": "...", "pt": "..." }
   slug            String      @unique
-  alternativeSlug String?     @unique
+  alternativeSlug  String?     @unique
+  alternativeSlug2 String?     @unique
   description     Json?       // { "es": "...", "en": "...", "pt": "..." }
   published       Boolean     @default(false)
   date            DateTime    @default(now())
