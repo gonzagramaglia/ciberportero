@@ -6,6 +6,7 @@ import { Save, X } from 'lucide-react';
 import { upsertCalendarEvent } from '@/lib/actions';
 import { curriculum } from '@/data/curriculum';
 import { translations } from '@/lib/translations';
+import { toLocalISOString } from '@/lib/utils';
 
 interface CalendarEditorProps {
   event?: any;
@@ -18,8 +19,8 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
   // Form state
   const [titles, setTitles] = useState<any>(event?.title || { es: '', en: '', pt: '' });
   const [descriptions, setDescriptions] = useState<any>(event?.description || { es: '', en: '', pt: '' });
-  const [startDate, setStartDate] = useState(event?.startDate ? new Date(event.startDate).toISOString().slice(0, 10) : '');
-  const [endDate, setEndDate] = useState(event?.endDate ? new Date(event.endDate).toISOString().slice(0, 10) : '');
+  const [startDate, setStartDate] = useState(toLocalISOString(event?.startDate, 10));
+  const [endDate, setEndDate] = useState(toLocalISOString(event?.endDate, 10));
   const [url, setUrl] = useState(event?.url || '');
 
   const typeToCategory: Record<string, string> = {
@@ -73,12 +74,15 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
     };
 
     try {
+      const startParts = startDate.split('-').map(Number);
+      const endParts = endDate ? endDate.split('-').map(Number) : null;
+
       await upsertCalendarEvent({
         id: event?.id,
         title: titles,
         description: descriptions,
-        startDate: new Date(startDate),
-        endDate: endDate ? new Date(endDate) : null,
+        startDate: new Date(startParts[0], startParts[1] - 1, startParts[2]),
+        endDate: endParts ? new Date(endParts[0], endParts[1] - 1, endParts[2]) : null,
         type: typeMap[category] || 'event',
         period,
         subject,

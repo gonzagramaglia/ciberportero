@@ -1,7 +1,8 @@
 import { db } from "@/lib/db";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import { MessageCircle, User as UserIcon, Calendar as CalendarIcon, FileText, Speaker } from "lucide-react";
+import Link from "next/link";
+import { MessageCircle, User as UserIcon, Calendar as CalendarIcon, FileText, Speaker, ExternalLink } from "lucide-react";
 import DeleteCommentButton from "@/components/DeleteCommentButton";
 import { getAdminNote } from "@/lib/actions";
 import AdminSectionNotes from "@/components/admin/AdminSectionNotes";
@@ -61,14 +62,20 @@ export default async function AdminCommentsPage() {
                     <CalendarIcon size={12} />
                     <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>{new Date(comment.createdAt).toLocaleDateString()}</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#64748b' }}>
+                  <Link 
+                    href={comment.post ? `/${comment.post.slug}#comment-${comment.id}` : `/podcast/${comment.podcast?.slug}#comment-${comment.id}`}
+                    style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#64748b', textDecoration: 'none', transition: 'color 0.2s' }}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = '#000')}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = '#64748b')}
+                  >
                     {comment.post ? <FileText size={12} /> : <Speaker size={12} />}
                     <span style={{ fontSize: '0.75rem', fontWeight: '700', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px' }}>
                       {comment.post 
                         ? (comment.post.title as any)?.es || comment.post.slug 
                         : (comment.podcast?.title as any)?.es || comment.podcast?.slug || 'Podcast'}
                     </span>
-                  </div>
+                    <ExternalLink size={10} style={{ opacity: 0.5 }} />
+                  </Link>
                 </div>
                 
                 <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: '1.5', color: '#334155', fontWeight: 500 }}>

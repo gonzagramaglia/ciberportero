@@ -80,3 +80,18 @@ export function timeAgo(date: Date | string, lang: string = 'es'): string {
   if (diffInYears === 1) return t.year;
   return t.years.replace('{n}', diffInYears);
 }
+
+/**
+ * Returns a string in 'YYYY-MM-DDTHH:mm' format for datetime-local inputs,
+ * or 'YYYY-MM-DD' for date inputs, correctly adjusted for local timezone.
+ */
+export function toLocalISOString(date: Date | string, length: 10 | 16 = 16): string {
+  if (!date) return '';
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return '';
+  
+  // Adjust for local timezone offset
+  const offset = d.getTimezoneOffset() * 60000;
+  const localDate = new Date(d.getTime() - offset);
+  return localDate.toISOString().slice(0, length);
+}

@@ -202,7 +202,7 @@ function CommentCard({ comment, depth, lang, session, postSlug, podcastSlug, onR
   const canReply = depth < 2 && !!session
 
   return (
-    <div style={{ display: 'flex', gap: '0.9rem', position: 'relative' }}>
+    <div id={`comment-${comment.id}`} className="comment-card" style={{ display: 'flex', gap: '0.9rem', position: 'relative', transition: 'all 0.5s ease' }}>
       <Avatar src={comment.user.image} name={comment.user.name} size={isNested ? 34 : 44} />
       <div style={{ flex: 1 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.3rem' }}>
@@ -632,6 +632,19 @@ export default function CommentSection({ postSlug, podcastSlug, lang = 'es' }: {
           border-radius: 16px;
           transition: transform 0.2s;
           box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        .comment-card:target {
+          animation: highlight-comment 2s ease-out;
+          background: rgba(255, 234, 0, 0.1);
+          border-radius: 20px;
+          padding: 0.5rem;
+          margin: -0.5rem;
+        }
+
+        @keyframes highlight-comment {
+          0% { background-color: rgba(255, 234, 0, 0.5); transform: scale(1.02); }
+          100% { background-color: transparent; transform: scale(1); }
         }
       `}</style>
 

@@ -273,17 +273,12 @@ export async function votePost(type: 'LIKE' | 'DISLIKE', postId?: string, slug?:
   });
 
   if (existingVote) {
-    if (existingVote.type === type) {
-      await db.postVote.delete({ where: { id: existingVote.id } });
-    } else {
-      await db.postVote.update({
-        where: { id: existingVote.id },
-        data: { type }
-      });
-    }
+    // Si ya existe, lo quitamos (toggle)
+    await db.postVote.delete({ where: { id: existingVote.id } });
   } else {
+    // En posts solo permitimos LIKE
     await db.postVote.create({
-      data: { userId, postId: targetPostId, type }
+      data: { userId, postId: targetPostId, type: 'LIKE' }
     });
   }
 
@@ -792,12 +787,21 @@ export async function getUsers() {
   
     return db.user.findMany({
       orderBy: { createdAt: 'desc' },
-      include: {
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        image: true,
+        createdAt: true,
+        lastLoginAt: true,
         _count: {
           select: {
             comments: true,
             links: true,
-            calendarEvents: true
+            calendarEvents: true,
+            postVotes: { where: { type: 'LIKE' } },
+            podcastVotes: { where: { type: 'LIKE' } }
           }
         },
         examProgress: {

@@ -7,6 +7,7 @@ import { upsertPost } from '@/lib/actions';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import LanguageTabs from './LanguageTabs';
+import { toLocalISOString } from '@/lib/utils';
 
 interface PostEditorProps {
   post?: any;
@@ -336,7 +337,7 @@ export default function PostEditor({ post }: PostEditorProps) {
                                   type="datetime-local"
                                   className="admin-input"
                                   style={{ fontSize: '0.85rem', padding: '0.8rem', borderRadius: '12px' }}
-                                  value={c.targetDate ? new Date(c.targetDate).toISOString().slice(0, 16) : ''}
+                                  value={toLocalISOString(c.targetDate)}
                                   onChange={e => updateCountdown(slot, 'targetDate', e.target.value)}
                                 />
                               </div>

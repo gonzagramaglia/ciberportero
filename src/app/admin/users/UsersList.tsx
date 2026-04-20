@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from "react";
-import { Mail, Shield, Calendar, MessageSquare, Link as LinkIcon, Search, User as UserIcon, CheckCircle } from "lucide-react";
+import { Mail, Shield, Calendar, MessageSquare, Link as LinkIcon, Search, User as UserIcon, CheckCircle, Heart } from "lucide-react";
 
 interface UsersListProps {
   initialUsers: any[];
@@ -55,7 +55,8 @@ export default function UsersList({ initialUsers }: UsersListProps) {
                 <th style={{ padding: '1.25rem 3rem', textAlign: 'left', fontSize: '0.8rem', fontWeight: 900, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Usuario</th>
                 <th style={{ padding: '1.25rem 2rem', textAlign: 'left', fontSize: '0.8rem', fontWeight: 900, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Rol</th>
                 <th style={{ padding: '1.25rem 2rem', textAlign: 'center', fontSize: '0.8rem', fontWeight: 900, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Actividad</th>
-                <th style={{ padding: '1.25rem 3rem', textAlign: 'right', fontSize: '0.8rem', fontWeight: 900, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Fecha de Registro</th>
+                <th style={{ padding: '1.25rem 2rem', textAlign: 'right', fontSize: '0.8rem', fontWeight: 900, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Registro</th>
+                <th style={{ padding: '1.25rem 3rem', textAlign: 'right', fontSize: '0.8rem', fontWeight: 900, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Último Acceso</th>
               </tr>
             </thead>
             <tbody>
@@ -113,6 +114,12 @@ export default function UsersList({ initialUsers }: UsersListProps) {
                             {user._count?.calendarEvents || 0}
                           </div>
                         </div>
+                        <div style={{ textAlign: 'center' }} title="Likes (MG) dados">
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#64748b', fontSize: '0.9rem', fontWeight: 800 }}>
+                            <Heart size={14} style={{ fill: '#ef4444', color: '#ef4444' }} />
+                            {(user._count?.postVotes || 0) + (user._count?.podcastVotes || 0)}
+                          </div>
+                        </div>
                         <div style={{ textAlign: 'center' }} title="Progreso del Plan">
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#64748b', fontSize: '0.9rem', fontWeight: 800 }}>
                             {(() => {
@@ -129,13 +136,24 @@ export default function UsersList({ initialUsers }: UsersListProps) {
                         </div>
                       </div>
                     </td>
-                    <td style={{ padding: '2rem 3rem', textAlign: 'right' }}>
+                    <td style={{ padding: '2rem 2rem', textAlign: 'right' }}>
                       <div style={{ fontSize: '0.9rem', fontWeight: 800, color: '#0f172a' }}>
-                        {new Date(user.createdAt).toLocaleDateString('es-AR', { day: '2-digit', month: 'long', year: 'numeric' })}
+                        {new Date(user.createdAt).toLocaleDateString()}
                       </div>
-                      <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.2rem' }}>
-                        {new Date(user.createdAt).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}
-                      </div>
+                    </td>
+                    <td style={{ padding: '2rem 3rem', textAlign: 'right' }}>
+                      {user.lastLoginAt ? (
+                        <>
+                          <div style={{ fontSize: '0.9rem', fontWeight: 800, color: '#0ea5e9' }}>
+                            {new Date(user.lastLoginAt).toLocaleDateString()}
+                          </div>
+                          <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.2rem' }}>
+                            {new Date(user.lastLoginAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </div>
+                        </>
+                      ) : (
+                        <div style={{ fontSize: '0.85rem', color: '#94a3b8', fontStyle: 'italic' }}>Sin datos</div>
+                      )}
                     </td>
                   </tr>
                 );

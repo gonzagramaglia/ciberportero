@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Save, X } from 'lucide-react';
 import { upsertCountdown } from '@/lib/actions';
 import LanguageTabs from './LanguageTabs';
+import { toLocalISOString } from '@/lib/utils';
 
 interface CountdownEditorProps {
   countdown?: any;
@@ -20,7 +21,7 @@ export default function CountdownEditor({ countdown, slot }: CountdownEditorProp
   const [titles, setTitles] = useState<any>(countdown?.title || { es: '', en: '', pt: '' });
   const [descriptions, setDescriptions] = useState<any>(countdown?.description || { es: '', en: '', pt: '' });
   const [expiredMessages, setExpiredMessages] = useState<any>(countdown?.expiredMessage || { es: '', en: '', pt: '' });
-  const [targetDate, setTargetDate] = useState(countdown?.targetDate ? new Date(countdown.targetDate).toISOString().slice(0, 16) : '');
+  const [targetDate, setTargetDate] = useState(toLocalISOString(countdown?.targetDate));
   const [url, setUrl] = useState(countdown?.url || '');
   const [isActive, setIsActive] = useState(countdown?.isActive ?? true);
 
