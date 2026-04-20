@@ -90,20 +90,21 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
     const getLocalizedField = (field: any) => {
         if (!field) return '';
         if (typeof field === 'string') return field;
-        return field[lang] || field['es'] || field['en'] || '';
+        const val = field[lang] || field['es'] || field['en'] || '';
+        return String(val);
     };
 
     const postTitle = getLocalizedField(post.title);
     const postContent = getLocalizedField(post.content);
 
     // FIX: Automatically wrap URLs ending with underscores in < > to prevent Markdown from cutting them
-    const processedContent = postContent
+    const processedContent = String(postContent)
         .replace(/(\*\*)(https?:\/\/[^\s*]+_)(\*\*)/g, '$1<$2>$3')
         .replace(/([^\(<]|^)(https?:\/\/[^\s<*]+_)([^\)>*]|$)/g, '$1<$2>$3');
 
-    const slugify = (text: string) => {
-        return text
-            .toString()
+    const slugify = (text: any) => {
+        const str = String(text || '');
+        return str
             .toLowerCase()
             .normalize('NFD')
             .replace(/[\u0300-\u036f]/g, '')
@@ -115,15 +116,17 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
     };
 
     const getFullContent = () => {
-        const trimmed = postContent.trim();
-        if (trimmed.startsWith('# ')) return postContent;
-        return `# ${postTitle}\n\n${postContent}`;
+        const content = String(postContent || '');
+        const trimmed = content.trim();
+        if (trimmed.startsWith('# ')) return content;
+        return `# ${postTitle}\n\n${content}`;
     };
 
     const fullContent = getFullContent();
 
-    const getToc = (content: string) => {
-        const lines = content.split('\n');
+    const getToc = (content: any) => {
+        const str = String(content || '');
+        const lines = str.split('\n');
         const headers: { level: number; text: string; id: string }[] = [];
         let inCodeBlock = false;
 
@@ -263,10 +266,10 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                     <article className={`post-content ${isHighlighting ? 'highlight-active' : ''}`}>
                         <div className="mobile-only-countdown"><CountdownWidget countdowns={post?.countdowns} isInline /></div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
-                            <span className="post-date" style={{ margin: 0 }}>
+                            <span className="post-date" style={{ margin: 0 }} suppressHydrationWarning>
                                 {new Date(post.date).toLocaleDateString(lang, { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })}
                                 {post.updatedAt && (
-                                    <span className="last-updated" style={{ fontSize: '0.85rem', opacity: 0.7, fontWeight: 500, marginLeft: '0.5rem' }}>
+                                    <span className="last-updated" style={{ fontSize: '0.85rem', opacity: 0.7, fontWeight: 500, marginLeft: '0.5rem' }} suppressHydrationWarning>
                                         ({lang === 'es' ? 'Última actualización' : lang === 'pt' ? 'Última actualización' : 'Last update'}: {timeAgo(post.updatedAt, lang)})
                                     </span>
                                 )}
