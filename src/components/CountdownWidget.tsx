@@ -108,17 +108,30 @@ export default function CountdownWidget({ countdowns: initialCountdowns, isInlin
 
     const isSingle = countdowns.length === 1;
 
-    const processText = (text?: string, ignoreNewlines?: boolean) => {
+    const processText = (text: any, ignoreNewlines?: boolean) => {
         if (!text) return null;
+        
+        // Handle translation objects if they slip through
+        let str = '';
+        if (typeof text === 'string') {
+            str = text;
+        } else if (typeof text === 'object') {
+            str = text[lang] || text['es'] || text['en'] || '';
+        } else {
+            str = String(text);
+        }
+
+        if (!str) return null;
+
         if (ignoreNewlines) {
-            return text.split(/(\*\*.*?\*\*)/).map((part, j) => {
+            return str.split(/(\*\*.*?\*\*)/).map((part, j) => {
                 if (part.startsWith('**') && part.endsWith('**')) {
                     return <strong key={j} style={{ fontWeight: 900 }}>{part.slice(2, -2)}</strong>;
                 }
                 return part;
             });
         }
-        return text.split('\n').map((line, i) => (
+        return str.split('\n').map((line, i) => (
             <span key={i} style={{ display: 'block' }}>
                 {line.split(/(\*\*.*?\*\*)/).map((part, j) => {
                     if (part.startsWith('**') && part.endsWith('**')) {
