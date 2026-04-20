@@ -147,7 +147,7 @@ export default function CountdownWidget({ countdowns: initialCountdowns, isInlin
 
                 const widgetClass = isInline 
                     ? `inline-countdown ${initialCountdowns ? 'post-specific' : ''} ${isSingle ? 'single-countdown' : ''}` 
-                    : `sidebar-widget sidebar-widget-${cd.slot} ${initialCountdowns ? 'post-specific' : ''} ${isSingle ? 'single-countdown' : ''}`;
+                    : `sidebar-widget sidebar-widget-${cd.slot} ${initialCountdowns ? 'post-specific' : ''}`;
 
                 const content = (
                     <div className={widgetClass} style={{ cursor: cd.url ? 'pointer' : 'default' }}>

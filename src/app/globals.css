@@ -1156,13 +1156,17 @@ footer a:hover {
   box-shadow: 0 8px 24px rgba(16, 185, 129, 0.15);
 }
 
-.single-countdown {
+.inline-countdown.single-countdown {
   width: 100% !important;
   max-width: 100% !important;
 }
 
 .single-countdown .countdown-desc {
   white-space: normal !important;
+}
+
+.mobile-only-countdown {
+  width: 100%;
 }
 
 .inline-countdown .countdown-number {
