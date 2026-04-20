@@ -35,9 +35,9 @@ function Avatar({ src, name, size = 40 }: { src?: string | null; name?: string |
   )
 }
 
-function getFirstName(name: string | null) {
+function getFirstName(name: any) {
   if (!name) return "Estudiante"
-  return name.split(' ')[0]
+  return String(name).split(' ')[0]
 }
 
 function ReplyForm({ onSubmit, onCancel, lang, userImage, userName }: {
