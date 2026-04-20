@@ -88,7 +88,8 @@ export async function GET(request: Request) {
                     description: descObj?.[lang] || '',
                     date: p.date,
                     availableLangs: Object.keys(titleObj).filter(l => titleObj[l]),
-                    alternativeSlug: p.alternativeSlug
+                    alternativeSlug: p.alternativeSlug,
+                    alternativeSlug2: p.alternativeSlug2
                 };
             });
     } catch (error) {
