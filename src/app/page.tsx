@@ -50,5 +50,13 @@ export default async function Home() {
   const lang = (cookieStore.get('lang')?.value as Locale) || 'es';
   const initialPosts = await getInitialPosts(lang);
 
-  return <HomeClient initialPosts={initialPosts} />;
+  // Final deduplication in case of data overlap
+  const seen = new Set();
+  const uniquePosts = initialPosts.filter(p => {
+    if (seen.has(p.slug)) return false;
+    seen.add(p.slug);
+    return true;
+  });
+
+  return <HomeClient initialPosts={uniquePosts} />;
 }

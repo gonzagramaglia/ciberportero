@@ -238,7 +238,11 @@ export default function PostClient({ post: initialPost, slug }: PostClientProps)
                         <ReactMarkdown
                             remarkPlugins={[remarkGfm]}
                             components={{
-                                a: ({ node, ...props }) => <a {...props} target="_blank" rel="noopener noreferrer" />,
+                                a: ({ node, ...props }) => {
+                                    // Manually fix trailing underscores in URLs caught by the parser
+                                    const href = props.href || '';
+                                    return <a {...props} href={href} target="_blank" rel="noopener noreferrer" />;
+                                },
                                 h1: (props) => <Heading level={1} {...props} />,
                                 h2: (props) => <Heading level={2} {...props} />,
                                 h3: (props) => <Heading level={3} {...props} />,

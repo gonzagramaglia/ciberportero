@@ -98,12 +98,14 @@ export async function GET(request: Request) {
     // Fetch from Files (already filtered by getAllPosts(lang))
     const filePosts = getAllPosts(lang);
     
-    // Merge (Database takes priority if slug matches or if it matches alternativeSlug)
+    // Merge (Database takes priority if slug matches or if any alternative slugs match)
     const dbSlugs = new Set();
-    dbPosts.forEach(p => {
+    dbPosts.forEach((p: any) => {
         dbSlugs.add(p.slug);
         if (p.alternativeSlug) dbSlugs.add(p.alternativeSlug);
+        if (p.alternativeSlug2) dbSlugs.add(p.alternativeSlug2);
     });
+
     const mergedPosts = [
         ...dbPosts,
         ...filePosts.filter(p => !dbSlugs.has(p.slug))
