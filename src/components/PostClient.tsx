@@ -4,7 +4,7 @@ import React, { useState, useEffect, useLayoutEffect } from 'react';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { ChevronLeft, Github, Youtube, ArrowUp, ArrowDown, X, Link2, Check, Edit, ClipboardClock } from 'lucide-react';
+import { ChevronLeft, Github, Youtube, ArrowUp, ArrowDown, X, Link2, Check, Edit, ClipboardClock, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { translations } from '../lib/translations';
 import { useSession } from 'next-auth/react';
@@ -13,29 +13,57 @@ import { timeAgo } from '../lib/utils';
 import NotificationBanners from './NotificationBanners';
 import CommentSection from './CommentSection';
 import CountdownWidget from './CountdownWidget';
+import { votePost } from '../lib/actions';
+import { toast } from 'react-hot-toast';
 
 interface PostClientProps {
   post: any;
   slug: string;
+  session: any;
 }
 
-export default function PostClient({ post: initialPost, slug }: PostClientProps) {
+export default function PostClient({ post: initialPost, slug, session: initialSession }: PostClientProps) {
     const { lang } = useLanguage();
     const [post, setPost] = useState(initialPost);
-    const { data: session } = useSession();
+    const { data: sessionData } = useSession();
+    const session = initialSession || sessionData;
     const [showTop, setShowTop] = useState(false);
     const [showBottom, setShowBottom] = useState(true);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [copied, setCopied] = useState(false);
     const [isHighlighting, setIsHighlighting] = useState(false);
     const [activeHash, setActiveHash] = useState<string | null>(null);
+    const [voted, setVoted] = useState<'LIKE' | 'DISLIKE' | null>(null);
     const t = translations[lang];
     const subjectSlugs = ['sistemas-operativos-1', 'ingles-1', 'gsi', 'algebra-1', 'analisis-1'];
 
-    // Update post content when language changes (if needed, but Server Component should handle initial)
-    // Actually, since it's a Client Component nested in a Server Page, 
-    // we can either refetch or pass all translations and pick here.
-    // Given the current architecture, picking based on 'lang' is easiest.
+    useEffect(() => {
+        if (session?.user?.id && post.votes) {
+            const userVote = post.votes.find((v: any) => v.userId === session.user.id);
+            setVoted(userVote?.type || null);
+        }
+    }, [session, post.votes]);
+
+    const handleVote = async (type: 'LIKE' | 'DISLIKE') => {
+        if (!session) {
+            toast.error(lang === 'es' ? 'Iniciá sesión para votar' : 'Log in to vote');
+            return;
+        }
+        if (!post.id) {
+            toast.error('Este post no está en la base de datos aún');
+            return;
+        }
+
+        try {
+            await votePost(post.id, type);
+            setVoted(current => current === type ? null : type);
+        } catch (err) {
+            toast.error('Error al votar');
+        }
+    };
+
+    const likes = post.votes?.filter((v: any) => v.type === 'LIKE').length || 0;
+    const dislikes = post.votes?.filter((v: any) => v.type === 'DISLIKE').length || 0;
 
     const getLocalizedField = (field: any) => {
         if (!field) return '';
@@ -281,7 +309,25 @@ export default function PostClient({ post: initialPost, slug }: PostClientProps)
                     )}
                 </div>
 
-                <div className="copy-container">
+                <div className="copy-container" style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
+                    <div className="vote-buttons" style={{ display: 'flex', gap: '0.4rem' }}>
+                        <button 
+                            onClick={() => handleVote('LIKE')} 
+                            className={`vote-button like ${voted === 'LIKE' ? 'active' : ''}`}
+                            title={lang === 'es' ? 'Me gusta' : 'Like'}
+                        >
+                            <ThumbsUp size={18} fill={voted === 'LIKE' ? 'currentColor' : 'none'} />
+                            <span>{likes}</span>
+                        </button>
+                        <button 
+                            onClick={() => handleVote('DISLIKE')} 
+                            className={`vote-button dislike ${voted === 'DISLIKE' ? 'active' : ''}`}
+                            title={lang === 'es' ? 'No me gusta' : 'Dislike'}
+                        >
+                            <ThumbsDown size={18} fill={voted === 'DISLIKE' ? 'currentColor' : 'none'} />
+                            <span>{dislikes}</span>
+                        </button>
+                    </div>
                     <button onClick={handleCopy} className={`copy-button ${copied ? 'success' : ''}`}>
                         {copied ? <Check size={16} /> : <Link2 size={16} />}
                         <span>{copied ? t.share.copied : t.share.copy}</span>
@@ -351,7 +397,38 @@ export default function PostClient({ post: initialPost, slug }: PostClientProps)
                 .subject-nav-item.active { background: #f1f5f9; box-shadow: none; color: #cbd5e1; pointer-events: none; }
                 .subject-nav-item:not(.active):hover { background: #facc15 !important; color: #000 !important; box-shadow: 0 15px 30px rgba(250, 204, 21, 0.3) !important; border-color: #facc15 !important; opacity: 1 !important; }
                 .hoy-today-link { position: fixed; right: 4.5rem; bottom: 3.5rem; width: 62px; height: 62px; border-radius: 50%; background: #ffffff; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); color: #1e293b; z-index: 1000; opacity: 0.8; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-decoration: none; }
-                .hoy-today-link:hover { background: #facc15 !important; color: #000 !important; box-shadow: 0 15px 30px rgba(250, 204, 21, 0.3) !important; border-color: #facc15 !important; opacity: 1 !important; }
+                .copy-button:hover { background: #f8fafc; border-color: #cbd5e1; transform: translateY(-1px); }
+                .copy-button.success { background: #f0fdf4; border-color: #4ade80; color: #166534; }
+                
+                .vote-button {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    padding: 0.75rem 1.25rem;
+                    border-radius: 14px;
+                    border: 1px solid #e2e8f0;
+                    background: #fff;
+                    color: #64748b;
+                    font-weight: 700;
+                    cursor: pointer;
+                    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                }
+                .vote-button:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+                }
+                .vote-button.like:hover, .vote-button.like.active {
+                    border-color: #22c55e;
+                    color: #22c55e;
+                    background: #f0fdf4;
+                }
+                .vote-button.dislike:hover, .vote-button.dislike.active {
+                    border-color: #ef4444;
+                    color: #ef4444;
+                    background: #fef2f2;
+                }
+                .vote-button span { font-size: 0.9rem; }
+
                 @media (max-width: 1024px) { .subject-navigator, .hoy-today-link { display: none !important; } }
                 @media (min-width: 1025px) { .fab-container { display: none !important; } }
                 .hoy-today-link:hover :global(svg) { opacity: 1 !important; }

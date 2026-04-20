@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import PostClient from '@/components/PostClient';
 import { Locale } from '@/lib/translations';
 import { cookies } from 'next/headers';
+import { auth } from '@/auth';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -21,7 +22,10 @@ async function getPost(slug: string) {
           { alternativeSlug2: slug }
         ]
       },
-      include: { countdowns: true }
+      include: { 
+        countdowns: true,
+        votes: true 
+      }
     });
     if (dbPost && dbPost.published) return dbPost;
   } catch (err) {
@@ -31,7 +35,7 @@ async function getPost(slug: string) {
   // 2. Fallback to Files
   try {
     const filePost = getPostData(slug, 'es'); // Default to ES for search
-    if (filePost) return { ...filePost, id: null };
+    if (filePost) return { ...filePost, id: null, votes: [] };
   } catch (err) {}
 
   return null;
@@ -63,10 +67,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function PostPage({ params }: PageProps) {
+  const session = await auth();
   const { slug } = await params;
   const post = await getPost(slug);
 
   if (!post) notFound();
 
-  return <PostClient post={post} slug={slug} />;
+  return <PostClient post={post} slug={slug} session={session} />;
 }

@@ -243,6 +243,39 @@ export async function upsertPost(data: any) {
   revalidatePath(`/${data.slug}`);
 }
 
+export async function votePost(postId: string, type: 'LIKE' | 'DISLIKE') {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "Not authenticated" };
+
+  const userId = session.user.id;
+
+  const existingVote = await db.postVote.findUnique({
+    where: { userId_postId: { userId, postId } }
+  });
+
+  if (existingVote) {
+    if (existingVote.type === type) {
+      await db.postVote.delete({ where: { id: existingVote.id } });
+    } else {
+      await db.postVote.update({
+        where: { id: existingVote.id },
+        data: { type }
+      });
+    }
+  } else {
+    await db.postVote.create({
+      data: { userId, postId, type }
+    });
+  }
+
+  const post = await db.post.findUnique({ where: { id: postId } });
+  revalidatePath(`/${post?.slug}`);
+  if (post?.alternativeSlug) revalidatePath(`/${post.alternativeSlug}`);
+  if (post?.alternativeSlug2) revalidatePath(`/${post.alternativeSlug2}`);
+  
+  return { success: true };
+}
+
 /* --- PODCAST ACTIONS --- */
 export async function deletePodcast(id: string) {
   const podcast = await db.podcast.findUnique({ where: { id } });
