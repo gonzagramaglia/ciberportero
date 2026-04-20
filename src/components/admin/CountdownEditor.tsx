@@ -35,7 +35,7 @@ export default function CountdownEditor({ countdown, slot }: CountdownEditorProp
         title: titles,
         description: descriptions,
         expiredMessage: expiredMessages,
-        targetDate: new Date(targetDate),
+        targetDate: new Date(targetDate).toISOString(),
         url,
         isActive
       });

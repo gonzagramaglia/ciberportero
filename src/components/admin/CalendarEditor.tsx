@@ -74,18 +74,25 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
     };
 
     try {
-      const startParts = startDate.split('-').map(Number);
-      const endParts = endDate ? endDate.split('-').map(Number) : null;
+      // Parse YYYY-MM-DD as local midnight
+      const [sy, sm, sd] = startDate.split('-').map(Number);
+      const startLocal = new Date(sy, sm - 1, sd, 0, 0, 0);
+      
+      let endLocal = null;
+      if (endDate) {
+        const [ey, em, ed] = endDate.split('-').map(Number);
+        endLocal = new Date(ey, em - 1, ed, 23, 59, 59); // End of day
+      }
 
       await upsertCalendarEvent({
         id: event?.id,
         title: titles,
         description: descriptions,
-        startDate: new Date(startParts[0], startParts[1] - 1, startParts[2]),
-        endDate: endParts ? new Date(endParts[0], endParts[1] - 1, endParts[2]) : null,
-        type: typeMap[category] || 'event',
+        startDate: startLocal.toISOString(),
+        endDate: endLocal ? endLocal.toISOString() : null,
         period,
-        subject,
+        type: typeMap[category] || 'event',
+        subject: subject === 'all' ? null : subject,
         url
       });
 

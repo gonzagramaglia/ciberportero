@@ -338,7 +338,7 @@ export default function PostEditor({ post }: PostEditorProps) {
                                   className="admin-input"
                                   style={{ fontSize: '0.85rem', padding: '0.8rem', borderRadius: '12px' }}
                                   value={toLocalISOString(c.targetDate)}
-                                  onChange={e => updateCountdown(slot, 'targetDate', e.target.value)}
+                                  onChange={e => updateCountdown(slot, 'targetDate', new Date(e.target.value).toISOString())}
                                 />
                               </div>
                               <div>
