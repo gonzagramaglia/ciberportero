@@ -243,14 +243,33 @@ export async function upsertPost(data: any) {
   revalidatePath(`/${data.slug}`);
 }
 
-export async function votePost(postId: string, type: 'LIKE' | 'DISLIKE') {
+export async function votePost(type: 'LIKE' | 'DISLIKE', postId?: string, slug?: string) {
   const session = await auth();
   if (!session?.user?.id) return { error: "Not authenticated" };
 
   const userId = session.user.id;
+  let targetPostId = postId;
+
+  // If no postId, find or create the post by slug (for file-based posts)
+  if (!targetPostId && slug) {
+    let post = await db.post.findUnique({ where: { slug } });
+    if (!post) {
+      post = await db.post.create({
+        data: {
+          slug,
+          title: { es: slug, en: slug, pt: slug },
+          content: { es: "Draft from sync", en: "Draft from sync", pt: "Draft from sync" },
+          published: true
+        } as any
+      });
+    }
+    targetPostId = post.id;
+  }
+
+  if (!targetPostId) return { error: "Post not found" };
 
   const existingVote = await db.postVote.findUnique({
-    where: { userId_postId: { userId, postId } }
+    where: { userId_postId: { userId, postId: targetPostId } }
   });
 
   if (existingVote) {
@@ -264,11 +283,11 @@ export async function votePost(postId: string, type: 'LIKE' | 'DISLIKE') {
     }
   } else {
     await db.postVote.create({
-      data: { userId, postId, type }
+      data: { userId, postId: targetPostId, type }
     });
   }
 
-  const post = await db.post.findUnique({ where: { id: postId } });
+  const post = await db.post.findUnique({ where: { id: targetPostId } });
   revalidatePath(`/${post?.slug}`);
   if (post?.alternativeSlug) revalidatePath(`/${post.alternativeSlug}`);
   if (post?.alternativeSlug2) revalidatePath(`/${post.alternativeSlug2}`);

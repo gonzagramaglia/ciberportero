@@ -4,7 +4,7 @@ import React, { useState, useEffect, useLayoutEffect } from 'react';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { ChevronLeft, Github, Youtube, ArrowUp, ArrowDown, X, Link2, Check, Edit, ClipboardClock, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { ChevronLeft, Github, Youtube, ArrowUp, ArrowDown, X, Link2, Check, Edit, ClipboardClock, ThumbsUp } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { translations } from '../lib/translations';
 import { useSession } from 'next-auth/react';
@@ -44,18 +44,14 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
         }
     }, [session, post.votes]);
 
-    const handleVote = async (type: 'LIKE' | 'DISLIKE') => {
+    const handleVote = async (type: 'LIKE') => {
         if (!session) {
             toast.error(lang === 'es' ? 'Iniciá sesión para votar' : 'Log in to vote');
             return;
         }
-        if (!post.id) {
-            toast.error('Este post no está en la base de datos aún');
-            return;
-        }
 
         try {
-            await votePost(post.id, type);
+            await votePost(type, post.id, slug);
             setVoted(current => current === type ? null : type);
         } catch (err) {
             toast.error('Error al votar');
@@ -63,7 +59,6 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
     };
 
     const likes = post.votes?.filter((v: any) => v.type === 'LIKE').length || 0;
-    const dislikes = post.votes?.filter((v: any) => v.type === 'DISLIKE').length || 0;
 
     const getLocalizedField = (field: any) => {
         if (!field) return '';
@@ -318,14 +313,6 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                         >
                             <ThumbsUp size={18} fill={voted === 'LIKE' ? 'currentColor' : 'none'} />
                             <span>{likes}</span>
-                        </button>
-                        <button 
-                            onClick={() => handleVote('DISLIKE')} 
-                            className={`vote-button dislike ${voted === 'DISLIKE' ? 'active' : ''}`}
-                            title={lang === 'es' ? 'No me gusta' : 'Dislike'}
-                        >
-                            <ThumbsDown size={18} fill={voted === 'DISLIKE' ? 'currentColor' : 'none'} />
-                            <span>{dislikes}</span>
                         </button>
                     </div>
                     <button onClick={handleCopy} className={`copy-button ${copied ? 'success' : ''}`}>
