@@ -37,12 +37,19 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
     const t = translations[lang];
     const subjectSlugs = ['sistemas-operativos-1', 'ingles-1', 'gsi', 'algebra-1', 'analisis-1'];
 
+    // Sync state with props when server revalidates
     useEffect(() => {
-        if (session?.user?.id && post.votes) {
+        setPost(initialPost);
+    }, [initialPost]);
+
+    useEffect(() => {
+        if (session?.user?.id && post?.votes && Array.isArray(post.votes)) {
             const userVote = post.votes.find((v: any) => v.userId === session.user.id);
             setVoted(userVote?.type || null);
         }
-    }, [session, post.votes]);
+    }, [session, post?.votes]);
+
+    const [isPending, startTransition] = React.useTransition();
 
     const handleVote = async (type: 'LIKE') => {
         if (!session) {
@@ -50,15 +57,35 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
             return;
         }
 
-        try {
-            await votePost(type, post.id, slug);
-            setVoted(current => current === type ? null : type);
-        } catch (err) {
-            toast.error('Error al votar');
-        }
+        // Safe access to votes array
+        const currentVotes = Array.isArray(post.votes) ? post.votes : [];
+        const isRemoving = voted === type;
+        setVoted(isRemoving ? null : type);
+        
+        // Build optimistic votes array safely
+        const newVotes = isRemoving 
+            ? currentVotes.filter((v: any) => v.userId !== session.user.id)
+            : [...currentVotes.filter((v: any) => v.userId !== session.user.id), { userId: session.user.id, type }];
+        
+        setPost({ ...post, votes: newVotes });
+
+        startTransition(async () => {
+            try {
+                const result = await votePost(type, post.id, slug);
+                if (result?.error) {
+                    toast.error(result.error);
+                    setPost(initialPost);
+                    const safeInitialVotes = Array.isArray(initialPost.votes) ? initialPost.votes : [];
+                    setVoted(safeInitialVotes.find((v: any) => v.userId === session.user.id)?.type || null);
+                }
+            } catch (err) {
+                toast.error('Error al votar');
+                setPost(initialPost);
+            }
+        });
     };
 
-    const likes = post.votes?.filter((v: any) => v.type === 'LIKE').length || 0;
+    const likes = (Array.isArray(post.votes) ? post.votes : []).filter((v: any) => v.type === 'LIKE').length;
 
     const getLocalizedField = (field: any) => {
         if (!field) return '';
