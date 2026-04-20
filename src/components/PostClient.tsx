@@ -46,6 +46,11 @@ export default function PostClient({ post: initialPost, slug }: PostClientProps)
     const postTitle = getLocalizedField(post.title);
     const postContent = getLocalizedField(post.content);
 
+    // FIX: Automatically wrap URLs ending with underscores in < > to prevent Markdown from cutting them
+    const processedContent = postContent
+        .replace(/(\*\*)(https?:\/\/[^\s*]+_)(\*\*)/g, '$1<$2>$3')
+        .replace(/([^\(<]|^)(https?:\/\/[^\s<*]+_)([^\)>*]|$)/g, '$1<$2>$3');
+
     const slugify = (text: string) => {
         return text
             .toString()
@@ -254,9 +259,9 @@ export default function PostClient({ post: initialPost, slug }: PostClientProps)
                             }}
                         >
                             {(() => {
-                                const trimmed = postContent.trim();
+                                const trimmed = processedContent.trim();
                                 if (trimmed.startsWith('# ')) return trimmed.replace(/^# .*\n?/, '');
-                                return postContent;
+                                return processedContent;
                             })()}
                         </ReactMarkdown>
                     </article>
