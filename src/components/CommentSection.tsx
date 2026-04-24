@@ -7,6 +7,7 @@ import { addComment, getComments, deleteComment } from "@/lib/actions"
 import { supabase } from "@/lib/supabase"
 import { SignInButton } from "@/components/AuthButtons"
 import { translations } from "@/lib/translations"
+import { getFirstName } from "@/lib/utils"
 
 interface Reply {
   id: string
@@ -35,10 +36,6 @@ function Avatar({ src, name, size = 40 }: { src?: string | null; name?: string |
   )
 }
 
-function getFirstName(name: any) {
-  if (!name) return "Estudiante"
-  return String(name).split(' ')[0]
-}
 
 function ReplyForm({ onSubmit, onCancel, lang, userImage, userName }: {
   onSubmit: (content: string, images?: string[]) => Promise<void>

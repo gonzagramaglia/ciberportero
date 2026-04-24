@@ -366,7 +366,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
 
             {subjectSlugs.includes(slug) && (
                 <div className="subject-navigator">
-                    {[{ id: '05', slug: 'sistemas-operativos-1' }, { id: '04', slug: 'ingles-1' }, { id: '03', slug: 'gsi' }, { id: '02', slug: 'algebra-1' }, { id: '01', slug: 'analisis-1' }].map((s) => (
+                    {[{ id: '01', slug: 'analisis-1' }, { id: '02', slug: 'algebra-1' }, { id: '03', slug: 'gsi' }, { id: '04', slug: 'ingles-1' }, { id: '05', slug: 'sistemas-operativos-1' }].map((s) => (
                         <Link key={s.id} href={`/${s.slug}`} className={`subject-nav-item ${slug === s.slug ? 'active' : ''}`}>{s.id}</Link>
                     ))}
                 </div>
@@ -406,8 +406,8 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                     box-shadow: 0 20px 40px rgba(0,0,0,0.05);
                 }
                 .post-content { transition: all 0.6s ease; }
-                .subject-navigator { position: fixed; left: 4.5rem; bottom: 3.5rem; display: flex; flex-direction: column; gap: 1rem; z-index: 1000; }
-                .subject-navigator:hover .subject-nav-item { opacity: 0.3 !important; }
+                .subject-navigator { position: fixed; left: 4.5rem; bottom: 3.5rem; display: flex; flex-direction: column; gap: 1rem; z-index: 1000; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+                .subject-navigator:hover .subject-nav-item:not(.active) { opacity: 0.3 !important; }
                 .subject-navigator .subject-nav-item:hover { opacity: 1 !important; }
                 .subject-nav-item { width: 62px; height: 62px; border-radius: 50%; background: #ffffff; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); color: #1e293b; font-weight: 900; font-size: 1.3rem; text-decoration: none; opacity: 0.8; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
                 .subject-nav-item.active { background: #f1f5f9; box-shadow: none; color: #cbd5e1; pointer-events: none; }
@@ -445,8 +445,35 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                 }
                 .vote-button span { font-size: 0.9rem; }
 
-                @media (max-width: 1024px) { .subject-navigator, .hoy-today-link { display: none !important; } }
-                @media (min-width: 1025px) { .fab-container { display: none !important; } }
+                @media (max-width: 1200px) {
+                    .subject-navigator { 
+                        left: 50%; 
+                        bottom: 2.5rem; 
+                        transform: translateX(-50%); 
+                        flex-direction: row; 
+                        gap: 0.6rem; 
+                    }
+                    .subject-nav-item {
+                        width: 52px;
+                        height: 52px;
+                        font-size: 1.1rem;
+                    }
+                    .hoy-today-link {
+                         display: none !important;
+                    }
+                }
+                @media (max-width: 640px) {
+                    .subject-navigator {
+                        bottom: 1.5rem;
+                        gap: 0.4rem;
+                    }
+                    .subject-nav-item {
+                        width: 42px;
+                        height: 42px;
+                        font-size: 0.9rem;
+                    }
+                }
+                @media (min-width: 1201px) { .fab-container { display: none !important; } }
                 .hoy-today-link:hover :global(svg) { opacity: 1 !important; }
             `}</style>
         </>

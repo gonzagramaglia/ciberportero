@@ -6,6 +6,7 @@ import { MessageCircle, User as UserIcon, Calendar as CalendarIcon, FileText, Sp
 import DeleteCommentButton from "@/components/DeleteCommentButton";
 import { getAdminNote } from "@/lib/actions";
 import AdminSectionNotes from "@/components/admin/AdminSectionNotes";
+import { getFirstName } from "@/lib/utils";
 
 export const dynamic = 'force-dynamic';
 
@@ -56,7 +57,7 @@ export default async function AdminCommentsPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: '#f8fafc', padding: '0.3rem 0.6rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
                     <UserIcon size={12} className="text-accent" />
-                    <span style={{ fontSize: '0.75rem', fontWeight: '800' }}>{comment.user.name?.split(' ')[0] || 'Usuario'}</span>
+                    <span style={{ fontSize: '0.75rem', fontWeight: '800' }}>{getFirstName(comment.user.name)}</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#94a3b8' }}>
                     <CalendarIcon size={12} />

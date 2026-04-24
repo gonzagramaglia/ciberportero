@@ -95,3 +95,8 @@ export function toLocalISOString(date: Date | string, length: 10 | 16 = 16): str
   if (length === 10) return `${year}-${month}-${day}`;
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
+
+export function getFirstName(name: any): string {
+  if (!name || typeof name !== 'string') return "Estudiante";
+  return name.trim().split(' ')[0] || "Estudiante";
+}
