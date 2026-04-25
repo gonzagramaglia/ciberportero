@@ -15,25 +15,10 @@ import { slugify } from '@/lib/utils';
 
 export default function RoomLobbyClient({ initialRooms, session }: any) {
     const { lang } = useLanguage();
-    const [rooms, setRooms] = useState(initialRooms);
-    const isGuest = !session;
-
     const t = translations[lang as keyof typeof translations] || translations.es;
     const roomsT = t.rooms;
-
-    React.useEffect(() => {
-        document.body.style.background = '#f8fafc';
-        return () => { document.body.style.background = ''; };
-    }, []);
-
-    React.useEffect(() => {
-        if (isGuest) {
-            setRooms(guestStore.getRooms());
-        } else {
-            setRooms(initialRooms);
-        }
-    }, [isGuest, initialRooms]);
-
+    const isGuest = !session;
+    const [rooms, setRooms] = useState(initialRooms || []);
     const [isCreating, setIsCreating] = useState(false);
     const [isJoining, setIsJoining] = useState(false);
     const [newRoomName, setNewRoomName] = useState('');
@@ -46,6 +31,15 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
         document.body.style.background = '#f8fafc';
         return () => { document.body.style.background = ''; };
     }, []);
+
+    React.useEffect(() => {
+        if (isGuest) {
+            const guestRooms = guestStore.getRooms();
+            setRooms(guestRooms);
+        } else {
+            setRooms(initialRooms);
+        }
+    }, [isGuest, initialRooms]);
 
     const handleCreate = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -146,7 +140,7 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                     
                     {rooms.length === 0 ? (
                         <div style={{ textAlign: 'center', padding: '4rem', background: '#f8fafc', borderRadius: '32px', border: '2px dashed #e2e8f0', color: '#94a3b8' }}>
-                            <p style={{ fontSize: '1.1rem', fontWeight: '600' }}>{lang === 'es' ? 'No tienes salas todavía' : 'No rooms yet'}</p>
+                            <p style={{ fontSize: '1.1rem', fontWeight: '600' }}>{roomsT.noRooms}</p>
                         </div>
                     ) : (
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '1.5rem' }}>
@@ -290,10 +284,12 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                 </div>
             )}
 
-            <footer className="footer-main" style={{ marginTop: '6rem' }}>
-                <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Github size={18} /></a>
+            <footer className="footer-main">
+                <div className="footer-social-links">
+                    <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Github size={20} /></a>
+                    <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Youtube size={24} /></a>
+                </div>
                 <span>{t.footer}</span>
-                <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Youtube size={22} /></a>
             </footer>
 
             <style jsx>{`

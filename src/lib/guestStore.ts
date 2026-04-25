@@ -98,9 +98,12 @@ export const guestStore = {
             return DEFAULT_DATA;
         }
         let parsed = JSON.parse(saved);
-        // Force update test-room if it's the old version
+        // Ensure test-room exists and is the current version
         const testRoomIndex = parsed.rooms.findIndex((r: any) => r.id === 'test-room');
-        if (testRoomIndex !== -1 && parsed.rooms[testRoomIndex].creatorId !== 'admin') {
+        if (testRoomIndex === -1) {
+            parsed.rooms.unshift(DEFAULT_DATA.rooms[0]);
+            localStorage.setItem(GUEST_DATA_KEY, JSON.stringify(parsed));
+        } else if (parsed.rooms[testRoomIndex].creatorId !== 'admin') {
             parsed.rooms[testRoomIndex] = DEFAULT_DATA.rooms[0];
             localStorage.setItem(GUEST_DATA_KEY, JSON.stringify(parsed));
         }

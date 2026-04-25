@@ -27,7 +27,7 @@ export default async function LobbyPage() {
   return (
     <RoomLobbyClient 
       initialRooms={myRooms} 
-      session={session} 
+      session={null} 
     />
   );
 }

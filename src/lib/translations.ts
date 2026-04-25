@@ -875,7 +875,7 @@ export const translations = {
                 desc: "Configure um espaço privado para o seu grupo de estudo."
             },
             myRooms: "Minhas Rooms",
-            noRooms: "Ainda não tens Rooms",
+            noRooms: "Ainda não há salas",
             back: "Voltar ao início",
             backToRooms: "Voltar para as Rooms",
             backToLobby: "Voltar para o Lobby",
