@@ -14,17 +14,20 @@ import RoomNavbar from "@/components/RoomNavbar";
 import RoomTitleUpdater from "@/components/RoomTitleUpdater";
 
 export async function generateMetadata({ params }: any): Promise<Metadata> {
-    const { roomId } = await params;
-    const isGuestRoom = roomId.startsWith('guest-room-') || roomId === 'test-room';
-    
-    if (isGuestRoom) {
-        return {
-            title: roomId === 'test-room' ? 'Ciberportero | Sala de Prueba' : 'Ciberportero | Sala Invitado',
-            description: 'Explora y colabora en esta sala de estudio en Ciberportero.'
-        };
-    }
-
     try {
+        const p = await params;
+        const roomId = p?.roomId;
+        if (!roomId) return { title: 'Ciberportero' };
+
+        const isGuestRoom = roomId.startsWith('guest-room-') || roomId === 'test-room';
+        
+        if (isGuestRoom) {
+            return {
+                title: roomId === 'test-room' ? 'Ciberportero | Sala de Prueba' : 'Ciberportero | Sala Invitado',
+                description: 'Explora y colabora en esta sala de estudio en Ciberportero.'
+            };
+        }
+
         const room = await getRoomData(roomId);
         if (room) {
             return {
@@ -32,7 +35,9 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
                 description: `Únete a la sala ${room.name} para estudiar en grupo y compartir recursos.`
             };
         }
-    } catch (e) {}
+    } catch (e) {
+        console.error("Metadata error:", e);
+    }
 
     return {
         title: 'Ciberportero | Sala de Estudio',
@@ -41,20 +46,25 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 }
 
 export default async function RoomDetailLayout({ children, params }: any) {
-  const { roomId } = await params;
+  let roomId = "";
+  try {
+    const p = await params;
+    roomId = p?.roomId || "";
+  } catch (e) {
+    redirect('/rooms/lobby');
+  }
+
+  if (!roomId) redirect('/rooms/lobby');
+
   const session = await auth();
   
   let room = null;
-  if (session) {
+  if (session && roomId) {
     room = await getRoomData(roomId);
   }
 
   const isGuestRoom = !room;
   
-  if (!session && isGuestRoom && roomId !== 'test-room' && !roomId.includes('test')) {
-     // Optional: more strict check for guest rooms if needed
-  }
-
   if (isGuestRoom) {
     const cookieStore = await cookies();
     const lang = (cookieStore.get('lang')?.value as Locale) || 'es';
@@ -69,7 +79,7 @@ export default async function RoomDetailLayout({ children, params }: any) {
     };
   }
 
-  if (!room) redirect('/rooms');
+  if (!room) redirect('/rooms/lobby');
 
   const cookieStore = await cookies();
   const lang = (cookieStore.get('lang')?.value as Locale) || 'es';

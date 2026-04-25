@@ -179,54 +179,67 @@ export async function getMyRooms() {
 }
 
 export async function getRoomData(roomId: string) {
-  const session = await auth();
-  if (!session?.user?.id) return null;
+  try {
+    const session = await auth();
+    if (!session?.user?.id) return null;
 
-  const isMember = await db.roomMember.findUnique({
-    where: {
-      roomId_userId: {
-        roomId,
-        userId: session.user.id
-      }
-    }
-  });
+    if (!db || !db.roomMember) return null;
 
-  if (!isMember) return null;
-
-  return db.room.findUnique({
-    where: { id: roomId },
-    include: {
-      members: {
-        include: {
-          user: {
-            select: { name: true, image: true }
-          }
-        },
-        orderBy: { createdAt: 'asc' }
-      },
-      categories: {
-        include: {
-          subcategories: true
+    const isMember = await db.roomMember.findUnique({
+      where: {
+        roomId_userId: {
+          roomId,
+          userId: session.user.id
         }
       }
-    }
-  });
+    });
+
+    if (!isMember) return null;
+
+    return await db.room.findUnique({
+      where: { id: roomId },
+      include: {
+        members: {
+          include: {
+            user: {
+              select: { name: true, image: true }
+            }
+          },
+          orderBy: { createdAt: 'asc' }
+        },
+        categories: {
+          include: {
+            subcategories: true
+          }
+        }
+      }
+    });
+  } catch (error) {
+    console.error("getRoomData Error:", error);
+    return null;
+  }
 }
 
 export async function getSubcategoryMessages(subcategoryId: string) {
-  return db.roomMessage.findMany({
-    where: { subcategoryId, parentId: null },
-    include: {
-      user: { select: { id: true, name: true, image: true } },
-      replies: {
-        include: {
-          user: { select: { id: true, name: true, image: true } }
-        },
-        orderBy: { createdAt: 'asc' }
-      }
-    },
-    orderBy: { createdAt: 'desc' }
-  });
+  try {
+    if (!db || !db.roomMessage) return [];
+    return await db.roomMessage.findMany({
+      where: { subcategoryId, parentId: null },
+      include: {
+        user: { select: { id: true, name: true, image: true } },
+        replies: {
+          include: {
+            user: { select: { id: true, name: true, image: true } }
+          },
+          orderBy: { createdAt: 'asc' }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+  } catch (error) {
+    console.error("getSubcategoryMessages Error:", error);
+    return [];
+  }
 }
 
 // ADMIN ACTIONS

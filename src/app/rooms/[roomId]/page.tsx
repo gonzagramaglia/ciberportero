@@ -2,7 +2,14 @@ import RoomChatClient from "@/components/RoomChatClient";
 import { auth } from "@/auth";
 
 export default async function RoomMainPage({ params }: any) {
-  const { roomId } = await params;
+  let roomId = "";
+  try {
+    const p = await params;
+    roomId = p?.roomId || "";
+  } catch (e) {}
+
+  if (!roomId) return null;
+
   const session = await auth();
   const isGuest = roomId.startsWith('guest-') || roomId === 'test-room' || !session;
 
