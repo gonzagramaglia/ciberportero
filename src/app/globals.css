@@ -707,32 +707,42 @@ header p {
 
 @media (max-width: 768px) {
   .footer-main {
-    padding: 2.5rem 1.5rem;
-    font-size: 0.85rem;
-    flex-direction: column !important;
+    padding: 1.5rem;
+    font-size: 0.8rem;
+  }
+
+  .footer-main:not(.footer-stacked) {
+    display: grid;
+    grid-template-columns: 1fr auto auto 1fr;
+    grid-template-areas: 
+      "text text text text"
+      ". icon1 icon2 .";
+    column-gap: 0.5rem;
+    row-gap: 0.8rem;
+    justify-items: center;
+    align-items: center;
     text-align: center;
-    gap: 1.5rem !important;
   }
 
-  .footer-main span {
-    order: 1;
-    width: 100%;
-    margin-bottom: 0.5rem;
+  .footer-main:not(.footer-stacked) span {
+    grid-area: text;
+    white-space: nowrap;
   }
 
-  .footer-social-links {
-    order: 2;
-    display: flex;
-    gap: 2rem;
-    justify-content: center;
-    width: 100%;
+  .footer-main:not(.footer-stacked) a:first-of-type {
+    grid-area: icon1;
   }
-}
 
-.footer-social-links {
-  display: flex;
-  gap: 1.5rem;
-  align-items: center;
+  .footer-main:not(.footer-stacked) a:last-of-type {
+    grid-area: icon2;
+  }
+
+  .footer-stacked {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
+    padding: 2rem 1.5rem;
+  }
 }
 
 footer a {

@@ -284,13 +284,13 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                 </div>
             )}
 
-            <footer className="footer-main">
-                <div className="footer-social-links">
-                    <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Github size={20} /></a>
-                    <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Youtube size={24} /></a>
-                </div>
-                <span>{t.footer}</span>
-            </footer>
+            <div style={{ maxWidth: '1100px', margin: '0 auto', width: '100%' }}>
+                <footer className="footer-main" style={{ marginTop: '6rem' }}>
+                    <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Github size={18} /></a>
+                    <span>{t.footer}</span>
+                    <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Youtube size={22} /></a>
+                </footer>
+            </div>
 
             <style jsx>{`
                 .form-group { display: flex; flex-direction: column; gap: 0.8rem; }
