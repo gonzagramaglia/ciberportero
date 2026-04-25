@@ -42,7 +42,7 @@ const DEFAULT_DATA: GuestData = {
             id: 'test-room',
             name: 'Sala de Prueba 🛡️',
             secretCode: 'PRUEBA123',
-            creatorId: 'admin', // Not 'guest' so guests can't edit it
+            creatorId: 'admin', 
             categories: [
                 {
                     id: 'cat-1',
@@ -54,28 +54,78 @@ const DEFAULT_DATA: GuestData = {
                             messages: [
                                 {
                                     id: 'm1',
-                                    content: '¡Bienvenidos! Acá les dejo la resolución del primer punto del práctico.',
-                                    images: ['/wallpaper.png'],
-                                    user: { name: 'Admin de la Room', image: null },
-                                    createdAt: new Date(Date.now() - 3600000).toISOString(),
+                                    content: '¡Buenas! ¿Alguien pudo resolver el ejercicio 4 del práctico 1? No me sale el dominio.',
+                                    images: [],
+                                    user: { name: 'Lucas G.', image: null },
+                                    createdAt: new Date(Date.now() - 7200000).toISOString(),
                                     replies: [
                                         {
                                             id: 'r1',
-                                            content: '¡Gracias Admin! Me sirve mucho.',
-                                            user: { name: 'Estudiante 1', image: null },
-                                            createdAt: new Date(Date.now() - 1800000).toISOString(),
+                                            content: '¡Hola Lucas! Sí, tenés que igualar lo de adentro de la raíz a >= 0. Te mando foto de cómo lo hice.',
+                                            user: { name: 'Admin de la Room', image: null },
+                                            createdAt: new Date(Date.now() - 3600000).toISOString(),
+                                        }
+                                    ]
+                                },
+                                {
+                                    id: 'm2',
+                                    content: 'Acá les dejo la resolución completa del práctico para que comparen.',
+                                    images: ['/wallpaper.png'],
+                                    user: { name: 'Admin de la Room', image: null },
+                                    createdAt: new Date(Date.now() - 3600000).toISOString(),
+                                    replies: []
+                                }
+                            ] 
+                        },
+                        { 
+                            id: 'sub-2', 
+                            name: 'Práctico 2 - Límites', 
+                            messages: [
+                                {
+                                    id: 'm3',
+                                    content: '¿Cuándo es el parcial de este tema?',
+                                    images: [],
+                                    user: { name: 'Sofia V.', image: null },
+                                    createdAt: new Date(Date.now() - 172800000).toISOString(),
+                                    replies: [
+                                        {
+                                            id: 'r2',
+                                            content: 'El 15 de mayo si no me equivoco.',
+                                            user: { name: 'Juan P.', image: null },
+                                            createdAt: new Date(Date.now() - 86400000).toISOString(),
                                         }
                                     ]
                                 }
                             ] 
-                        },
-                        { id: 'sub-2', name: 'Práctico 2 - Límites', messages: [] }
+                        }
+                    ]
+                },
+                {
+                    id: 'cat-2',
+                    name: 'General',
+                    subcategories: [
+                        {
+                            id: 'sub-info',
+                            name: 'Información Importante',
+                            messages: [
+                                {
+                                    id: 'm4',
+                                    content: 'Chicos, recuerden que mañana no hay clases por el feriado.',
+                                    images: [],
+                                    user: { name: 'Admin de la Room', image: null },
+                                    createdAt: new Date(Date.now() - 43200000).toISOString(),
+                                    replies: []
+                                }
+                            ]
+                        }
                     ]
                 }
             ],
             members: [
                 { id: 'm1', user: { name: 'Admin de la Room', image: null }, createdAt: new Date(Date.now() - 86400000).toISOString() },
                 { id: 'm2', user: { name: 'Estudiante 1', image: null }, createdAt: new Date(Date.now() - 43200000).toISOString() },
+                { id: 'm3', user: { name: 'Lucas G.', image: null }, createdAt: new Date(Date.now() - 21600000).toISOString() },
+                { id: 'm4', user: { name: 'Sofia V.', image: null }, createdAt: new Date(Date.now() - 10800000).toISOString() },
                 { id: 'guest-me', user: { name: 'Invitado (Tú)', image: null }, createdAt: new Date().toISOString() }
             ]
         }

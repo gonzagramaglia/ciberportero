@@ -105,10 +105,23 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                 )}
             </div>
             {!isEditing && (
-                <p style={{ color: 'var(--muted)', marginTop: '0.5rem' }}>
-                    {codeLabel}
-                    <code style={{ background: '#f1f5f9', padding: '0.2rem 0.5rem', borderRadius: '6px', fontWeight: '700' }}>{room.secretCode}</code>
-                </p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginTop: '0.75rem' }}>
+                    <div style={{ 
+                        display: 'inline-flex', 
+                        alignItems: 'center', 
+                        gap: '0.5rem', 
+                        fontSize: '0.85rem', 
+                        fontWeight: '800', 
+                        color: 'var(--accent)', 
+                        background: 'rgba(0, 112, 243, 0.05)', 
+                        padding: '0.5rem 1rem', 
+                        borderRadius: '12px',
+                        border: '1px solid rgba(0, 112, 243, 0.1)'
+                    }}>
+                        <Key size={14} />
+                        <span style={{ letterSpacing: '0.02em' }}>{room.secretCode}</span>
+                    </div>
+                </div>
             )}
 
             <style jsx>{`

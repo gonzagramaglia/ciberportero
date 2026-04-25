@@ -202,28 +202,30 @@ function CommentCard({ comment, depth, lang, session, postSlug, podcastSlug, onR
     <div id={`comment-${comment.id}`} className="comment-card" style={{ display: 'flex', gap: '0.9rem', position: 'relative', transition: 'all 0.5s ease' }}>
       <Avatar src={comment.user.image} name={comment.user.name} size={isNested ? 34 : 44} />
       <div style={{ flex: 1 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.3rem' }}>
-          <span style={{ fontWeight: '800', fontSize: isNested ? '0.9rem' : '1rem', color: '#000' }}>
-            {getFirstName(comment.user.name)}
-          </span>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#bbb' }}>
-            <span style={{ fontSize: '0.7rem', fontWeight: '600' }}>
-              {(() => {
-                const date = new Date(comment.createdAt);
-                const dayName = date.toLocaleDateString(lang, { weekday: 'long' }).toLowerCase();
-                const dayNumber = date.getDate();
-                const monthNameRaw = date.toLocaleDateString(lang, { month: 'long' });
-                const monthName = monthNameRaw.charAt(0).toUpperCase() + monthNameRaw.slice(1);
-                const time = date.toLocaleTimeString(lang, { hour: '2-digit', minute: '2-digit', hour12: true }).toLowerCase();
-                
-                if (lang === 'es') return `El ${dayName} ${dayNumber} de ${monthName} a las ${time}`;
-                if (lang === 'pt') return `No ${dayName}, ${dayNumber} de ${monthName} às ${time}`;
-                return `On ${dayName}, ${monthName} ${dayNumber} at ${time}`;
-              })()}
+        <div className="comment-header" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.6rem', marginBottom: '0.3rem' }}>
+          <div className="comment-meta" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+            <span style={{ fontWeight: '800', fontSize: isNested ? '0.9rem' : '1rem', color: '#000' }}>
+              {getFirstName(comment.user.name)}
             </span>
+            <div className="comment-date-container" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#bbb' }}>
+              <span style={{ fontSize: '0.7rem', fontWeight: '600' }}>
+                {(() => {
+                  const date = new Date(comment.createdAt);
+                  const dayName = date.toLocaleDateString(lang, { weekday: 'long' }).toLowerCase();
+                  const dayNumber = date.getDate();
+                  const monthNameRaw = date.toLocaleDateString(lang, { month: 'long' });
+                  const monthName = monthNameRaw.charAt(0).toUpperCase() + monthNameRaw.slice(1);
+                  const time = date.toLocaleTimeString(lang, { hour: '2-digit', minute: '2-digit', hour12: true }).toLowerCase();
+                  
+                  if (lang === 'es') return `El ${dayName} ${dayNumber} de ${monthName} a las ${time}`;
+                  if (lang === 'pt') return `No ${dayName}, ${dayNumber} de ${monthName} às ${time}`;
+                  return `On ${dayName}, ${monthName} ${dayNumber} at ${time}`;
+                })()}
+              </span>
+            </div>
           </div>
           {session?.user?.id === comment.userId && (
-            <button onClick={handleDelete} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ff4d4d', opacity: 0.35, transition: 'opacity 0.2s', display: 'flex', alignItems: 'center', padding: 0 }} className="delete-comment-btn">
+            <button onClick={handleDelete} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ff4d4d', opacity: 0.35, transition: 'opacity 0.2s', display: 'flex', alignItems: 'center', padding: 0, marginTop: '0.2rem' }} className="delete-comment-btn">
               <Trash2 size={13} />
             </button>
           )}
@@ -734,6 +736,14 @@ export default function CommentSection({ postSlug, podcastSlug, lang = 'es' }: {
           }
           .btn-text-mobile {
             font-size: 0.9rem;
+          }
+          .comment-meta {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 0 !important;
+          }
+          .comment-date-container {
+            margin-top: -0.1rem;
           }
           :global(.comment-images-grid) {
             grid-template-columns: 1fr !important;

@@ -85,26 +85,25 @@ export default function PodcastPlayer({ podcast, initialLikes, initialDislikes, 
                 </div>
 
                 <div className="player-actions">
-                    <div className="vote-actions">
-                        <button 
-                            className={`action-btn like-btn ${currentVote === 'LIKE' ? 'active' : ''}`}
-                            onClick={() => handleVote('LIKE')}
-                        >
-                            <ThumbsUp size={20} fill={currentVote === 'LIKE' ? 'currentColor' : 'none'} />
-                            <span>{likes}</span>
-                        </button>
-                        <button 
-                            className={`action-btn dislike-btn ${currentVote === 'DISLIKE' ? 'active' : ''}`}
-                            onClick={() => handleVote('DISLIKE')}
-                        >
-                            <ThumbsDown size={20} fill={currentVote === 'DISLIKE' ? 'currentColor' : 'none'} />
-                            <span>{dislikes}</span>
-                        </button>
-                    </div>
+                    <button 
+                        className={`action-btn like-btn ${currentVote === 'LIKE' ? 'active' : ''}`}
+                        onClick={() => handleVote('LIKE')}
+                    >
+                        <ThumbsUp size={20} fill={currentVote === 'LIKE' ? 'currentColor' : 'none'} />
+                        <span>{likes}</span>
+                    </button>
+                    
+                    <button 
+                        className={`action-btn dislike-btn ${currentVote === 'DISLIKE' ? 'active' : ''}`}
+                        onClick={() => handleVote('DISLIKE')}
+                    >
+                        <ThumbsDown size={20} fill={currentVote === 'DISLIKE' ? 'currentColor' : 'none'} />
+                        <span>{dislikes}</span>
+                    </button>
 
                     <button className="action-btn share-btn" onClick={handleShare}>
                         {isSharing ? <Check size={20} /> : <Share2 size={20} />}
-                        <span>{isSharing ? translations[lang].podcast.copied : translations[lang].podcast.share}</span>
+                        <span className="share-text">{isSharing ? translations[lang].podcast.copied : translations[lang].podcast.share}</span>
                     </button>
                 </div>
             </div>
@@ -132,10 +131,6 @@ export default function PodcastPlayer({ podcast, initialLikes, initialDislikes, 
                     justify-content: space-between;
                     align-items: center;
                     gap: 0.75rem;
-                }
-                .vote-actions {
-                    display: flex;
-                    gap: 0.4rem;
                 }
                 .action-btn {
                     display: flex;
@@ -178,14 +173,21 @@ export default function PodcastPlayer({ podcast, initialLikes, initialDislikes, 
                 
                 @media (max-width: 640px) {
                     .player-actions {
-                        flex-direction: column;
-                        align-items: stretch;
+                        flex-direction: row;
+                        align-items: center;
+                        gap: 0.5rem;
                     }
-                    .vote-actions {
-                        justify-content: space-between;
+                    .dislike-btn {
+                        display: none !important;
                     }
-                    .vote-actions .action-btn {
+                    .like-btn {
+                        width: 25% !important;
                         flex: 1;
+                        justify-content: center;
+                    }
+                    .share-btn {
+                        width: 75% !important;
+                        flex: 3;
                         justify-content: center;
                     }
                 }
