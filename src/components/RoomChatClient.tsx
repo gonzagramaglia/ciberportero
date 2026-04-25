@@ -235,6 +235,14 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
 
     return (
         <div className="chat-container">
+            {currentSubId && (
+                <div className="subcategory-chat-header fade-in">
+                    <div className="header-badge">
+                        <Hash size={14} />
+                        <span>{isGuest ? guestStore.getSubcategory(currentSubId)?.name : roomsT.chat.messages}</span>
+                    </div>
+                </div>
+            )}
             <div className="input-sticky-area top">
                 <div className="input-area-container">
                     {replyingTo && (
@@ -312,6 +320,24 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                     max-width: 900px;
                     margin: 0 auto;
                     position: relative;
+                }
+
+                .subcategory-chat-header {
+                    padding: 0 2rem;
+                    margin-bottom: 0.5rem;
+                }
+
+                .header-badge {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    background: #f1f5f9;
+                    color: #475569;
+                    padding: 0.4rem 1rem;
+                    border-radius: 10px;
+                    font-size: 0.85rem;
+                    font-weight: 800;
+                    border: 1px solid #e2e8f0;
                 }
                 
                 .messages-list { 

@@ -202,12 +202,12 @@ function CommentCard({ comment, depth, lang, session, postSlug, podcastSlug, onR
     <div id={`comment-${comment.id}`} className="comment-card" style={{ display: 'flex', gap: '0.9rem', position: 'relative', transition: 'all 0.5s ease' }}>
       <Avatar src={comment.user.image} name={comment.user.name} size={isNested ? 34 : 44} />
       <div style={{ flex: 1 }}>
-        <div className="comment-header" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.6rem', marginBottom: '0.3rem' }}>
-          <div className="comment-meta" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+        <div className="comment-header">
+          <div className="comment-meta">
             <span style={{ fontWeight: '800', fontSize: isNested ? '0.9rem' : '1rem', color: '#000' }}>
               {getFirstName(comment.user.name)}
             </span>
-            <div className="comment-date-container" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#bbb' }}>
+            <div className="comment-date-container">
               <span style={{ fontSize: '0.7rem', fontWeight: '600' }}>
                 {(() => {
                   const date = new Date(comment.createdAt);
@@ -664,6 +664,25 @@ export default function CommentSection({ postSlug, podcastSlug, lang = 'es' }: {
           margin-bottom: 2.5rem;
         }
 
+        :global(.comment-header) {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 0.6rem;
+          margin-bottom: 0.3rem;
+        }
+        :global(.comment-meta) {
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+        }
+        :global(.comment-date-container) {
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+          color: #bbb;
+        }
+
         .header-title {
           margin: 0;
           font-size: 1.8rem;
@@ -737,18 +756,18 @@ export default function CommentSection({ postSlug, podcastSlug, lang = 'es' }: {
           .btn-text-mobile {
             font-size: 0.9rem;
           }
-          .comment-meta {
-            flex-direction: column;
-            align-items: flex-start !important;
-            gap: 0 !important;
+            :global(.comment-meta) {
+              flex-direction: column !important;
+              align-items: flex-start !important;
+              gap: 0 !important;
+            }
+            :global(.comment-date-container) {
+              margin-top: -0.1rem;
+            }
+            :global(.comment-images-grid) {
+              grid-template-columns: 1fr !important;
+            }
           }
-          .comment-date-container {
-            margin-top: -0.1rem;
-          }
-          :global(.comment-images-grid) {
-            grid-template-columns: 1fr !important;
-          }
-        }
       `}</style>
     </section>
   )

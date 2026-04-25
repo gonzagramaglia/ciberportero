@@ -289,7 +289,8 @@ export const translations = {
                 emptyMessages: "No hay mensajes todavía",
                 startConversation: "¡Iniciá la conversación!",
                 replyingTo: "Respondiendo a",
-                uploadImage: "Subir imagen"
+                uploadImage: "Subir imagen",
+                messages: "Mensajes"
             },
             modal: {
                 createTitle: "Crear Sala",
@@ -591,7 +592,8 @@ export const translations = {
                 emptyMessages: "No messages yet",
                 startConversation: "Start the conversation!",
                 replyingTo: "Replying to",
-                uploadImage: "Upload image"
+                uploadImage: "Upload image",
+                messages: "Messages"
             },
             modal: {
                 createTitle: "Create Room",
@@ -893,7 +895,8 @@ export const translations = {
                 emptyMessages: "Ainda não há mensagens",
                 startConversation: "Comece a conversa!",
                 replyingTo: "Respondendo a",
-                uploadImage: "Enviar imagem"
+                uploadImage: "Enviar imagem",
+                messages: "Mensagens"
             },
             modal: {
                 createTitle: "Criar Sala",

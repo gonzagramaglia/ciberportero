@@ -92,14 +92,6 @@ export default function PodcastPlayer({ podcast, initialLikes, initialDislikes, 
                         <ThumbsUp size={20} fill={currentVote === 'LIKE' ? 'currentColor' : 'none'} />
                         <span>{likes}</span>
                     </button>
-                    
-                    <button 
-                        className={`action-btn dislike-btn ${currentVote === 'DISLIKE' ? 'active' : ''}`}
-                        onClick={() => handleVote('DISLIKE')}
-                    >
-                        <ThumbsDown size={20} fill={currentVote === 'DISLIKE' ? 'currentColor' : 'none'} />
-                        <span>{dislikes}</span>
-                    </button>
 
                     <button className="action-btn share-btn" onClick={handleShare}>
                         {isSharing ? <Check size={20} /> : <Share2 size={20} />}
@@ -176,9 +168,6 @@ export default function PodcastPlayer({ podcast, initialLikes, initialDislikes, 
                         flex-direction: row;
                         align-items: center;
                         gap: 0.5rem;
-                    }
-                    .dislike-btn {
-                        display: none !important;
                     }
                     .like-btn {
                         width: 25% !important;

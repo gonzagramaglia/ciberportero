@@ -33,10 +33,12 @@ export interface GuestRoom {
 }
 
 interface GuestData {
+    version: number;
     rooms: GuestRoom[];
 }
 
 const DEFAULT_DATA: GuestData = {
+    version: 2,
     rooms: [
         {
             id: 'test-room',
@@ -152,9 +154,12 @@ export const guestStore = {
         const testRoomIndex = parsed.rooms.findIndex((r: any) => r.id === 'test-room');
         if (testRoomIndex === -1) {
             parsed.rooms.unshift(DEFAULT_DATA.rooms[0]);
+            parsed.version = DEFAULT_DATA.version;
             localStorage.setItem(GUEST_DATA_KEY, JSON.stringify(parsed));
-        } else if (parsed.rooms[testRoomIndex].creatorId !== 'admin') {
+        } else if (parsed.version !== DEFAULT_DATA.version) {
+            // Force update test room data if version is old
             parsed.rooms[testRoomIndex] = DEFAULT_DATA.rooms[0];
+            parsed.version = DEFAULT_DATA.version;
             localStorage.setItem(GUEST_DATA_KEY, JSON.stringify(parsed));
         }
         return parsed;

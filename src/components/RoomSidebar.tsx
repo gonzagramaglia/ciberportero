@@ -185,7 +185,11 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                 ) : (
                                     <>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.95rem', flex: 1 }}>
-                                            <Folder size={16} color="var(--muted)" style={{ opacity: 0.7 }} />
+                                            {cat.subcategories.some((s: any) => s.id === currentSubId) ? (
+                                                <FolderOpen size={16} color="var(--accent)" />
+                                            ) : (
+                                                <Folder size={16} color="var(--muted)" style={{ opacity: 0.7 }} />
+                                            )}
                                             {cat.name}
                                         </div>
                                         {isCreator && (
@@ -209,9 +213,9 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                 )}
                             </div>
 
-                            <div style={{ paddingLeft: '1.2rem', display: 'flex', flexDirection: 'column', gap: '0.2rem', borderLeft: '2px solid #f1f5f9', marginLeft: '1rem', marginBottom: '1rem' }}>
+                            <div className="sub-list">
                                 {cat.subcategories.map((sub: any) => (
-                                    <div key={sub.id} style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                                    <div key={sub.id} className="sub-item-container" style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
                                         {editingSub === sub.id ? (
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', flex: 1, padding: '0.1rem 0' }}>
                                                 <input 
@@ -230,7 +234,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                                     className={`sub-link ${currentSubId === sub.id ? 'active' : ''}`}
                                                     style={{ flex: 1 }}
                                                 >
-                                                    <Hash size={14} style={{ opacity: 0.5 }} />
+                                                    <Hash size={14} style={{ opacity: currentSubId === sub.id ? 1 : 0.5 }} />
                                                     {sub.name}
                                                 </Link>
                                                 {isCreator && (
@@ -257,12 +261,13 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                             onBlur={() => !newName && setIsAddingSub(null)}
                                             style={{ 
                                                 width: '100%', 
-                                                padding: '0.4rem 0.6rem', 
-                                                borderRadius: '8px', 
+                                                padding: '0.5rem 0.8rem', 
+                                                borderRadius: '10px', 
                                                 border: '1px solid var(--accent)', 
                                                 fontSize: '0.85rem',
                                                 outline: 'none',
-                                                marginTop: '0.2rem'
+                                                marginTop: '0.2rem',
+                                                boxShadow: '0 4px 12px rgba(0, 112, 243, 0.05)'
                                             }}
                                         />
                                     </form>
@@ -273,35 +278,11 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 </div>
             </div>
 
-            <style jsx>{`
-                .mini-action-btn { 
-                    width: 24px; 
-                    height: 24px; 
-                    border-radius: 7px; 
-                    border: none; 
-                    display: flex; 
-                    align-items: center; 
-                    justify-content: center; 
-                    cursor: pointer; 
-                    transition: all 0.2s; 
-                    background: rgba(148, 163, 184, 0.05); 
-                    color: #94a3b8; 
-                    padding: 0;
-                }
-                .mini-action-btn:hover { background: rgba(0, 112, 243, 0.1); color: var(--accent); }
-                .mini-action-btn.delete:hover { background: #fee2e2; color: #ef4444; }
-                .mini-action-btn.confirm { color: #10b981; }
-                .mini-action-btn.confirm:hover { background: #dcfce7; }
-                .category-group:hover .mini-action-btn { opacity: 1; }
-                .mini-action-btn { opacity: 0.3; }
-                .mini-action-btn.plus { background: rgba(0, 112, 243, 0.1); color: var(--accent); opacity: 1; }
-            `}</style>
-
             <div className="members-section" style={{ marginTop: '3rem' }}>
                 <h3 style={{ margin: '0 0 1.5rem 0.5rem', fontSize: '0.85rem', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#94a3b8' }}>
                     {roomsT.sidebar.members} ({room.members?.length || 0})
                 </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                     {room.members?.map((member: any) => (
                         <div key={member.id} className="member-item">
                             <img 
@@ -321,38 +302,102 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
             </div>
 
             <style jsx>{`
-                .add-cat-btn:hover { background: var(--accent) !important; color: #fff !important; transform: rotate(90deg); }
+                .room-sidebar {
+                    padding-right: 1rem;
+                }
                 
-                .category-group { margin-bottom: 0.5rem; }
+                .mini-action-btn { 
+                    width: 26px; 
+                    height: 26px; 
+                    border-radius: 8px; 
+                    border: none; 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: center; 
+                    cursor: pointer; 
+                    transition: all 0.2s; 
+                    background: rgba(148, 163, 184, 0.1); 
+                    color: #64748b; 
+                    padding: 0;
+                    opacity: 0;
+                }
+                .category-group:hover .mini-action-btn,
+                .sub-item-container:hover .mini-action-btn { 
+                    opacity: 1; 
+                }
+                .mini-action-btn:hover { background: var(--accent); color: #fff; transform: scale(1.1); }
+                .mini-action-btn.delete:hover { background: #ef4444; color: #fff; }
+                .mini-action-btn.confirm { color: #10b981; opacity: 1; }
+                .mini-action-btn.plus { background: var(--accent-light); color: var(--accent); opacity: 1; }
                 
+                .category-group { 
+                    margin-bottom: 1.5rem; 
+                }
+                
+                .category-header {
+                    padding: 0.6rem 0.8rem;
+                    border-radius: 12px;
+                    transition: all 0.2s;
+                }
+                
+                .category-header:hover {
+                    background: #f8fafc;
+                }
+
                 .sub-link {
                     display: flex;
                     align-items: center;
-                    gap: 0.7rem;
-                    padding: 0.8rem 1rem;
-                    border-radius: 14px;
+                    gap: 0.8rem;
+                    padding: 0.7rem 1rem;
+                    border-radius: 12px;
                     color: #64748b;
-                    font-size: 1rem;
+                    font-size: 0.95rem;
                     font-weight: 600;
                     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
                     text-decoration: none !important;
-                    border: 1px solid transparent;
+                    position: relative;
+                    overflow: hidden;
                 }
+                
                 .sub-link:hover {
-                    background: #fff;
-                    color: var(--accent);
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-                    border-color: #f1f5f9;
-                    transform: translateX(3px);
+                    background: #f1f5f9;
+                    color: #1e293b;
+                    transform: translateX(4px);
                 }
+                
                 .sub-link.active {
-                    background: var(--accent);
+                    background: linear-gradient(135deg, var(--accent) 0%, #00a2ff 100%);
                     color: #fff;
                     font-weight: 800;
-                    box-shadow: 0 10px 20px rgba(0, 112, 243, 0.2);
+                    box-shadow: 0 8px 20px rgba(0, 112, 243, 0.25);
                 }
-                .sub-link.active :global(svg) { color: #fff !important; }
                 
+                .sub-link.active::before {
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    top: 20%;
+                    bottom: 20%;
+                    width: 4px;
+                    background: #fff;
+                    border-radius: 0 4px 4px 0;
+                }
+
+                .sub-link.active :global(svg) { 
+                    color: #fff !important; 
+                    opacity: 1 !important;
+                }
+                
+                .sub-list {
+                    padding-left: 0.5rem;
+                    margin-left: 1.2rem;
+                    border-left: 2px solid #f1f5f9;
+                    margin-top: 0.2rem;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.2rem;
+                }
+
                 @media (max-width: 1024px) {
                     .room-sidebar {
                         width: 100% !important;
@@ -363,16 +408,12 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                         flex-direction: row !important;
                         gap: 1.5rem;
                         align-items: flex-start;
+                        padding-right: 0;
                     }
-                    .room-sidebar > div:first-child,
-                    .room-sidebar > div:nth-child(2) {
-                        flex: 1.2;
-                        min-width: 0;
-                    }
-                    .members-section {
-                        flex: 1;
-                        margin-top: 0 !important;
-                        min-width: 0;
+                    .sub-list {
+                        border-left: none;
+                        padding-left: 0;
+                        margin-left: 0.5rem;
                     }
                 }
 
@@ -381,13 +422,25 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                     align-items: center;
                     gap: 0.8rem;
                     padding: 0.6rem 0.8rem;
-                    border-radius: 12px;
-                    transition: background 0.2s;
+                    border-radius: 14px;
+                    transition: all 0.2s;
+                    border: 1px solid transparent;
                 }
-                .member-item:hover { background: #f8fafc; }
-                .member-avatar { width: 32px; height: 32px; border-radius: 10px; object-fit: cover; }
+                .member-item:hover { 
+                    background: #fff; 
+                    border-color: #f1f5f9;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+                }
+                .member-avatar { 
+                    width: 36px; 
+                    height: 36px; 
+                    border-radius: 12px; 
+                    object-fit: cover; 
+                    border: 2px solid #fff;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+                }
                 .member-info { display: flex; flex-direction: column; }
-                .member-name { font-size: 0.9rem; font-weight: 700; color: #1e293b; }
+                .member-name { font-size: 0.9rem; font-weight: 800; color: #1e293b; }
                 .member-date { font-size: 0.7rem; color: #94a3b8; font-weight: 600; }
             `}</style>
         </aside>

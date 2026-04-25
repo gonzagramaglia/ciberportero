@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { translations, Locale } from "@/lib/translations";
 import { cookies } from "next/headers";
 import Link from "next/link";
-import { ArrowLeft, Calendar, User, Edit, Github, Youtube, ExternalLink, Disc3 } from "lucide-react";
+import { ChevronLeft, Calendar, User, Edit, Github, Youtube, ExternalLink, Disc3 } from "lucide-react";
 import { notFound } from "next/navigation";
 import PodcastPlayer from "@/components/PodcastPlayer";
 import CommentSection from "@/components/CommentSection";
@@ -84,7 +84,7 @@ export default async function PodcastDetailPage({ params }: { params: Promise<{ 
                     fontWeight: 600,
                     fontSize: '1rem'
                 }}>
-                    <ArrowLeft size={18} />
+                    <ChevronLeft size={20} />
                     {lang === 'es' ? 'Volver a Podcast' : lang === 'pt' ? 'Voltar ao Podcast' : 'Back to Podcast'}
                 </Link>
                 <div style={{ width: '1px' }} />

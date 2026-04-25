@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import { translations } from "@/lib/translations";
 import { cookies } from "next/headers";
 import Link from "next/link";
-import { ArrowLeft, Speaker, Github, Youtube, Disc3 } from "lucide-react";
+import { ChevronLeft, Speaker, Github, Youtube, Disc3 } from "lucide-react";
 import PodcastCard from "@/components/PodcastCard";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 
@@ -37,7 +37,7 @@ export default async function PodcastListPage() {
                     fontWeight: 600,
                     fontSize: '1rem'
                 }}>
-                    <ArrowLeft size={18} />
+                    <ChevronLeft size={20} />
                     {lang === 'es' ? 'Volver al inicio' : lang === 'pt' ? 'Voltar ao início' : 'Back to home'}
                 </Link>
                 <div style={{ width: '1px' }} />
