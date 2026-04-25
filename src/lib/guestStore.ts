@@ -38,32 +38,32 @@ interface GuestData {
 }
 
 const DEFAULT_DATA: GuestData = {
-    version: 5,
+    version: 16,
     rooms: [
         {
             id: 'test-room',
-            name: 'Sala de Prueba 🛡️',
-            secretCode: 'PRUEBA123',
-            creatorId: 'admin', 
+            name: 'Grupo de Estudio Ciberdefensa 🛡️',
+            secretCode: 'CIBERDEFENSA2026',
+            creatorId: 'admin',
             categories: [
                 {
                     id: 'cat-1',
-                    name: 'Análisis Matemático I',
+                    name: 'Laboratorios Prácticos',
                     subcategories: [
-                        { 
-                            id: 'sub-1', 
-                            name: 'Práctico 1 - Funciones', 
+                        {
+                            id: 'sub-1',
+                            name: 'Lab 1 - Análisis de Tráfico',
                             messages: [
                                 {
                                     id: 'm1',
-                                    content: '¡Buenas! ¿Alguien pudo resolver el ejercicio 4 del práctico 1? No me termina de quedar claro cómo calcular el dominio en la composición de funciones.',
+                                    content: '¿Alguien pudo filtrar los paquetes ICMP en Wireshark? No me queda claro cómo identificar el escaneo de puertos.',
                                     images: [],
                                     user: { name: 'Lucas G.', image: null },
                                     createdAt: new Date(Date.now() - 7200000).toISOString(),
                                     replies: [
                                         {
                                             id: 'r1',
-                                            content: '¡Hola Lucas! Sí, es un garrón ese. Primero tenés que sacar el dominio de la función "de adentro" y después cruzarlo con el de la "de afuera".',
+                                            content: 'Fijate usando el filtro "icmp and ip.addr == [la_ip]". En el PDF de la clase 3 hay un ejemplo parecido.',
                                             user: { name: 'Nico B.', image: null },
                                             createdAt: new Date(Date.now() - 3600000).toISOString(),
                                         }
@@ -71,50 +71,50 @@ const DEFAULT_DATA: GuestData = {
                                 },
                                 {
                                     id: 'm2',
-                                    content: 'Les paso en limpio la resolución de los ejercicios pares del TP1, por si alguno quiere comparar resultados.',
+                                    content: 'Gente, les paso el resumen de los comandos de Nmap que vimos hoy, por si a alguno le sirve para el TP.',
                                     images: ['/wallpaper.png'],
-                                    user: { name: 'Admin de la Room', image: null },
+                                    user: { name: 'Admin del Grupo', image: null },
                                     createdAt: new Date(Date.now() - 1800000).toISOString(),
                                     replies: []
                                 }
-                            ] 
+                            ]
                         },
-                        { 
-                            id: 'sub-2', 
-                            name: 'Práctico 2 - Límites', 
+                        {
+                            id: 'sub-2',
+                            name: 'Lab 2 - Hardening Linux',
                             messages: [
                                 {
                                     id: 'm3',
-                                    content: 'Chicos, ¿alguno sabe si entra el teorema del sándwich en el primer parcial? En el campus dice que sí pero el profe no lo dio hoy.',
+                                    content: '¿Alguien sabe si para el lab de hardening hay que entregar el script o solo las capturas?',
                                     images: [],
                                     user: { name: 'Sofia V.', image: null },
                                     createdAt: new Date(Date.now() - 172800000).toISOString(),
                                     replies: [
                                         {
                                             id: 'r2',
-                                            content: 'Si, entra seguro. El profe dijo que lo leamos por nuestra cuenta del libro de Stewart.',
+                                            content: 'Dijo el profe que ambas cosas. El script tiene que estar bien comentado.',
                                             user: { name: 'Juan P.', image: null },
                                             createdAt: new Date(Date.now() - 86400000).toISOString(),
                                         }
                                     ]
                                 }
-                            ] 
+                            ]
                         }
                     ]
                 },
                 {
                     id: 'cat-2',
-                    name: 'General',
+                    name: 'Exámenes y Material',
                     subcategories: [
                         {
                             id: 'sub-info',
-                            name: 'Información Importante',
+                            name: 'Fechas y Parciales',
                             messages: [
                                 {
                                     id: 'm4',
-                                    content: 'Recuerden que la fecha límite para entregar el TP obligatorio de Límites es el próximo viernes por el campus.',
+                                    content: 'Recuerden que el primer parcial es el lunes que viene por la plataforma virtual. ¡A estudiar!',
                                     images: [],
-                                    user: { name: 'Admin de la Room', image: null },
+                                    user: { name: 'Admin del Grupo', image: null },
                                     createdAt: new Date(Date.now() - 43200000).toISOString(),
                                     replies: []
                                 }
@@ -124,11 +124,11 @@ const DEFAULT_DATA: GuestData = {
                 }
             ],
             members: [
-                { id: 'm1', user: { name: 'Admin de la Room', image: null }, createdAt: new Date(Date.now() - 86400000).toISOString() },
+                { id: 'm1', user: { name: 'Admin del Grupo', image: null }, createdAt: new Date(Date.now() - 86400000).toISOString() },
                 { id: 'm3', user: { name: 'Lucas G.', image: null }, createdAt: new Date(Date.now() - 21600000).toISOString() },
                 { id: 'm4', user: { name: 'Sofia V.', image: null }, createdAt: new Date(Date.now() - 10800000).toISOString() },
                 { id: 'm5', user: { name: 'Nico B.', image: null }, createdAt: new Date(Date.now() - 5400000).toISOString() },
-                { id: 'guest-me', user: { name: 'Invitado (Tú)', image: null }, createdAt: new Date().toISOString() }
+                { id: 'guest-me', user: { name: 'Invitado (tú)', image: null }, createdAt: new Date().toISOString() }
             ]
         }
     ]
@@ -177,7 +177,7 @@ export const guestStore = {
     createRoom(name: string, code: string, slug?: string) {
         const data = this.getData();
         let finalId = slug || slugify(name);
-        
+
         // Avoid collisions
         let counter = 1;
         const originalId = finalId;
@@ -192,19 +192,19 @@ export const guestStore = {
             secretCode: code,
             creatorId: 'guest',
             categories: [
-      {
-        id: 'cat-general',
-        name: 'General',
-        subcategories: [
-          {
-            id: 'sub-chat',
-            name: 'Chat',
-            messages: []
-          }
-        ]
-      }
-    ],
-            members: [{ id: 'gm1', user: { name: 'Invitado', image: null }, createdAt: new Date().toISOString() }]
+                {
+                    id: 'cat-general',
+                    name: 'General',
+                    subcategories: [
+                        {
+                            id: 'sub-chat',
+                            name: 'Chat',
+                            messages: []
+                        }
+                    ]
+                }
+            ],
+            members: [{ id: 'gm1', user: { name: 'Invitado (tú)', image: null }, createdAt: new Date().toISOString() }]
         };
         data.rooms.push(newRoom);
         this.saveData(data);
@@ -237,7 +237,7 @@ export const guestStore = {
             const cat = room.categories.find(c => c.id === catId);
             if (cat) {
                 let finalId = slugify(name);
-                
+
                 // Avoid collisions within the same room
                 let counter = 1;
                 const originalId = finalId;
@@ -270,7 +270,7 @@ export const guestStore = {
                         id: `guest-msg-${Date.now()}`,
                         content,
                         images,
-                        user: { name: 'Invitado', image: null },
+                        user: { name: 'Invitado (tú)', image: null },
                         createdAt: new Date().toISOString(),
                         replies: []
                     };
@@ -362,13 +362,44 @@ export const guestStore = {
         }
     },
 
-    getSubcategory(subId: string) {
-        for (const room of this.getData().rooms) {
+    getSubcategory(subId: string): GuestSubcategory | null {
+        const data = this.getData();
+        for (const room of data.rooms) {
             for (const cat of room.categories) {
                 const sub = cat.subcategories.find(s => s.id === subId);
                 if (sub) return sub;
             }
         }
         return null;
+    },
+
+    getCategoryBySubId(subId: string): GuestCategory | null {
+        const data = this.getData();
+        for (const room of data.rooms) {
+            for (const cat of room.categories) {
+                if (cat.subcategories.some(s => s.id === subId)) return cat;
+            }
+        }
+        return null;
+    },
+
+    deleteMessage(subId: string, messageId: string, isReply = false, parentId?: string) {
+        const data = this.getData();
+        for (const room of data.rooms) {
+            const cat = room.categories.find(c => c.subcategories.some(s => s.id === subId));
+            if (!cat) continue;
+            const sub = cat.subcategories.find(s => s.id === subId);
+            if (!sub) continue;
+
+            if (isReply && parentId) {
+                const parent = sub.messages.find(m => m.id === parentId);
+                if (parent && parent.replies) {
+                    parent.replies = parent.replies.filter(r => r.id !== messageId);
+                }
+            } else {
+                sub.messages = sub.messages.filter(m => m.id !== messageId);
+            }
+        }
+        this.saveData(data);
     }
 };

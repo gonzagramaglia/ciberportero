@@ -95,7 +95,10 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                     </div>
                 ) : (
                     <>
-                        <h1 style={{ fontSize: '2.5rem', fontWeight: '900', margin: 0 }}>{room.name}</h1>
+                        <h1 style={{ fontSize: '2.5rem', fontWeight: '900', margin: 0, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                            <span style={{ fontSize: '1rem', color: 'var(--accent)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.05em', background: 'rgba(0, 112, 243, 0.05)', padding: '0.2rem 0.6rem', borderRadius: '8px' }}>Room</span>
+                            <span>{room.name}</span>
+                        </h1>
                         {isCreator && (
                             <button onClick={() => setIsEditing(true)} style={{ background: 'none', border: 'none', color: '#cbd5e1', cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = 'var(--accent)'} onMouseLeave={e => e.currentTarget.style.color = '#cbd5e1'}>
                                 <Pencil size={20} />

@@ -14,35 +14,35 @@ import RoomNavbar from "@/components/RoomNavbar";
 import RoomTitleUpdater from "@/components/RoomTitleUpdater";
 
 export async function generateMetadata({ params }: any): Promise<Metadata> {
-    try {
-        const p = await params;
-        const roomId = p?.roomId;
-        if (!roomId) return { title: 'Ciberportero' };
+  try {
+    const p = await params;
+    const roomId = p?.roomId;
+    if (!roomId) return { title: 'Ciberportero' };
 
-        const isGuestRoom = roomId.startsWith('guest-room-') || roomId === 'test-room';
-        
-        if (isGuestRoom) {
-            return {
-                title: roomId === 'test-room' ? 'Ciberportero | Sala de Prueba' : 'Ciberportero | Sala Invitado',
-                description: 'Explora y colabora en esta sala de estudio en Ciberportero.'
-            };
-        }
+    const isGuestRoom = roomId.startsWith('guest-room-') || roomId === 'test-room';
 
-        const room = await getRoomData(roomId);
-        if (room) {
-            return {
-                title: `Ciberportero | ${room.name}`,
-                description: `Únete a la sala ${room.name} para estudiar en grupo y compartir recursos.`
-            };
-        }
-    } catch (e) {
-        console.error("Metadata error:", e);
+    if (isGuestRoom) {
+      return {
+        title: roomId === 'test-room' ? 'Ciberportero | Sala de Prueba' : 'Ciberportero | Sala Invitado',
+        description: 'Explora y colabora en esta sala de estudio en Ciberportero.'
+      };
     }
 
-    return {
-        title: 'Ciberportero | Sala de Estudio',
-        description: 'Colabora con tu grupo de estudio en tiempo real.'
-    };
+    const room = await getRoomData(roomId);
+    if (room) {
+      return {
+        title: `Ciberportero | ${room.name}`,
+        description: `Únete a la sala ${room.name} para estudiar en grupo y compartir recursos.`
+      };
+    }
+  } catch (e) {
+    console.error("Metadata error:", e);
+  }
+
+  return {
+    title: 'Ciberportero | Sala de Estudio',
+    description: 'Colabora con tu grupo de estudio en tiempo real.'
+  };
 }
 
 export default async function RoomDetailLayout({ children, params }: any) {
@@ -57,22 +57,22 @@ export default async function RoomDetailLayout({ children, params }: any) {
   if (!roomId) redirect('/rooms/lobby');
 
   const session = await auth();
-  
+
   let room = null;
   if (session && roomId) {
     room = await getRoomData(roomId);
   }
 
   const isGuestRoom = !room;
-  
+
   if (isGuestRoom) {
     const cookieStore = await cookies();
     const lang = (cookieStore.get('lang')?.value as Locale) || 'es';
     const isTest = roomId === 'test-room';
     room = {
       id: roomId,
-      name: isTest ? 'Sala de Prueba 🛡️' : (lang === 'es' ? 'Cargando Room...' : 'Loading Room...'),
-      secretCode: isTest ? 'PRUEBA123' : '...',
+      name: isTest ? 'Grupo de Estudio - Ciberdefensa 🛡️' : (lang === 'es' ? 'Cargando Room...' : 'Loading Room...'),
+      secretCode: isTest ? 'CIBERDEFENSA-2026' : '...',
       creatorId: isTest ? 'admin' : 'guest',
       categories: [],
       members: []
@@ -99,7 +99,7 @@ export default async function RoomDetailLayout({ children, params }: any) {
         </main>
       </div>
 
-      <footer className="footer-main" style={{ marginTop: '4rem' }}>
+      <footer className="footer-main" style={{ marginTop: '2rem' }}>
         <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Github size={18} /></a>
         <span>{t.footer}</span>
         <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Youtube size={22} /></a>

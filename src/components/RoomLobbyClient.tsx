@@ -285,7 +285,7 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
             )}
 
             <div style={{ maxWidth: '1100px', margin: '0 auto', width: '100%' }}>
-                <footer className="footer-main" style={{ marginTop: '6rem' }}>
+                <footer className="footer-main" style={{ marginTop: '2.5rem' }}>
                     <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Github size={18} /></a>
                     <span>{t.footer}</span>
                     <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Youtube size={22} /></a>

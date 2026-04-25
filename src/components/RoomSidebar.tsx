@@ -51,10 +51,16 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
 
     // Load guest room data if applicable
     React.useEffect(() => {
-        if (isGuest) {
-            const gRoom = guestStore.getRoom(initialRoom.id);
-            if (gRoom) setRoom(gRoom);
-        }
+        const syncRoom = () => {
+            if (isGuest) {
+                const gRoom = guestStore.getRoom(initialRoom.id);
+                if (gRoom) setRoom({ ...gRoom });
+            }
+        };
+        
+        syncRoom();
+        window.addEventListener('subcategory-change', syncRoom);
+        return () => window.removeEventListener('subcategory-change', syncRoom);
     }, [isGuest, initialRoom.id]);
 
     const handleUpdateCat = async (catId: string) => {
@@ -239,17 +245,19 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                             </div>
                                         ) : (
                                             <>
-                                                <Link 
+                                                <a 
                                                     href={`#${sub.id}`}
                                                     className={`sub-link ${currentSubId === sub.id ? 'active' : ''}`}
                                                     style={{ flex: 1 }}
-                                                    onClick={() => {
+                                                    onClick={(e) => {
+                                                        // No preventDefault to allow hash change
                                                         window.dispatchEvent(new CustomEvent('subcategory-change', { detail: sub.id }));
+                                                        setCurrentSubId(sub.id);
                                                     }}
                                                 >
                                                     <Hash size={14} style={{ opacity: currentSubId === sub.id ? 1 : 0.5 }} />
                                                     {sub.name}
-                                                </Link>
+                                                </a>
                                                 {isCreator && (
                                                     <button onClick={() => { 
                                                         setEditingCat(null);
@@ -296,21 +304,23 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                     {roomsT.sidebar.members} ({room.members?.length || 0})
                 </h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                    {room.members?.map((member: any) => (
-                        <div key={member.id} className="member-item">
-                            <img 
-                                src={member.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(member.user.name || 'U')}&background=random`} 
-                                alt={member.user.name} 
-                                className="member-avatar"
-                            />
-                            <div className="member-info">
-                                <span className="member-name">{member.user.name}</span>
-                                <span className="member-date">
-                                    {roomsT.sidebar.joined} {new Date(member.createdAt).toLocaleDateString(lang === 'pt' ? 'pt-BR' : lang === 'es' ? 'es-AR' : 'en-US', { day: 'numeric', month: 'short' })}
-                                </span>
+                    {room.members?.map((member: any) => {
+                        const isMe = member.user.name.includes('(tú)') || member.user.name === 'Invitado';
+                        return (
+                            <div key={member.id} className="member-item">
+                                <img src={member.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(member.user.name || 'U')}`} alt={member.user.name} className="member-avatar" />
+                                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                    <span style={{ fontWeight: '800', fontSize: '0.9rem', color: '#1e293b' }}>
+                                        {member.user.name}{isMe && !member.user.name.includes('(tú)') ? ' (tú)' : ''}
+                                    </span>
+                                    <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
+                                        {lang === 'es' ? 'Se unió ' : 'Joined '}
+                                        {new Date(member.createdAt).toLocaleDateString(lang, { day: 'numeric', month: 'short' })}
+                                    </span>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
 
@@ -370,6 +380,8 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                     text-decoration: none !important;
                     position: relative;
                     overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
                 }
                 
                 .sub-link:hover {
@@ -379,26 +391,19 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 }
                 
                 .sub-link.active {
-                    background: linear-gradient(135deg, var(--accent) 0%, #00a2ff 100%);
-                    color: #fff;
-                    font-weight: 800;
-                    box-shadow: 0 8px 20px rgba(0, 112, 243, 0.25);
+                    background: rgba(0, 112, 243, 0.12) !important;
+                    color: #0056b3 !important;
+                    font-weight: 900 !important;
+                    border-left: 5px solid #0070f3 !important;
+                    margin-left: -1.2rem !important;
+                    padding-left: 1.2rem !important;
+                    border-radius: 0 12px 12px 0 !important;
                 }
                 
-                .sub-link.active::before {
-                    content: '';
-                    position: absolute;
-                    left: 0;
-                    top: 20%;
-                    bottom: 20%;
-                    width: 4px;
-                    background: #fff;
-                    border-radius: 0 4px 4px 0;
-                }
-
                 .sub-link.active :global(svg) { 
-                    color: #fff !important; 
+                    color: #0070f3 !important; 
                     opacity: 1 !important;
+                    transform: scale(1.1);
                 }
                 
                 .sub-list {

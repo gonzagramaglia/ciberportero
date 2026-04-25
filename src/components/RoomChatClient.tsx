@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { Hash, Send, Image as ImageIcon, X, Loader2, MessageSquare, Reply as ReplyIcon } from 'lucide-react';
+import { Hash, Send, Image as ImageIcon, X, Loader2, MessageSquare, Reply as ReplyIcon, Trash2 } from 'lucide-react';
 import { addRoomMessage } from '@/lib/roomsActions';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'react-hot-toast';
@@ -37,9 +37,10 @@ function formatMessageDate(date: Date, lang: string) {
     return `El ${dayName} ${dayNum} de ${monthName} a las ${strTime}`;
 }
 
-function MessageItem({ msg, onReply, lang }: any) {
+function MessageItem({ msg, onReply, lang, isReplying, replyInput, onDelete }: any) {
     const { user } = msg;
     const date = new Date(msg.createdAt);
+    const isMyMessage = user.name.includes('(tú)') || user.name === 'Invitado';
 
     const t = translations[lang as keyof typeof translations] || translations.es;
 
@@ -49,7 +50,7 @@ function MessageItem({ msg, onReply, lang }: any) {
                 <div className="message-header">
                     <img src={user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'U')}`} alt={user.name} className="message-avatar" />
                     <div className="message-meta">
-                        <span className="message-user">{user.name}</span>
+                        <span className="message-user">{user.name}{isMyMessage && !user.name.includes('(tú)') ? ' (tú)' : ''}</span>
                         <span className="message-date">{formatMessageDate(date, lang)}</span>
                     </div>
                 </div>
@@ -65,27 +66,46 @@ function MessageItem({ msg, onReply, lang }: any) {
                     </div>
 
                     <div className="message-actions">
-                        <button onClick={() => onReply(msg)} className="action-btn reply">
-                            <ReplyIcon size={14} /> <span>{lang === 'es' ? 'Responder' : lang === 'pt' ? 'Responder' : 'Reply'}</span>
-                        </button>
+                        {isReplying ? (
+                            replyInput
+                        ) : (
+                            <div style={{ display: 'flex', gap: '0.8rem' }}>
+                                <button onClick={() => onReply(msg)} className="action-btn reply">
+                                    <ReplyIcon size={14} /> <span>{lang === 'es' ? 'Responder' : lang === 'pt' ? 'Responder' : 'Reply'}</span>
+                                </button>
+                                {isMyMessage && (
+                                    <button onClick={() => onDelete(msg.id)} className="action-btn delete" style={{ background: '#fff5f5', color: '#ef4444' }}>
+                                        <Trash2 size={14} />
+                                    </button>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
 
 
                 {msg.replies && msg.replies.length > 0 && (
                     <div className="replies-section">
-                        {msg.replies.map((reply: any) => (
-                            <div key={reply.id} className="reply-bubble">
-                                <div className="reply-header">
-                                    <img src={reply.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(reply.user.name || 'U')}`} alt={reply.user.name} className="reply-avatar" />
-                                    <span className="reply-user">{reply.user.name}</span>
-                                    <span className="reply-date">{formatMessageDate(new Date(reply.createdAt), lang)}</span>
+                        {msg.replies.map((reply: any) => {
+                            const isMyReply = reply.user.name.includes('(tú)') || reply.user.name === 'Invitado';
+                            return (
+                                <div key={reply.id} className="reply-bubble">
+                                    <div className="reply-header">
+                                        <img src={reply.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(reply.user.name || 'U')}`} alt={reply.user.name} className="reply-avatar" />
+                                        <span className="reply-user">{reply.user.name}{isMyReply && !reply.user.name.includes('(tú)') ? ' (tú)' : ''}</span>
+                                        <span className="reply-date">{formatMessageDate(new Date(reply.createdAt), lang)}</span>
+                                        {isMyReply && (
+                                            <button onClick={() => onDelete(reply.id, true, msg.id)} className="delete-btn mini">
+                                                <X size={12} />
+                                            </button>
+                                        )}
+                                    </div>
+                                    <div className="reply-content">
+                                        <p>{reply.content}</p>
+                                    </div>
                                 </div>
-                                <div className="reply-content">
-                                    <p>{reply.content}</p>
-                                </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 )}
             </div>
@@ -95,18 +115,14 @@ function MessageItem({ msg, onReply, lang }: any) {
                 .message-card { 
                     background: #fff; 
                     border-radius: 24px; 
-                    padding: 1.5rem; 
-                    box-shadow: 0 4px 20px rgba(0,0,0,0.04); 
-                    border: 1px solid #f1f5f9;
-                    transition: transform 0.2s;
-                }
+                .message-card { background: #fff; border-radius: 24px; padding: 1.2rem; border: 1px solid #f1f5f9; position: relative; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
                 .message-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.2rem; }
                 .message-avatar { width: 44px; height: 44px; border-radius: 14px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
                 .message-meta { display: flex; flex-direction: column; }
                 .message-user { font-weight: 900; font-size: 1rem; color: #1e293b; letter-spacing: -0.01em; }
                 .message-date { font-size: 0.75rem; color: #94a3b8; font-weight: 600; }
                 
-                .message-body { padding-left: 3.7rem; }
+                .message-body { padding-left: 0.5rem; margin-top: 1rem; }
                 .message-content p { margin: 0; line-height: 1.6; color: #334155; font-size: 1.05rem; white-space: pre-wrap; }
                 
                 .image-wrapper { margin-top: 1.2rem; border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0; line-height: 0; }
@@ -276,7 +292,15 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                 <div className="subcategory-chat-header fade-in">
                     <div className="header-badge">
                         <Hash size={14} />
-                        <span>{isGuest ? guestStore.getSubcategory(currentSubId)?.name : roomsT.chat.messages}</span>
+                        <span>
+                            {isGuest ? (
+                                <>
+                                    <span style={{ opacity: 0.6 }}>{guestStore.getCategoryBySubId(currentSubId)?.name}</span>
+                                    <span style={{ margin: '0 0.5rem', opacity: 0.4 }}>&gt;</span>
+                                    <strong style={{ color: 'var(--accent)', fontWeight: '900' }}>{guestStore.getSubcategory(currentSubId)?.name}</strong>
+                                </>
+                            ) : roomsT.chat.messages}
+                        </span>
                     </div>
                 </div>
             )}
@@ -336,14 +360,25 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                     </div>
                 ) : (
                     messages.map((msg: any) => (
-                        <React.Fragment key={msg.id}>
-                            <MessageItem msg={msg} lang={lang} onReply={setReplyingTo} />
-                            {replyingTo?.id === msg.id && (
+                        <MessageItem 
+                            key={msg.id} 
+                            msg={msg} 
+                            lang={lang} 
+                            onReply={setReplyingTo} 
+                            isReplying={replyingTo?.id === msg.id}
+                            onDelete={(id: string, isReply = false, parentId?: string) => {
+                                if (isGuest) {
+                                    guestStore.deleteMessage(currentSubId!, id, isReply, parentId);
+                                    const sub = guestStore.getSubcategory(currentSubId!);
+                                    if (sub) setMessages([...sub.messages]);
+                                }
+                            }}
+                            replyInput={
                                 <div className="inline-reply-container fade-in">
                                     <div className="replying-banner inline">
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                                             <div className="reply-icon-circle"><ReplyIcon size={12} /></div>
-                                            <span>{lang === 'es' ? 'Respondiendo a' : 'Replying to'} <strong>{replyingTo.user.name}</strong></span>
+                                            <span>{lang === 'es' ? 'Respondiendo a' : 'Replying to'} <strong>{replyingTo?.user.name}</strong></span>
                                         </div>
                                         <button onClick={() => setReplyingTo(null)} className="close-reply-btn"><X size={16} /></button>
                                     </div>
@@ -382,14 +417,14 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                                                     </button>
                                                 </div>
                                                 <button type="submit" disabled={sending || uploading || (!text.trim() && selectedImages.length === 0)} className="send-btn">
-                                                    {sending ? <Loader2 size={20} className="spin" /> : <><span className="mobile-hide">{roomsT.chat.post}</span><Send size={18} /></>}
+                                                    {sending ? <Loader2 size={20} className="spin" /> : <Send size={18} />}
                                                 </button>
                                             </div>
                                         </form>
                                     </div>
                                 </div>
-                            )}
-                        </React.Fragment>
+                            }
+                        />
                     ))
                 )}
             </div>
@@ -398,10 +433,10 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                 .chat-container { 
                     display: flex; 
                     flex-direction: column; 
-                    height: calc(100vh - 18rem); 
                     min-height: 500px;
                     max-width: 900px;
                     margin: 0 auto;
+                    margin-bottom: 2rem;
                     position: relative;
                 }
 
@@ -466,27 +501,28 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                     align-items: center; 
                     justify-content: space-between; 
                     padding: 0.8rem 1.2rem; 
-                    background: var(--accent); 
-                    color: #fff;
+                    background: #f8fafc; 
+                    color: #64748b;
                     border-radius: 16px 16px 0 0; 
                     margin-bottom: -1rem; 
                     position: relative; 
                     z-index: 1; 
                     font-size: 0.85rem; 
-                    border: none;
+                    border: 1px solid #f1f5f9;
+                    border-bottom: none;
                 }
                 
-                .replying-banner strong { color: #fff; opacity: 1; }
+                .replying-banner strong { color: #1e293b; opacity: 1; }
                 
                 .reply-icon-circle { 
                     width: 24px; 
                     height: 24px; 
-                    background: rgba(255,255,255,0.2); 
+                    background: #f1f5f9; 
                     border-radius: 50%; 
                     display: flex; 
                     align-items: center; 
                     justify-content: center; 
-                    color: #fff;
+                    color: #64748b;
                 }
                 
                 .close-reply-btn { background: none; border: none; cursor: pointer; color: rgba(255,255,255,0.6); transition: color 0.2s; }
@@ -509,9 +545,10 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                 }
 
                 .inline-reply-container {
-                    margin-left: 3.7rem;
+                    margin-left: 0.5rem;
+                    margin-right: 0.5rem;
                     margin-bottom: 2rem;
-                    margin-top: -1rem;
+                    margin-top: 1rem;
                 }
 
                 .replying-banner.inline {
