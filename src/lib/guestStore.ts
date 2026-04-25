@@ -136,7 +136,19 @@ export const guestStore = {
             name,
             secretCode: code,
             creatorId: 'guest',
-            categories: [],
+            categories: [
+      {
+        id: 'cat-general',
+        name: 'General',
+        subcategories: [
+          {
+            id: 'sub-chat',
+            name: 'Chat',
+            messages: []
+          }
+        ]
+      }
+    ],
             members: [{ id: 'gm1', user: { name: 'Invitado', image: null }, createdAt: new Date().toISOString() }]
         };
         data.rooms.push(newRoom);
