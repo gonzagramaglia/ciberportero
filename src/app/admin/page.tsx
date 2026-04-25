@@ -5,6 +5,15 @@ import { getAdminNote } from "@/lib/actions";
 import AdminSectionNotes from "@/components/admin/AdminSectionNotes";
 
 export default async function AdminPage() {
+  const getRoomsCount = async () => {
+    try {
+      return await db.room.count();
+    } catch (e) {
+      console.error("Error fetching rooms count:", e);
+      return 0;
+    }
+  };
+
   const [counts, logs, note] = await Promise.all([
     {
       links: await db.link.count(),
@@ -15,7 +24,7 @@ export default async function AdminPage() {
       comments: await db.comment.count(),
       users: await db.user.count(),
       images: await db.image.count(),
-      rooms: await db.room.count(),
+      rooms: await getRoomsCount(),
     },
     db.auditLog.findMany({
       take: 10,
@@ -43,7 +52,7 @@ export default async function AdminPage() {
         <StatCard href="/admin/comments" title="Comentarios" count={counts.comments} icon={<MessageSquare className="text-indigo-500" />} />
         <StatCard href="/admin/users" title="Usuarios" count={counts.users} icon={<Users className="text-orange-500" />} />
         <StatCard href="/admin/images" title="Imágenes" count={counts.images} icon={<ImageIcon className="text-cyan-500" />} />
-        <StatCard href="/admin/rooms" title="Salas" count={counts.rooms} icon={<Hash className="text-blue-600" />} />
+        <StatCard href="/admin/rooms" title="Rooms" count={counts.rooms} icon={<Hash className="text-blue-600" />} disabled={true} />
       </div>
 
       <section>
@@ -104,7 +113,24 @@ export default async function AdminPage() {
   );
 }
 
-function StatCard({ title, count, icon, href }: { title: string; count: number; icon: React.ReactNode; href: string }) {
+function StatCard({ title, count, icon, href, disabled }: { title: string; count: number; icon: React.ReactNode; href: string; disabled?: boolean }) {
+  if (disabled) {
+    return (
+      <div className="stat-card" style={{ opacity: 0.5, cursor: 'not-allowed', position: 'relative' }}>
+        <div className="stat-icon">
+          {icon}
+        </div>
+        <div className="stat-info">
+          <p>{title}</p>
+          <p style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            {count}
+            <span style={{ fontSize: '9px', background: '#e2e8f0', color: '#64748b', padding: '1px 6px', borderRadius: '4px', fontWeight: 900, textTransform: 'uppercase' }}>Próximamente</span>
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <Link href={href} className="stat-card">
       <div className="stat-icon">

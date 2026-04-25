@@ -27,15 +27,16 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
     const [post, setPost] = useState(initialPost);
     const { data: sessionData } = useSession();
     const session = initialSession || sessionData;
-    const [showTop, setShowTop] = useState(false);
-    const [showBottom, setShowBottom] = useState(true);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [copied, setCopied] = useState(false);
     const [isHighlighting, setIsHighlighting] = useState(false);
     const [activeHash, setActiveHash] = useState<string | null>(null);
     const [voted, setVoted] = useState<'LIKE' | 'DISLIKE' | null>(null);
     const t = translations[lang];
-    const subjectSlugs = ['sistemas-operativos-1', 'ingles-1', 'gsi', 'algebra-1', 'analisis-1'];
+    const subjectSlugs = [
+        'sistemas-operativos-1', 'ingles-1', 'gsi', 'algebra-1', 'analisis-1',
+        'aprobar-sistemas-operativos-1', 'aprobar-ingles-1', 'aprobar-gsi', 'aprobar-algebra-1', 'aprobar-analisis-1'
+    ];
 
     // Sync state with props when server revalidates
     useEffect(() => {
@@ -159,18 +160,6 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
         setTimeout(() => setCopied(false), 2000);
     };
 
-    useEffect(() => {
-        const handleScroll = () => {
-            const scrollY = window.scrollY;
-            const windowHeight = window.innerHeight;
-            const documentHeight = document.documentElement.scrollHeight;
-            setShowTop(scrollY > 300);
-            setShowBottom(scrollY + windowHeight < documentHeight - 100);
-        };
-        window.addEventListener('scroll', handleScroll);
-        handleScroll();
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
 
     useEffect(() => {
         const handleHash = () => {
@@ -359,15 +348,23 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                 </footer>
             </div>
 
-            <div className="fab-container">
-                <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className={`fab-button ${showTop ? 'visible' : ''}`} aria-label="Scroll to top"><ArrowUp size={20} /></button>
-                <button onClick={() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' })} className={`fab-button ${showBottom ? 'visible' : ''}`} aria-label="Scroll to bottom"><ArrowDown size={20} /></button>
-            </div>
 
             {subjectSlugs.includes(slug) && (
                 <div className="subject-navigator">
-                    {[{ id: '01', slug: 'analisis-1' }, { id: '02', slug: 'algebra-1' }, { id: '03', slug: 'gsi' }, { id: '04', slug: 'ingles-1' }, { id: '05', slug: 'sistemas-operativos-1' }].map((s) => (
-                        <Link key={s.id} href={`/${s.slug}`} className={`subject-nav-item ${slug === s.slug ? 'active' : ''}`}>{s.id}</Link>
+                    {[
+                        { id: '01', slugs: ['analisis-1', 'aprobar-analisis-1'] },
+                        { id: '02', slugs: ['algebra-1', 'aprobar-algebra-1'] },
+                        { id: '03', slugs: ['gsi', 'aprobar-gsi'] },
+                        { id: '04', slugs: ['ingles-1', 'aprobar-ingles-1'] },
+                        { id: '05', slugs: ['sistemas-operativos-1', 'aprobar-sistemas-operativos-1'] }
+                    ].map((s) => (
+                        <Link 
+                            key={s.id} 
+                            href={`/${lang === 'es' ? s.slugs[0] : s.slugs[1]}`} 
+                            className={`subject-nav-item ${s.slugs.includes(slug) ? 'active' : ''}`}
+                        >
+                            {s.id}
+                        </Link>
                     ))}
                 </div>
             )}

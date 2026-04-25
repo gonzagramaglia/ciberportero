@@ -21,10 +21,10 @@ export default async function AdminPostsPage() {
       <div className="admin-header">
         <div>
           <div style={{ marginBottom: '0.25rem' }}>
-            <h2 className="admin-title">Posts Multilingües</h2>
+            <h2 className="admin-title">Posts</h2>
           </div>
           <p className="admin-subtitle">
-            Gestión centralizada de artículos en ES, EN y PT. Ver{" "}
+            Gestión centralizada de artículos. Ver{" "}
             <Link href="/" target="_blank" style={{ color: 'var(--accent)', fontWeight: 700, textDecoration: 'underline' }}>
               Portal Público
             </Link>.
@@ -41,7 +41,6 @@ export default async function AdminPostsPage() {
           <thead>
             <tr>
               <th style={{ width: '50%' }}>Contenido</th>
-              <th>Localización</th>
               <th>Estado</th>
               <th>Fecha</th>
               <th style={{ textAlign: 'right' }}>Acciones</th>
@@ -82,25 +81,6 @@ export default async function AdminPostsPage() {
                           </div>
                         )}
                       </div>
-                    </div>
-                  </td>
-                  <td style={{ verticalAlign: 'top' }}>
-                    <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.5rem' }}>
-                      {['es', 'en', 'pt'].map(lang => {
-                        const exists = lang === 'es' ? hasEs : lang === 'en' ? hasEn : hasPt;
-                        return (
-                          <span key={lang} style={{ 
-                            fontSize: '9px', fontWeight: 900, textTransform: 'uppercase', 
-                            padding: '0.15rem 0.4rem', borderRadius: '4px',
-                            background: exists ? '#f1f5f9' : '#fff1f2',
-                            color: exists ? '#475569' : '#e11d48',
-                            border: `1px solid ${exists ? '#e2e8f0' : '#fecdd3'}`,
-                            opacity: exists ? 1 : 0.6
-                          }}>
-                            {lang}
-                          </span>
-                        );
-                      })}
                     </div>
                   </td>
                   <td style={{ verticalAlign: 'top' }}>

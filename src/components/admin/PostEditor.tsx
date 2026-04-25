@@ -133,7 +133,7 @@ export default function PostEditor({ post }: PostEditorProps) {
       <form onSubmit={handleSubmit} className="space-y-6 fade-in">
         <div className="admin-header">
           <div>
-            <h2 className="admin-title">{post ? 'Editar Post Multilingüe' : 'Nuevo Post Multilingüe'}</h2>
+            <h2 className="admin-title">{post ? 'Editar Post' : 'Nuevo Post'}</h2>
             {slug && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.4rem' }}>
                 <span style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 600 }}>Acceso al post público:</span>

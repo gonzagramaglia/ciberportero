@@ -14,22 +14,24 @@ interface PageProps {
 async function getPost(slug: string) {
   // 1. Try DB
   try {
-    const dbPost = await db.post.findFirst({
-      where: {
-        OR: [
-          { slug },
-          { alternativeSlug: slug },
-          { alternativeSlug2: slug }
-        ]
-      },
-      include: { 
-        countdowns: true,
-        votes: true 
-      }
-    });
-    if (dbPost && dbPost.published) return dbPost;
+    if (db && db.post) {
+      const dbPost = await db.post.findFirst({
+        where: {
+          OR: [
+            { slug },
+            { alternativeSlug: slug },
+            { alternativeSlug2: slug }
+          ]
+        },
+        include: { 
+          countdowns: true,
+          votes: true 
+        }
+      });
+      if (dbPost && dbPost.published) return dbPost;
+    }
   } catch (err) {
-    console.error("DB Fetch Error:", err);
+    console.warn("Individual Post DB Fetch skipped:", err);
   }
 
   // 2. Fallback to Files

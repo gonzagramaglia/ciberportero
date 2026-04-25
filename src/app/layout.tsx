@@ -23,7 +23,7 @@ export default async function RootLayout({
 
   return (
     <html lang={initialLang}>
-      <body>
+      <body suppressHydrationWarning>
         <AuthProvider>
           <LanguageProvider initialLang={initialLang}>
             {children}

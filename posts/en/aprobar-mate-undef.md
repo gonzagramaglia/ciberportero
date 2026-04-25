@@ -1,15 +1,11 @@
 ---
-title: "How to pass the [00] Mathematics Course of Admission"
+title: "How to pass the [00] Mathematics Entrance Course"
 date: "2026-03-04"
-description: "Guide to passing with 80% or higher the Mathematics Course of FADENA's Admission, a requirement to enroll in the Cyberdefense degree subjects"
+description: "Guide to passing the Mathematics Entrance Course for FADENA with 80% or more, a requirement to enroll in the Cyberdefense Degree subjects."
 ---
 
-# How to pass the [00] Mathematics Course of Admission
+📚 The **[00] Mathematics Entrance Course** is an essential part of the process to become an **official student of FADENA | UNDEF**. Passing it with **80% or more** is an **indispensable requirement to be able to enroll in the semester-based subjects** of the Degree in Cyberdefense.
 
-> 📚 The [**[00] Mathematics Course of Admission**](https://drive.google.com/drive/folders/1QT5-VyRwHe5HVmavQQ4tDwupAPJ-Ie1Q) is an essential part of the process to become an **official FADENA | UNDEF student**. Passing it with **80% or higher** is an **essential requirement to enroll in the semester subjects** of the Bachelor's in Cyberdefense.
+🎥 **Mathematics Classes:** A classmate, who also gives private mathematics tutoring, taught honorary classes in 2026. You can see the full playlist here: **[Mathematics Classes – Entrance to FADENA](https://www.youtube.com/playlist?list=PLLiqnZYloFpux1rXfU7j58p-XhSjZ-p7r)**
 
-> 🎥 **Math Classes:** A fellow student, who also gives private math lessons, taught ad honorem classes in 2026. You can watch the full playlist here: [**Math Classes – FADENA Admission**](https://www.youtube.com/playlist?list=PLLiqnZYloFpu0ebcXDj8VlKqYOA-GeiKB)
-
-![In progress](/in-process.png)
-
-Written with 💛 by [**Gonza**](https://github.com/gonzalogramagia)
+> 💡 **Tip:** Try to complete the self-assessments during the week they are enabled to keep the subject up to date and increase the chances of passing the exams.

@@ -26,7 +26,7 @@ export default async function RoomPage() {
 
   return (
     <RoomLandingClient 
-      session={session} 
+      session={null} 
     />
   );
 }

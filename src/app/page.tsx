@@ -25,34 +25,47 @@ export async function generateMetadata(): Promise<Metadata> {
 async function getInitialPosts(lang: Locale) {
   let dbPosts: any[] = [];
   try {
-    const posts = await db.post.findMany({
-      where: { published: true },
-      orderBy: { date: 'desc' }
-    });
-    
-    dbPosts = posts
-      .filter(p => {
-        const titleObj = p.title as any;
-        const contentObj = p.content as any;
-        return titleObj[lang] && contentObj[lang];
-      })
-      .map(p => {
-        const titleObj = p.title as any;
-        const descObj = p.description as any;
-        return {
-          slug: p.slug,
-          date: p.date,
-          title: titleObj[lang] || titleObj['es'] || '',
-          description: descObj?.[lang] || descObj?.['es'] || '',
-          alternativeSlug: p.alternativeSlug,
-          alternativeSlug2: p.alternativeSlug2
-        };
+    // Robust check for db client to prevent initialization crashes from taking down the page
+    if (db && db.post) {
+      const posts = await db.post.findMany({
+        where: { published: true },
+        orderBy: { date: 'desc' }
       });
+      
+      if (posts && Array.isArray(posts)) {
+        dbPosts = posts
+          .filter(p => {
+            const titleObj = p.title as any;
+            const contentObj = p.content as any;
+            return titleObj && contentObj && titleObj[lang] && contentObj[lang];
+          })
+          .map(p => {
+            const titleObj = p.title as any;
+            const descObj = p.description as any;
+            return {
+              slug: p.slug,
+              date: p.date,
+              title: titleObj[lang] || titleObj['es'] || '',
+              description: descObj?.[lang] || descObj?.['es'] || '',
+              alternativeSlug: p.alternativeSlug,
+              alternativeSlug2: p.alternativeSlug2
+            };
+          });
+      }
+    }
   } catch (err) {
-    console.error("Home DB Posts Fetch Error:", err);
+    console.warn("Home DB Posts skipped (expected if DB not ready):", err);
   }
 
   const filePosts = getAllPosts(lang);
+
+  // Merge logic:
+  // If ES: Priority to DB posts. Filter out file-based "aprobar-" backups to avoid duplicates in the feed.
+  // If EN/PT: DB posts will be empty anyway (filtered by lang above). Only file posts will show.
+  const finalFilePosts = lang === 'es' 
+    ? filePosts.filter(p => !p.slug.startsWith('aprobar-') && !p.slug.includes('codeforces')) 
+    : filePosts;
+
   const dbSlugs = new Set();
   dbPosts.forEach(p => {
     dbSlugs.add(p.slug);
@@ -60,7 +73,7 @@ async function getInitialPosts(lang: Locale) {
     if (p.alternativeSlug2) dbSlugs.add(p.alternativeSlug2);
   });
 
-  const merged = [...dbPosts, ...filePosts.filter(p => !dbSlugs.has(p.slug))];
+  const merged = [...dbPosts, ...finalFilePosts.filter(p => !dbSlugs.has(p.slug))];
   merged.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   return merged.slice(0, 20);
 }

@@ -146,15 +146,32 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                                 </div>
                             </li>
                         ))
-                    ) : posts.map((post: any) => (
-                        <li key={post.slug} className="post-item">
-                            <Link href={`/${post.slug}`}>
-                                <span className="post-date">{new Date(post.date).toLocaleDateString(lang, { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })}</span>
-                                <span className="post-title">{post.title}</span>
-                                <p className="post-description">{post.description}</p>
-                            </Link>
-                        </li>
-                    ))}
+                    ) : posts.length > 0 ? (
+                        posts.map((post: any) => (
+                            <li key={post.slug} className="post-item">
+                                <Link href={`/${post.slug}`}>
+                                    <span className="post-date">{new Date(post.date).toLocaleDateString(lang, { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })}</span>
+                                    <span className="post-title">{post.title}</span>
+                                    <p className="post-description">{post.description}</p>
+                                </Link>
+                            </li>
+                        ))
+                    ) : (
+                        <div style={{ 
+                            padding: '3rem 1rem', 
+                            textAlign: 'center', 
+                            background: '#f8fafc', 
+                            borderRadius: '12px', 
+                            border: '1px dashed var(--border)',
+                            color: 'var(--muted)'
+                        }}>
+                            <p style={{ margin: 0, fontWeight: '500' }}>
+                                {lang === 'es' ? 'No hay posts publicados en este momento.' : 
+                                 lang === 'pt' ? 'Não há posts publicados no momento.' : 
+                                 'No posts published at this time.'}
+                            </p>
+                        </div>
+                    )}
                 </ul>
 
                 {lang === 'es' && (
