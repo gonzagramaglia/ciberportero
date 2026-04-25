@@ -3,7 +3,7 @@
 import { useLanguage } from '@/context/LanguageContext';
 import { guestStore } from '@/lib/guestStore';
 import React, { useEffect, useState } from 'react';
-import { Pencil, Check, X, Trash2 } from 'lucide-react';
+import { Pencil, Check, X, Trash2, Key } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { slugify } from '@/lib/utils';

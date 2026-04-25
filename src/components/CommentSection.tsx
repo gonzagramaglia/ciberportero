@@ -599,8 +599,8 @@ export default function CommentSection({ postSlug, podcastSlug, lang = 'es' }: {
         .submit-comment-btn.ready:hover {
           background: #333;
           box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+          transition: all 0.3s;
         }
- transformation: all 0.3s;
 
         .submit-comment-btn:disabled {
           background: #e2e8f0;
