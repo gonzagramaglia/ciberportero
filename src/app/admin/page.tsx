@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { Link as LinkIcon, FileText, Calendar, Bell, Clock, User as UserIcon, MessageSquare, Image as ImageIcon, Users } from "lucide-react";
+import { Link as LinkIcon, FileText, Calendar, Bell, Clock, User as UserIcon, MessageSquare, Image as ImageIcon, Users, Hash } from "lucide-react";
 import Link from "next/link";
 import { getAdminNote } from "@/lib/actions";
 import AdminSectionNotes from "@/components/admin/AdminSectionNotes";
@@ -15,6 +15,7 @@ export default async function AdminPage() {
       comments: await db.comment.count(),
       users: await db.user.count(),
       images: await db.image.count(),
+      rooms: await db.room.count(),
     },
     db.auditLog.findMany({
       take: 10,
@@ -42,6 +43,7 @@ export default async function AdminPage() {
         <StatCard href="/admin/comments" title="Comentarios" count={counts.comments} icon={<MessageSquare className="text-indigo-500" />} />
         <StatCard href="/admin/users" title="Usuarios" count={counts.users} icon={<Users className="text-orange-500" />} />
         <StatCard href="/admin/images" title="Imágenes" count={counts.images} icon={<ImageIcon className="text-cyan-500" />} />
+        <StatCard href="/admin/rooms" title="Salas" count={counts.rooms} icon={<Hash className="text-blue-600" />} />
       </div>
 
       <section>

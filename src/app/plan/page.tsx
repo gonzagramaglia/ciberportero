@@ -6,7 +6,7 @@ import { useLanguage } from "@/context/LanguageContext"
 import { translations } from "@/lib/translations"
 import { curriculum, Subject } from "@/data/curriculum"
 import LanguageSwitcher from "@/components/LanguageSwitcher"
-import { CheckCircle, Info, Lock, ArrowLeft, Layers, Star, Zap, Github, Youtube, Search, X, Calendar, ExternalLink } from "lucide-react"
+import { CheckCircle, Info, Lock, ChevronLeft, Layers, Star, Zap, Github, Youtube, Search, X, Calendar, ExternalLink } from "lucide-react"
 import NotificationBanners from "@/components/NotificationBanners"
 import CountdownWidget from "@/components/CountdownWidget"
 import { normalizeString } from "@/lib/string-utils"
@@ -228,7 +228,7 @@ export default function PlanPage() {
       <header style={{ marginBottom: '3rem' }}>
         <div className="nav-header-row">
           <Link href="/" className="back-link">
-            <ArrowLeft size={18} /> {translations[lang].back}
+            <ChevronLeft size={18} /> {translations[lang].back}
           </Link>
           <LanguageSwitcher />
         </div>

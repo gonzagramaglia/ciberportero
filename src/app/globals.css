@@ -1980,3 +1980,15 @@ html {
   20% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
   100% { transform: scale(1); box-shadow: 0 0 0 0px rgba(59, 130, 246, 0); }
 }
+
+.room-content-layout {
+  display: flex;
+  gap: 2rem;
+  flex: 1;
+}
+
+@media (max-width: 1024px) {
+  .room-content-layout {
+    flex-direction: column;
+  }
+}

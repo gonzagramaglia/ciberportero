@@ -75,15 +75,20 @@ export default async function CalendarPage({
     }
   }
 
-  const events = (await db.calendarEvent.findMany({
-    where: {
-      OR: [
-        { userId: null },
-        { userId: session?.user?.id || 'no-session' }
-      ]
-    },
-    orderBy: { startDate: 'asc' }
-  })) as any[];
+  let events: any[] = [];
+  try {
+    events = (await db.calendarEvent.findMany({
+      where: {
+        OR: [
+          { userId: null },
+          { userId: session?.user?.id || 'no-session' }
+        ]
+      },
+      orderBy: { startDate: 'asc' }
+    })) as any[];
+  } catch (error) {
+    console.error("Calendar DB Fetch Error:", error);
+  }
 
   const mappedEvents = events.map(event => ({
     id: event.id,

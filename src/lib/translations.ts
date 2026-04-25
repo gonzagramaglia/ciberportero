@@ -11,6 +11,10 @@ export const translations = {
             signOutConcise: "Cerrar"
         },
         credits: "Inspirado en el trabajo de zzzNata",
+        metadata: {
+            roomsTitle: "Ciberportero | Rooms",
+            roomsDesc: "Accede a tus salas de estudio colaborativas."
+        },
         langName: "Español",
         featured: {
             title: "Links Útiles",
@@ -229,7 +233,7 @@ export const translations = {
                 sixtyDays: "Próximos 60 días",
                 customRange: "Todo el año",
                 generateButton: "Descargar archivo .ics",
-                instructions: "Una vez descargado, importalo en la config de Google Calendar.",
+                instructions: "Once downloaded, import el config de Google Calendar.",
                 help: "Al ser un sistema académico, te recomendamos exportar por materias para mejor organización."
             }
         },
@@ -250,7 +254,52 @@ export const translations = {
             "Recordá que la disciplina y la constancia son las bases de un gran profesional.",
             "Recordá que no debés detenerte hasta sentirte orgulloso.",
             "Recordá que la educación es el arma más poderosa para proteger la nación."
-        ]
+        ],
+        rooms: {
+            title: "Lobby de las Rooms",
+            description: "Tu espacio colaborativo para estudiar en grupo, compartir capturas de ejercicios y resolver dudas juntos.",
+            access: "Acceso a las Rooms",
+            signInPrompt: "Iniciá sesión para unirte a grupos de estudio o crear el tuyo propio.",
+            guestMode: "Probar como invitado (Temporal)",
+            guestWarning: "Estás en modo invitado. Los cambios no se guardarán permanentemente.",
+            join: {
+                title: "Unirse con código",
+                desc: "Entrá a una sala existente usando el código secreto."
+            },
+            create: {
+                title: "Crear nueva sala",
+                desc: "Configurá un espacio privado para tu grupo de estudio."
+            },
+            myRooms: "Tus Rooms",
+            noRooms: "No tienes Rooms todavía",
+            back: "Volver al inicio",
+            backToRooms: "Volver a Rooms",
+            backToLobby: "Volver al Lobby",
+            sidebar: {
+                categories: "Categorías",
+                members: "Miembros",
+                joined: "Se unió",
+                placeholderName: "Nombre...",
+                categoryCreated: "Categoría creada",
+                subcategoryCreated: "Subcategoría creada"
+            },
+            chat: {
+                whatAreYouThinking: "¿Qué estás pensando?",
+                post: "Publicar",
+                emptyMessages: "No hay mensajes todavía",
+                startConversation: "¡Iniciá la conversación!",
+                replyingTo: "Respondiendo a",
+                uploadImage: "Subir imagen"
+            },
+            modal: {
+                createTitle: "Crear Sala",
+                joinTitle: "Unirse a la Sala",
+                nameLabel: "Nombre de la sala",
+                codeLabel: "Código secreto",
+                namePlaceholder: "Ej: Análisis Matemático I",
+                codePlaceholder: "Ej: MAGIOS2026"
+            }
+        }
     },
     en: {
         title: "Ciberportero",
@@ -264,6 +313,10 @@ export const translations = {
             signOutConcise: "Sign Out"
         },
         credits: "Inspired by zzzNata's project",
+        metadata: {
+            roomsTitle: "Ciberportero | Rooms",
+            roomsDesc: "Access your collaborative study rooms."
+        },
         langName: "English",
         featured: {
             title: "Useful Links",
@@ -503,11 +556,56 @@ export const translations = {
             "Remember that discipline and perseverance are the foundation of a great professional.",
             "Remember that you should not stop until you're proud.",
             "Remember that education is the most powerful weapon to protect the nation."
-        ]
+        ],
+        rooms: {
+            title: "Rooms Lobby",
+            description: "Your collaborative space to study in groups, share exercise screenshots, and solve doubts together.",
+            access: "Room Access",
+            signInPrompt: "Sign in to join study groups or create your own.",
+            guestMode: "Try as guest (Temporary)",
+            guestWarning: "You are in guest mode. Changes will not be saved permanently.",
+            join: {
+                title: "Join with code",
+                desc: "Enter an existing room using the secret code."
+            },
+            create: {
+                title: "Create new room",
+                desc: "Set up a private space for your study group."
+            },
+            myRooms: "Your Rooms",
+            noRooms: "No rooms yet",
+            back: "Back to home",
+            backToRooms: "Back to Rooms",
+            backToLobby: "Back to Lobby",
+            sidebar: {
+                categories: "Categories",
+                members: "Members",
+                joined: "Joined",
+                placeholderName: "Name...",
+                categoryCreated: "Category created",
+                subcategoryCreated: "Subcategory created"
+            },
+            chat: {
+                whatAreYouThinking: "What's on your mind?",
+                post: "Post",
+                emptyMessages: "No messages yet",
+                startConversation: "Start the conversation!",
+                replyingTo: "Replying to",
+                uploadImage: "Upload image"
+            },
+            modal: {
+                createTitle: "Create Room",
+                joinTitle: "Join the Room",
+                nameLabel: "Room name",
+                codeLabel: "Secret code",
+                namePlaceholder: "Eg: Calculus I",
+                codePlaceholder: "Eg: SECRET123"
+            }
+        }
     },
     pt: {
         title: "Ciberportero",
-        description: "Ciberdefesa e segurança digital na línea de frente",
+        description: "Ciberdefesa e segurança digital na linha de frente",
         back: "Voltar ao início",
         footer: "© 2026 | Mens secura in corpore tuto",
         auth: {
@@ -517,6 +615,10 @@ export const translations = {
             signOutConcise: "Sair"
         },
         credits: "Inspirado no trabalho de zzzNata",
+        metadata: {
+            roomsTitle: "Ciberportero | Rooms",
+            roomsDesc: "Acesse suas salas de estudo colaborativas."
+        },
         langName: "Português",
         featured: {
             title: "Links Úteis",
@@ -616,7 +718,7 @@ export const translations = {
             tracking: {
                 title: "Acompanhamento de Atividades",
                 materia: "Matéria",
-                tipo: "Tipo de Atividade",
+                tipo: "Tipo de Actividade",
                 nombre: "Nome da Tarefa",
                 link: "Link do Campus (opcional)",
                 calificacion: "Nota",
@@ -636,7 +738,7 @@ export const translations = {
                 avances: "Avanços",
                 autoevaluacion: "Autoavaliação",
                 parcial: "Exame Parcial",
-                tp: "Trabalho Práctico",
+                tp: "Trabalho Prático",
                 campus: "Campus"
             },
             beta: {
@@ -660,21 +762,21 @@ export const translations = {
             stats: {
                 completed: "Matérias Concluídas",
                 remaining: "Matérias Restantes",
-                progress: "Progreso Total"
+                progress: "Progresso Total"
             },
             objective: "Objetivo Acadêmico",
             intermediate: "Título Intermediário (Analista)",
             full: "Licenciatura Completa",
-            search: "Buscar matéria ou ID...",
+            search: "Buscar matéria o ID...",
             storageNotice: "Seu progresso é salvo localmente neste navegador.",
             subjectNames: {
-                1: "Cálculo I", 2: "Álgebra I", 3: "Gestão de Serviços de Informação", 4: "Inglês I", 5: "Sistemas Operacionais I",
-                6: "Sistemas de Processamento de Dados", 7: "Infraestrutura de Telecomunicações", 8: "Sociedade e Estado", 9: "Sistemas Operacionais II", 10: "Linguagens de Programación",
+                1: "Cálculo I", 2: "Álgebra I", 3: "Gestão de Serviços de Informação", 4: "Inglés I", 5: "Sistemas Operacionais I",
+                6: "Sistemas de Processamento de Dados", 7: "Infraestrutura de Telecomunicações", 8: "Sociedade e Estado", 9: "Sistemas Operacionais II", 10: "Linguagens de Programação",
                 11: "Cálculo II", 12: "Álgebra II", 13: "Probabilidade e Estatística", 14: "Inglês II", 15: "Tecnologia Operacional",
-                16: "Programación Segura", 17: "Ciberseguridad Aplicada", 18: "Dispositivos Remotos e IoT", 19: "Ética Profissional", 20: "Gestão de Segurança da Informação",
-                21: "Protección de Infraestructuras Críticas", 22: "Metodologías de Análise de Riscos", 23: "Análise de Cenários e Capacidades", 24: "Governo e Políticas Públicas", 25: "Informática Forense",
+                16: "Programação Segura", 17: "Ciberseguridad Aplicada", 18: "Dispositivos Remotos e IoT", 19: "Ética Profissional", 20: "Gestão de Segurança da Informação",
+                21: "Proteção de Infraestructuras Críticas", 22: "Metodologias de Análise de Riscos", 23: "Análise de Cenários e Capacidades", 24: "Governo e Políticas Públicas", 25: "Informática Forense",
                 26: "Relações Internacionais", 27: "IA e Aprendizado de Máquina", 28: "Geopolítica", 29: "Direito à Defesa Nacional", 30: "Sistema de Inteligência Nacional",
-                31: "Investigação Operativa", 32: "Criptografia Aplicada", 33: "Gestão de Projetos", 34: "Instrumento Militar e Sistemas de Armas", 35: "Modelos e Simulação",
+                31: "Investigação Operativa", 32: "Criptografía Aplicada", 33: "Gestão de Projetos", 34: "Instrumento Militar e Sistemas de Armas", 35: "Modelos e Simulação",
                 36: "Prospectiva Estratégica", 37: "Atores no Quinto Domínio"
             }
         },
@@ -688,7 +790,7 @@ export const translations = {
             fullDays: ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"],
             events: {
                 title: "Eventos",
-                empty: "Sem eventos para este día.",
+                empty: "Sem eventos para este dia.",
                 upcoming: "Próximos eventos",
                 exam: "Exame / Parcial",
                 quiz_mandatory: "Autoavaliação Obrigatória",
@@ -701,29 +803,29 @@ export const translations = {
                 holyWeek: "Semana Santa",
                 examWeek: "Semana de exames"
             },
-            notice: "à medida que as datas de exames e entregas forem anunciadas, o calendário será atualizado.",
+            notice: "à medida que as datas de exames e entregas são anunciadas, o calendario será atualizado.",
             periodFilter: "Semestre",
             allSubjects: "Todas as matérias",
             allSubjectsOfPeriod: "Todas as matérias do semestre",
             allPeriods: "Todos os semestres",
             allTypes: "Todos os tipos de eventos",
-            firstPeriod: "1º semestre do 1º ano",
-            secondPeriod: "2º semestre do 1º ano",
-            thirdPeriod: "1º semestre do 2º ano",
-            fourthPeriod: "2º semestre do 2º ano",
+            firstPeriod: "1º semestre de 1º ano",
+            secondPeriod: "2º semestre de 1º ano",
+            thirdPeriod: "1º semestre de 2º ano",
+            fourthPeriod: "2º semestre de 2º ano",
             periodMessage: "Selecione seu período acadêmico",
             addPersonalized: "Adicionar evento personalizado",
             addPersonalizedTitle: "Adicionar evento",
-            exportToGoogleCalendar: "Adicionar ao Google Agenda",
+            exportToGoogleCalendar: "Adicionar ao Google Calendar",
             schedules: {
-                math1: "Cronograma de [01] Análise Matemática I",
+                math1: "Cronograma de [01] Cálculo I",
                 algebra1: "Cronograma de [02] Álgebra I",
                 management1: "Cronograma de [03] Gestão de Sist. de Inf.",
-                os1: "Cronograma de [05] Sistemas Operativos I"
+                os1: "Cronograma de [05] Sistemas Operacionais I"
             },
             batchExport: {
                 title: "Exportar múltiplos eventos",
-                button: "Exportar para Google Agenda",
+                button: "Exportar para Google Calendar",
                 eventsToExport: "Eventos para exportar",
                 timePeriod: "Período de tempo",
                 allEvents: "Todos os eventos",
@@ -735,8 +837,8 @@ export const translations = {
                 sixtyDays: "Próximos 60 dias",
                 customRange: "Todo o ano letivo",
                 generateButton: "Baixar arquivo .ics",
-                instructions: "Após baixar, importe-o nas configurações do Google Agenda (Importar/Exportar).",
-                help: "Como um sistema acadêmico, recomendamos exportar por matérias para melhor organização."
+                instructions: "Uma vez baixado, importe-o nas configurações do Google Calendar (Importar/Exportar).",
+                help: "Por ser um sistema acadêmico, recomendamos exportar por matéria para melhor organização."
             }
         },
         comments: {
@@ -746,17 +848,62 @@ export const translations = {
         },
         motivations: [
             "Lembre-se que a persistência é a chave do sucesso acadêmico.",
-            "Lembre-se que cada matéria superada é um passo a mais rumo à sua meta.",
+            "Lembre-se que cada matéria superada é um passo a mais rumo ao seu objetivo.",
             "Lembre-se que você está protegendo o futuro, um exame de cada vez.",
             "Lembre-se que seu esforço hoje é sua segurança amanhã.",
-            "Lembre-se que a excelência não é um ato, mas um hábito.",
+            "Lembre-se que a excelência não é un ato, mas un hábito.",
             "Lembre-se que você deve manter o foco, o objetivo está cada vez mais perto.",
             "Lembre-se que o conhecimento é a melhor defesa.",
             "Lembre-se que você deve seguir em frente, seu progresso é imparável.",
-            "Lembre-se que a disciplina e a constância são as bases de um grande profissional.",
+            "Lembre-se que a disciplina e a constância são as bases de un grande profesional.",
             "Lembre-se que você não deve parar até se sentir orgulhoso.",
             "Lembre-se que a educação é a arma mais poderosa para proteger a nação."
-        ]
+        ],
+        rooms: {
+            title: "Lobby das Rooms",
+            description: "Seu espaço colaborativo para estudar em grupo, compartilhar capturas de exercícios e resolver dúvidas juntos.",
+            access: "Acesso às Rooms",
+            signInPrompt: "Faça login para participar de grupos de estudo ou criar o seu próprio.",
+            guestMode: "Tentar como convidado (Temporário)",
+            guestWarning: "Você está no modo convidado. As alterações não serão salvas permanentemente.",
+            join: {
+                title: "Entrar com código",
+                desc: "Entre em uma room existente usando o código secreto."
+            },
+            create: {
+                title: "Criar nova room",
+                desc: "Configure um espaço privado para o seu grupo de estudo."
+            },
+            myRooms: "Minhas Rooms",
+            noRooms: "Ainda não tens Rooms",
+            back: "Voltar ao início",
+            backToRooms: "Voltar para as Rooms",
+            backToLobby: "Voltar para o Lobby",
+            sidebar: {
+                categories: "Categorias",
+                members: "Membros",
+                joined: "Entrou em",
+                placeholderName: "Nome...",
+                categoryCreated: "Categoria criada",
+                subcategoryCreated: "Subcategoria criada"
+            },
+            chat: {
+                whatAreYouThinking: "O que você está pensando?",
+                post: "Publicar",
+                emptyMessages: "Ainda não há mensagens",
+                startConversation: "Comece a conversa!",
+                replyingTo: "Respondendo a",
+                uploadImage: "Enviar imagem"
+            },
+            modal: {
+                createTitle: "Criar Sala",
+                joinTitle: "Entrar na Sala",
+                nameLabel: "Nome da sala",
+                codeLabel: "Código secreto",
+                namePlaceholder: "Ex: Análise Matemática I",
+                codePlaceholder: "Ex: MAGIOS2026"
+            }
+        }
     }
 };
 

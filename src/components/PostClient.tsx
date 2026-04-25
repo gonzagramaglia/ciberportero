@@ -407,12 +407,11 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                 }
                 .post-content { transition: all 0.6s ease; }
                 .subject-navigator { position: fixed; left: 4.5rem; bottom: 3.5rem; display: flex; flex-direction: column; gap: 1rem; z-index: 1000; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-                .subject-navigator:hover .subject-nav-item:not(.active) { opacity: 0.3 !important; }
-                .subject-navigator .subject-nav-item:hover { opacity: 1 !important; }
                 .subject-nav-item { width: 62px; height: 62px; border-radius: 50%; background: #ffffff; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); color: #1e293b; font-weight: 900; font-size: 1.3rem; text-decoration: none; opacity: 0.8; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-                .subject-nav-item.active { background: #f1f5f9; box-shadow: none; color: #cbd5e1; pointer-events: none; }
-                .subject-nav-item:not(.active):hover { background: #facc15 !important; color: #000 !important; box-shadow: 0 15px 30px rgba(250, 204, 21, 0.3) !important; border-color: #facc15 !important; opacity: 1 !important; }
+                .subject-nav-item.active { background: #fff; border: 2px solid var(--accent); color: var(--accent); box-shadow: 0 0 20px rgba(0, 112, 243, 0.15); pointer-events: none; opacity: 1; }
+                .subject-nav-item:not(.active):hover { background: #facc15 !important; color: #000 !important; box-shadow: 0 15px 30px rgba(250, 204, 21, 0.4) !important; border-color: #facc15 !important; opacity: 1 !important; transform: scale(1.1) translateX(5px); }
                 .hoy-today-link { position: fixed; right: 4.5rem; bottom: 3.5rem; width: 62px; height: 62px; border-radius: 50%; background: #ffffff; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); color: #1e293b; z-index: 1000; opacity: 0.8; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-decoration: none; }
+                .hoy-today-link:hover { background: #facc15 !important; color: #000 !important; transform: scale(1.1) translateX(-5px); border-color: #facc15 !important; opacity: 1 !important; box-shadow: 0 15px 30px rgba(250, 204, 21, 0.4) !important; }
                 .copy-button:hover { background: #f8fafc; border-color: #cbd5e1; transform: translateY(-1px); }
                 .copy-button.success { background: #f0fdf4; border-color: #4ade80; color: #166534; }
                 
@@ -473,7 +472,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                         font-size: 0.9rem;
                     }
                 }
-                @media (min-width: 1201px) { .fab-container { display: none !important; } }
+                @media (max-width: 1200px) { .fab-container { display: none !important; } }
                 .hoy-today-link:hover :global(svg) { opacity: 1 !important; }
             `}</style>
         </>

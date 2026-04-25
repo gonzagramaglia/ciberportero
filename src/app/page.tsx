@@ -11,10 +11,10 @@ export async function generateMetadata(): Promise<Metadata> {
   const t = translations[lang];
 
   return {
-    title: `Ciberportero | ${t.title}`,
+    title: "Ciberportero",
     description: t.description,
     openGraph: {
-      title: `Ciberportero | ${t.title}`,
+      title: "Ciberportero",
       description: t.description,
       type: 'website',
       url: 'https://ciberportero.com',

@@ -33,6 +33,10 @@ model User {
   podcastVotes   PodcastVote[]
   postVotes      PostVote[]
 
+  roomsCreated   Room[]          @relation("RoomCreator")
+  roomMemberships RoomMember[]
+  roomMessages   RoomMessage[]
+
   @@map("users")
 }
 
@@ -295,4 +299,71 @@ model AdminNote {
   updatedAt DateTime @updatedAt
 
   @@map("admin_notes")
+}
+
+model Room {
+  id          String   @id @default(cuid())
+  name        String
+  secretCode  String
+  creatorId   String
+  creator     User     @relation("RoomCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+  categories  RoomCategory[]
+  members     RoomMember[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("rooms")
+}
+
+model RoomMember {
+  id        String   @id @default(cuid())
+  roomId    String
+  userId    String
+  room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([roomId, userId])
+  @@map("room_members")
+}
+
+model RoomCategory {
+  id            String   @id @default(cuid())
+  name          String
+  roomId        String
+  room          Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  subcategories RoomSubcategory[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("room_categories")
+}
+
+model RoomSubcategory {
+  id          String   @id @default(cuid())
+  name        String
+  categoryId  String
+  category    RoomCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  messages    RoomMessage[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("room_subcategories")
+}
+
+model RoomMessage {
+  id             String   @id @default(cuid())
+  content        String   @db.Text
+  images         Json?    @default("[]")
+  subcategoryId  String
+  subcategory    RoomSubcategory @relation(fields: [subcategoryId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parentId       String?
+  parent         RoomMessage? @relation("Thread", fields: [parentId], references: [id], onDelete: Cascade)
+  replies        RoomMessage[] @relation("Thread")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("room_messages")
 }

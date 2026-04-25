@@ -1,0 +1,340 @@
+'use client';
+
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { Plus, Hash, Key, ArrowRight, X, ChevronLeft, Github, Youtube } from 'lucide-react';
+import { createRoom, joinRoom } from '@/lib/roomsActions';
+import { toast } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+import LanguageSwitcher from './LanguageSwitcher';
+import { useLanguage } from '@/context/LanguageContext';
+import { translations } from '@/lib/translations';
+import RoomNavbar from './RoomNavbar';
+import { guestStore } from '@/lib/guestStore';
+import { slugify } from '@/lib/utils';
+
+export default function RoomLobbyClient({ initialRooms, session }: any) {
+    const { lang } = useLanguage();
+    const [rooms, setRooms] = useState(initialRooms);
+    const isGuest = !session;
+
+    const t = translations[lang as keyof typeof translations] || translations.es;
+    const roomsT = t.rooms;
+
+    React.useEffect(() => {
+        document.body.style.background = '#f8fafc';
+        return () => { document.body.style.background = ''; };
+    }, []);
+
+    React.useEffect(() => {
+        if (isGuest) {
+            setRooms(guestStore.getRooms());
+        } else {
+            setRooms(initialRooms);
+        }
+    }, [isGuest, initialRooms]);
+
+    const [isCreating, setIsCreating] = useState(false);
+    const [isJoining, setIsJoining] = useState(false);
+    const [newRoomName, setNewRoomName] = useState('');
+    const [newRoomCode, setNewRoomCode] = useState('');
+    const [joinCode, setJoinCode] = useState('');
+    const [loading, setLoading] = useState(false);
+    const router = useRouter();
+
+    React.useEffect(() => {
+        document.body.style.background = '#f8fafc';
+        return () => { document.body.style.background = ''; };
+    }, []);
+
+    const handleCreate = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!newRoomName || !newRoomCode) return;
+        setLoading(true);
+
+        if (isGuest) {
+            const slug = slugify(newRoomName);
+            const newRoom = guestStore.createRoom(newRoomName, newRoomCode, slug);
+            setRooms(guestStore.getRooms());
+            toast.success(lang === 'es' ? '¡Sala creada!' : 'Room created!');
+            router.push(`/rooms/${newRoom.id}`);
+            setIsCreating(false);
+        } else {
+            const res = await createRoom(newRoomName, newRoomCode);
+            if (res.success) {
+                toast.success(lang === 'es' ? 'Sala creada!' : 'Room created!');
+                router.push(`/rooms/${res.roomId}`);
+            } else {
+                toast.error(res.error || 'Error');
+            }
+        }
+        setLoading(false);
+    };
+
+    const handleJoin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!joinCode) return;
+        setLoading(true);
+
+        if (isGuest) {
+            const gRoom = guestStore.getData().rooms.find(r => r.secretCode === joinCode);
+            if (gRoom) {
+                toast.success(lang === 'es' ? '¡Te uniste!' : 'Joined!');
+                router.push(`/rooms/${gRoom.id}`);
+            } else {
+                toast.error(lang === 'es' ? 'Código incorrecto' : 'Incorrect code');
+            }
+        } else {
+            const res = await joinRoom(joinCode);
+            if (res.success) {
+                toast.success(lang === 'es' ? 'Te uniste!' : 'Joined!');
+                router.push(`/rooms/${res.roomId}`);
+            } else {
+                toast.error(lang === 'es' ? 'Código incorrecto' : 'Incorrect code');
+            }
+        }
+        setLoading(false);
+    };
+
+    return (
+        <div style={{ background: '#f8fafc', minHeight: '100vh', width: '100%' }}>
+            <div className="container fade-in home-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', maxWidth: '1200px', margin: '0 auto', padding: '0 2rem' }}>
+            <RoomNavbar href="/rooms" backTextKey="backToRooms" />
+
+            <header style={{ marginBottom: '4rem', marginTop: '2rem' }}>
+                <h1 style={{ margin: 0, fontSize: '3.5rem', fontWeight: '900', color: '#000', letterSpacing: '-0.04em' }}>
+                    {roomsT.title}
+                </h1>
+                <p style={{ color: 'var(--muted)', fontSize: '1.25rem', fontWeight: '500', lineHeight: '1.6', margin: '0.8rem 0 0 0' }}>
+                    {roomsT.description}
+                </p>
+            </header>
+
+            <main style={{ display: 'flex', flexDirection: 'column', gap: '4rem' }}>
+                {isGuest && (
+                    <div style={{ background: '#fff9db', padding: '1.2rem', borderRadius: '16px', border: '1px solid #fcc419', color: '#856404', fontSize: '0.95rem', fontWeight: '700', marginBottom: '-2rem', textAlign: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+                        ⚠️ {roomsT.guestWarning}
+                    </div>
+                )}
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
+                    <button onClick={() => setIsJoining(true)} className="action-card join">
+                        <div className="card-icon"><Hash size={24} /></div>
+                        <div className="card-body">
+                            <h3>{roomsT.join.title}</h3>
+                            <p>{roomsT.join.desc}</p>
+                        </div>
+                    </button>
+
+                    <button onClick={() => setIsCreating(true)} className="action-card create">
+                        <div className="card-icon"><Plus size={24} /></div>
+                        <div className="card-body">
+                            <h3>{roomsT.create.title}</h3>
+                            <p>{roomsT.create.desc}</p>
+                        </div>
+                    </button>
+                </div>
+
+                <div style={{ marginTop: '1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
+                        <div style={{ height: '2px', flex: 1, background: 'linear-gradient(90deg, transparent, #e2e8f0)' }}></div>
+                        <h2 style={{ fontSize: '1.2rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#94a3b8', margin: 0 }}>
+                            {roomsT.myRooms}
+                        </h2>
+                        <div style={{ height: '2px', flex: 1, background: 'linear-gradient(90deg, #e2e8f0, transparent)' }}></div>
+                    </div>
+                    
+                    {rooms.length === 0 ? (
+                        <div style={{ textAlign: 'center', padding: '4rem', background: '#f8fafc', borderRadius: '32px', border: '2px dashed #e2e8f0', color: '#94a3b8' }}>
+                            <p style={{ fontSize: '1.1rem', fontWeight: '600' }}>{lang === 'es' ? 'No tienes salas todavía' : 'No rooms yet'}</p>
+                        </div>
+                    ) : (
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '1.5rem' }}>
+                            {rooms.map((room: any) => (
+                                <div key={room.id} onClick={() => router.push(`/rooms/${room.id}`)} className="room-card" style={{ cursor: 'pointer' }}>
+                                    <div className="room-card-info">
+                                        <span className="room-name">{room.name}</span>
+                                        <div className="room-code-tag">
+                                            <Key size={12} />
+                                            <span>{room.secretCode}</span>
+                                        </div>
+                                    </div>
+                                    <div className="room-card-arrow"><ArrowRight size={20} /></div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </main>
+            </div>
+            {(isCreating || isJoining) && (
+                <div 
+                    className="lightbox-overlay" 
+                    onClick={() => { setIsCreating(false); setIsJoining(false); }}
+                    style={{ zIndex: 5000, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(12px)', position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', cursor: 'pointer' }}
+                >
+                    <div 
+                        className="lightbox-content fade-in-up rooms-modal-content" 
+                        onClick={(e) => e.stopPropagation()}
+                        style={{ 
+                            background: '#fff', 
+                            padding: '0', 
+                            borderRadius: '40px', 
+                            maxWidth: '850px', 
+                            width: '95%', 
+                            boxShadow: '0 50px 100px rgba(0,0,0,0.3)',
+                            position: 'relative',
+                            overflow: 'hidden',
+                            display: 'flex',
+                            minHeight: '400px',
+                            cursor: 'default'
+                        }}
+                    >
+                        <button 
+                            className="lightbox-close" 
+                            onClick={() => { setIsCreating(false); setIsJoining(false); }} 
+                            style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', background: 'rgba(0,0,0,0.05)', border: 'none', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#64748b', zIndex: 10 }}
+                        >
+                            <X size={18} />
+                        </button>
+
+                        {/* Left Side: Info */}
+                        <div style={{ 
+                            flex: '1', 
+                            padding: '4rem 3rem', 
+                            background: isCreating 
+                                ? 'linear-gradient(135deg, #059669 0%, #10b981 100%)' 
+                                : 'linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%)',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            textAlign: 'center',
+                            gap: '2rem',
+                            alignSelf: 'stretch',
+                            color: '#fff'
+                        }}>
+                            <div style={{ 
+                                background: 'rgba(255, 255, 255, 0.2)', 
+                                backdropFilter: 'blur(10px)',
+                                width: '110px', 
+                                height: '110px', 
+                                borderRadius: '32px', 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                justifyContent: 'center', 
+                                color: '#fff',
+                                boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+                                border: '1px solid rgba(255,255,255,0.3)'
+                            }}>
+                                {isCreating ? <Plus size={54} /> : <Hash size={54} />}
+                            </div>
+                            <div>
+                                <h2 style={{ fontSize: '2.8rem', fontWeight: '900', marginBottom: '1rem', color: '#fff', letterSpacing: '-0.04em', lineHeight: '1.1' }}>
+                                    {isCreating ? roomsT.modal.createTitle : roomsT.modal.joinTitle}
+                                </h2>
+                                <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '1.15rem', lineHeight: '1.6', maxWidth: '300px', margin: '0 auto', fontWeight: '500' }}>
+                                    {isCreating ? roomsT.create.desc : roomsT.join.desc}
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Right Side: Form */}
+                        <div style={{ flex: '1.3', padding: '4rem 3.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', background: '#fff' }}>
+                            <form onSubmit={isCreating ? handleCreate : handleJoin} style={{ display: 'flex', flexDirection: 'column', gap: '1.8rem' }}>
+                                {isCreating && (
+                                    <div className="form-group">
+                                        <label style={{ fontSize: '0.95rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{roomsT.modal.nameLabel}</label>
+                                        <input 
+                                            style={{ height: '64px', fontSize: '1.15rem' }} 
+                                            value={newRoomName} 
+                                            onChange={e => setNewRoomName(e.target.value)} 
+                                            required 
+                                            placeholder={roomsT.modal.namePlaceholder} 
+                                        />
+                                    </div>
+                                )}
+                                <div className="form-group">
+                                    <label style={{ fontSize: '0.95rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{roomsT.modal.codeLabel}</label>
+                                    <div className="input-with-icon">
+                                        <Key size={22} className="input-icon" style={{ position: 'absolute', left: '1.6rem', color: '#94a3b8' }} />
+                                        <input 
+                                            style={{ paddingLeft: '4rem', height: '64px', fontSize: '1.15rem' }} 
+                                            value={isCreating ? newRoomCode : joinCode} 
+                                            onChange={e => isCreating ? setNewRoomCode(e.target.value) : setJoinCode(e.target.value)} 
+                                            required 
+                                            placeholder={roomsT.modal.codePlaceholder} 
+                                        />
+                                    </div>
+                                </div>
+                                <button 
+                                    type="submit" 
+                                    disabled={loading} 
+                                    className="form-submit-button" 
+                                    style={{ 
+                                        width: '100%', 
+                                        marginTop: '1.2rem', 
+                                        height: '72px', 
+                                        fontSize: '1.3rem', 
+                                        fontWeight: '900', 
+                                        borderRadius: '22px', 
+                                        background: isCreating ? '#10b981' : 'var(--accent)',
+                                        boxShadow: isCreating ? '0 15px 35px rgba(16, 185, 129, 0.3)' : '0 15px 35px rgba(0, 112, 243, 0.3)'
+                                    }}
+                                >
+                                    {loading ? '...' : (isCreating ? roomsT.modal.createTitle : roomsT.modal.joinTitle)}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            <footer className="footer-main" style={{ marginTop: '6rem' }}>
+                <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Github size={18} /></a>
+                <span>{t.footer}</span>
+                <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Youtube size={22} /></a>
+            </footer>
+
+            <style jsx>{`
+                .form-group { display: flex; flex-direction: column; gap: 0.8rem; }
+                .form-group label { font-size: 1rem; font-weight: 800; color: #1e293b; }
+                .form-group input { padding: 0 1.5rem; border-radius: 20px; border: 2px solid #f1f5f9; background: #f8fafc; width: 100%; font-size: 1.1rem; transition: all 0.2s; }
+                .form-group input:focus { border-color: var(--accent); background: #fff; outline: none; }
+                .input-with-icon { position: relative; display: flex; align-items: center; }
+                .action-card { display: flex; align-items: flex-start; gap: 1.5rem; padding: 2rem; border-radius: 24px; border: 1px solid var(--border); background: #fff; cursor: pointer; transition: all 0.3s; text-align: left; }
+                .action-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
+                .action-card.join:hover { border-color: var(--accent); }
+                .action-card.create:hover { border-color: var(--success); }
+                .card-icon { width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+                .join .card-icon { background: rgba(0, 112, 243, 0.08); color: var(--accent); }
+                .create .card-icon { background: rgba(16, 185, 129, 0.08); color: var(--success); }
+                .card-body h3 { margin: 0 0 0.4rem 0; font-size: 1.25rem; font-weight: 800; color: #1e293b; }
+                .card-body p { margin: 0; color: #64748b; font-size: 0.95rem; }
+                .form-submit-button { border: none; color: white; cursor: pointer; transition: all 0.3s; }
+                .form-submit-button:hover:not(:disabled) { transform: translateY(-3px); filter: brightness(1.1); }
+                .room-card { display: flex; align-items: center; justify-content: space-between; padding: 2rem 2.5rem; background: #fff; border-radius: 28px; border: 1px solid var(--border); transition: all 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+                .room-card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0, 112, 243, 0.1); }
+                .room-name { font-size: 1.4rem; font-weight: 900; color: #1e293b; display: block; }
+                .room-code-tag { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 0.6rem; font-size: 0.85rem; font-weight: 800; color: var(--accent); background: rgba(0, 112, 243, 0.05); padding: 0.4rem 0.8rem; border-radius: 10px; }
+                .room-card-arrow { width: 48px; height: 48px; border-radius: 14px; background: #f8fafc; display: flex; align-items: center; justify-content: center; color: #cbd5e1; transition: all 0.3s; }
+                .room-card:hover .room-card-arrow { background: var(--accent); color: #fff; transform: translateX(5px); }
+                @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+                @media (max-width: 768px) {
+                    .rooms-modal-content {
+                        flex-direction: column !important;
+                        max-width: 450px !important;
+                        min-height: auto !important;
+                    }
+                    .rooms-modal-content > div {
+                        padding: 2rem !important;
+                    }
+                    .rooms-modal-content h2 {
+                        font-size: 1.8rem !important;
+                    }
+                }
+            `}</style>
+        </div>
+    );
+}

@@ -460,7 +460,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
       <header style={{ marginBottom: '3rem' }}>
         <div className="nav-header-row">
           <Link href="/" className="back-link">
-            <ArrowLeft size={18} /> {t.back}
+            <ChevronLeft size={18} /> {t.back}
           </Link>
           <LanguageSwitcher />
         </div>
