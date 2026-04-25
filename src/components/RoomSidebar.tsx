@@ -20,9 +20,19 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
             const hash = window.location.hash.replace('#', '');
             setCurrentSubId(hash || null);
         };
+        
+        const handleCustomChange = (e: any) => {
+            if (e.detail !== undefined) setCurrentSubId(e.detail);
+        };
+        
         updateSubId();
         window.addEventListener('hashchange', updateSubId);
-        return () => window.removeEventListener('hashchange', updateSubId);
+        window.addEventListener('subcategory-change', handleCustomChange);
+        
+        return () => {
+            window.removeEventListener('hashchange', updateSubId);
+            window.removeEventListener('subcategory-change', handleCustomChange);
+        };
     }, []);
     const [room, setRoom] = useState(initialRoom);
     const isGuest = initialRoom.creatorId === 'guest' || initialRoom.id === 'test-room';
@@ -233,6 +243,9 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                                     href={`#${sub.id}`}
                                                     className={`sub-link ${currentSubId === sub.id ? 'active' : ''}`}
                                                     style={{ flex: 1 }}
+                                                    onClick={() => {
+                                                        window.dispatchEvent(new CustomEvent('subcategory-change', { detail: sub.id }));
+                                                    }}
                                                 >
                                                     <Hash size={14} style={{ opacity: currentSubId === sub.id ? 1 : 0.5 }} />
                                                     {sub.name}

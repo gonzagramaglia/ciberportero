@@ -38,7 +38,7 @@ interface GuestData {
 }
 
 const DEFAULT_DATA: GuestData = {
-    version: 2,
+    version: 5,
     rooms: [
         {
             id: 'test-room',
@@ -56,25 +56,25 @@ const DEFAULT_DATA: GuestData = {
                             messages: [
                                 {
                                     id: 'm1',
-                                    content: '¡Buenas! ¿Alguien pudo resolver el ejercicio 4 del práctico 1? No me sale el dominio.',
+                                    content: '¡Buenas! ¿Alguien pudo resolver el ejercicio 4 del práctico 1? No me termina de quedar claro cómo calcular el dominio en la composición de funciones.',
                                     images: [],
                                     user: { name: 'Lucas G.', image: null },
                                     createdAt: new Date(Date.now() - 7200000).toISOString(),
                                     replies: [
                                         {
                                             id: 'r1',
-                                            content: '¡Hola Lucas! Sí, tenés que igualar lo de adentro de la raíz a >= 0. Te mando foto de cómo lo hice.',
-                                            user: { name: 'Admin de la Room', image: null },
+                                            content: '¡Hola Lucas! Sí, es un garrón ese. Primero tenés que sacar el dominio de la función "de adentro" y después cruzarlo con el de la "de afuera".',
+                                            user: { name: 'Nico B.', image: null },
                                             createdAt: new Date(Date.now() - 3600000).toISOString(),
                                         }
                                     ]
                                 },
                                 {
                                     id: 'm2',
-                                    content: 'Acá les dejo la resolución completa del práctico para que comparen.',
+                                    content: 'Les paso en limpio la resolución de los ejercicios pares del TP1, por si alguno quiere comparar resultados.',
                                     images: ['/wallpaper.png'],
                                     user: { name: 'Admin de la Room', image: null },
-                                    createdAt: new Date(Date.now() - 3600000).toISOString(),
+                                    createdAt: new Date(Date.now() - 1800000).toISOString(),
                                     replies: []
                                 }
                             ] 
@@ -85,14 +85,14 @@ const DEFAULT_DATA: GuestData = {
                             messages: [
                                 {
                                     id: 'm3',
-                                    content: '¿Cuándo es el parcial de este tema?',
+                                    content: 'Chicos, ¿alguno sabe si entra el teorema del sándwich en el primer parcial? En el campus dice que sí pero el profe no lo dio hoy.',
                                     images: [],
                                     user: { name: 'Sofia V.', image: null },
                                     createdAt: new Date(Date.now() - 172800000).toISOString(),
                                     replies: [
                                         {
                                             id: 'r2',
-                                            content: 'El 15 de mayo si no me equivoco.',
+                                            content: 'Si, entra seguro. El profe dijo que lo leamos por nuestra cuenta del libro de Stewart.',
                                             user: { name: 'Juan P.', image: null },
                                             createdAt: new Date(Date.now() - 86400000).toISOString(),
                                         }
@@ -112,7 +112,7 @@ const DEFAULT_DATA: GuestData = {
                             messages: [
                                 {
                                     id: 'm4',
-                                    content: 'Chicos, recuerden que mañana no hay clases por el feriado.',
+                                    content: 'Recuerden que la fecha límite para entregar el TP obligatorio de Límites es el próximo viernes por el campus.',
                                     images: [],
                                     user: { name: 'Admin de la Room', image: null },
                                     createdAt: new Date(Date.now() - 43200000).toISOString(),
@@ -125,9 +125,9 @@ const DEFAULT_DATA: GuestData = {
             ],
             members: [
                 { id: 'm1', user: { name: 'Admin de la Room', image: null }, createdAt: new Date(Date.now() - 86400000).toISOString() },
-                { id: 'm2', user: { name: 'Estudiante 1', image: null }, createdAt: new Date(Date.now() - 43200000).toISOString() },
                 { id: 'm3', user: { name: 'Lucas G.', image: null }, createdAt: new Date(Date.now() - 21600000).toISOString() },
                 { id: 'm4', user: { name: 'Sofia V.', image: null }, createdAt: new Date(Date.now() - 10800000).toISOString() },
+                { id: 'm5', user: { name: 'Nico B.', image: null }, createdAt: new Date(Date.now() - 5400000).toISOString() },
                 { id: 'guest-me', user: { name: 'Invitado (Tú)', image: null }, createdAt: new Date().toISOString() }
             ]
         }

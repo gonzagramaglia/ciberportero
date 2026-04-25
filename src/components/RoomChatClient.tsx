@@ -8,6 +8,35 @@ import { supabase } from '@/lib/supabase';
 import { toast } from 'react-hot-toast';
 import { translations } from '@/lib/translations';
 
+function formatMessageDate(date: Date, lang: string) {
+    if (lang !== 'es') {
+        return date.toLocaleString(lang === 'pt' ? 'pt-BR' : 'en-US', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    }
+
+    const days = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+    const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    
+    const dayName = days[date.getDay()];
+    const dayNum = date.getDate();
+    const monthName = months[date.getMonth()];
+    
+    let hours = date.getHours();
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const ampm = hours >= 12 ? 'p. m.' : 'a. m.';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    const strTime = `${hours.toString().padStart(2, '0')}:${minutes} ${ampm}`;
+    
+    return `El ${dayName} ${dayNum} de ${monthName} a las ${strTime}`;
+}
+
 function MessageItem({ msg, onReply, lang }: any) {
     const { user } = msg;
     const date = new Date(msg.createdAt);
@@ -21,7 +50,7 @@ function MessageItem({ msg, onReply, lang }: any) {
                     <img src={user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'U')}`} alt={user.name} className="message-avatar" />
                     <div className="message-meta">
                         <span className="message-user">{user.name}</span>
-                        <span className="message-date">{date.toLocaleTimeString(lang === 'pt' ? 'pt-BR' : lang === 'es' ? 'es-AR' : 'en-US', { hour: '2-digit', minute: '2-digit' })}</span>
+                        <span className="message-date">{formatMessageDate(date, lang)}</span>
                     </div>
                 </div>
                 
@@ -50,7 +79,7 @@ function MessageItem({ msg, onReply, lang }: any) {
                                 <div className="reply-header">
                                     <img src={reply.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(reply.user.name || 'U')}`} alt={reply.user.name} className="reply-avatar" />
                                     <span className="reply-user">{reply.user.name}</span>
-                                    <span className="reply-date">{new Date(reply.createdAt).toLocaleTimeString(lang, { hour: '2-digit', minute: '2-digit' })}</span>
+                                    <span className="reply-date">{formatMessageDate(new Date(reply.createdAt), lang)}</span>
                                 </div>
                                 <div className="reply-content">
                                     <p>{reply.content}</p>
@@ -136,13 +165,21 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
     useEffect(() => {
         const handleHashChange = () => {
             const hash = window.location.hash.replace('#', '');
-            if (hash) setCurrentSubId(hash);
+            setCurrentSubId(hash || null);
+        };
+        
+        const handleCustomChange = (e: any) => {
+            if (e.detail !== undefined) setCurrentSubId(e.detail);
         };
         
         window.addEventListener('hashchange', handleHashChange);
+        window.addEventListener('subcategory-change', handleCustomChange);
         handleHashChange(); // initial check
         
-        return () => window.removeEventListener('hashchange', handleHashChange);
+        return () => {
+            window.removeEventListener('hashchange', handleHashChange);
+            window.removeEventListener('subcategory-change', handleCustomChange);
+        };
     }, []);
 
     // Sync messages when subcategoryId changes
@@ -235,7 +272,7 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
 
     return (
         <div className="chat-container">
-            {currentSubId && (
+            {currentSubId && !replyingTo && (
                 <div className="subcategory-chat-header fade-in">
                     <div className="header-badge">
                         <Hash size={14} />
@@ -243,59 +280,52 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                     </div>
                 </div>
             )}
-            <div className="input-sticky-area top">
-                <div className="input-area-container">
-                    {replyingTo && (
-                        <div className="replying-banner fade-in">
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                                <div className="reply-icon-circle"><ReplyIcon size={12} /></div>
-                                <span>{lang === 'es' ? 'Respondiendo a' : 'Replying to'} <strong>{replyingTo.user.name}</strong></span>
-                            </div>
-                            <button onClick={() => setReplyingTo(null)} className="close-reply-btn"><X size={16} /></button>
-                        </div>
-                    )}
+            
+            {!replyingTo && (
+                <div className="input-sticky-area top">
+                    <div className="input-area-container">
+                        <div className="input-box">
+                            <form onSubmit={handleSend}>
+                                <textarea 
+                                    value={text} 
+                                    onChange={e => setText(e.target.value)} 
+                                    placeholder={roomsT.chat.whatAreYouThinking}
+                                    rows={text.split('\n').length > 3 ? 5 : 1}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' && !e.shiftKey) {
+                                            e.preventDefault();
+                                            handleSend(e);
+                                        }
+                                    }}
+                                />
 
-                    <div className="input-box">
-                        <form onSubmit={handleSend}>
-                            <textarea 
-                                value={text} 
-                                onChange={e => setText(e.target.value)} 
-                                placeholder={roomsT.chat.whatAreYouThinking}
-                                rows={text.split('\n').length > 3 ? 5 : 1}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter' && !e.shiftKey) {
-                                        e.preventDefault();
-                                        handleSend(e);
-                                    }
-                                }}
-                            />
+                                {selectedImages.length > 0 && (
+                                    <div className="selected-images-preview">
+                                        {selectedImages.map((file, i) => (
+                                            <div key={i} className="preview-thumb">
+                                                <img src={URL.createObjectURL(file)} />
+                                                <button type="button" onClick={() => setSelectedImages(prev => prev.filter((_, idx) => idx !== i))} className="remove-img-btn"><X size={12} /></button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
 
-                            {selectedImages.length > 0 && (
-                                <div className="selected-images-preview">
-                                    {selectedImages.map((file, i) => (
-                                        <div key={i} className="preview-thumb">
-                                            <img src={URL.createObjectURL(file)} />
-                                            <button type="button" onClick={() => setSelectedImages(prev => prev.filter((_, idx) => idx !== i))} className="remove-img-btn"><X size={12} /></button>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-
-                            <div className="input-footer">
-                                <div className="input-tools">
-                                    <button type="button" onClick={() => fileInputRef.current?.click()} className="tool-btn" title={roomsT.chat.uploadImage}>
-                                        <ImageIcon size={22} />
-                                        <input type="file" ref={fileInputRef} hidden accept="image/*" multiple onChange={handleFileChange} />
+                                <div className="input-footer">
+                                    <div className="input-tools">
+                                        <button type="button" onClick={() => fileInputRef.current?.click()} className="tool-btn" title={roomsT.chat.uploadImage}>
+                                            <ImageIcon size={22} />
+                                            <input type="file" ref={fileInputRef} hidden accept="image/*" multiple onChange={handleFileChange} />
+                                        </button>
+                                    </div>
+                                    <button type="submit" disabled={sending || uploading || (!text.trim() && selectedImages.length === 0)} className="send-btn">
+                                        {sending ? <Loader2 size={20} className="spin" /> : <><span className="mobile-hide">{roomsT.chat.post}</span><Send size={18} /></>}
                                     </button>
                                 </div>
-                                <button type="submit" disabled={sending || uploading || (!text.trim() && selectedImages.length === 0)} className="send-btn">
-                                    {sending ? <Loader2 size={20} className="spin" /> : <><span className="mobile-hide">{roomsT.chat.post}</span><Send size={18} /></>}
-                                </button>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
 
             <div className="messages-list">
                 {messages.length === 0 ? (
@@ -306,7 +336,60 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                     </div>
                 ) : (
                     messages.map((msg: any) => (
-                        <MessageItem key={msg.id} msg={msg} lang={lang} onReply={setReplyingTo} />
+                        <React.Fragment key={msg.id}>
+                            <MessageItem msg={msg} lang={lang} onReply={setReplyingTo} />
+                            {replyingTo?.id === msg.id && (
+                                <div className="inline-reply-container fade-in">
+                                    <div className="replying-banner inline">
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                                            <div className="reply-icon-circle"><ReplyIcon size={12} /></div>
+                                            <span>{lang === 'es' ? 'Respondiendo a' : 'Replying to'} <strong>{replyingTo.user.name}</strong></span>
+                                        </div>
+                                        <button onClick={() => setReplyingTo(null)} className="close-reply-btn"><X size={16} /></button>
+                                    </div>
+                                    <div className="input-box inline">
+                                        <form onSubmit={handleSend}>
+                                            <textarea 
+                                                autoFocus
+                                                value={text} 
+                                                onChange={e => setText(e.target.value)} 
+                                                placeholder={roomsT.chat.whatAreYouThinking}
+                                                rows={text.split('\n').length > 3 ? 5 : 1}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                                        e.preventDefault();
+                                                        handleSend(e);
+                                                    }
+                                                }}
+                                            />
+
+                                            {selectedImages.length > 0 && (
+                                                <div className="selected-images-preview">
+                                                    {selectedImages.map((file, i) => (
+                                                        <div key={i} className="preview-thumb">
+                                                            <img src={URL.createObjectURL(file)} />
+                                                            <button type="button" onClick={() => setSelectedImages(prev => prev.filter((_, idx) => idx !== i))} className="remove-img-btn"><X size={12} /></button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+
+                                            <div className="input-footer">
+                                                <div className="input-tools">
+                                                    <button type="button" onClick={() => fileInputRef.current?.click()} className="tool-btn" title={roomsT.chat.uploadImage}>
+                                                        <ImageIcon size={22} />
+                                                        <input type="file" ref={fileInputRef} hidden accept="image/*" multiple onChange={handleFileChange} />
+                                                    </button>
+                                                </div>
+                                                <button type="submit" disabled={sending || uploading || (!text.trim() && selectedImages.length === 0)} className="send-btn">
+                                                    {sending ? <Loader2 size={20} className="spin" /> : <><span className="mobile-hide">{roomsT.chat.post}</span><Send size={18} /></>}
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            )}
+                        </React.Fragment>
                     ))
                 )}
             </div>
@@ -423,6 +506,21 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                 .input-box:focus-within {
                     border-color: var(--accent);
                     box-shadow: 0 15px 50px rgba(0, 112, 243, 0.1);
+                }
+
+                .inline-reply-container {
+                    margin-left: 3.7rem;
+                    margin-bottom: 2rem;
+                    margin-top: -1rem;
+                }
+
+                .replying-banner.inline {
+                    border-radius: 16px 16px 0 0;
+                }
+
+                .input-box.inline {
+                    border-radius: 0 0 24px 24px;
+                    border-top: none;
                 }
                 
                 textarea { 
