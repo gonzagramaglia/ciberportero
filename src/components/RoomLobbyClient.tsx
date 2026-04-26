@@ -196,9 +196,9 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                                         <span className="room-name">
                                             {room.name}
                                             {isGuest && (
-                                                <span className="demo-badge">{room.id === 'test-room' ? 'MODO DEMO' : 'SALA TEMPORAL (INVITADO)'}</span>
+                                                <span className="demo-badge">{room.id === 'test-room' ? 'MODO DEMO' : 'SALA TEMPORAL (ADMIN)'}</span>
                                             )}
-                                            {isAdmin && !isGuest && (
+                                            {(room.creator?.role === 'admin' || room.creator?.email === 'ciberportero@gmail.com') && !isGuest && (
                                                 <span className="admin-badge-lobby">SALA OFICIAL (ADMIN)</span>
                                             )}
                                         </span>

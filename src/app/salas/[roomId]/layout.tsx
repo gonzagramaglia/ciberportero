@@ -93,7 +93,16 @@ export default async function RoomDetailLayout({ children, params }: any) {
     };
   }
 
-  if (!room) redirect('/salas/lista');
+  if (!room) {
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <h2>Error: Sala no encontrada o sin acceso</h2>
+        <p>ID: {roomId}</p>
+        <p>User: {session?.user?.email || 'No session'}</p>
+        <a href="/salas/lista" style={{ color: 'var(--accent)', fontWeight: 'bold' }}>Volver al Lobby</a>
+      </div>
+    );
+  }
 
   const cookieStore = await cookies();
   const lang = (cookieStore.get('lang')?.value as Locale) || 'es';
@@ -104,7 +113,19 @@ export default async function RoomDetailLayout({ children, params }: any) {
       <RoomTitleUpdater roomId={roomId} fallbackTitle={`Ciberportero | ${room.name}`} />
       <RoomNavbar href="/salas/lista" backTextKey="backToLobby" />
 
-      <RoomHeader roomId={roomId} initialRoom={{ name: room.name, secretCode: room.secretCode, creatorId: room.creatorId, description: (room as any).description || '', members: room.members } as any} session={session} />
+      <RoomHeader 
+        roomId={roomId} 
+        initialRoom={{ 
+          name: room.name, 
+          secretCode: room.secretCode, 
+          creatorId: room.creatorId, 
+          creatorRole: (room as any).creator?.role,
+          creatorEmail: (room as any).creator?.email,
+          description: (room as any).description || '', 
+          members: (room as any).members || []
+        } as any} 
+        session={session} 
+      />
 
       <div className="room-content-layout" style={{ display: 'flex', gap: '2rem', flex: 1 }}>
         <RoomSidebar room={room} session={session} />

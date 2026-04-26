@@ -261,7 +261,7 @@ export const translations = {
         rooms: {
             title: "Ingreso a las Salas",
             lobbyTitle: "Salas de Estudio",
-            description: "Tu espacio colaborativo para estudiar en grupo, compartir capturas de ejercicios y resolver dudas juntos.",
+            description: "Este es tu espacio colaborativo para estudiar, compartir capturas de ejercicios y resolver dudas en grupo.",
             access: "Acceso",
             signInPrompt: "Iniciá sesión para unirte a grupos de estudio o crear el tuyo propio.",
             guestMode: "Ingresar como invitado",
