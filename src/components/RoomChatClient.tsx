@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { MessageSquare, Send, Loader2, History as HistoryIcon, Image as ImageIcon, X, ChevronLeft, ChevronRight, Hash, Paperclip, MessageCircle, Reply as ReplyIcon, Trash2 } from 'lucide-react';
-import { addRoomMessage, deleteMessage } from '@/lib/salasActions';
+import { addRoomMessage, deleteMessage, addGeneralMessage } from '@/lib/salasActions';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'react-hot-toast';
 import { translations } from '@/lib/translations';
@@ -79,7 +79,6 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
             if (isGuest) {
                 const sub = guestStore.getSubcategory(id);
                 if (!sub) {
-                    // Redirect to general if it doesn't exist
                     window.location.hash = 'general';
                     setCurrentSubId('general');
                     return;
@@ -263,7 +262,14 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                     }
                 }
             } else {
-                const res = await addRoomMessage(currentSubId!, content, imageUrls, isReply ? replyingTo?.id : undefined);
+                let res;
+                if (isGeneral) {
+                    const roomId = window.location.pathname.split('/').pop();
+                    res = await addGeneralMessage(roomId!, content, imageUrls, isReply ? replyingTo?.id : undefined);
+                } else {
+                    res = await addRoomMessage(currentSubId!, content, imageUrls, isReply ? replyingTo?.id : undefined);
+                }
+                
                 if (res.success) {
                     if (isReply) { setReplyText(''); setReplyingTo(null); } else { setText(''); }
                     setSelectedImages([]);

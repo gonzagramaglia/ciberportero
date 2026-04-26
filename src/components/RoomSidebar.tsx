@@ -176,7 +176,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
         }
     };
 
-    const handleModalAdd = (e: React.FormEvent) => {
+    const handleModalAdd = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!modalNewName || !isAddingInModal) return;
         if (isGuest) {
@@ -195,6 +195,26 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                     toast.error(lang === 'es' ? 'Ese nombre ya existe' : 'That name already exists');
                 }
             }
+        } else {
+            setLoading(true);
+            let res;
+            if (isAddingInModal.type === 'cat') {
+                res = await createCategory(room.id, modalNewName);
+            } else if (isAddingInModal.catId) {
+                res = await createSubcategory(isAddingInModal.catId, modalNewName);
+            }
+            
+            if (res?.success) {
+                toast.success(lang === 'es' ? 'Creado con éxito' : 'Created successfully');
+                setIsAddingInModal(null);
+                setModalNewName('');
+                // Note: Revalidation will refresh the page or we could update local state
+                // For simplicity, we'll wait for revalidatePath to kick in
+                window.location.reload();
+            } else {
+                toast.error(res?.error || 'Error');
+            }
+            setLoading(false);
         }
     };
 
@@ -449,8 +469,20 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 .sidebar-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; padding: 0 0.5rem; }
                 .section-title { margin: 0; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.75rem; font-weight: 800; color: #94a3b8; }
                 .action-btn-sidebar { border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; background: transparent; }
-                .action-btn-sidebar.manage { color: #cbd5e1; width: 28px; height: 28px; border-radius: 8px; }
-                .action-btn-sidebar.manage:hover { color: var(--accent); background: rgba(0, 112, 243, 0.05); }
+                .action-btn-sidebar.manage { 
+                    color: #10b981; 
+                    background: rgba(16, 185, 129, 0.08); 
+                    width: 32px; 
+                    height: 32px; 
+                    border-radius: 10px; 
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                }
+                .action-btn-sidebar.manage:hover { 
+                    color: #059669; 
+                    background: rgba(16, 185, 129, 0.15); 
+                }
+                .action-btn-sidebar.manage svg { transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+                .action-btn-sidebar.manage:hover svg { transform: scaleY(-1); }
                 .action-btn-sidebar.plus { background: var(--accent-light); color: var(--accent); border-radius: 10px; width: 32px; height: 32px; }
                 .add-form input { width: 100%; padding: 0.8rem 1rem; border-radius: 14px; border: 2px solid var(--accent); background: #fff; font-size: 0.95rem; font-weight: 600; outline: none; margin-bottom: 1rem; }
                 .sub-add-form input { width: 100%; padding: 0.5rem 0.8rem; border-radius: 10px; border: 1px solid var(--accent); font-size: 0.85rem; outline: none; margin-top: 0.2rem; }

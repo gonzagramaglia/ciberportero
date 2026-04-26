@@ -1397,6 +1397,28 @@ body.lightbox-open .notification-banner {
 .copy-button:active {
   transform: translateY(0);
 }
+.delete-room-btn {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  padding: 0.6rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-room-btn:hover {
+  background: rgba(239, 68, 68, 0.08);
+  color: #ef4444;
+  transform: scale(1.1);
+}
+
+.delete-room-btn:active {
+  transform: scale(0.95);
+}
 
 .copy-button.success {
   border-color: var(--success);

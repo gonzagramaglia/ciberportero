@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Plus, Hash, Key, ArrowRight, X, ChevronLeft, Github, Youtube, Loader2 } from 'lucide-react';
-import { createRoom, joinRoom } from '@/lib/salasActions';
+import { Plus, Hash, Key, ArrowRight, X, ChevronLeft, Github, Youtube, Loader2, Trash2 } from 'lucide-react';
+import { createRoom, joinRoom, deleteRoom } from '@/lib/salasActions';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import LanguageSwitcher from './LanguageSwitcher';
@@ -46,6 +46,25 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
             setRooms(initialRooms);
         }
     }, [isGuest, initialRooms]);
+
+    const handleDeleteRoom = async (e: React.MouseEvent, room: any) => {
+        e.stopPropagation();
+        if (!confirm(lang === 'es' ? '¿Estás seguro de que quieres eliminar esta sala?' : 'Are you sure you want to delete this room?')) return;
+        
+        if (isGuest) {
+            guestStore.deleteRoom(room.id);
+            setRooms(guestStore.getRooms());
+            toast.success(lang === 'es' ? 'Sala eliminada' : 'Room deleted');
+        } else {
+            const res = await deleteRoom(room.id);
+            if (res.success) {
+                toast.success(lang === 'es' ? 'Sala eliminada' : 'Room deleted');
+                setRooms((prev: any) => prev.filter((r: any) => r.id !== room.id));
+            } else {
+                toast.error(res.error || 'Error');
+            }
+        }
+    };
 
     const handleCreate = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -239,7 +258,18 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                                             </span>
                                         </div>
                                     </div>
-                                    <div className="room-card-arrow"><ArrowRight size={24} /></div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                        {((session?.user?.role === 'admin' || session?.user?.email === 'ciberportero@gmail.com') || isGuest) && (
+                                            <button 
+                                                onClick={(e) => handleDeleteRoom(e, room)}
+                                                className="delete-room-btn"
+                                                title={lang === 'es' ? 'Eliminar sala' : 'Delete room'}
+                                            >
+                                                <Trash2 size={18} />
+                                            </button>
+                                        )}
+                                        <div className="room-card-arrow"><ArrowRight size={24} /></div>
+                                    </div>
                                 </div>
                             ))}
                         </div>

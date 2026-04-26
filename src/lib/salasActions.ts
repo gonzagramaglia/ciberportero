@@ -31,6 +31,16 @@ export async function createRoom(name: string, secretCode: string, slug: string)
           create: {
             userId: session.user.id
           }
+        },
+        categories: {
+          create: {
+            name: "General",
+            subcategories: {
+              create: {
+                name: "Chat General"
+              }
+            }
+          }
         }
       }
     });
@@ -312,9 +322,15 @@ export async function addGeneralMessage(roomId: string, content: string, images:
 
   try {
     const general = await db.roomSubcategory.findFirst({
-      where: { name: 'Chat General', category: { roomId } }
+      where: { 
+        OR: [
+          { name: 'Chat General', category: { roomId } },
+          { name: 'General', category: { roomId } },
+          { category: { name: 'General', roomId } }
+        ]
+      }
     });
-    if (!general) return { error: "Chat general no encontrado" };
+    if (!general) return { error: "Chat general no encontrado. Asegúrate de crear una categoría 'General' con una subcategoría 'Chat General'." };
 
     return await addRoomMessage(general.id, content, images, parentId);
   } catch (error) {
@@ -360,7 +376,8 @@ export async function deleteRoom(roomId: string) {
 
   try {
     await db.room.delete({ where: { id: roomId } });
-    revalidatePath('/admin/salas');
+    revalidatePath('/admin/rooms');
+    revalidatePath('/salas/lista');
     return { success: true };
   } catch (error) {
     console.error(error);
