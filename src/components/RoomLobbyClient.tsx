@@ -95,7 +95,7 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
     return (
         <div style={{ background: '#f8fafc', minHeight: '100vh', width: '100%' }}>
             <div className="container fade-in home-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', maxWidth: '1200px', margin: '0 auto', padding: '0 2rem' }}>
-            <RoomNavbar href="/salas" backTextKey="backToRooms" />
+            <RoomNavbar href={session ? "/" : "/salas"} backTextKey={session ? "back" : "backToRooms"} />
 
             <header className="lobby-header-premium">
                 <div className="header-titles">
@@ -108,17 +108,7 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                 </div>
 
                 {!isGuest && session?.user && (
-                    <div className="user-profile-badge">
-                        <div className="user-info-mini">
-                            <div className="avatar-wrapper">
-                                <img src={session.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(session.user.name || 'U')}`} alt={session.user.name} />
-                                <div className="online-indicator"></div>
-                            </div>
-                            <div className="user-details">
-                                <span className="user-name-text">{session.user.name}</span>
-                                <span className="user-role-text">{session.user.email}</span>
-                            </div>
-                        </div>
+                    <div className="user-actions">
                         <SignOutButton />
                     </div>
                 )}
@@ -364,14 +354,7 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                 .lobby-title { margin: 0; fontSize: 3.5rem; fontWeight: 900; color: #000; letterSpacing: -0.04em; }
                 .lobby-desc { color: var(--muted); fontSize: 1.25rem; fontWeight: 500; lineHeight: 1.6; margin: 0.8rem 0 0 0; }
                 
-                .user-profile-badge { display: flex; align-items: center; gap: 1.5rem; background: #fff; padding: 0.8rem 1.2rem; border-radius: 24px; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-                .user-info-mini { display: flex; align-items: center; gap: 1rem; }
-                .avatar-wrapper { position: relative; width: 44px; height: 44px; }
-                .avatar-wrapper img { width: 100%; height: 100%; border-radius: 14px; object-fit: cover; }
-                .online-indicator { position: absolute; bottom: -2px; right: -2px; width: 14px; height: 14px; background: #10b981; border: 3px solid #fff; border-radius: 50%; }
-                .user-details { display: flex; flex-direction: column; }
-                .user-name-text { font-size: 1rem; font-weight: 800; color: #1e293b; line-height: 1.2; }
-                .user-role-text { font-size: 0.75rem; font-weight: 600; color: #94a3b8; }
+                .user-actions { display: flex; align-items: center; gap: 0.8rem; }
 
                 .empty-icon-wrapper { width: 80px; height: 80px; background: #f8fafc; color: #e2e8f0; border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem auto; }
 
