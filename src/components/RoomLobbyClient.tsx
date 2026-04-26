@@ -147,7 +147,12 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                             {rooms.map((room: any) => (
                                 <div key={room.id} onClick={() => router.push(`/salas/${room.id}`)} className="room-card" style={{ cursor: 'pointer' }}>
                                     <div className="room-card-info" style={{ flex: 1 }}>
-                                        <span className="room-name">{room.name}</span>
+                                        <span className="room-name">
+                                            {room.name}
+                                            {isGuest && (
+                                                <span className="demo-badge">{room.id === 'test-room' ? 'MODO DEMO' : 'SALA TEMPORAL (INVITADO)'}</span>
+                                            )}
+                                        </span>
                                         <div className="room-code-tag">
                                             <Key size={12} />
                                             <span>{room.secretCode}</span>
@@ -339,7 +344,8 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                 .form-submit-button:hover:not(:disabled) { transform: translateY(-3px); filter: brightness(1.1); }
                 .room-card { display: flex; align-items: center; justify-content: space-between; padding: 2rem 2.5rem; background: #fff; border-radius: 28px; border: 1px solid var(--border); transition: all 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
                 .room-card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 25px 50px rgba(0, 112, 243, 0.12); }
-                .room-name { font-size: 1.6rem; font-weight: 950; color: #1e293b; display: block; letter-spacing: -0.02em; }
+                .room-name { font-size: 1.6rem; font-weight: 950; color: #1e293b; display: flex; align-items: center; letter-spacing: -0.02em; }
+                .demo-badge { margin-left: 1rem; font-size: 0.7rem; background: #fff1f2; color: #ef4444; padding: 0.2rem 0.6rem; border-radius: 8px; font-weight: 900; border: 1px solid #fee2e2; text-transform: uppercase; letter-spacing: 0.05em; }
                 .room-code-tag { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 0.6rem; font-size: 0.85rem; font-weight: 800; color: var(--accent); background: rgba(0, 112, 243, 0.05); padding: 0.4rem 0.8rem; border-radius: 10px; }
                 .room-card-arrow { width: 56px; height: 56px; border-radius: 18px; background: #f8fafc; display: flex; align-items: center; justify-content: center; color: #cbd5e1; transition: all 0.3s; }
                 .room-card:hover .room-card-arrow { background: var(--accent); color: #fff; }

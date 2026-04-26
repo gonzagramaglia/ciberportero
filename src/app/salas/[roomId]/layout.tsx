@@ -77,7 +77,7 @@ export default async function RoomDetailLayout({ children, params }: any) {
       name: isTest ? 'Grupo de Estudio Ciberdefensa 🛡️' : (lang === 'es' ? 'Cargando Room...' : 'Loading Room...'),
       secretCode: isTest ? 'CIBERDEFENSA-2026' : '...',
       creatorId: isTest ? 'admin' : 'guest',
-      description: '',
+      description: isTest ? 'Espacio colaborativo para estudiantes de Ciberdefensa. Compartimos material, resolvemos dudas de laboratorios y nos preparamos para los parciales juntos.' : '',
       categories: [],
       members: []
     };

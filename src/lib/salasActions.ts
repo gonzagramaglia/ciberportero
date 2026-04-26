@@ -178,6 +178,18 @@ export async function getMyRooms() {
   }
 }
 
+export async function getRoomInfo(roomId: string) {
+  try {
+    return await db.room.findUnique({
+      where: { id: roomId },
+      select: { id: true, name: true, description: true }
+    });
+  } catch (error) {
+    console.error("getRoomInfo Error:", error);
+    return null;
+  }
+}
+
 export async function getRoomData(roomId: string) {
   try {
     const session = await auth();

@@ -106,6 +106,7 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                 <h1 className="room-title">
                     <span className="room-label-tag">{roomsT.label}</span>
                     <span>{room.name}</span>
+                    {isGuest && <span className="demo-badge">{roomId === 'test-room' ? 'MODO DEMO' : 'SALA TEMPORAL (INVITADO)'}</span>}
                 </h1>
                 {isCreator && (
                     <button 
@@ -274,6 +275,7 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                 .title-row { display: flex; align-items: center; gap: 1rem; }
                 .room-title { font-size: 2.5rem; font-weight: 900; margin: 0; display: flex; align-items: center; gap: 0.6rem; }
                 .room-label-tag { font-size: 1rem; color: var(--accent); font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; background: rgba(0, 112, 243, 0.05); padding: 0.2rem 0.6rem; border-radius: 8px; }
+                .demo-badge { font-size: 0.7rem; background: #fff1f2; color: #ef4444; padding: 0.2rem 0.6rem; border-radius: 8px; font-weight: 900; border: 1px solid #fee2e2; margin-left: 0.5rem; letter-spacing: 0.05em; }
                 
                 .meta-info-container { display: flex; align-items: center; gap: 1.25rem; margin-top: 1rem; flex-wrap: wrap; }
                 
