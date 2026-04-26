@@ -49,6 +49,8 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 }
 
 export default async function RoomDetailLayout({ children, params }: any) {
+  let roomId = "";
+  try {
     const p = await params;
     roomId = p?.roomId || "";
   } catch (e) {
@@ -61,11 +63,7 @@ export default async function RoomDetailLayout({ children, params }: any) {
 
   let room = null;
   if (session && roomId) {
-    console.log(`RoomDetailLayout: Fetching room data for ID: ${roomId}`);
     room = await getRoomData(roomId);
-    if (!room) {
-      console.warn(`RoomDetailLayout: getRoomData returned null for ${roomId}`);
-    }
   }
 
   const isGuestRoom = !room;

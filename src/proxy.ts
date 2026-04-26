@@ -5,7 +5,7 @@ import authConfig from "./auth.config";
 
 const { auth } = NextAuth(authConfig);
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // 1. Auth Protection for /admin
