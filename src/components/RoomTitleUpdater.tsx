@@ -12,12 +12,7 @@ export default function RoomTitleUpdater({ roomId, fallbackTitle }: { roomId: st
         if (room) {
             document.title = `Ciberportero | ${room.name}`;
         } else {
-            // If it's not the test room and not in guest store, redirect
-            if (roomId !== 'test-room') {
-                router.push('/salas/lista');
-            } else {
-                document.title = fallbackTitle;
-            }
+            document.title = fallbackTitle;
         }
     }, [roomId, fallbackTitle, router]);
 

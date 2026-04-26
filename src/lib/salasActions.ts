@@ -212,17 +212,14 @@ export async function getRoomInfo(roomId: string) {
 }
 
 export async function getRoomData(rawRoomId: string) {
-  console.log(`getRoomData: START for "${rawRoomId}"`);
   try {
     const roomId = decodeURIComponent(rawRoomId).trim();
     const session = await auth();
     
     if (!session?.user?.id) {
-      console.warn(`getRoomData: No session user for room "${roomId}"`);
       return null;
     }
 
-    console.log(`getRoomData: Fetching from DB for ID: "${roomId}"`);
     const room = await db.room.findUnique({
       where: { id: roomId },
       include: {
@@ -249,33 +246,18 @@ export async function getRoomData(rawRoomId: string) {
       }
     });
 
-    if (!room) {
-      console.error(`getRoomData: Room NOT FOUND in DB for ID: "${roomId}"`);
-      // Try to list first 5 rooms to see what IDs exist
-      const firstRooms = await db.room.findMany({ take: 5, select: { id: true } });
-      console.log(`getRoomData: Existing rooms in DB:`, firstRooms.map(r => r.id));
-      return null;
-    }
+    if (!room) return null;
 
     // Check permissions
     const isMember = room.members.some(m => m.userId === session.user.id);
     const isCreator = room.creatorId === session.user.id;
     const isAdmin = session.user.role === 'admin' || session.user.email === 'ciberportero@gmail.com';
 
-    console.log(`getRoomData Debug [${roomId}]: User=${session.user.id}, Creator=${room.creatorId}, isMember=${isMember}, isCreator=${isCreator}, isAdmin=${isAdmin}`);
+    if (!isMember && !isCreator && !isAdmin) return null;
 
-    // EXTREMELY PERMISSIVE FOR DEBUGGING
-    /*
-    if (!isMember && !isCreator && !isAdmin) {
-      console.warn(`getRoomData: Access Denied for ${session.user.id}. REDIRECTING...`);
-      return null;
-    }
-    */
-
-    console.log(`getRoomData: ACCESS GRANTED (Bypass) for room "${room.name}"`);
     return room;
   } catch (error) {
-    console.error("getRoomData CRITICAL Error:", error);
+    console.error("getRoomData Error:", error);
     return null;
   }
 }

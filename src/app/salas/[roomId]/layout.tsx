@@ -49,21 +49,13 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 }
 
 export default async function RoomDetailLayout({ children, params }: any) {
-  console.log("RoomDetailLayout: START");
-  let roomId = "";
-  try {
     const p = await params;
     roomId = p?.roomId || "";
-    console.log(`RoomDetailLayout: roomId from params = "${roomId}"`);
   } catch (e) {
-    console.error("RoomDetailLayout: Error parsing params", e);
     redirect('/salas/lista');
   }
 
-  if (!roomId) {
-    console.warn("RoomDetailLayout: No roomId, redirecting to /salas/lista");
-    redirect('/salas/lista');
-  }
+  if (!roomId) redirect('/salas/lista');
 
   const session = await auth();
 
@@ -93,16 +85,7 @@ export default async function RoomDetailLayout({ children, params }: any) {
     };
   }
 
-  if (!room) {
-    return (
-      <div style={{ padding: '2rem', textAlign: 'center' }}>
-        <h2>Error: Sala no encontrada o sin acceso</h2>
-        <p>ID: {roomId}</p>
-        <p>User: {session?.user?.email || 'No session'}</p>
-        <a href="/salas/lista" style={{ color: 'var(--accent)', fontWeight: 'bold' }}>Volver al Lobby</a>
-      </div>
-    );
-  }
+  if (!room) redirect('/salas/lista');
 
   const cookieStore = await cookies();
   const lang = (cookieStore.get('lang')?.value as Locale) || 'es';
