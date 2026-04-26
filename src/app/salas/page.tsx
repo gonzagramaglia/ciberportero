@@ -4,6 +4,7 @@ import RoomLandingClient from "@/components/RoomLandingClient";
 import { cookies } from "next/headers";
 import { Locale, translations } from "@/lib/translations";
 import { Metadata } from "next";
+import { redirect } from "next/navigation";
 
 export async function generateMetadata(): Promise<Metadata> {
   const cookieStore = await cookies();
@@ -18,6 +19,11 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function RoomPage() {
   const session = await auth();
+
+  if (session) {
+    redirect('/salas/lista');
+  }
+
   const cookieStore = await cookies();
   const lang = (cookieStore.get('lang')?.value as Locale) || 'es';
   const t = translations[lang];
@@ -26,7 +32,7 @@ export default async function RoomPage() {
 
   return (
     <RoomLandingClient 
-      session={null} 
+      session={session} 
     />
   );
 }

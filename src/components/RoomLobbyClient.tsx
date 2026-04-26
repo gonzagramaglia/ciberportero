@@ -13,6 +13,8 @@ import RoomNavbar from './RoomNavbar';
 import { guestStore } from '@/lib/guestStore';
 import { slugify } from '@/lib/utils';
 
+import { SignOutButton } from './AuthButtons';
+
 export default function RoomLobbyClient({ initialRooms, session }: any) {
     const { lang } = useLanguage();
     const t = translations[lang as keyof typeof translations] || translations.es;
@@ -95,13 +97,31 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
             <div className="container fade-in home-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', maxWidth: '1200px', margin: '0 auto', padding: '0 2rem' }}>
             <RoomNavbar href="/salas" backTextKey="backToRooms" />
 
-            <header style={{ marginBottom: '4rem', marginTop: '2rem' }}>
-                <h1 style={{ margin: 0, fontSize: '3.5rem', fontWeight: '900', color: '#000', letterSpacing: '-0.04em' }}>
-                    {roomsT.lobbyTitle}
-                </h1>
-                <p style={{ color: 'var(--muted)', fontSize: '1.25rem', fontWeight: '500', lineHeight: '1.6', margin: '0.8rem 0 0 0' }}>
-                    {roomsT.description}
-                </p>
+            <header className="lobby-header-premium">
+                <div className="header-titles">
+                    <h1 className="lobby-title">
+                        {roomsT.lobbyTitle}
+                    </h1>
+                    <p className="lobby-desc">
+                        {roomsT.description}
+                    </p>
+                </div>
+
+                {!isGuest && session?.user && (
+                    <div className="user-profile-badge">
+                        <div className="user-info-mini">
+                            <div className="avatar-wrapper">
+                                <img src={session.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(session.user.name || 'U')}`} alt={session.user.name} />
+                                <div className="online-indicator"></div>
+                            </div>
+                            <div className="user-details">
+                                <span className="user-name-text">{session.user.name}</span>
+                                <span className="user-role-text">{session.user.email}</span>
+                            </div>
+                        </div>
+                        <SignOutButton />
+                    </div>
+                )}
             </header>
 
             <main style={{ display: 'flex', flexDirection: 'column', gap: '4rem' }}>
@@ -139,8 +159,22 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                     </div>
                     
                     {rooms.length === 0 ? (
-                        <div style={{ textAlign: 'center', padding: '4rem', background: '#f8fafc', borderRadius: '32px', border: '2px dashed #e2e8f0', color: '#94a3b8' }}>
-                            <p style={{ fontSize: '1.1rem', fontWeight: '600' }}>{roomsT.noRooms}</p>
+                        <div style={{ textAlign: 'center', padding: '5rem 2rem', background: '#fff', borderRadius: '40px', border: '2px dashed #e2e8f0', color: '#94a3b8', boxShadow: 'inset 0 4px 12px rgba(0,0,0,0.02)' }}>
+                            {session?.user ? (
+                                <div className="empty-state-content">
+                                    <div className="empty-icon-wrapper">
+                                        <Hash size={40} />
+                                    </div>
+                                    <h3 style={{ fontSize: '1.8rem', fontWeight: '900', color: '#1e293b', marginBottom: '0.8rem' }}>
+                                        {lang === 'es' ? `¡Hola, ${session.user.name.split(' ')[0]}!` : `Hi, ${session.user.name.split(' ')[0]}!`}
+                                    </h3>
+                                    <p style={{ fontSize: '1.15rem', fontWeight: '500', color: '#64748b', maxWidth: '400px', margin: '0 auto' }}>
+                                        {lang === 'es' ? 'Parece que todavía no te has unido a ninguna sala. ¡Explora o crea una nueva para empezar!' : "It seems you haven't joined any rooms yet. Explore or create one to get started!"}
+                                    </p>
+                                </div>
+                            ) : (
+                                <p style={{ fontSize: '1.1rem', fontWeight: '600' }}>{roomsT.noRooms}</p>
+                            )}
                         </div>
                     ) : (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -326,6 +360,27 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
             </div>
 
             <style jsx>{`
+                .lobby-header-premium { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4rem; margin-top: 2rem; gap: 2rem; }
+                .lobby-title { margin: 0; fontSize: 3.5rem; fontWeight: 900; color: #000; letterSpacing: -0.04em; }
+                .lobby-desc { color: var(--muted); fontSize: 1.25rem; fontWeight: 500; lineHeight: 1.6; margin: 0.8rem 0 0 0; }
+                
+                .user-profile-badge { display: flex; align-items: center; gap: 1.5rem; background: #fff; padding: 0.8rem 1.2rem; border-radius: 24px; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+                .user-info-mini { display: flex; align-items: center; gap: 1rem; }
+                .avatar-wrapper { position: relative; width: 44px; height: 44px; }
+                .avatar-wrapper img { width: 100%; height: 100%; border-radius: 14px; object-fit: cover; }
+                .online-indicator { position: absolute; bottom: -2px; right: -2px; width: 14px; height: 14px; background: #10b981; border: 3px solid #fff; border-radius: 50%; }
+                .user-details { display: flex; flex-direction: column; }
+                .user-name-text { font-size: 1rem; font-weight: 800; color: #1e293b; line-height: 1.2; }
+                .user-role-text { font-size: 0.75rem; font-weight: 600; color: #94a3b8; }
+
+                .empty-icon-wrapper { width: 80px; height: 80px; background: #f8fafc; color: #e2e8f0; border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem auto; }
+
+                @media (max-width: 900px) {
+                    .lobby-header-premium { flex-direction: column; align-items: flex-start; gap: 2rem; }
+                    .lobby-title { font-size: 2.8rem; }
+                    .user-profile-badge { width: 100%; justify-content: space-between; }
+                }
+
                 .form-group { display: flex; flex-direction: column; gap: 0.8rem; }
                 .form-group label { font-size: 1rem; font-weight: 800; color: #1e293b; }
                 .form-group input { padding: 0 1.5rem; border-radius: 20px; border: 2px solid #f1f5f9; background: #f8fafc; width: 100%; font-size: 1.1rem; transition: all 0.2s; }

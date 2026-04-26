@@ -66,35 +66,55 @@ export function SignOutButton() {
   return (
     <button
       onClick={handleLogout}
-      className="sign-out-btn"
-      style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        gap: '0.7rem',
-        background: '#fff',
-        color: '#3c4043',
-        padding: '0.6rem 1.4rem',
-        borderRadius: '100px',
-        border: '1px solid #dadce0',
-        fontWeight: '600',
-        fontSize: '0.95rem',
-        cursor: 'pointer',
-        transition: 'all 0.2s',
-        boxShadow: '0 1px 2px rgba(60,64,67,0.1)'
-      }}
+      className="sign-out-btn-premium"
     >
-      <LogIn size={18} strokeWidth={2.5} style={{ transform: 'rotate(180deg)', flexShrink: 0 }} />
-      <span className="mobile-hide">
+      <div className="icon-box">
+        <LogOut size={18} strokeWidth={2.5} />
+      </div>
+      <span className="btn-text">
         {(translations[lang] as any).auth.signOut}
-      </span>
-      <span className="mobile-only">
-        {(translations[lang] as any).auth.signOutConcise}
       </span>
       
       <style jsx>{`
-        .sign-out-btn:hover {
-          background: #f8f9fa !important;
-          box-shadow: 0 1px 3px rgba(60,64,67,0.3) !important;
+        .sign-out-btn-premium {
+          display: flex;
+          align-items: center;
+          gap: 0.8rem;
+          background: #fff;
+          color: #1e293b;
+          padding: 0.5rem 1.4rem 0.5rem 0.6rem;
+          border-radius: 100px;
+          border: 1px solid #e2e8f0;
+          font-weight: 700;
+          font-size: 0.95rem;
+          cursor: pointer;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+        .sign-out-btn-premium:hover {
+          background: #f8fafc;
+          border-color: #cbd5e1;
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+        }
+        .icon-box {
+          width: 36px;
+          height: 36px;
+          background: #f1f5f9;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #64748b;
+          transition: all 0.2s;
+        }
+        .sign-out-btn-premium:hover .icon-box {
+          background: #fff;
+          color: #ef4444;
+        }
+        @media (max-width: 600px) {
+          .btn-text { display: none; }
+          .sign-out-btn-premium { padding: 0.4rem; }
         }
       `}</style>
     </button>
