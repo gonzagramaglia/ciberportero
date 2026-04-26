@@ -321,7 +321,7 @@ export async function addGeneralMessage(roomId: string, content: string, images:
   if (!session?.user?.id) return { error: "No autenticado" };
 
   try {
-    const general = await db.roomSubcategory.findFirst({
+    let general = await db.roomSubcategory.findFirst({
       where: { 
         OR: [
           { name: 'Chat General', category: { roomId } },
@@ -330,7 +330,23 @@ export async function addGeneralMessage(roomId: string, content: string, images:
         ]
       }
     });
-    if (!general) return { error: "Chat general no encontrado. Asegúrate de crear una categoría 'General' con una subcategoría 'Chat General'." };
+
+    if (!general) {
+      // Auto-create if not found
+      let category = await db.roomCategory.findFirst({
+        where: { roomId, name: 'General' }
+      });
+
+      if (!category) {
+        category = await db.roomCategory.create({
+          data: { roomId, name: 'General' }
+        });
+      }
+
+      general = await db.roomSubcategory.create({
+        data: { categoryId: category.id, name: 'Chat General' }
+      });
+    }
 
     return await addRoomMessage(general.id, content, images, parentId);
   } catch (error) {
@@ -367,6 +383,46 @@ export async function getAllRooms() {
   } catch (error) {
     console.error(error);
     return [];
+  }
+}
+
+export async function updateRoom(roomId: string, name: string, newSlug: string, secretCode: string, description?: string) {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "No autenticado" };
+
+  try {
+    const room = await db.room.findUnique({ where: { id: roomId } });
+    if (!room) return { error: "Sala no encontrada" };
+
+    const isAdmin = session.user.role === 'admin' || session.user.email === 'ciberportero@gmail.com';
+    const isCreator = room.creatorId === session.user.id;
+
+    if (!isAdmin && !isCreator) return { error: "No autorizado" };
+
+    // If slug is changing, check if new slug exists
+    if (newSlug !== roomId) {
+      const existing = await db.room.findUnique({ where: { id: newSlug } });
+      if (existing) return { error: "Ese identificador (slug) ya está en uso." };
+    }
+
+    const updated = await db.room.update({
+      where: { id: roomId },
+      data: {
+        id: newSlug,
+        name,
+        secretCode,
+        description
+      }
+    });
+
+    revalidatePath('/salas/lista');
+    revalidatePath(`/salas/${updated.id}`);
+    revalidatePath('/admin/rooms');
+    
+    return { success: true, roomId: updated.id };
+  } catch (error) {
+    console.error(error);
+    return { error: "Error al actualizar la sala" };
   }
 }
 

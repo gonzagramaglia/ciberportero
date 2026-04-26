@@ -7,6 +7,7 @@ import { Settings, Check, X, Trash2, Key, History as HistoryIcon, Link as LinkIc
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { translations } from '@/lib/translations';
+import { updateRoom } from '@/lib/salasActions';
 
 interface RoomHeaderProps {
     roomId: string;
@@ -53,7 +54,7 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
         return text.trim() ? text.trim().split(/\s+/).length : 0;
     };
 
-    const handleUpdate = () => {
+    const handleUpdate = async () => {
         if (!editName || !editCode || !editSlug) return;
         if (getWordCount(editDesc) > 150) {
             toast.error(lang === 'es' ? 'La descripción no puede superar las 150 palabras' : 'Description cannot exceed 150 words');
@@ -71,7 +72,17 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                 }
             }
         } else {
-            toast.error('Not implemented for DB rooms yet');
+            const res = await updateRoom(roomId, editName, editSlug, editCode, editDesc);
+            if (res.success) {
+                setRoom({ ...room, name: editName, secretCode: editCode, description: editDesc });
+                setIsModalOpen(false);
+                toast.success(lang === 'es' ? '¡Sala actualizada!' : 'Room updated!');
+                if (res.roomId !== roomId) {
+                    router.push(`/salas/${res.roomId}`);
+                }
+            } else {
+                toast.error(res.error || 'Error');
+            }
         }
     };
 
@@ -112,7 +123,6 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
         <header className="room-header">
             <div className="title-row">
                 <h1 className="room-title">
-                    <span className="room-label-tag">{roomsT.label}</span>
                     <span>{room.name}</span>
                     {isGuest && <span className="demo-badge">{roomId === 'test-room' ? 'MODO DEMO' : 'SALA TEMPORAL (ADMIN)'}</span>}
                     {!isGuest && (room.creatorRole === 'admin' || room.creatorEmail === 'ciberportero@gmail.com') && (
