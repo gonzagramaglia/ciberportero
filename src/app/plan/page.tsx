@@ -72,8 +72,8 @@ export default function PlanPage() {
   }, [session, status])
 
   useEffect(() => {
-    document.title = 'Ciberportero | Plan'
-  }, [])
+    document.title = `Ciberportero | ${pt.title}`
+  }, [lang, pt.title])
 
 
   // Cycle through states: Pending (0) -> In Progress (1) -> Completed (2) -> Pending (0)

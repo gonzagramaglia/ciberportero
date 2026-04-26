@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Trash2, Users, Layers, ExternalLink, Calendar } from 'lucide-react';
-import { deleteRoom } from '@/lib/roomsActions';
+import { deleteRoom } from '@/lib/salasActions';
 import { toast } from 'react-hot-toast';
 import Link from 'next/link';
 
@@ -57,7 +57,7 @@ export default function AdminRoomsList({ initialRooms }: { initialRooms: any[] }
                             <td>
                                 <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                                     <Link 
-                                        href={`/rooms/${room.id}`} 
+                                        href={`/salas/${room.id}`} 
                                         target="_blank"
                                         className="admin-action-btn"
                                         style={{ color: 'var(--accent)' }}

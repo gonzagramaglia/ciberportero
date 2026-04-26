@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const lang = (cookieStore.get('lang')?.value as Locale) || 'es';
   
   const post = await getPost(slug);
-  if (!post) return { title: 'Post no encontrado | Ciberportero' };
+  if (!post) return { title: 'Post no encontrado' };
 
   const titleObj = post.title as any;
   const descObj = post.description as any;
@@ -57,7 +57,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const description = descObj?.[lang] || descObj?.['es'] || descObj?.['en'] || '';
 
   return {
-    title: `Ciberportero | ${title}`,
+    title: title,
     description,
     openGraph: {
       title,

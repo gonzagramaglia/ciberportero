@@ -24,7 +24,7 @@ interface Comment extends Reply {
 }
 
 function Avatar({ src, name, size = 40 }: { src?: string | null; name?: string | null; size?: number }) {
-  const fallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(name || 'U')}&background=e2e8f0&color=64748b`
+  const fallback = `https://ui-avatars.com/api/?name=${encodeURIComponent((name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}&background=e2e8f0&color=64748b`
   return src ? (
     <img src={src} alt={name || 'User'} width={size} height={size}
       style={{ borderRadius: size > 36 ? '14px' : '10px', objectFit: 'cover', flexShrink: 0 }}

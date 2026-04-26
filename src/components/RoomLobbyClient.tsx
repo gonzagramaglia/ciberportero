@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Plus, Hash, Key, ArrowRight, X, ChevronLeft, Github, Youtube } from 'lucide-react';
-import { createRoom, joinRoom } from '@/lib/roomsActions';
+import { Plus, Hash, Key, ArrowRight, X, ChevronLeft, Github, Youtube, Loader2 } from 'lucide-react';
+import { createRoom, joinRoom } from '@/lib/salasActions';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import LanguageSwitcher from './LanguageSwitcher';
@@ -51,13 +51,13 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
             const newRoom = guestStore.createRoom(newRoomName, newRoomCode, slug);
             setRooms(guestStore.getRooms());
             toast.success(lang === 'es' ? '¡Sala creada!' : 'Room created!');
-            router.push(`/rooms/${newRoom.id}`);
+            router.push(`/salas/${newRoom.id}`);
             setIsCreating(false);
         } else {
             const res = await createRoom(newRoomName, newRoomCode);
             if (res.success) {
                 toast.success(lang === 'es' ? 'Sala creada!' : 'Room created!');
-                router.push(`/rooms/${res.roomId}`);
+                router.push(`/salas/${res.roomId}`);
             } else {
                 toast.error(res.error || 'Error');
             }
@@ -74,7 +74,7 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
             const gRoom = guestStore.getData().rooms.find(r => r.secretCode === joinCode);
             if (gRoom) {
                 toast.success(lang === 'es' ? '¡Te uniste!' : 'Joined!');
-                router.push(`/rooms/${gRoom.id}`);
+                router.push(`/salas/${gRoom.id}`);
             } else {
                 toast.error(lang === 'es' ? 'Código incorrecto' : 'Incorrect code');
             }
@@ -82,7 +82,7 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
             const res = await joinRoom(joinCode);
             if (res.success) {
                 toast.success(lang === 'es' ? 'Te uniste!' : 'Joined!');
-                router.push(`/rooms/${res.roomId}`);
+                router.push(`/salas/${res.roomId}`);
             } else {
                 toast.error(lang === 'es' ? 'Código incorrecto' : 'Incorrect code');
             }
@@ -93,11 +93,11 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
     return (
         <div style={{ background: '#f8fafc', minHeight: '100vh', width: '100%' }}>
             <div className="container fade-in home-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', maxWidth: '1200px', margin: '0 auto', padding: '0 2rem' }}>
-            <RoomNavbar href="/rooms" backTextKey="backToRooms" />
+            <RoomNavbar href="/salas" backTextKey="backToRooms" />
 
             <header style={{ marginBottom: '4rem', marginTop: '2rem' }}>
                 <h1 style={{ margin: 0, fontSize: '3.5rem', fontWeight: '900', color: '#000', letterSpacing: '-0.04em' }}>
-                    {roomsT.title}
+                    {roomsT.lobbyTitle}
                 </h1>
                 <p style={{ color: 'var(--muted)', fontSize: '1.25rem', fontWeight: '500', lineHeight: '1.6', margin: '0.8rem 0 0 0' }}>
                     {roomsT.description}
@@ -145,7 +145,7 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                     ) : (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                             {rooms.map((room: any) => (
-                                <div key={room.id} onClick={() => router.push(`/rooms/${room.id}`)} className="room-card" style={{ cursor: 'pointer' }}>
+                                <div key={room.id} onClick={() => router.push(`/salas/${room.id}`)} className="room-card" style={{ cursor: 'pointer' }}>
                                     <div className="room-card-info" style={{ flex: 1 }}>
                                         <span className="room-name">{room.name}</span>
                                         <div className="room-code-tag">
@@ -158,7 +158,7 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                                                 {room.members?.slice(0, 6).map((member: any, i: number) => (
                                                     <img 
                                                         key={member.id} 
-                                                        src={member.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(member.user.name || 'U')}&background=random&color=fff`} 
+                                                        src={member.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent((member.user.name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}&background=random&color=fff`} 
                                                         alt={member.user.name} 
                                                         style={{ 
                                                             width: '32px', 
@@ -305,7 +305,7 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                                         boxShadow: isCreating ? '0 15px 35px rgba(16, 185, 129, 0.3)' : '0 15px 35px rgba(0, 112, 243, 0.3)'
                                     }}
                                 >
-                                    {loading ? '...' : (isCreating ? roomsT.modal.createTitle : roomsT.modal.joinTitle)}
+                                    {loading ? <Loader2 size={24} className="spin" /> : (isCreating ? roomsT.modal.createTitle : roomsT.modal.joinTitle)}
                                 </button>
                             </form>
                         </div>

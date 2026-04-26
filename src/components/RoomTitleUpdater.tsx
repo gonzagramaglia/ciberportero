@@ -14,7 +14,7 @@ export default function RoomTitleUpdater({ roomId, fallbackTitle }: { roomId: st
         } else {
             // If it's not the test room and not in guest store, redirect
             if (roomId !== 'test-room') {
-                router.push('/rooms/lobby');
+                router.push('/salas/lista');
             } else {
                 document.title = fallbackTitle;
             }

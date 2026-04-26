@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const description = descObj?.[lang] || descObj?.['es'] || descObj?.['en'] || "";
 
     return {
-        title: `Ciberportero | ${title}`,
+        title: title,
         description: description.slice(0, 160),
         openGraph: {
             title,

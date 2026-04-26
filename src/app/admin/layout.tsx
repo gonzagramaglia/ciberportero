@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import AdminNavLink from "@/components/admin/AdminNavLink";
 
 export const metadata = {
-  title: "Ciberportero | Admin Panel",
+  title: "Admin Panel",
   description: "Ciberportero Administration Panel",
 };
 

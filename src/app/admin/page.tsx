@@ -52,7 +52,7 @@ export default async function AdminPage() {
         <StatCard href="/admin/comments" title="Comentarios" count={counts.comments} icon={<MessageSquare className="text-indigo-500" />} />
         <StatCard href="/admin/users" title="Usuarios" count={counts.users} icon={<Users className="text-orange-500" />} />
         <StatCard href="/admin/images" title="Imágenes" count={counts.images} icon={<ImageIcon className="text-cyan-500" />} />
-        <StatCard href="/admin/rooms" title="Rooms" count={counts.rooms} icon={<Hash className="text-blue-600" />} disabled={true} />
+        <StatCard href="/admin/salas" title="Rooms" count={counts.rooms} icon={<Hash className="text-blue-600" />} disabled={true} />
       </div>
 
       <section>

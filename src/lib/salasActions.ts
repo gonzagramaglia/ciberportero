@@ -32,7 +32,7 @@ export async function createRoom(name: string, secretCode: string) {
       }
     });
 
-    revalidatePath('/rooms');
+    revalidatePath('/salas');
     return { success: true, roomId: room.id };
   } catch (error) {
     console.error(error);
@@ -65,7 +65,7 @@ export async function joinRoom(secretCode: string) {
       update: {}
     });
 
-    revalidatePath('/rooms');
+    revalidatePath('/salas');
     return { success: true, roomId: room.id };
   } catch (error) {
     console.error(error);
@@ -85,7 +85,7 @@ export async function createCategory(roomId: string, name: string) {
       data: { roomId, name }
     });
 
-    revalidatePath(`/rooms/${roomId}`);
+    revalidatePath(`/salas/${roomId}`);
     return { success: true };
   } catch (error) {
     console.error(error);
@@ -109,7 +109,7 @@ export async function createSubcategory(categoryId: string, name: string) {
       data: { categoryId, name }
     });
 
-    revalidatePath(`/rooms/${category.roomId}`);
+    revalidatePath(`/salas/${category.roomId}`);
     return { success: true };
   } catch (error) {
     console.error(error);
@@ -151,7 +151,7 @@ export async function addRoomMessage(subcategoryId: string, content: string, ima
       }
     });
 
-    revalidatePath(`/rooms/${subcategory.category.roomId}`);
+    revalidatePath(`/salas/${subcategory.category.roomId}`);
     return { success: true };
   } catch (error) {
     console.error(error);
@@ -314,7 +314,7 @@ export async function deleteRoom(roomId: string) {
 
   try {
     await db.room.delete({ where: { id: roomId } });
-    revalidatePath('/admin/rooms');
+    revalidatePath('/admin/salas');
     return { success: true };
   } catch (error) {
     console.error(error);
@@ -359,5 +359,37 @@ export async function getAllRoomMessages(roomId: string) {
   } catch (error) {
     console.error("getAllRoomMessages Error:", error);
     return [];
+  }
+}
+export async function deleteMessage(messageId: string) {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "No autenticado" };
+
+  try {
+    const message = await db.roomMessage.findUnique({
+      where: { id: messageId },
+      include: { subcategory: { include: { category: true } } }
+    });
+
+    if (!message) return { error: "Mensaje no encontrado" };
+
+    // Authorized if owner or admin
+    const isAdmin = session.user.role === 'admin' || session.user.email === 'ciberportero@gmail.com';
+    if (message.userId !== session.user.id && !isAdmin) {
+      return { error: "No autorizado" };
+    }
+
+    await db.roomMessage.delete({
+      where: { id: messageId }
+    });
+
+    if (message.subcategory) {
+      revalidatePath(`/salas/${message.subcategory.category.roomId}`);
+    }
+    
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { error: "Error al eliminar mensaje" };
   }
 }

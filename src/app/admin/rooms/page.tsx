@@ -1,4 +1,4 @@
-import { getAllRooms } from "@/lib/roomsActions";
+import { getAllRooms } from "@/lib/salasActions";
 import AdminRoomsList from "@/components/admin/AdminRoomsList";
 import { Hash } from "lucide-react";
 import { getAdminNote } from "@/lib/actions";

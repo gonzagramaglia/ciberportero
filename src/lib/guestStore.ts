@@ -421,6 +421,19 @@ export const guestStore = {
     deleteMessage(subId: string, messageId: string, isReply = false, parentId?: string) {
         const data = this.getData();
         for (const room of data.rooms) {
+            // General Chat handling
+            if (subId === 'general') {
+                if (isReply && parentId) {
+                    const parent = room.generalMessages.find(m => m.id === parentId);
+                    if (parent) parent.replies = parent.replies.filter(r => r.id !== messageId);
+                } else {
+                    room.generalMessages = room.generalMessages.filter(m => m.id !== messageId);
+                }
+                this.saveData(data);
+                return;
+            }
+
+            // Subcategory Chat handling
             const cat = room.categories.find(c => c.subcategories.some(s => s.id === subId));
             if (!cat) continue;
             const sub = cat.subcategories.find(s => s.id === subId);
@@ -428,13 +441,12 @@ export const guestStore = {
 
             if (isReply && parentId) {
                 const parent = sub.messages.find(m => m.id === parentId);
-                if (parent && parent.replies) {
-                    parent.replies = parent.replies.filter(r => r.id !== messageId);
-                }
+                if (parent) parent.replies = parent.replies.filter(r => r.id !== messageId);
             } else {
                 sub.messages = sub.messages.filter(m => m.id !== messageId);
             }
+            this.saveData(data);
+            return;
         }
-        this.saveData(data);
     }
 };

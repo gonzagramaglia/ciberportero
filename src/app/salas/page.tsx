@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
-import { getMyRooms } from "@/lib/roomsActions";
-import RoomLobbyClient from "@/components/RoomLobbyClient";
+import { getMyRooms } from "@/lib/salasActions";
+import RoomLandingClient from "@/components/RoomLandingClient";
 import { cookies } from "next/headers";
 import { Locale, translations } from "@/lib/translations";
 import { Metadata } from "next";
@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function LobbyPage() {
+export default async function RoomPage() {
   const session = await auth();
   const cookieStore = await cookies();
   const lang = (cookieStore.get('lang')?.value as Locale) || 'es';
@@ -25,8 +25,7 @@ export default async function LobbyPage() {
   const myRooms = await getMyRooms();
 
   return (
-    <RoomLobbyClient 
-      initialRooms={myRooms} 
+    <RoomLandingClient 
       session={null} 
     />
   );

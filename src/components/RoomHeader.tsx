@@ -7,6 +7,7 @@ import { Pencil, Check, X, Trash2, Key, History as HistoryIcon } from 'lucide-re
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { slugify } from '@/lib/utils';
+import { translations } from '@/lib/translations';
 
 interface RoomHeaderProps {
     roomId: string;
@@ -44,7 +45,7 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                 setIsEditing(false);
                 toast.success(lang === 'es' ? '¡Sala actualizada!' : 'Room updated!');
                 if (updated.id !== roomId) {
-                    router.push(`/rooms/${updated.id}`);
+                    router.push(`/salas/${updated.id}`);
                 }
             }
         } else {
@@ -57,12 +58,13 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
         if (!confirm(lang === 'es' ? '¿Estás seguro de eliminar esta sala?' : 'Are you sure you want to delete this room?')) return;
         if (isGuest) {
             guestStore.deleteRoom(roomId);
-            router.push('/rooms/lobby');
+            router.push('/salas/lista');
             toast.success(lang === 'es' ? 'Sala eliminada' : 'Room deleted');
         }
     };
 
     const codeLabel = lang === 'es' ? 'Código de acceso: ' : lang === 'pt' ? 'Código de acesso: ' : 'Access code: ';
+    const roomsT = translations[lang as keyof typeof translations]?.rooms || translations.es.rooms;
 
     return (
         <header style={{ marginBottom: '2rem', position: 'relative' }}>
@@ -70,17 +72,18 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                 {isEditing ? (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%', padding: '1rem', background: '#fff', borderRadius: '20px', border: '1px solid #e2e8f0', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
-                            <label style={{ fontSize: '0.7rem', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase' }}>{lang === 'es' ? 'Nombre de la sala' : 'Room Name'}</label>
+                            <label style={{ fontSize: '0.7rem', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase' }}>{roomsT.edit.nameLabel}</label>
                             <input 
                                 value={editName}
                                 onChange={e => setEditName(e.target.value)}
+                                placeholder={roomsT.sidebar.placeholderName}
                                 style={{ fontSize: '2rem', fontWeight: '900', border: 'none', borderBottom: '2px solid var(--accent)', outline: 'none', width: '100%' }}
                             />
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
                             <label style={{ fontSize: '0.7rem', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase' }}>Slug (URL)</label>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                                <span style={{ color: '#94a3b8', fontSize: '1rem' }}>/rooms/</span>
+                                <span style={{ color: '#94a3b8', fontSize: '1rem' }}>/salas/</span>
                                 <input 
                                     value={editSlug}
                                     onChange={e => setEditSlug(e.target.value)}
@@ -89,14 +92,14 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                             </div>
                         </div>
                         <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', alignItems: 'center' }}>
-                            <button onClick={handleUpdate} className="edit-btn confirm"><Check size={20} /> {lang === 'es' ? 'Guardar' : 'Save'}</button>
+                            <button onClick={handleUpdate} className="edit-btn confirm"><Check size={20} /> {roomsT.edit.save}</button>
                             <button onClick={handleDelete} className="edit-btn delete" style={{ marginLeft: 'auto' }}><Trash2 size={18} /></button>
                         </div>
                     </div>
                 ) : (
                     <>
                         <h1 style={{ fontSize: '2.5rem', fontWeight: '900', margin: 0, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                            <span style={{ fontSize: '1rem', color: 'var(--accent)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.05em', background: 'rgba(0, 112, 243, 0.05)', padding: '0.2rem 0.6rem', borderRadius: '8px' }}>Room</span>
+                            <span style={{ fontSize: '1rem', color: 'var(--accent)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.05em', background: 'rgba(0, 112, 243, 0.05)', padding: '0.2rem 0.6rem', borderRadius: '8px' }}>{roomsT.label}</span>
                             <span>{room.name}</span>
                         </h1>
                         {isCreator && (
@@ -131,7 +134,7 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                         onClick={() => window.dispatchEvent(new CustomEvent('subcategory-change', { detail: 'history' }))}
                     >
                         <HistoryIcon size={16} />
-                        <span>{lang === 'es' ? 'Historial de Mensajes' : 'Message History'}</span>
+                        <span>{roomsT.chat.history}</span>
                     </a>
                 </div>
             )}

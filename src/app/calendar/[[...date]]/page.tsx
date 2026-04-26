@@ -20,7 +20,7 @@ export async function generateMetadata({
   const lang = resolvedSearchParams.lang || cookieStore.get('lang')?.value || 'es';
   const t = translations[lang as keyof typeof translations];
 
-  let title = `Ciberportero | ${t.calendar.shortTitle}`;
+  let title = t.calendar.shortTitle;
   const now = new Date();
   const currentYear = now.getFullYear();
 
@@ -28,11 +28,11 @@ export async function generateMetadata({
     if (date.length === 3) {
       const [day, month, year] = date;
       const displayYear = year === currentYear.toString() ? '' : `/${year}`;
-      title = `${day}/${month}${displayYear} - Ciberportero`;
+      title = `${day}/${month}${displayYear}`;
     } else if (date.length === 2) {
-      title = `${date[0]}/${date[1]} - Ciberportero`;
+      title = `${date[0]}/${date[1]}`;
     } else if (date.length === 1) {
-      title = `${date[0]}/${now.getMonth() + 1}/${now.getFullYear()} - Ciberportero`;
+      title = `${date[0]}/${now.getMonth() + 1}/${now.getFullYear()}`;
     }
   }
 

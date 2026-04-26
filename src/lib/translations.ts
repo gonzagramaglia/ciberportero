@@ -12,8 +12,11 @@ export const translations = {
         },
         credits: "Inspirado en el trabajo de zzzNata",
         metadata: {
-            roomsTitle: "Ciberportero | Rooms",
-            roomsDesc: "Accede a tus salas de estudio colaborativas."
+            roomsTitle: "Ingreso a las Salas",
+            lobbyTitle: "Lista de las Salas",
+            testRoom: "Sala de Prueba",
+            guestRoom: "Sala Invitado",
+            roomsDesc: "Portal colaborativo para estudiantes de Ciberdefensa."
         },
         langName: "Español",
         featured: {
@@ -256,12 +259,16 @@ export const translations = {
             "Recordá que la educación es el arma más poderosa para proteger la nación."
         ],
         rooms: {
-            title: "Lobby de las Rooms",
+            title: "Ingreso a las Salas",
+            lobbyTitle: "Lista de las Salas",
             description: "Tu espacio colaborativo para estudiar en grupo, compartir capturas de ejercicios y resolver dudas juntos.",
-            access: "Acceso a las Rooms",
+            access: "Acceso",
             signInPrompt: "Iniciá sesión para unirte a grupos de estudio o crear el tuyo propio.",
-            guestMode: "Probar como invitado (Temporal)",
+            guestMode: "Ingresar como invitado",
             guestWarning: "Estás en modo invitado. Los cambios no se guardarán permanentemente.",
+            googleSignIn: "Ingresar con Google",
+            soon: "PRÓXIMAMENTE",
+            or: "O",
             join: {
                 title: "Unirse con código",
                 desc: "Entrá a una sala existente usando el código secreto."
@@ -270,11 +277,16 @@ export const translations = {
                 title: "Crear nueva sala",
                 desc: "Configurá un espacio privado para tu grupo de estudio."
             },
-            myRooms: "Tus Rooms",
-            noRooms: "No tienes Rooms todavía",
+            myRooms: "Tus Salas",
+            label: "Sala",
+            edit: {
+                nameLabel: "Nombre de la sala",
+                save: "Guardar"
+            },
+            noRooms: "No tienes salas todavía",
             back: "Volver al inicio",
-            backToRooms: "Volver a Rooms",
-            backToLobby: "Volver al Lobby",
+            backToRooms: "Volver al ingreso",
+            backToLobby: "Volver a las salas",
             sidebar: {
                 categories: "Categorías",
                 members: "Miembros",
@@ -287,10 +299,16 @@ export const translations = {
                 whatAreYouThinking: "¿Qué estás pensando?",
                 post: "Publicar",
                 emptyMessages: "No hay mensajes todavía",
-                startConversation: "¡Iniciá la conversación!",
+                startConversation: "¡Sé el primero en iniciar la conversación en este chat!",
                 replyingTo: "Respondiendo a",
                 uploadImage: "Subir imagen",
-                messages: "Mensajes"
+                messages: "Mensajes",
+                chatTitle: "Chat de la Sala",
+                generalChat: "Chat General",
+                globalConversation: "Conversación Global",
+                history: "Historial",
+                allMessages: "Todos los Mensajes",
+                mainPlaceholder: "Escribí algo para toda la sala..."
             },
             modal: {
                 createTitle: "Crear Sala",
@@ -316,6 +334,9 @@ export const translations = {
         credits: "Inspired by zzzNata's project",
         metadata: {
             roomsTitle: "Ciberportero | Rooms",
+            lobbyTitle: "Room List",
+            testRoom: "Test Room",
+            guestRoom: "Guest Room",
             roomsDesc: "Access your collaborative study rooms."
         },
         langName: "English",
@@ -559,12 +580,16 @@ export const translations = {
             "Remember that education is the most powerful weapon to protect the nation."
         ],
         rooms: {
-            title: "Rooms Lobby",
+            title: "Room Entry",
+            lobbyTitle: "Room List",
             description: "Your collaborative space to study in groups, share exercise screenshots, and solve doubts together.",
-            access: "Room Access",
+            access: "Room Entry",
             signInPrompt: "Sign in to join study groups or create your own.",
-            guestMode: "Try as guest (Temporary)",
+            guestMode: "Join as Guest",
             guestWarning: "You are in guest mode. Changes will not be saved permanently.",
+            googleSignIn: "Sign in with Google",
+            soon: "SOON",
+            or: "OR",
             join: {
                 title: "Join with code",
                 desc: "Enter an existing room using the secret code."
@@ -574,10 +599,15 @@ export const translations = {
                 desc: "Set up a private space for your study group."
             },
             myRooms: "Your Rooms",
+            label: "Room",
+            edit: {
+                nameLabel: "Room Name",
+                save: "Save"
+            },
             noRooms: "No rooms yet",
             back: "Back to home",
-            backToRooms: "Back to Rooms",
-            backToLobby: "Back to Lobby",
+            backToRooms: "Back to Entry",
+            backToLobby: "Back to Rooms",
             sidebar: {
                 categories: "Categories",
                 members: "Members",
@@ -593,7 +623,13 @@ export const translations = {
                 startConversation: "Start the conversation!",
                 replyingTo: "Replying to",
                 uploadImage: "Upload image",
-                messages: "Messages"
+                messages: "Messages",
+                chatTitle: "Room Chat",
+                generalChat: "General Chat",
+                globalConversation: "Global Conversation",
+                history: "History",
+                allMessages: "All Messages",
+                mainPlaceholder: "Write something for the whole room..."
             },
             modal: {
                 createTitle: "Create Room",
@@ -618,7 +654,10 @@ export const translations = {
         },
         credits: "Inspirado no trabalho de zzzNata",
         metadata: {
-            roomsTitle: "Ciberportero | Rooms",
+            roomsTitle: "Ingresso às Salas",
+            lobbyTitle: "Lista das Salas",
+            testRoom: "Sala de Teste",
+            guestRoom: "Sala de Convidado",
             roomsDesc: "Acesse suas salas de estudo colaborativas."
         },
         langName: "Português",
@@ -862,25 +901,34 @@ export const translations = {
             "Lembre-se que a educação é a arma mais poderosa para proteger a nação."
         ],
         rooms: {
-            title: "Lobby das Rooms",
+            title: "Ingresso às Salas",
+            lobbyTitle: "Lista das Salas",
             description: "Seu espaço colaborativo para estudar em grupo, compartilhar capturas de exercícios e resolver dúvidas juntos.",
-            access: "Acesso às Rooms",
+            access: "Ingresso às Salas",
             signInPrompt: "Faça login para participar de grupos de estudo ou criar o seu próprio.",
-            guestMode: "Tentar como convidado (Temporário)",
+            guestMode: "Ingressar como convidado",
             guestWarning: "Você está no modo convidado. As alterações não serão salvas permanentemente.",
+            googleSignIn: "Entrar com o Google",
+            soon: "EM BREVE",
+            or: "OU",
             join: {
                 title: "Entrar com código",
-                desc: "Entre em uma room existente usando o código secreto."
+                desc: "Entre em uma sala existente usando o código secreto."
             },
             create: {
-                title: "Criar nova room",
+                title: "Criar nova sala",
                 desc: "Configure um espaço privado para o seu grupo de estudo."
             },
-            myRooms: "Minhas Rooms",
+            myRooms: "Suas Salas",
+            label: "Sala",
+            edit: {
+                nameLabel: "Nome da sala",
+                save: "Salvar"
+            },
             noRooms: "Ainda não há salas",
             back: "Voltar ao início",
-            backToRooms: "Voltar para as Rooms",
-            backToLobby: "Voltar para o Lobby",
+            backToRooms: "Voltar para o ingresso",
+            backToLobby: "Voltar para as salas",
             sidebar: {
                 categories: "Categorias",
                 members: "Membros",
@@ -893,10 +941,16 @@ export const translations = {
                 whatAreYouThinking: "O que você está pensando?",
                 post: "Publicar",
                 emptyMessages: "Ainda não há mensagens",
-                startConversation: "Comece a conversa!",
+                startConversation: "Seja o primeiro a iniciar a conversa neste chat!",
                 replyingTo: "Respondendo a",
                 uploadImage: "Enviar imagem",
-                messages: "Mensagens"
+                messages: "Mensagens",
+                chatTitle: "Chat da Sala",
+                generalChat: "Chat Geral",
+                globalConversation: "Conversa Global",
+                history: "Histórico",
+                allMessages: "Todas as Mensagens",
+                mainPlaceholder: "Escreva algo para toda a sala..."
             },
             modal: {
                 createTitle: "Criar Sala",

@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { Pencil, Plus, Trash2, Hash, Check, Folder, FolderOpen, History as HistoryIcon, MessageSquare } from 'lucide-react';
-import { createCategory, createSubcategory } from '@/lib/roomsActions';
+import { createCategory, createSubcategory } from '@/lib/salasActions';
 import { toast } from 'react-hot-toast';
 import { translations } from '@/lib/translations';
 import { guestStore } from '@/lib/guestStore';
@@ -156,7 +156,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                         }}
                     >
                         <MessageSquare size={18} />
-                        <span style={{ fontSize: '1rem', fontWeight: '900' }}>{lang === 'es' ? 'Chat General' : 'General Chat'}</span>
+                        <span style={{ fontSize: '1rem', fontWeight: '900' }}>{roomsT.chat.generalChat}</span>
                     </a>
                 </div>
 
@@ -291,7 +291,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                             autoFocus
                                             value={newName} 
                                             onChange={e => setNewName(e.target.value)} 
-                                            placeholder={lang === 'es' ? 'Nombre...' : 'Name...'}
+                                            placeholder={roomsT.sidebar.placeholderName}
                                             onBlur={() => !newName && setIsAddingSub(null)}
                                             style={{ 
                                                 width: '100%', 
@@ -322,7 +322,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                     }}
                 >
                     <HistoryIcon size={18} />
-                    <span style={{ fontWeight: '900' }}>{lang === 'es' ? 'Historial de Mensajes' : 'Message History'}</span>
+                    <span style={{ fontWeight: '900' }}>{roomsT.chat.history}</span>
                 </a>
             </div>
 
@@ -335,13 +335,13 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                         const isMe = member.user.name.includes('(tú)') || member.user.name === 'Invitado';
                         return (
                             <div key={member.id} className="member-item">
-                                <img src={member.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(member.user.name || 'U')}`} alt={member.user.name} className="member-avatar" />
+                                <img src={member.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent((member.user.name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}`} alt={member.user.name} className="member-avatar" />
                                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                                     <span style={{ fontWeight: '800', fontSize: '0.9rem', color: '#1e293b' }}>
                                         {member.user.name}{isMe && !member.user.name.includes('(tú)') ? ' (tú)' : ''}
                                     </span>
                                     <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
-                                        {lang === 'es' ? 'Se unió ' : 'Joined '}
+                                        {roomsT.sidebar.joined + ' '}
                                         {new Date(member.createdAt).toLocaleDateString(lang, { day: 'numeric', month: 'short' })}
                                     </span>
                                 </div>
@@ -356,7 +356,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                     onClick={() => window.dispatchEvent(new CustomEvent('subcategory-change', { detail: 'history' }))}
                 >
                     <HistoryIcon size={16} />
-                    <span>{lang === 'es' ? 'Historial de Mensajes' : 'Message History'}</span>
+                    <span>{roomsT.chat.history}</span>
                 </a>
             </div>
 

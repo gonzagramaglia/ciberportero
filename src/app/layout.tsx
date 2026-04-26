@@ -8,7 +8,10 @@ import "./globals.css";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
-  title: "Ciberportero",
+  title: {
+    default: "Ciberportero",
+    template: "Ciberportero | %s",
+  },
   description: "Ciberdefensa y seguridad digital desde la primera línea.",
   icons: {
     icon: [

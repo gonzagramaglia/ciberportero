@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { ChevronLeft } from "lucide-react";
-import { getRoomData } from "@/lib/roomsActions";
+import { getRoomData } from "@/lib/salasActions";
 import RoomSidebar from "@/components/RoomSidebar";
 import { cookies } from "next/headers";
 import { Locale, translations } from "@/lib/translations";
@@ -22,8 +22,11 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
     const isGuestRoom = roomId.startsWith('guest-room-') || roomId === 'test-room';
 
     if (isGuestRoom) {
+      const cookieStore = await cookies();
+      const lang = (cookieStore.get('lang')?.value as Locale) || 'es';
+      const t = translations[lang].metadata;
       return {
-        title: roomId === 'test-room' ? 'Ciberportero | Sala de Prueba' : 'Ciberportero | Sala Invitado',
+        title: roomId === 'test-room' ? t.testRoom : t.guestRoom,
         description: 'Explora y colabora en esta sala de estudio en Ciberportero.'
       };
     }
@@ -31,7 +34,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
     const room = await getRoomData(roomId);
     if (room) {
       return {
-        title: `Ciberportero | ${room.name}`,
+        title: room.name,
         description: `Únete a la sala ${room.name} para estudiar en grupo y compartir recursos.`
       };
     }
@@ -40,7 +43,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
   }
 
   return {
-    title: 'Ciberportero | Sala de Estudio',
+    title: 'Sala de Estudio',
     description: 'Colabora con tu grupo de estudio en tiempo real.'
   };
 }
@@ -51,10 +54,10 @@ export default async function RoomDetailLayout({ children, params }: any) {
     const p = await params;
     roomId = p?.roomId || "";
   } catch (e) {
-    redirect('/rooms/lobby');
+    redirect('/salas/lista');
   }
 
-  if (!roomId) redirect('/rooms/lobby');
+  if (!roomId) redirect('/salas/lista');
 
   const session = await auth();
 
@@ -79,7 +82,7 @@ export default async function RoomDetailLayout({ children, params }: any) {
     };
   }
 
-  if (!room) redirect('/rooms/lobby');
+  if (!room) redirect('/salas/lista');
 
   const cookieStore = await cookies();
   const lang = (cookieStore.get('lang')?.value as Locale) || 'es';
@@ -88,7 +91,7 @@ export default async function RoomDetailLayout({ children, params }: any) {
   return (
     <div className="container fade-in post-container" style={{ paddingTop: '2rem', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <RoomTitleUpdater roomId={roomId} fallbackTitle={`Ciberportero | ${room.name}`} />
-      <RoomNavbar href="/rooms/lobby" backTextKey="backToLobby" />
+      <RoomNavbar href="/salas/lista" backTextKey="backToLobby" />
 
       <RoomHeader roomId={roomId} initialRoom={{ name: room.name, secretCode: room.secretCode, creatorId: room.creatorId }} session={session} />
 

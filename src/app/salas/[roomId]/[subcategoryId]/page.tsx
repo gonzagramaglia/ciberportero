@@ -1,4 +1,4 @@
-import { getSubcategoryMessages } from "@/lib/roomsActions";
+import { getSubcategoryMessages } from "@/lib/salasActions";
 import RoomChatClient from "@/components/RoomChatClient";
 import { auth } from "@/auth";
 import { notFound, redirect } from "next/navigation";
@@ -16,7 +16,7 @@ export default async function SubcategoryPage({ params }: any) {
     subcategory = { id: subcategoryId, name: '...', category: { name: '...' } };
     initialMessages = []; // Will be loaded by client from localStorage
   } else {
-    if (!session) redirect('/rooms');
+    if (!session) redirect('/salas');
     subcategory = await db.roomSubcategory.findUnique({
       where: { id: subcategoryId },
       include: { category: true }
