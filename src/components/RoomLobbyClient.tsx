@@ -20,6 +20,9 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
     const t = translations[lang as keyof typeof translations] || translations.es;
     const roomsT = t.rooms;
     const isGuest = !session;
+    const isAdmin = session?.user?.role === 'admin' || session?.user?.email === 'ciberportero@gmail.com';
+    const canCreate = isGuest || isAdmin;
+
     const [rooms, setRooms] = useState(initialRooms || []);
     const [isCreating, setIsCreating] = useState(false);
     const [isJoining, setIsJoining] = useState(false);
@@ -45,6 +48,10 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
 
     const handleCreate = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!canCreate) {
+            toast.error(lang === 'es' ? 'Solo los administradores pueden crear salas oficiales.' : 'Only admins can create official rooms.');
+            return;
+        }
         if (!newRoomName || !newRoomCode) return;
         setLoading(true);
 
@@ -98,20 +105,19 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
             <RoomNavbar href={session ? "/" : "/salas"} backTextKey={session ? "back" : "backToRooms"} />
 
             <header className="lobby-header-premium">
-                <div className="header-titles">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', flexWrap: 'wrap' }}>
                     <h1 className="lobby-title">
                         {roomsT.lobbyTitle}
                     </h1>
-                    <p className="lobby-desc">
-                        {roomsT.description}
-                    </p>
+                    {!isGuest && session?.user && (
+                        <div className="user-actions">
+                            <SignOutButton />
+                        </div>
+                    )}
                 </div>
-
-                {!isGuest && session?.user && (
-                    <div className="user-actions">
-                        <SignOutButton />
-                    </div>
-                )}
+                <p className="lobby-desc">
+                    {roomsT.description}
+                </p>
             </header>
 
             <main style={{ display: 'flex', flexDirection: 'column', gap: '4rem' }}>
@@ -130,10 +136,16 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                         </div>
                     </button>
 
-                    <button onClick={() => setIsCreating(true)} className="action-card create">
+                    <button 
+                        onClick={() => canCreate ? setIsCreating(true) : toast.error(lang === 'es' ? 'Opción solo para administradores' : 'Option for admins only')} 
+                        className={`action-card create ${!canCreate ? 'blocked' : ''}`}
+                    >
                         <div className="card-icon"><Plus size={24} /></div>
                         <div className="card-body">
-                            <h3>{roomsT.create.title}</h3>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                                <h3>{roomsT.create.title}</h3>
+                                {!canCreate && <span className="lock-badge">SOLO ADMINS</span>}
+                            </div>
                             <p>{roomsT.create.desc}</p>
                         </div>
                     </button>
@@ -207,7 +219,7 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                                                 )}
                                             </div>
                                             <span style={{ fontSize: '0.9rem', color: '#94a3b8', fontWeight: '700' }}>
-                                                {room.members?.length || 0} {lang === 'es' ? 'miembros' : 'members'}
+                                                {room._count?.members ?? (room.members?.length || 0)} {lang === 'es' ? 'miembros' : 'members'}
                                             </span>
                                         </div>
                                     </div>
@@ -350,7 +362,7 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
             </div>
 
             <style jsx>{`
-                .lobby-header-premium { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4rem; margin-top: 2rem; gap: 2rem; }
+                .lobby-header-premium { display: flex; flex-direction: column; margin-bottom: 4rem; margin-top: 2rem; gap: 0.8rem; }
                 .lobby-title { margin: 0; fontSize: 3.5rem; fontWeight: 900; color: #000; letterSpacing: -0.04em; }
                 .lobby-desc { color: var(--muted); fontSize: 1.25rem; fontWeight: 500; lineHeight: 1.6; margin: 0.8rem 0 0 0; }
                 
@@ -373,6 +385,9 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                 .action-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
                 .action-card.join:hover { border-color: var(--accent); }
                 .action-card.create:hover { border-color: var(--success); }
+                .action-card.create.blocked { opacity: 0.6; cursor: not-allowed; filter: grayscale(0.5); }
+                .action-card.create.blocked:hover { transform: none; box-shadow: none; border-color: var(--border); }
+                .lock-badge { font-size: 0.65rem; background: #fee2e2; color: #ef4444; padding: 0.2rem 0.5rem; border-radius: 6px; font-weight: 900; }
                 .card-icon { width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
                 .join .card-icon { background: rgba(0, 112, 243, 0.08); color: var(--accent); }
                 .create .card-icon { background: rgba(16, 185, 129, 0.08); color: var(--success); }

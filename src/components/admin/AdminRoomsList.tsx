@@ -28,6 +28,7 @@ export default function AdminRoomsList({ initialRooms }: { initialRooms: any[] }
                     <tr>
                         <th>Nombre / ID</th>
                         <th>Creador</th>
+                        <th>Miembros</th>
                         <th>Estadísticas</th>
                         <th style={{ textAlign: 'right' }}>Acciones</th>
                     </tr>
@@ -39,10 +40,29 @@ export default function AdminRoomsList({ initialRooms }: { initialRooms: any[] }
                                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                                     <span style={{ fontWeight: '700', fontSize: '0.9rem' }}>{room.name}</span>
                                     <code style={{ fontSize: '10px', opacity: 0.6 }}>{room.id}</code>
+                                    <div style={{ marginTop: '0.3rem', fontSize: '11px', color: 'var(--accent)', fontWeight: 600 }}>
+                                        #{room.secretCode}
+                                    </div>
                                 </div>
                             </td>
                             <td>
                                 <span style={{ fontSize: '0.85rem' }}>{room.creator?.name || 'Desconocido'}</span>
+                            </td>
+                            <td>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', maxWidth: '300px' }}>
+                                    {room.members?.map((m: any) => (
+                                        <div key={m.id} title={m.user.name} style={{ position: 'relative' }}>
+                                            <img 
+                                                src={m.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.user.name || 'U')}`} 
+                                                alt={m.user.name}
+                                                style={{ width: '28px', height: '28px', borderRadius: '8px', border: '2px solid #f1f5f9' }}
+                                            />
+                                        </div>
+                                    ))}
+                                    {(!room.members || room.members.length === 0) && (
+                                        <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Sin miembros</span>
+                                    )}
+                                </div>
                             </td>
                             <td>
                                 <div style={{ display: 'flex', gap: '1rem', fontSize: '0.8rem', color: '#64748b' }}>

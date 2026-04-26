@@ -8,6 +8,12 @@ export async function createRoom(name: string, secretCode: string) {
   const session = await auth();
   if (!session?.user?.id) return { error: "No autenticado" };
 
+  // Only admins or the specific owner email can create rooms in the DB
+  const isAdmin = session.user.role === 'admin' || session.user.email === 'ciberportero@gmail.com';
+  if (!isAdmin) {
+    return { error: "Solo los administradores pueden crear salas oficiales." };
+  }
+
   try {
     const slug = name
       .toLowerCase()
@@ -170,6 +176,11 @@ export async function getMyRooms() {
           some: { userId: session.user.id }
         }
       },
+      include: {
+        _count: {
+          select: { members: true }
+        }
+      },
       orderBy: { createdAt: 'desc' }
     });
   } catch (error) {
@@ -195,26 +206,13 @@ export async function getRoomData(roomId: string) {
     const session = await auth();
     if (!session?.user?.id) return null;
 
-    if (!db || !db.roomMember) return null;
-
-    const isMember = await db.roomMember.findUnique({
-      where: {
-        roomId_userId: {
-          roomId,
-          userId: session.user.id
-        }
-      }
-    });
-
-    if (!isMember) return null;
-
-    return await db.room.findUnique({
+    const room = await db.room.findUnique({
       where: { id: roomId },
       include: {
         members: {
           include: {
             user: {
-              select: { name: true, image: true }
+              select: { id: true, name: true, image: true }
             }
           },
           orderBy: { createdAt: 'asc' }
@@ -230,6 +228,19 @@ export async function getRoomData(roomId: string) {
         }
       }
     });
+
+    if (!room) return null;
+
+    // Check if user is member or creator
+    const isMember = room.members.some(m => m.userId === session.user.id);
+    const isCreator = room.creatorId === session.user.id;
+
+    if (!isMember && !isCreator) {
+      console.warn(`User ${session.user.id} tried to access room ${roomId} without permission.`);
+      return null;
+    }
+
+    return room;
   } catch (error) {
     console.error("getRoomData Error:", error);
     return null;
@@ -310,6 +321,14 @@ export async function getAllRooms() {
         },
         creator: {
           select: { name: true }
+        },
+        members: {
+          include: {
+            user: {
+              select: { name: true, image: true }
+            }
+          },
+          orderBy: { createdAt: 'asc' }
         }
       },
       orderBy: { createdAt: 'desc' }
