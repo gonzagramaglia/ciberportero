@@ -258,7 +258,12 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
         setLoading(false);
     };
 
-    const categories = room.categories || [];
+    const generalSub = room.categories?.flatMap((c: any) => c.subcategories).find((s: any) => s.name === 'Chat General');
+
+    const categories = (room.categories || []).map((cat: any) => ({
+        ...cat,
+        subcategories: cat.subcategories.filter((sub: any) => sub.name !== 'Chat General')
+    })).filter((cat: any) => cat.subcategories.length > 0 || (cat.name !== 'General' && cat.name !== 'Chat General'));
 
     return (
         <aside className="room-sidebar">
@@ -266,7 +271,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 <div className="general-chat-link">
                     <a
                         href="#general"
-                        className={`sub-link ${!currentSubId || currentSubId === 'general' ? 'active' : ''}`}
+                        className={`sub-link ${!currentSubId || currentSubId === 'general' || currentSubId === generalSub?.id ? 'active' : ''}`}
                         onClick={(e) => {
                             window.dispatchEvent(new CustomEvent('subcategory-change', { detail: 'general' }));
                             setCurrentSubId('general');
