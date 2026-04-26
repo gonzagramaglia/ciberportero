@@ -30,6 +30,7 @@ export interface GuestRoom {
     creatorId: string;
     categories: GuestCategory[];
     members: any[];
+    generalMessages: GuestMessage[];
 }
 
 interface GuestData {
@@ -129,6 +130,16 @@ const DEFAULT_DATA: GuestData = {
                 { id: 'm4', user: { name: 'Sofia V.', image: null }, createdAt: new Date(Date.now() - 10800000).toISOString() },
                 { id: 'm5', user: { name: 'Nico B.', image: null }, createdAt: new Date(Date.now() - 5400000).toISOString() },
                 { id: 'guest-me', user: { name: 'Invitado (tú)', image: null }, createdAt: new Date().toISOString() }
+            ],
+            generalMessages: [
+                {
+                    id: 'gm-1',
+                    content: 'Bienvenidos al Chat General de la sala. Este es un espacio para conversar sobre cualquier tema fuera de los laboratorios.',
+                    images: [],
+                    user: { name: 'Admin del Grupo', image: null },
+                    createdAt: new Date(Date.now() - 86400000).toISOString(),
+                    replies: []
+                }
             ]
         }
     ]
@@ -150,6 +161,10 @@ export const guestStore = {
             return DEFAULT_DATA;
         }
         let parsed = JSON.parse(saved);
+        // Migration: Ensure all rooms have generalMessages
+        parsed.rooms.forEach((r: any) => {
+            if (!r.generalMessages) r.generalMessages = [];
+        });
         // Ensure test-room exists and is the current version
         const testRoomIndex = parsed.rooms.findIndex((r: any) => r.id === 'test-room');
         if (testRoomIndex === -1) {
@@ -204,7 +219,8 @@ export const guestStore = {
                     ]
                 }
             ],
-            members: [{ id: 'gm1', user: { name: 'Invitado (tú)', image: null }, createdAt: new Date().toISOString() }]
+            members: [{ id: 'gm1', user: { name: 'Invitado (tú)', image: null }, createdAt: new Date().toISOString() }],
+            generalMessages: []
         };
         data.rooms.push(newRoom);
         this.saveData(data);
@@ -263,6 +279,25 @@ export const guestStore = {
     addMessage(subId: string, content: string, images: string[], replyToId?: string) {
         const data = this.getData();
         for (const room of data.rooms) {
+            if (subId === 'general') {
+                const newMessage: GuestMessage = {
+                    id: `guest-msg-${Date.now()}`,
+                    content,
+                    images,
+                    user: { name: 'Invitado (tú)', image: null },
+                    createdAt: new Date().toISOString(),
+                    replies: []
+                };
+                if (replyToId) {
+                    const parent = room.generalMessages.find(m => m.id === replyToId);
+                    if (parent) parent.replies.push(newMessage);
+                    else room.generalMessages.push(newMessage);
+                } else {
+                    room.generalMessages.push(newMessage);
+                }
+                this.saveData(data);
+                return newMessage;
+            }
             for (const cat of room.categories) {
                 const sub = cat.subcategories.find(s => s.id === subId);
                 if (sub) {

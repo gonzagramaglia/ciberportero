@@ -111,7 +111,7 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                     </div>
                 )}
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
+                <div className="lobby-actions-grid">
                     <button onClick={() => setIsJoining(true)} className="action-card join">
                         <div className="card-icon"><Hash size={24} /></div>
                         <div className="card-body">
@@ -143,17 +143,46 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                             <p style={{ fontSize: '1.1rem', fontWeight: '600' }}>{roomsT.noRooms}</p>
                         </div>
                     ) : (
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '1.5rem' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                             {rooms.map((room: any) => (
                                 <div key={room.id} onClick={() => router.push(`/rooms/${room.id}`)} className="room-card" style={{ cursor: 'pointer' }}>
-                                    <div className="room-card-info">
+                                    <div className="room-card-info" style={{ flex: 1 }}>
                                         <span className="room-name">{room.name}</span>
                                         <div className="room-code-tag">
                                             <Key size={12} />
                                             <span>{room.secretCode}</span>
                                         </div>
+                                        
+                                        <div className="room-members-preview" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginTop: '1.5rem' }}>
+                                            <div style={{ display: 'flex' }}>
+                                                {room.members?.slice(0, 6).map((member: any, i: number) => (
+                                                    <img 
+                                                        key={member.id} 
+                                                        src={member.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(member.user.name || 'U')}&background=random&color=fff`} 
+                                                        alt={member.user.name} 
+                                                        style={{ 
+                                                            width: '32px', 
+                                                            height: '32px', 
+                                                            borderRadius: '50%', 
+                                                            border: '3px solid #fff', 
+                                                            marginLeft: i === 0 ? 0 : '-12px',
+                                                            boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+                                                            zIndex: 6 - i
+                                                        }} 
+                                                    />
+                                                ))}
+                                                {room.members?.length > 6 && (
+                                                    <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#f1f5f9', border: '3px solid #fff', marginLeft: '-12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: '800', color: '#64748b', boxShadow: '0 4px 10px rgba(0,0,0,0.1)', zIndex: 0 }}>
+                                                        +{room.members.length - 6}
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <span style={{ fontSize: '0.9rem', color: '#94a3b8', fontWeight: '700' }}>
+                                                {room.members?.length || 0} {lang === 'es' ? 'miembros' : 'members'}
+                                            </span>
+                                        </div>
                                     </div>
-                                    <div className="room-card-arrow"><ArrowRight size={20} /></div>
+                                    <div className="room-card-arrow"><ArrowRight size={24} /></div>
                                 </div>
                             ))}
                         </div>
@@ -310,11 +339,23 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                 .form-submit-button { border: none; color: white; cursor: pointer; transition: all 0.3s; }
                 .form-submit-button:hover:not(:disabled) { transform: translateY(-3px); filter: brightness(1.1); }
                 .room-card { display: flex; align-items: center; justify-content: space-between; padding: 2rem 2.5rem; background: #fff; border-radius: 28px; border: 1px solid var(--border); transition: all 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-                .room-card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0, 112, 243, 0.1); }
-                .room-name { font-size: 1.4rem; font-weight: 900; color: #1e293b; display: block; }
+                .room-card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 25px 50px rgba(0, 112, 243, 0.12); }
+                .room-name { font-size: 1.6rem; font-weight: 950; color: #1e293b; display: block; letter-spacing: -0.02em; }
                 .room-code-tag { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 0.6rem; font-size: 0.85rem; font-weight: 800; color: var(--accent); background: rgba(0, 112, 243, 0.05); padding: 0.4rem 0.8rem; border-radius: 10px; }
-                .room-card-arrow { width: 48px; height: 48px; border-radius: 14px; background: #f8fafc; display: flex; align-items: center; justify-content: center; color: #cbd5e1; transition: all 0.3s; }
-                .room-card:hover .room-card-arrow { background: var(--accent); color: #fff; transform: translateX(5px); }
+                .room-card-arrow { width: 56px; height: 56px; border-radius: 18px; background: #f8fafc; display: flex; align-items: center; justify-content: center; color: #cbd5e1; transition: all 0.3s; }
+                .room-card:hover .room-card-arrow { background: var(--accent); color: #fff; }
+                .room-members-preview img { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+                .room-members-preview img:hover { transform: translateY(-4px) scale(1.2); z-index: 20 !important; }
+                .lobby-actions-grid { 
+                    display: grid; 
+                    grid-template-columns: 1fr 1fr; 
+                    gap: 2rem; 
+                }
+                @media (max-width: 640px) {
+                    .lobby-actions-grid { 
+                        grid-template-columns: 1fr; 
+                    }
+                }
                 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
                 @media (max-width: 768px) {

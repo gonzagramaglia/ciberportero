@@ -209,7 +209,11 @@ export async function getRoomData(roomId: string) {
         },
         categories: {
           include: {
-            subcategories: true
+            subcategories: {
+              include: {
+                messages: true
+              }
+            }
           }
         }
       }
@@ -239,6 +243,45 @@ export async function getSubcategoryMessages(subcategoryId: string) {
   } catch (error) {
     console.error("getSubcategoryMessages Error:", error);
     return [];
+  }
+}
+
+export async function getGeneralMessages(roomId: string) {
+  try {
+    if (!db || !db.roomMessage) return [];
+    return await db.roomMessage.findMany({
+      where: { subcategory: { name: 'Chat General', category: { roomId } }, parentId: null },
+      include: {
+        user: { select: { id: true, name: true, image: true } },
+        replies: {
+          include: {
+            user: { select: { id: true, name: true, image: true } }
+          },
+          orderBy: { createdAt: 'asc' }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+  } catch (error) {
+    console.error("getGeneralMessages Error:", error);
+    return [];
+  }
+}
+
+export async function addGeneralMessage(roomId: string, content: string, images: string[] = [], parentId?: string) {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "No autenticado" };
+
+  try {
+    const general = await db.roomSubcategory.findFirst({
+      where: { name: 'Chat General', category: { roomId } }
+    });
+    if (!general) return { error: "Chat general no encontrado" };
+
+    return await addRoomMessage(general.id, content, images, parentId);
+  } catch (error) {
+    console.error(error);
+    return { error: "Error al enviar mensaje general" };
   }
 }
 
@@ -276,5 +319,45 @@ export async function deleteRoom(roomId: string) {
   } catch (error) {
     console.error(error);
     return { error: "Error al eliminar sala" };
+  }
+}
+export async function getAllRoomMessages(roomId: string) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) return [];
+
+    const isMember = await db.roomMember.findUnique({
+      where: { roomId_userId: { roomId, userId: session.user.id } }
+    });
+    if (!isMember) return [];
+
+    return await db.roomMessage.findMany({
+      where: { 
+        OR: [
+          { subcategory: { category: { roomId } } },
+          { subcategory: { name: 'Chat General', category: { roomId } } }
+        ],
+        parentId: null 
+      },
+      include: {
+        user: { select: { id: true, name: true, image: true } },
+        subcategory: { 
+          select: { 
+            name: true,
+            category: { select: { name: true } }
+          } 
+        },
+        replies: {
+          include: {
+            user: { select: { id: true, name: true, image: true } }
+          },
+          orderBy: { createdAt: 'asc' }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+  } catch (error) {
+    console.error("getAllRoomMessages Error:", error);
+    return [];
   }
 }

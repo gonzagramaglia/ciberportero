@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { Plus, Hash, ChevronRight, Folder, FolderOpen, Pencil, Trash2, Check, X } from 'lucide-react';
+import { Pencil, Plus, Trash2, Hash, Check, Folder, FolderOpen, History as HistoryIcon, MessageSquare } from 'lucide-react';
 import { createCategory, createSubcategory } from '@/lib/roomsActions';
 import { toast } from 'react-hot-toast';
 import { translations } from '@/lib/translations';
@@ -146,6 +146,20 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
     return (
         <aside className="room-sidebar" style={{ width: '280px', flexShrink: 0 }}>
             <div className="categories-container" style={{ flex: 1.5, minWidth: 0 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginBottom: '2rem' }}>
+                    <a 
+                        href="#general"
+                        className={`sub-link ${!currentSubId || currentSubId === 'general' ? 'active' : ''}`}
+                        onClick={(e) => {
+                            window.dispatchEvent(new CustomEvent('subcategory-change', { detail: 'general' }));
+                            setCurrentSubId('general');
+                        }}
+                    >
+                        <MessageSquare size={18} />
+                        <span style={{ fontSize: '1rem', fontWeight: '900' }}>{lang === 'es' ? 'Chat General' : 'General Chat'}</span>
+                    </a>
+                </div>
+
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', padding: '0 0.5rem' }}>
                     <h3 style={{ margin: 0, textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '0.75rem', fontWeight: '800', color: '#94a3b8' }}>{roomsT.sidebar.categories}</h3>
                     {isCreator && (
@@ -250,7 +264,6 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                                     className={`sub-link ${currentSubId === sub.id ? 'active' : ''}`}
                                                     style={{ flex: 1 }}
                                                     onClick={(e) => {
-                                                        // No preventDefault to allow hash change
                                                         window.dispatchEvent(new CustomEvent('subcategory-change', { detail: sub.id }));
                                                         setCurrentSubId(sub.id);
                                                     }}
@@ -299,7 +312,21 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 </div>
             </div>
 
-            <div className="members-section" style={{ marginTop: '3rem' }}>
+            <div className="sidebar-history-footer">
+                <a 
+                    href="#history"
+                    className={`sub-link ${currentSubId === 'history' ? 'active' : ''}`}
+                    onClick={() => {
+                        window.dispatchEvent(new CustomEvent('subcategory-change', { detail: 'history' }));
+                        setCurrentSubId('history');
+                    }}
+                >
+                    <HistoryIcon size={18} />
+                    <span style={{ fontWeight: '900' }}>{lang === 'es' ? 'Historial de Mensajes' : 'Message History'}</span>
+                </a>
+            </div>
+
+            <div className="members-section" style={{ marginTop: '1.5rem' }}>
                 <h3 style={{ margin: '0 0 1.5rem 0.5rem', fontSize: '0.85rem', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#94a3b8' }}>
                     {roomsT.sidebar.members} ({room.members?.length || 0})
                 </h3>
@@ -322,6 +349,15 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                         );
                     })}
                 </div>
+                
+                <a 
+                    href="#history" 
+                    className="mobile-history-btn"
+                    onClick={() => window.dispatchEvent(new CustomEvent('subcategory-change', { detail: 'history' }))}
+                >
+                    <HistoryIcon size={16} />
+                    <span>{lang === 'es' ? 'Historial de Mensajes' : 'Message History'}</span>
+                </a>
             </div>
 
             <style jsx>{`
@@ -390,6 +426,8 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                     transform: translateX(4px);
                 }
                 
+                @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+                
                 .sub-link.active {
                     background: rgba(0, 112, 243, 0.12) !important;
                     color: #0056b3 !important;
@@ -405,6 +443,14 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                     opacity: 1 !important;
                     transform: scale(1.1);
                 }
+
+                .inline-reply-container {
+                    margin-left: 0;
+                    margin-right: 0;
+                    margin-bottom: 1.5rem;
+                    margin-top: 1rem;
+                    width: 100%;
+                }
                 
                 .sub-list {
                     padding-left: 0.5rem;
@@ -414,6 +460,42 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                     display: flex;
                     flex-direction: column;
                     gap: 0.2rem;
+                }
+
+                .sidebar-history-footer {
+                    margin-top: auto;
+                    padding-top: 1.5rem;
+                    border-top: 1px solid #f1f5f9;
+                }
+
+                .mobile-history-btn {
+                    display: none;
+                    align-items: center;
+                    gap: 0.6rem;
+                    background: var(--accent-light);
+                    color: var(--accent);
+                    padding: 0.6rem 1.2rem;
+                    border-radius: 14px;
+                    border: 1px solid rgba(0, 112, 243, 0.1);
+                    font-size: 0.85rem;
+                    font-weight: 800;
+                    text-decoration: none;
+                    transition: all 0.2s;
+                    margin-top: 1.5rem;
+                }
+
+                @media (max-width: 1024px) {
+                    .mobile-history-btn {
+                        display: inline-flex;
+                        margin-top: 0.75rem;
+                    }
+                    .mobile-history-btn:active {
+                        transform: scale(0.95);
+                        background: rgba(0, 112, 243, 0.1);
+                    }
+                    .sidebar-history-footer {
+                        display: none;
+                    }
                 }
 
                 @media (max-width: 1024px) {
@@ -427,7 +509,12 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                         gap: 1.5rem;
                         align-items: flex-start;
                         padding-right: 0;
+                        overflow-x: auto;
+                        flex-wrap: nowrap;
+                        padding-bottom: 1rem;
+                        -webkit-overflow-scrolling: touch;
                     }
+                    .room-sidebar::-webkit-scrollbar { display: none; }
                     .sub-list {
                         border-left: none;
                         padding-left: 0;

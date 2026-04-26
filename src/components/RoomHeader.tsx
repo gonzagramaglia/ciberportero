@@ -3,7 +3,7 @@
 import { useLanguage } from '@/context/LanguageContext';
 import { guestStore } from '@/lib/guestStore';
 import React, { useEffect, useState } from 'react';
-import { Pencil, Check, X, Trash2, Key } from 'lucide-react';
+import { Pencil, Check, X, Trash2, Key, History as HistoryIcon } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { slugify } from '@/lib/utils';
@@ -108,7 +108,7 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                 )}
             </div>
             {!isEditing && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginTop: '0.75rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginTop: '0.75rem', flexWrap: 'wrap' }}>
                     <div style={{ 
                         display: 'inline-flex', 
                         alignItems: 'center', 
@@ -124,6 +124,15 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                         <Key size={14} />
                         <span style={{ letterSpacing: '0.02em' }}>{room.secretCode}</span>
                     </div>
+
+                    <a 
+                        href="#history" 
+                        className="mobile-history-btn"
+                        onClick={() => window.dispatchEvent(new CustomEvent('subcategory-change', { detail: 'history' }))}
+                    >
+                        <HistoryIcon size={16} />
+                        <span>{lang === 'es' ? 'Historial de Mensajes' : 'Message History'}</span>
+                    </a>
                 </div>
             )}
 
@@ -135,6 +144,32 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                 .edit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
                 .edit-btn.delete:hover { background: #ef4444; color: #fff; border-color: #ef4444; }
                 .edit-btn.confirm:hover { background: #059669; }
+
+                .mobile-history-btn {
+                    display: none;
+                    align-items: center;
+                    gap: 0.6rem;
+                    background: var(--accent-light);
+                    color: var(--accent);
+                    padding: 0.6rem 1.2rem;
+                    border-radius: 14px;
+                    border: 1px solid rgba(0, 112, 243, 0.1);
+                    font-size: 0.85rem;
+                    font-weight: 800;
+                    text-decoration: none;
+                    transition: all 0.2s;
+                }
+                
+                @media (max-width: 1024px) {
+                    .mobile-history-btn {
+                        display: inline-flex;
+                        margin-top: 0.75rem;
+                    }
+                    .mobile-history-btn:active {
+                        transform: scale(0.95);
+                        background: rgba(0, 112, 243, 0.1);
+                    }
+                }
             `}</style>
         </header>
     );

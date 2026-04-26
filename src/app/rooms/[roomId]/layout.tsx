@@ -71,7 +71,7 @@ export default async function RoomDetailLayout({ children, params }: any) {
     const isTest = roomId === 'test-room';
     room = {
       id: roomId,
-      name: isTest ? 'Grupo de Estudio - Ciberdefensa 🛡️' : (lang === 'es' ? 'Cargando Room...' : 'Loading Room...'),
+      name: isTest ? 'Grupo de Estudio Ciberdefensa 🛡️' : (lang === 'es' ? 'Cargando Room...' : 'Loading Room...'),
       secretCode: isTest ? 'CIBERDEFENSA-2026' : '...',
       creatorId: isTest ? 'admin' : 'guest',
       categories: [],
