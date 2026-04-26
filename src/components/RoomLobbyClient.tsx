@@ -214,11 +214,10 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                         }}
                     >
                         <button 
-                            className="lightbox-close" 
+                            className="lightbox-close modal-close-btn" 
                             onClick={() => { setIsCreating(false); setIsJoining(false); }} 
-                            style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', background: 'rgba(0,0,0,0.05)', border: 'none', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#64748b', zIndex: 10 }}
                         >
-                            <X size={18} />
+                            <X size={20} strokeWidth={3} />
                         </button>
 
                         {/* Left Side: Info */}
@@ -351,12 +350,35 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                     grid-template-columns: 1fr 1fr; 
                     gap: 2rem; 
                 }
-                @media (max-width: 640px) {
+                @media (max-width: 1024px) {
                     .lobby-actions-grid { 
                         grid-template-columns: 1fr; 
                     }
                 }
-                @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+                .modal-close-btn {
+                    position: absolute;
+                    top: 1.5rem;
+                    right: 1.5rem;
+                    background: rgba(15, 23, 42, 0.1);
+                    backdrop-filter: blur(8px);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    border-radius: 50%;
+                    width: 44px;
+                    height: 44px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    color: #64748b;
+                    zIndex: 10;
+                    transition: all 0.2s;
+                }
+
+                .modal-close-btn:hover {
+                    background: rgba(15, 23, 42, 0.2);
+                    transform: scale(1.1);
+                }
 
                 @media (max-width: 768px) {
                     .rooms-modal-content {
@@ -365,10 +387,16 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                         min-height: auto !important;
                     }
                     .rooms-modal-content > div {
-                        padding: 2rem !important;
+                        padding: 2.5rem 1.5rem !important;
                     }
                     .rooms-modal-content h2 {
-                        font-size: 1.8rem !important;
+                        font-size: 2.2rem !important;
+                    }
+                    .modal-close-btn {
+                        color: white;
+                        background: rgba(255, 255, 255, 0.2);
+                        top: 1rem;
+                        right: 1rem;
                     }
                 }
             `}</style>

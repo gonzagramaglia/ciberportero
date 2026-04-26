@@ -38,7 +38,23 @@ export default async function RootLayout({
         <AuthProvider>
           <LanguageProvider initialLang={initialLang}>
             {children}
-            <Toaster position="bottom-right" />
+            <Toaster 
+              position="top-center" 
+              toastOptions={{
+                duration: 4000,
+                style: {
+                  background: 'rgba(255, 255, 255, 0.8)',
+                  backdropFilter: 'blur(10px)',
+                  color: '#1e293b',
+                  borderRadius: '20px',
+                  padding: '1rem 1.5rem',
+                  fontSize: '0.95rem',
+                  fontWeight: '700',
+                  border: '1px solid rgba(255, 255, 255, 0.4)',
+                  boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+                },
+              }}
+            />
           </LanguageProvider>
         </AuthProvider>
       </body>

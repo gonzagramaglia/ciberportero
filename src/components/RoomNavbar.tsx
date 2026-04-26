@@ -21,11 +21,36 @@ export default function RoomNavbar({ href, backTextKey }: RoomNavbarProps) {
 
     return (
         <div className="nav-header-row">
-            <Link href={href} className="back-link">
+            <Link href={href} className="back-link premium-breadcrumb">
                 <ChevronLeft size={18} />
-                {label}
+                <span>{label}</span>
             </Link>
             <LanguageSwitcher />
+            <style jsx global>{`
+                .premium-breadcrumb {
+                    background: rgba(255, 255, 255, 0.5);
+                    backdrop-filter: blur(8px);
+                    padding: 0.6rem 1rem 0.6rem 0.6rem;
+                    border-radius: 12px;
+                    border: 1px solid rgba(0, 0, 0, 0.05);
+                    font-weight: 700 !important;
+                    transition: all 0.2s;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.4rem;
+                }
+                .premium-breadcrumb:hover {
+                    background: #fff;
+                    transform: translateX(-4px);
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+                }
+                @media (max-width: 768px) {
+                    .premium-breadcrumb {
+                        padding: 0.5rem 0.8rem 0.5rem 0.4rem;
+                        font-size: 0.85rem;
+                    }
+                }
+            `}</style>
         </div>
     );
 }

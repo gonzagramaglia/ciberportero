@@ -112,7 +112,7 @@ a:hover {
 
 @media (max-width: 768px) {
   .nav-header-row {
-    margin-bottom: 2rem !important;
+    margin-bottom: 1rem !important;
   }
   .email-button {
     font-size: 0.85rem !important;
@@ -250,7 +250,9 @@ header h1 {
   }
   
   .stats-item {
-    width: 100%;
+    width: 100% !important;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
   }
 
   .stats-divider {

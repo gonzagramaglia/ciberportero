@@ -15,20 +15,31 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
     const params = useParams();
     const [currentSubId, setCurrentSubId] = useState<string | null>(null);
 
+    const scrollToChat = () => {
+        if (window.innerWidth <= 1024) {
+            setTimeout(() => {
+                const chatArea = document.getElementById('chat-scroll-top') || document.querySelector('.room-chat-client');
+                if (chatArea) {
+                    chatArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
+        }
+    };
+
     React.useEffect(() => {
         const updateSubId = () => {
             const hash = window.location.hash.replace('#', '');
             setCurrentSubId(hash || null);
         };
-        
+
         const handleCustomChange = (e: any) => {
             if (e.detail !== undefined) setCurrentSubId(e.detail);
         };
-        
+
         updateSubId();
         window.addEventListener('hashchange', updateSubId);
         window.addEventListener('subcategory-change', handleCustomChange);
-        
+
         return () => {
             window.removeEventListener('hashchange', updateSubId);
             window.removeEventListener('subcategory-change', handleCustomChange);
@@ -57,7 +68,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 if (gRoom) setRoom({ ...gRoom });
             }
         };
-        
+
         syncRoom();
         window.addEventListener('subcategory-change', syncRoom);
         return () => window.removeEventListener('subcategory-change', syncRoom);
@@ -147,12 +158,13 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
         <aside className="room-sidebar" style={{ width: '280px', flexShrink: 0 }}>
             <div className="categories-container" style={{ flex: 1.5, minWidth: 0 }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginBottom: '2rem' }}>
-                    <a 
+                    <a
                         href="#general"
                         className={`sub-link ${!currentSubId || currentSubId === 'general' ? 'active' : ''}`}
                         onClick={(e) => {
                             window.dispatchEvent(new CustomEvent('subcategory-change', { detail: 'general' }));
                             setCurrentSubId('general');
+                            scrollToChat();
                         }}
                     >
                         <MessageSquare size={18} />
@@ -177,16 +189,16 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     {isAddingCategory && (
                         <form onSubmit={handleAddCategory} style={{ marginBottom: '1rem' }} className="fade-in">
-                            <input 
+                            <input
                                 autoFocus
-                                value={newName} 
-                                onChange={e => setNewName(e.target.value)} 
+                                value={newName}
+                                onChange={e => setNewName(e.target.value)}
                                 placeholder={roomsT.sidebar.placeholderName}
-                                style={{ 
-                                    width: '100%', 
-                                    padding: '0.8rem 1rem', 
-                                    borderRadius: '14px', 
-                                    border: '2px solid var(--accent)', 
+                                style={{
+                                    width: '100%',
+                                    padding: '0.8rem 1rem',
+                                    borderRadius: '14px',
+                                    border: '2px solid var(--accent)',
                                     background: '#fff',
                                     fontSize: '0.95rem',
                                     fontWeight: '600',
@@ -203,7 +215,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                             <div className="category-header" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.5rem', color: '#1e293b', fontWeight: '800', padding: '0 0.5rem' }}>
                                 {editingCat === cat.id ? (
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', width: '100%' }}>
-                                        <input 
+                                        <input
                                             autoFocus
                                             value={editValue}
                                             onChange={e => setEditValue(e.target.value)}
@@ -224,12 +236,12 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                         </div>
                                         {isCreator && (
                                             <div style={{ display: 'flex', gap: '0.2rem' }}>
-                                                <button onClick={() => { 
+                                                <button onClick={() => {
                                                     setEditingSub(null);
                                                     setIsAddingSub(null);
                                                     setIsAddingCategory(false);
-                                                    setEditingCat(cat.id); 
-                                                    setEditValue(cat.name); 
+                                                    setEditingCat(cat.id);
+                                                    setEditValue(cat.name);
                                                 }} className="mini-action-btn edit"><Pencil size={12} /></button>
                                                 <button onClick={() => {
                                                     setEditingCat(null);
@@ -248,7 +260,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                     <div key={sub.id} className="sub-item-container" style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
                                         {editingSub === sub.id ? (
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', flex: 1, padding: '0.1rem 0' }}>
-                                                <input 
+                                                <input
                                                     autoFocus
                                                     value={editValue}
                                                     onChange={e => setEditValue(e.target.value)}
@@ -259,7 +271,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                             </div>
                                         ) : (
                                             <>
-                                                <a 
+                                                <a
                                                     href={`#${sub.id}`}
                                                     className={`sub-link ${currentSubId === sub.id ? 'active' : ''}`}
                                                     style={{ flex: 1 }}
@@ -272,32 +284,32 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                                     {sub.name}
                                                 </a>
                                                 {isCreator && (
-                                                    <button onClick={() => { 
+                                                    <button onClick={() => {
                                                         setEditingCat(null);
                                                         setIsAddingSub(null);
                                                         setIsAddingCategory(false);
-                                                        setEditingSub(sub.id); 
-                                                        setEditValue(sub.name); 
+                                                        setEditingSub(sub.id);
+                                                        setEditValue(sub.name);
                                                     }} className="mini-action-btn edit sub"><Pencil size={10} /></button>
                                                 )}
                                             </>
                                         )}
                                     </div>
                                 ))}
-                                
+
                                 {isAddingSub === cat.id && (
                                     <form onSubmit={(e) => handleAddSub(e, cat.id)} className="fade-in">
-                                        <input 
+                                        <input
                                             autoFocus
-                                            value={newName} 
-                                            onChange={e => setNewName(e.target.value)} 
+                                            value={newName}
+                                            onChange={e => setNewName(e.target.value)}
                                             placeholder={roomsT.sidebar.placeholderName}
                                             onBlur={() => !newName && setIsAddingSub(null)}
-                                            style={{ 
-                                                width: '100%', 
-                                                padding: '0.5rem 0.8rem', 
-                                                borderRadius: '10px', 
-                                                border: '1px solid var(--accent)', 
+                                            style={{
+                                                width: '100%',
+                                                padding: '0.5rem 0.8rem',
+                                                borderRadius: '10px',
+                                                border: '1px solid var(--accent)',
                                                 fontSize: '0.85rem',
                                                 outline: 'none',
                                                 marginTop: '0.2rem',
@@ -313,7 +325,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
             </div>
 
             <div className="sidebar-history-footer">
-                <a 
+                <a
                     href="#history"
                     className={`sub-link ${currentSubId === 'history' ? 'active' : ''}`}
                     onClick={() => {
@@ -322,7 +334,9 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                     }}
                 >
                     <HistoryIcon size={18} />
-                    <span style={{ fontWeight: '900' }}>{roomsT.chat.history}</span>
+                    <span style={{ fontWeight: '900' }}>
+                        Historial<span className="hide-mobile-text"> de Mensajes</span>
+                    </span>
                 </a>
             </div>
 
@@ -349,15 +363,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                         );
                     })}
                 </div>
-                
-                <a 
-                    href="#history" 
-                    className="mobile-history-btn"
-                    onClick={() => window.dispatchEvent(new CustomEvent('subcategory-change', { detail: 'history' }))}
-                >
-                    <HistoryIcon size={16} />
-                    <span>{roomsT.chat.history}</span>
-                </a>
+
             </div>
 
             <style jsx>{`
@@ -468,20 +474,18 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                     border-top: 1px solid #f1f5f9;
                 }
 
+                .hide-mobile-text {
+                    display: inline;
+                }
+
+                @media (max-width: 1024px) {
+                    .hide-mobile-text {
+                        display: none;
+                    }
+                }
+
                 .mobile-history-btn {
                     display: none;
-                    align-items: center;
-                    gap: 0.6rem;
-                    background: var(--accent-light);
-                    color: var(--accent);
-                    padding: 0.6rem 1.2rem;
-                    border-radius: 14px;
-                    border: 1px solid rgba(0, 112, 243, 0.1);
-                    font-size: 0.85rem;
-                    font-weight: 800;
-                    text-decoration: none;
-                    transition: all 0.2s;
-                    margin-top: 1.5rem;
                 }
 
                 @media (max-width: 1024px) {
@@ -501,24 +505,27 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 @media (max-width: 1024px) {
                     .room-sidebar {
                         width: 100% !important;
-                        margin-bottom: 2rem;
+                        margin-bottom: 1rem;
                         border-bottom: 1px solid #f1f5f9;
-                        padding-bottom: 2rem;
-                        display: flex !important;
-                        flex-direction: row !important;
-                        gap: 1.5rem;
-                        align-items: flex-start;
-                        padding-right: 0;
-                        overflow-x: auto;
-                        flex-wrap: nowrap;
                         padding-bottom: 1rem;
-                        -webkit-overflow-scrolling: touch;
+                        display: flex !important;
+                        flex-direction: column !important;
+                        gap: 2rem;
+                        align-items: stretch;
+                        padding-right: 0;
                     }
-                    .room-sidebar::-webkit-scrollbar { display: none; }
+                    .categories-container {
+                        max-height: 450px;
+                        overflow-y: auto;
+                        padding-bottom: 1rem;
+                    }
+                    .members-section {
+                        display: none;
+                    }
                     .sub-list {
-                        border-left: none;
-                        padding-left: 0;
-                        margin-left: 0.5rem;
+                        border-left: 2px solid #f1f5f9;
+                        padding-left: 0.5rem;
+                        margin-left: 1.2rem;
                     }
                 }
 

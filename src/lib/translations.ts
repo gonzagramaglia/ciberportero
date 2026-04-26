@@ -306,7 +306,7 @@ export const translations = {
                 chatTitle: "Chat de la Sala",
                 generalChat: "Chat General",
                 globalConversation: "Conversación Global",
-                history: "Historial",
+                history: "Historial de Mensajes",
                 allMessages: "Todos los Mensajes",
                 mainPlaceholder: "Escribí algo para toda la sala..."
             },
@@ -627,7 +627,7 @@ export const translations = {
                 chatTitle: "Room Chat",
                 generalChat: "General Chat",
                 globalConversation: "Global Conversation",
-                history: "History",
+                history: "Message History",
                 allMessages: "All Messages",
                 mainPlaceholder: "Write something for the whole room..."
             },
@@ -948,7 +948,7 @@ export const translations = {
                 chatTitle: "Chat da Sala",
                 generalChat: "Chat Geral",
                 globalConversation: "Conversa Global",
-                history: "Histórico",
+                history: "Histórico de Mensagens",
                 allMessages: "Todas as Mensagens",
                 mainPlaceholder: "Escreva algo para toda a sala..."
             },

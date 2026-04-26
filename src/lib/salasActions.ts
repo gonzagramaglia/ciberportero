@@ -343,6 +343,7 @@ export async function getAllRoomMessages(roomId: string) {
         user: { select: { id: true, name: true, image: true } },
         subcategory: { 
           select: { 
+            id: true,
             name: true,
             category: { select: { name: true } }
           } 

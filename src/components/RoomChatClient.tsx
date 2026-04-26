@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { Hash, Send, Image as ImageIcon, X, Loader2, MessageSquare, Reply as ReplyIcon, Trash2, History as HistoryIcon } from 'lucide-react';
+import { MessageSquare, Send, Loader2, History as HistoryIcon, Image as ImageIcon, X, ChevronLeft, ChevronRight, Hash, Paperclip, MessageCircle, Reply as ReplyIcon, Trash2 } from 'lucide-react';
 import { addRoomMessage, deleteMessage } from '@/lib/salasActions';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'react-hot-toast';
@@ -22,6 +22,7 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
     const [replyingTo, setReplyingTo] = useState<any>(null);
     const [selectedImages, setSelectedImages] = useState<File[]>([]);
     const [uploading, setUploading] = useState(false);
+    const [targetMessageId, setTargetMessageId] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const t = translations[lang as keyof typeof translations] || translations.es;
@@ -62,20 +63,27 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
     }, []);
 
     const handleLogClick = (msg: any) => {
-        const subId = msg.subcategoryId || msg.subcategory?.id;
-        if (!subId) return;
+        const subId = msg.subcategoryId || msg.subcategory?.id || 'general';
         window.location.hash = `#${subId}`;
         window.dispatchEvent(new CustomEvent('subcategory-change', { detail: subId }));
         setCurrentSubId(subId);
-        setTimeout(() => {
-            const el = document.getElementById(msg.id);
+        setTargetMessageId(msg.id);
+    };
+
+    // Scroll to target message when messages are loaded
+    useEffect(() => {
+        if (targetMessageId && !loadingMessages && messages.length > 0) {
+            const el = document.getElementById(targetMessageId);
             if (el) {
                 el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 el.classList.add('message-highlight');
-                setTimeout(() => el.classList.remove('message-highlight'), 3000);
+                setTimeout(() => {
+                    el.classList.remove('message-highlight');
+                    setTargetMessageId(null);
+                }, 3000);
             }
-        }, 500);
-    };
+        }
+    }, [messages, loadingMessages, targetMessageId]);
 
     useEffect(() => {
         if (!currentSubId && subcategoryId) {
@@ -94,10 +102,10 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                         if (room) {
                             const catMsgs = room.categories.flatMap(c => 
                                 c.subcategories.flatMap(s => 
-                                    s.messages.map(m => ({ ...m, categoryName: c.name, subcategoryName: s.name }))
+                                    s.messages.map(m => ({ ...m, subcategoryId: s.id, categoryName: c.name, subcategoryName: s.name }))
                                 )
                             );
-                            const genMsgs = room.generalMessages.map(m => ({ ...m, categoryName: 'General', subcategoryName: 'Chat General' }));
+                            const genMsgs = room.generalMessages.map(m => ({ ...m, subcategoryId: 'general', categoryName: 'General', subcategoryName: 'Chat General' }));
                             const allMsgs = [...catMsgs, ...genMsgs];
                             setMessages(allMsgs.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
                         }
@@ -109,7 +117,14 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                     const { getSubcategoryMessages, getAllRoomMessages, getGeneralMessages } = await import('@/lib/salasActions');
                     const roomId = window.location.pathname.split('/').pop();
                     if (isHistory) {
-                        if (roomId) setMessages(await getAllRoomMessages(roomId));
+                        if (roomId) {
+                            const dbMsgs = await getAllRoomMessages(roomId);
+                            setMessages(dbMsgs.map((m: any) => ({
+                                ...m,
+                                subcategoryName: m.subcategory?.name || 'Chat General',
+                                categoryName: m.subcategory?.category?.name || 'General'
+                            })));
+                        }
                     } else if (isGeneral) {
                         if (roomId) setMessages(await getGeneralMessages(roomId));
                     } else {
@@ -303,16 +318,22 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                                 return (
                                     <div key={msg.id} className="log-row-premium" onClick={() => handleLogClick(msg)}>
                                         <div className="accent-bar" />
-                                        <img src={msg.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent((msg.user.name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}`} className="log-avatar" />
-                                        <div className="log-main">
-                                            <div className="log-meta">
-                                                <span className="log-user">{msg.user.name}</span>
-                                                <span className="log-time">{formatMessageDate(new Date(msg.createdAt), lang, true)}</span>
+                                        <div className="log-row-content">
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                                                <img src={msg.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent((msg.user.name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}`} className="log-avatar" />
+                                                <div className="log-main">
+                                                    <div className="log-meta">
+                                                        <span className="log-user">{msg.user.name}</span>
+                                                        <span className="log-time">{formatMessageDate(new Date(msg.createdAt), lang, true)}</span>
+                                                    </div>
+                                                    <p className="log-text">{msg.content}</p>
+                                                </div>
                                             </div>
-                                            <p className="log-text">{msg.content}</p>
-                                        </div>
-                                        <div className="log-tags hide-mobile-tags">
-                                            <span className="tag-sub">{msg.subcategoryName}</span>
+                                            <div className="log-tags">
+                                                <span className="tag-cat">{msg.categoryName}</span>
+                                                <ChevronRight size={10} />
+                                                <span className="tag-sub">{msg.subcategoryName}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 );
@@ -427,6 +448,10 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                 .main-input-sticky { position: sticky; top: 1rem; z-index: 50; }
                 .input-card { background: #fff; border: 2px solid #f1f5f9; border-radius: 24px; padding: 1rem; box-shadow: 0 10px 40px rgba(0,0,0,0.06); }
                 textarea { width: 100%; border: none; background: none; outline: none; resize: none; font-size: 1.1rem; color: #1e293b; padding: 0.5rem; min-height: 40px; }
+                @media (max-width: 768px) {
+                    textarea { min-height: 120px; font-size: 1rem; }
+                    .main-input-sticky { top: 0.5rem; }
+                }
                 .input-footer-row { display: flex; align-items: center; justify-content: space-between; margin-top: 0.5rem; border-top: 1px solid #f8fafc; padding-top: 0.5rem; }
                 
                 .icon-btn { background: #f8fafc; border: none; color: #94a3b8; padding: 0.6rem; border-radius: 12px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
@@ -500,13 +525,26 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                 .log-user { font-weight: 900; font-size: 0.9rem; color: #1e293b; }
                 .log-time { font-size: 0.75rem; color: #94a3b8; margin-left: 0.6rem; font-weight: 700; }
                 .log-text { margin: 0.1rem 0 0 0; font-size: 0.95rem; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
+                .log-row-content { display: flex; align-items: center; justify-content: space-between; gap: 1rem; width: 100%; }
                 .log-tags { display: flex; align-items: center; gap: 0.4rem; font-size: 0.65rem; font-weight: 900; background: #f8fafc; padding: 0.4rem 0.8rem; border-radius: 10px; color: #94a3b8; border: 1px solid #f1f5f9; text-transform: uppercase; letter-spacing: 0.02em; }
+                
+                @media (max-width: 768px) {
+                    .log-row-content { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+                    .log-tags { align-self: flex-end; margin-top: 0.25rem; }
+                }
                 .tag-sub { color: var(--accent); }
 
-                .message-highlight { animation: highlight-pulse 2s ease-out; }
-                @keyframes highlight-pulse { 0% { box-shadow: 0 0 0 0px rgba(0, 112, 243, 0.4); } 100% { box-shadow: 0 0 0 20px rgba(0, 112, 243, 0); } }
+                .message-highlight { animation: highlight-pulse 2.5s cubic-bezier(0.4, 0, 0.2, 1); border-color: var(--accent) !important; }
+                @keyframes highlight-pulse { 
+                    0% { background-color: rgba(0, 112, 243, 0.2); box-shadow: 0 0 0 0px rgba(0, 112, 243, 0.4); }
+                    50% { background-color: rgba(0, 112, 243, 0.1); }
+                    100% { background-color: transparent; box-shadow: 0 0 0 20px rgba(0, 112, 243, 0); }
+                }
                 .spin { animation: spin 1s linear infinite; }
                 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+                @media (max-width: 1024px) {
+                    .hide-mobile-text { display: none; }
+                }
                 @media (max-width: 600px) { 
                     .hide-mobile { display: none; } 
                     .hide-mobile-tags { display: none; }
