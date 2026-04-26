@@ -49,21 +49,31 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 }
 
 export default async function RoomDetailLayout({ children, params }: any) {
+  console.log("RoomDetailLayout: START");
   let roomId = "";
   try {
     const p = await params;
     roomId = p?.roomId || "";
+    console.log(`RoomDetailLayout: roomId from params = "${roomId}"`);
   } catch (e) {
+    console.error("RoomDetailLayout: Error parsing params", e);
     redirect('/salas/lista');
   }
 
-  if (!roomId) redirect('/salas/lista');
+  if (!roomId) {
+    console.warn("RoomDetailLayout: No roomId, redirecting to /salas/lista");
+    redirect('/salas/lista');
+  }
 
   const session = await auth();
 
   let room = null;
   if (session && roomId) {
+    console.log(`RoomDetailLayout: Fetching room data for ID: ${roomId}`);
     room = await getRoomData(roomId);
+    if (!room) {
+      console.warn(`RoomDetailLayout: getRoomData returned null for ${roomId}`);
+    }
   }
 
   const isGuestRoom = !room;

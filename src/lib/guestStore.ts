@@ -216,17 +216,13 @@ export const guestStore = {
         return this.getData().rooms;
     },
 
-    createRoom(name: string, code: string, slug?: string) {
+    createRoom(name: string, code: string, slug: string) {
         const data = this.getData();
-        let finalId = slug || slugify(name);
-        let counter = 1;
-        const originalId = finalId;
-        while (data.rooms.some(r => r.id === finalId)) {
-            finalId = `${originalId}-${counter}`;
-            counter++;
+        if (data.rooms.some(r => r.id === slug)) {
+            return { error: "Ya existe una sala con ese identificador (slug) en tu sesión local." };
         }
         const newRoom: GuestRoom = {
-            id: finalId,
+            id: slug,
             name,
             description: '',
             secretCode: code,

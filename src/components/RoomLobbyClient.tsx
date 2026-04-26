@@ -27,6 +27,7 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
     const [isCreating, setIsCreating] = useState(false);
     const [isJoining, setIsJoining] = useState(false);
     const [newRoomName, setNewRoomName] = useState('');
+    const [newRoomSlug, setNewRoomSlug] = useState('');
     const [newRoomCode, setNewRoomCode] = useState('');
     const [joinCode, setJoinCode] = useState('');
     const [loading, setLoading] = useState(false);
@@ -52,18 +53,22 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
             toast.error(lang === 'es' ? 'Solo los administradores pueden crear salas oficiales.' : 'Only admins can create official rooms.');
             return;
         }
-        if (!newRoomName || !newRoomCode) return;
+        if (!newRoomName || !newRoomCode || !newRoomSlug) return;
         setLoading(true);
 
         if (isGuest) {
-            const slug = slugify(newRoomName);
-            const newRoom = guestStore.createRoom(newRoomName, newRoomCode, slug);
+            const res = guestStore.createRoom(newRoomName, newRoomCode, newRoomSlug);
+            if ((res as any).error) {
+                toast.error((res as any).error);
+                setLoading(false);
+                return;
+            }
             setRooms(guestStore.getRooms());
             toast.success(lang === 'es' ? '¡Sala creada!' : 'Room created!');
-            router.push(`/salas/${newRoom.id}`);
+            router.push(`/salas/${newRoomSlug}`);
             setIsCreating(false);
         } else {
-            const res = await createRoom(newRoomName, newRoomCode);
+            const res = await createRoom(newRoomName, newRoomCode, newRoomSlug);
             if (res.success) {
                 toast.success(lang === 'es' ? 'Sala creada!' : 'Room created!');
                 router.push(`/salas/${res.roomId}`);
@@ -116,6 +121,11 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                     )}
                 </div>
                 <p className="lobby-desc">
+                    {!isGuest && session?.user?.name && (
+                        <span style={{ color: 'var(--accent)', fontWeight: '800' }}>
+                            ¡Hola {session.user.name.split(' ')[0]}!{' '}
+                        </span>
+                    )}
                     {roomsT.description}
                 </p>
             </header>
@@ -188,6 +198,9 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                                             {isGuest && (
                                                 <span className="demo-badge">{room.id === 'test-room' ? 'MODO DEMO' : 'SALA TEMPORAL (INVITADO)'}</span>
                                             )}
+                                            {isAdmin && !isGuest && (
+                                                <span className="admin-badge-lobby">SALA OFICIAL (ADMIN)</span>
+                                            )}
                                         </span>
                                         <div className="room-code-tag">
                                             <Key size={12} />
@@ -219,7 +232,10 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                                                 )}
                                             </div>
                                             <span style={{ fontSize: '0.9rem', color: '#94a3b8', fontWeight: '700' }}>
-                                                {room._count?.members ?? (room.members?.length || 0)} {lang === 'es' ? 'miembros' : 'members'}
+                                                {room._count?.members ?? (room.members?.length || 0)}{' '}
+                                                {lang === 'es' 
+                                                    ? ((room._count?.members ?? room.members?.length) === 1 ? 'miembro' : 'miembros') 
+                                                    : 'members'}
                                             </span>
                                         </div>
                                     </div>
@@ -306,16 +322,34 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                         <div style={{ flex: '1.3', padding: '4rem 3.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', background: '#fff' }}>
                             <form onSubmit={isCreating ? handleCreate : handleJoin} style={{ display: 'flex', flexDirection: 'column', gap: '1.8rem' }}>
                                 {isCreating && (
-                                    <div className="form-group">
-                                        <label style={{ fontSize: '0.95rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{roomsT.modal.nameLabel}</label>
-                                        <input 
-                                            style={{ height: '64px', fontSize: '1.15rem' }} 
-                                            value={newRoomName} 
-                                            onChange={e => setNewRoomName(e.target.value)} 
-                                            required 
-                                            placeholder={roomsT.modal.namePlaceholder} 
-                                        />
-                                    </div>
+                                    <>
+                                        <div className="form-group">
+                                            <label style={{ fontSize: '0.95rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{roomsT.modal.nameLabel}</label>
+                                            <input 
+                                                style={{ height: '64px', fontSize: '1.15rem' }} 
+                                                value={newRoomName} 
+                                                onChange={e => {
+                                                    setNewRoomName(e.target.value);
+                                                    setNewRoomSlug(slugify(e.target.value));
+                                                }} 
+                                                required 
+                                                placeholder={roomsT.modal.namePlaceholder} 
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label style={{ fontSize: '0.95rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Identificador (URL Slug)</label>
+                                            <div className="input-with-icon">
+                                                <div style={{ position: 'absolute', left: '1.6rem', color: '#94a3b8', fontSize: '0.9rem', fontWeight: '800' }}>/salas/</div>
+                                                <input 
+                                                    style={{ paddingLeft: '5.5rem', height: '64px', fontSize: '1.15rem', background: '#f1f5f9' }} 
+                                                    value={newRoomSlug} 
+                                                    onChange={e => setNewRoomSlug(slugify(e.target.value))} 
+                                                    required 
+                                                    placeholder="ej-analisis-matematico-i" 
+                                                />
+                                            </div>
+                                        </div>
+                                    </>
                                 )}
                                 <div className="form-group">
                                     <label style={{ fontSize: '0.95rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{roomsT.modal.codeLabel}</label>
@@ -397,8 +431,9 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                 .form-submit-button:hover:not(:disabled) { transform: translateY(-3px); filter: brightness(1.1); }
                 .room-card { display: flex; align-items: center; justify-content: space-between; padding: 2rem 2.5rem; background: #fff; border-radius: 28px; border: 1px solid var(--border); transition: all 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
                 .room-card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 25px 50px rgba(0, 112, 243, 0.12); }
-                .room-name { font-size: 1.6rem; font-weight: 950; color: #1e293b; display: flex; align-items: center; letter-spacing: -0.02em; }
-                .demo-badge { margin-left: 1rem; font-size: 0.7rem; background: #fff1f2; color: #ef4444; padding: 0.2rem 0.6rem; border-radius: 8px; font-weight: 900; border: 1px solid #fee2e2; text-transform: uppercase; letter-spacing: 0.05em; }
+                .room-name { font-size: 1.6rem; font-weight: 950; color: #1e293b; display: flex; align-items: center; letter-spacing: -0.02em; flex-wrap: wrap; gap: 0.8rem; }
+                .demo-badge { font-size: 0.7rem; background: #fff1f2; color: #ef4444; padding: 0.2rem 0.6rem; border-radius: 8px; font-weight: 900; border: 1px solid #fee2e2; text-transform: uppercase; letter-spacing: 0.05em; }
+                .admin-badge-lobby { font-size: 0.7rem; background: #f0fdf4; color: #16a34a; padding: 0.2rem 0.6rem; border-radius: 8px; font-weight: 900; border: 1px solid #dcfce7; text-transform: uppercase; letter-spacing: 0.05em; }
                 .room-code-tag { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 0.6rem; font-size: 0.85rem; font-weight: 800; color: var(--accent); background: rgba(0, 112, 243, 0.05); padding: 0.4rem 0.8rem; border-radius: 10px; }
                 .room-card-arrow { width: 56px; height: 56px; border-radius: 18px; background: #f8fafc; display: flex; align-items: center; justify-content: center; color: #cbd5e1; transition: all 0.3s; }
                 .room-card:hover .room-card-arrow { background: var(--accent); color: #fff; }

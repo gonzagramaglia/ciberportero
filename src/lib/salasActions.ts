@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
 
-export async function createRoom(name: string, secretCode: string) {
+export async function createRoom(name: string, secretCode: string, slug: string) {
   const session = await auth();
   if (!session?.user?.id) return { error: "No autenticado" };
 
@@ -15,18 +15,15 @@ export async function createRoom(name: string, secretCode: string) {
   }
 
   try {
-    const slug = name
-      .toLowerCase()
-      .trim()
-      .replace(/[^\w\s-]/g, '') // Remove non-word chars
-      .replace(/[\s_-]+/g, '-')  // Replace spaces/underscores with -
-      .replace(/^-+|-+$/g, '');  // Remove leading/trailing -
-    
-    const uniqueId = `${slug}-${Math.random().toString(36).substring(2, 7)}`;
+    // Check if slug already exists
+    const existing = await db.room.findUnique({ where: { id: slug } });
+    if (existing) {
+      return { error: "Ya existe una sala con ese identificador (slug)." };
+    }
 
     const room = await db.room.create({
       data: {
-        id: uniqueId,
+        id: slug,
         name,
         secretCode,
         creatorId: session.user.id,
@@ -38,7 +35,8 @@ export async function createRoom(name: string, secretCode: string) {
       }
     });
 
-    revalidatePath('/salas');
+    revalidatePath('/salas/lista');
+    revalidatePath(`/salas/${room.id}`);
     return { success: true, roomId: room.id };
   } catch (error) {
     console.error(error);
@@ -179,6 +177,15 @@ export async function getMyRooms() {
       include: {
         _count: {
           select: { members: true }
+        },
+        members: {
+          take: 6,
+          include: {
+            user: {
+              select: { name: true, image: true }
+            }
+          },
+          orderBy: { createdAt: 'asc' }
         }
       },
       orderBy: { createdAt: 'desc' }
@@ -201,11 +208,18 @@ export async function getRoomInfo(roomId: string) {
   }
 }
 
-export async function getRoomData(roomId: string) {
+export async function getRoomData(rawRoomId: string) {
+  console.log(`getRoomData: START for "${rawRoomId}"`);
   try {
+    const roomId = decodeURIComponent(rawRoomId).trim();
     const session = await auth();
-    if (!session?.user?.id) return null;
+    
+    if (!session?.user?.id) {
+      console.warn(`getRoomData: No session user for room "${roomId}"`);
+      return null;
+    }
 
+    console.log(`getRoomData: Fetching from DB for ID: "${roomId}"`);
     const room = await db.room.findUnique({
       where: { id: roomId },
       include: {
@@ -229,20 +243,31 @@ export async function getRoomData(roomId: string) {
       }
     });
 
-    if (!room) return null;
-
-    // Check if user is member or creator
-    const isMember = room.members.some(m => m.userId === session.user.id);
-    const isCreator = room.creatorId === session.user.id;
-
-    if (!isMember && !isCreator) {
-      console.warn(`User ${session.user.id} tried to access room ${roomId} without permission.`);
+    if (!room) {
+      console.error(`getRoomData: Room NOT FOUND in DB for ID: "${roomId}"`);
+      // Try to list first 5 rooms to see what IDs exist
+      const firstRooms = await db.room.findMany({ take: 5, select: { id: true } });
+      console.log(`getRoomData: Existing rooms in DB:`, firstRooms.map(r => r.id));
       return null;
     }
 
+    // Check permissions
+    const isMember = room.members.some(m => m.userId === session.user.id);
+    const isCreator = room.creatorId === session.user.id;
+    const isAdmin = session.user.role === 'admin' || session.user.email === 'ciberportero@gmail.com';
+
+    console.log(`getRoomData Debug [${roomId}]: User=${session.user.id}, Creator=${room.creatorId}, isMember=${isMember}, isCreator=${isCreator}, isAdmin=${isAdmin}`);
+
+    // EXTREMELY PERMISSIVE FOR DEBUGGING
+    if (!isMember && !isCreator && !isAdmin) {
+      console.warn(`getRoomData: Access Denied for ${session.user.id}. REDIRECTING...`);
+      return null;
+    }
+
+    console.log(`getRoomData: ACCESS GRANTED for room "${room.name}"`);
     return room;
   } catch (error) {
-    console.error("getRoomData Error:", error);
+    console.error("getRoomData CRITICAL Error:", error);
     return null;
   }
 }
