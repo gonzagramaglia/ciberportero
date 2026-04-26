@@ -1,16 +1,16 @@
 'use client';
 
 import { useLanguage } from '@/context/LanguageContext';
-import { guestStore } from '@/lib/guestStore';
+import { guestStore, GuestMember } from '@/lib/guestStore';
 import React, { useEffect, useState } from 'react';
-import { Pencil, Check, X, Trash2, Key, History as HistoryIcon } from 'lucide-react';
+import { Settings, Check, X, Trash2, Key, History as HistoryIcon, Link as LinkIcon, Shield, UserMinus, User, Users, AlignLeft } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { translations } from '@/lib/translations';
 
 interface RoomHeaderProps {
     roomId: string;
-    initialRoom: { name: string, secretCode: string, creatorId: string };
+    initialRoom: { name: string, description?: string, secretCode: string, creatorId: string, members: GuestMember[] };
     session: any;
 }
 
@@ -18,9 +18,13 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
     const { lang } = useLanguage();
     const router = useRouter();
     const [room, setRoom] = useState(initialRoom);
-    const [isEditing, setIsEditing] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    
     const [editName, setEditName] = useState(room.name);
     const [editSlug, setEditSlug] = useState(roomId);
+    const [editCode, setEditCode] = useState(room.secretCode);
+    const [editDesc, setEditDesc] = useState(room.description || '');
+    
     const isGuest = roomId === 'test-room' || !session || initialRoom.creatorId === 'guest';
     const isCreator = initialRoom.creatorId === 'guest' || initialRoom.creatorId === session?.user?.id;
 
@@ -28,20 +32,31 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
         if (isGuest && roomId !== 'test-room') {
             const gRoom = guestStore.getRoom(roomId);
             if (gRoom) {
-                setRoom({ name: gRoom.name, secretCode: gRoom.secretCode, creatorId: 'guest' });
+                setRoom({ ...gRoom } as any);
                 setEditName(gRoom.name);
                 setEditSlug(gRoom.id);
+                setEditCode(gRoom.secretCode);
+                setEditDesc(gRoom.description || '');
             }
         }
-    }, [isGuest, roomId]);
+    }, [isGuest, roomId, isModalOpen]);
+
+    const getWordCount = (text: string) => {
+        return text.trim() ? text.trim().split(/\s+/).length : 0;
+    };
 
     const handleUpdate = () => {
-        if (!editName) return;
+        if (!editName || !editCode || !editSlug) return;
+        if (getWordCount(editDesc) > 150) {
+            toast.error(lang === 'es' ? 'La descripción no puede superar las 150 palabras' : 'Description cannot exceed 150 words');
+            return;
+        }
+
         if (isGuest) {
-            const updated = guestStore.updateRoom(roomId, editName, editSlug);
+            const updated = guestStore.updateRoom(roomId, editName, editSlug, editCode, editDesc);
             if (updated) {
-                setRoom({ ...room, name: updated.name });
-                setIsEditing(false);
+                setRoom({ ...room, name: updated.name, secretCode: updated.secretCode, description: updated.description });
+                setIsModalOpen(false);
                 toast.success(lang === 'es' ? '¡Sala actualizada!' : 'Room updated!');
                 if (updated.id !== roomId) {
                     router.push(`/salas/${updated.id}`);
@@ -61,107 +76,287 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
         }
     };
 
+    const handleToggleAdmin = (memberId: string) => {
+        if (isGuest) {
+            const updated = guestStore.toggleAdmin(roomId, memberId);
+            if (updated) {
+                const gRoom = guestStore.getRoom(roomId);
+                if (gRoom) setRoom({ ...gRoom } as any);
+                toast.success(lang === 'es' ? 'Rol actualizado' : 'Role updated');
+            }
+        }
+    };
+
+    const handleKick = (memberId: string) => {
+        if (!confirm(lang === 'es' ? '¿Estás seguro de echar a este miembro?' : 'Are you sure you want to kick this member?')) return;
+        if (isGuest) {
+            if (guestStore.kickMember(roomId, memberId)) {
+                const gRoom = guestStore.getRoom(roomId);
+                if (gRoom) setRoom({ ...gRoom } as any);
+                toast.success(lang === 'es' ? 'Miembro eliminado' : 'Member removed');
+            }
+        }
+    };
+
     const roomsT = translations[lang as keyof typeof translations]?.rooms || translations.es.rooms;
 
     return (
-        <header style={{ marginBottom: '2rem', position: 'relative' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                {isEditing ? (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%', padding: '1.5rem', background: '#fff', borderRadius: '24px', border: '1px solid #e2e8f0', boxShadow: '0 10px 40px rgba(0,0,0,0.05)' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
-                            <label style={{ fontSize: '0.7rem', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase' }}>{roomsT.edit.nameLabel}</label>
-                            <input 
-                                value={editName}
-                                onChange={e => setEditName(e.target.value)}
-                                placeholder={roomsT.sidebar.placeholderName}
-                                style={{ fontSize: '1.5rem', fontWeight: '900', border: 'none', borderBottom: '2px solid var(--accent)', outline: 'none', width: '100%' }}
-                            />
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
-                            <label style={{ fontSize: '0.7rem', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase' }}>Slug (URL)</label>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                                <span style={{ color: '#94a3b8', fontSize: '1rem' }}>/salas/</span>
-                                <input 
-                                    value={editSlug}
-                                    onChange={e => setEditSlug(e.target.value)}
-                                    style={{ border: 'none', borderBottom: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem', color: '#64748b', flex: 1 }}
-                                />
-                            </div>
-                        </div>
-                        <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', alignItems: 'center' }}>
-                            <button onClick={handleUpdate} className="edit-btn confirm"><Check size={20} /> {roomsT.edit.save}</button>
-                            <button onClick={handleDelete} className="edit-btn delete" style={{ marginLeft: 'auto' }}><Trash2 size={18} /></button>
-                        </div>
-                    </div>
-                ) : (
-                    <>
-                        <h1 className="room-title">
-                            <span className="room-label-tag">{roomsT.label}</span>
-                            <span>{room.name}</span>
-                        </h1>
-                        {isCreator && (
-                            <button onClick={() => setIsEditing(true)} style={{ background: 'none', border: 'none', color: '#cbd5e1', cursor: 'pointer', transition: 'color 0.2s', padding: '0.5rem' }} onMouseEnter={e => e.currentTarget.style.color = 'var(--accent)'} onMouseLeave={e => e.currentTarget.style.color = '#cbd5e1'}>
-                                <Pencil size={20} />
-                            </button>
-                        )}
-                    </>
+        <header className="room-header">
+            <div className="title-row">
+                <h1 className="room-title">
+                    <span className="room-label-tag">{roomsT.label}</span>
+                    <span>{room.name}</span>
+                </h1>
+                {isCreator && (
+                    <button 
+                        onClick={() => setIsModalOpen(true)} 
+                        className="config-btn"
+                        title="Configuración de la sala"
+                    >
+                        <Settings size={22} />
+                    </button>
                 )}
             </div>
-            {!isEditing && (
-                <div className="header-actions-row">
-                    <div className="room-code-badge">
-                        <Key size={14} />
-                        <span>{room.secretCode}</span>
-                    </div>
 
-                    <a 
-                        href="#history" 
-                        className="mobile-history-btn"
-                        onClick={() => window.dispatchEvent(new CustomEvent('subcategory-change', { detail: 'history' }))}
-                    >
-                        <HistoryIcon size={16} />
-                        <span>Historial</span>
-                    </a>
+            <div className="meta-info-container">
+                <div className="room-code-badge">
+                    <Key size={14} />
+                    <span>{room.secretCode}</span>
+                </div>
+
+                {room.description && (
+                    <p className="room-description-text">{room.description}</p>
+                )}
+            </div>
+            
+            <div className="header-actions-row">
+                <a 
+                    href="#history" 
+                    className="mobile-history-btn"
+                    onClick={() => window.dispatchEvent(new CustomEvent('subcategory-change', { detail: 'history' }))}
+                >
+                    <HistoryIcon size={16} />
+                    <span>Historial</span>
+                </a>
+            </div>
+
+            {/* Config Modal */}
+            {isModalOpen && (
+                <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
+                    <div className="modal-content fade-up" onClick={e => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <div className="modal-icon-wrapper">
+                                <Settings size={20} />
+                            </div>
+                            <h3>Configuración de la Sala</h3>
+                            <button className="close-btn" onClick={() => setIsModalOpen(false)}><X size={20} /></button>
+                        </div>
+                        
+                        <div className="modal-body">
+                            <div className="modal-section">
+                                <h4 className="section-title-modal">General</h4>
+                                <div className="input-group">
+                                    <label>{roomsT.edit.nameLabel}</label>
+                                    <input 
+                                        value={editName}
+                                        onChange={e => setEditName(e.target.value)}
+                                        placeholder={roomsT.sidebar.placeholderName}
+                                    />
+                                </div>
+
+                                <div className="input-group">
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <label>Descripción de la Sala</label>
+                                        <span className={`word-counter ${getWordCount(editDesc) > 150 ? 'limit-reached' : ''}`}>
+                                            {getWordCount(editDesc)} / 150 palabras
+                                        </span>
+                                    </div>
+                                    <textarea 
+                                        value={editDesc}
+                                        onChange={e => setEditDesc(e.target.value)}
+                                        placeholder="Describe el propósito de esta sala de estudio..."
+                                        className="desc-textarea"
+                                    />
+                                </div>
+
+                                <div className="input-row">
+                                    <div className="input-group">
+                                        <label>Código Secreto</label>
+                                        <div className="input-with-icon">
+                                            <Key size={16} />
+                                            <input 
+                                                value={editCode}
+                                                onChange={e => setEditCode(e.target.value)}
+                                                placeholder="Ej: MAGIOS2026"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="input-group">
+                                        <label>URL / Slug</label>
+                                        <div className="input-with-icon">
+                                            <LinkIcon size={16} />
+                                            <input 
+                                                value={editSlug}
+                                                onChange={e => setEditSlug(e.target.value)}
+                                                placeholder="slug-de-sala"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="modal-section" style={{ marginTop: '1rem' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                                    <Users size={18} color="#94a3b8" />
+                                    <h4 className="section-title-modal" style={{ margin: 0 }}>Gestionar Miembros</h4>
+                                </div>
+                                <div className="members-manage-list">
+                                    {room.members?.map((member: any) => {
+                                        const isMe = member.id === 'guest-me';
+                                        return (
+                                            <div key={member.id} className="member-manage-row">
+                                                <img 
+                                                    src={member.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent((member.user.name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}`} 
+                                                    className="member-mini-avatar" 
+                                                />
+                                                <div className="member-meta">
+                                                    <span className="member-name">
+                                                        {member.user.name} {isMe ? '(tú)' : ''}
+                                                    </span>
+                                                    <span className={`role-badge ${member.role}`}>
+                                                        {member.role === 'admin' ? 'Admin' : 'Miembro'}
+                                                    </span>
+                                                </div>
+                                                {!isMe && (
+                                                    <div className="member-actions">
+                                                        <button 
+                                                            onClick={() => handleToggleAdmin(member.id)}
+                                                            className={`member-action-btn ${member.role === 'admin' ? 'active' : ''}`}
+                                                            title={member.role === 'admin' ? 'Quitar Admin' : 'Hacer Admin'}
+                                                        >
+                                                            <Shield size={16} />
+                                                        </button>
+                                                        <button 
+                                                            onClick={() => handleKick(member.id)}
+                                                            className="member-action-btn kick"
+                                                            title="Echar miembro"
+                                                        >
+                                                            <UserMinus size={16} />
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="modal-footer">
+                            <button onClick={handleDelete} className="action-btn delete">
+                                <Trash2 size={18} />
+                                <span>Eliminar Sala</span>
+                            </button>
+                            <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.75rem' }}>
+                                <button onClick={() => setIsModalOpen(false)} className="action-btn cancel">Cancelar</button>
+                                <button onClick={handleUpdate} className="action-btn save">
+                                    <Check size={20} />
+                                    <span>Guardar</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             )}
 
             <style jsx>{`
-                .room-title { font-size: 2.5rem; fontWeight: 900; margin: 0; display: flex; align-items: center; gap: 0.6rem; }
-                .room-label-tag { font-size: 1rem; color: var(--accent); fontWeight: 800; text-transform: uppercase; letter-spacing: 0.05em; background: rgba(0, 112, 243, 0.05); padding: 0.2rem 0.6rem; border-radius: 8px; }
+                .room-header { margin-bottom: 2rem; position: relative; }
+                .title-row { display: flex; align-items: center; gap: 1rem; }
+                .room-title { font-size: 2.5rem; font-weight: 900; margin: 0; display: flex; align-items: center; gap: 0.6rem; }
+                .room-label-tag { font-size: 1rem; color: var(--accent); font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; background: rgba(0, 112, 243, 0.05); padding: 0.2rem 0.6rem; border-radius: 8px; }
                 
-                .header-actions-row { display: flex; align-items: center; gap: 0.6rem; marginTop: 0.75rem; flexWrap: wrap; }
-                .room-code-badge { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; font-weight: 800; color: var(--accent); background: rgba(0, 112, 243, 0.05); padding: 0.5rem 1rem; border-radius: 12px; border: 1px solid rgba(0, 112, 243, 0.1); }
+                .meta-info-container { display: flex; align-items: center; gap: 1.25rem; margin-top: 1rem; flex-wrap: wrap; }
+                
+                .room-description-text { margin: 0; font-size: 1.1rem; color: #64748b; line-height: 1.6; max-width: 800px; font-weight: 500; }
 
-                .edit-btn { padding: 0 1.2rem; height: 48px; border-radius: 16px; border: none; display: flex; align-items: center; gap: 0.6rem; cursor: pointer; transition: all 0.2s; font-weight: 700; font-size: 0.95rem; }
-                .edit-btn.confirm { background: #10b981; color: #fff; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); }
-                .edit-btn.delete { background: #fff1f2; color: #ef4444; width: 48px; padding: 0; display: flex; align-items: center; justify-content: center; border: 1px solid #fecaca; }
-                .edit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
+                .config-btn { background: none; border: none; color: #cbd5e1; cursor: pointer; transition: all 0.3s; padding: 0.5rem; display: flex; align-items: center; justify-content: center; }
+                .config-btn:hover { color: var(--accent); transform: rotate(45deg); }
 
-                .mobile-history-btn {
-                    display: none;
-                    align-items: center;
-                    gap: 0.6rem;
-                    background: var(--accent-light);
-                    color: var(--accent);
-                    padding: 0.5rem 1.2rem;
-                    border-radius: 12px;
-                    border: 1px solid rgba(0, 112, 243, 0.1);
-                    font-size: 0.85rem;
-                    font-weight: 800;
-                    text-decoration: none;
-                    transition: all 0.2s;
+                .header-actions-row { display: none; align-items: center; gap: 0.6rem; margin-top: 1.25rem; flex-wrap: wrap; }
+                .room-code-badge { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; font-weight: 800; color: var(--accent); background: rgba(0, 112, 243, 0.05); padding: 0.5rem 1rem; border-radius: 12px; border: 1px solid rgba(0, 112, 243, 0.1); height: fit-content; flex-shrink: 0; }
+
+                /* Modal Styles */
+                .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+                .modal-content { background: #fff; width: 100%; max-width: 600px; border-radius: 28px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); overflow: hidden; }
+                
+                .modal-header { padding: 1.5rem 2rem; display: flex; align-items: center; gap: 1rem; border-bottom: 1px solid #f1f5f9; }
+                .modal-icon-wrapper { width: 40px; height: 40px; background: rgba(0, 112, 243, 0.05); color: var(--accent); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+                .modal-header h3 { margin: 0; font-size: 1.25rem; font-weight: 900; color: #1e293b; }
+                .close-btn { margin-left: auto; background: none; border: none; color: #94a3b8; cursor: pointer; padding: 0.5rem; transition: color 0.2s; }
+                .close-btn:hover { color: #ef4444; }
+
+                .modal-body { padding: 2rem; display: flex; flex-direction: column; gap: 0.5rem; max-height: 70vh; overflow-y: auto; }
+                .section-title-modal { font-size: 0.75rem; font-weight: 900; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; }
+                
+                .input-group { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; margin-bottom: 1rem; }
+                .input-group label { font-size: 0.75rem; font-weight: 800; color: #64748b; }
+                .input-group input, .desc-textarea { padding: 0.8rem 1rem; border-radius: 14px; border: 1px solid #e2e8f0; background: #f8fafc; font-size: 1rem; font-weight: 600; outline: none; transition: all 0.2s; width: 100%; }
+                .input-group input:focus, .desc-textarea:focus { border-color: var(--accent); background: #fff; box-shadow: 0 0 0 4px rgba(0, 112, 243, 0.05); }
+                
+                .desc-textarea { min-height: 100px; resize: vertical; font-family: inherit; line-height: 1.5; font-size: 0.95rem; }
+                .word-counter { font-size: 0.7rem; font-weight: 800; color: #94a3b8; }
+                .word-counter.limit-reached { color: #ef4444; }
+
+                .input-row { display: flex; gap: 1.25rem; }
+                .input-with-icon { position: relative; display: flex; align-items: center; }
+                .input-with-icon :global(svg) { position: absolute; left: 1rem; color: #94a3b8; }
+                .input-with-icon input { padding-left: 2.75rem; }
+
+                .members-manage-list { display: flex; flex-direction: column; gap: 0.5rem; }
+                .member-manage-row { display: flex; align-items: center; gap: 0.8rem; padding: 0.75rem 1rem; background: #f8fafc; border-radius: 16px; border: 1px solid #f1f5f9; }
+                .member-mini-avatar { width: 36px; height: 36px; border-radius: 10px; border: 2px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+                .member-meta { flex: 1; display: flex; flex-direction: column; }
+                .member-name { font-size: 0.95rem; font-weight: 800; color: #1e293b; }
+                .role-badge { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; width: fit-content; padding: 0.1rem 0.4rem; border-radius: 4px; margin-top: 0.1rem; }
+                .role-badge.admin { background: rgba(0, 112, 243, 0.1); color: var(--accent); }
+                .role-badge.member { background: #e2e8f0; color: #64748b; }
+                
+                .member-actions { display: flex; gap: 0.4rem; }
+                .member-action-btn { width: 34px; height: 34px; border-radius: 10px; border: none; background: #fff; color: #94a3b8; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+                .member-action-btn:hover { color: var(--accent); transform: scale(1.1); }
+                .member-action-btn.active { background: var(--accent); color: #fff; }
+                .member-action-btn.kick:hover { background: #fff1f2; color: #ef4444; }
+
+                .modal-footer { padding: 1.5rem 2rem; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; align-items: center; }
+                .action-btn { display: flex; align-items: center; gap: 0.6rem; padding: 0.75rem 1.25rem; border-radius: 14px; border: none; font-weight: 700; cursor: pointer; transition: all 0.2s; font-size: 0.9rem; }
+                .action-btn.delete { background: #fff1f2; color: #ef4444; border: 1px solid #fee2e2; }
+                .action-btn.delete:hover { background: #ef4444; color: #fff; transform: translateY(-2px); }
+                .action-btn.save { background: var(--accent); color: #fff; box-shadow: 0 4px 15px rgba(0, 112, 243, 0.2); }
+                .action-btn.save:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 112, 243, 0.3); }
+                .action-btn.cancel { background: transparent; color: #64748b; }
+                .action-btn.cancel:hover { color: #1e293b; background: #f1f5f9; }
+
+                .fade-up { animation: fade-up 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+                @keyframes fade-up {
+                    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+                    to { opacity: 1; transform: translateY(0) scale(1); }
                 }
+
+                .mobile-history-btn { display: none; align-items: center; gap: 0.6rem; background: var(--accent-light); color: var(--accent); padding: 0.5rem 1.2rem; border-radius: 12px; border: 1px solid rgba(0, 112, 243, 0.1); font-size: 0.85rem; font-weight: 800; text-decoration: none; transition: all 0.2s; }
                 
                 @media (max-width: 1024px) {
                     .room-title { font-size: 1.75rem; flex-wrap: wrap; }
                     .room-label-tag { font-size: 0.8rem; }
-                    .mobile-history-btn {
-                        display: inline-flex;
-                    }
-                    .header-actions-row {
-                        margin-top: 1.25rem;
-                        flex-wrap: nowrap;
-                    }
+                    .meta-info-container { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+                    .room-description-text { font-size: 0.95rem; }
+                    .header-actions-row { display: inline-flex; margin-top: 1.5rem; flex-wrap: nowrap; }
+                    .modal-overlay { padding: 1rem; }
+                    .modal-content { border-radius: 20px; }
+                    .input-row { flex-direction: column; }
+                    .modal-footer { flex-direction: row; gap: 0.75rem; flex-wrap: wrap; }
+                    .modal-footer div { margin-left: 0 !important; width: auto; justify-content: flex-end; flex: 1; display: flex; gap: 0.5rem; }
+                    .action-btn { flex: 1; justify-content: center; padding: 0.6rem 0.8rem; font-size: 0.8rem; }
+                    .action-btn.delete { flex: 0 0 auto; width: fit-content; }
                 }
             `}</style>
         </header>

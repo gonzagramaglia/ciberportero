@@ -305,6 +305,7 @@ model Room {
   id          String   @id @default(cuid())
   name        String
   secretCode  String
+  description String?
   creatorId   String
   creator     User     @relation("RoomCreator", fields: [creatorId], references: [id], onDelete: Cascade)
   categories  RoomCategory[]
@@ -319,6 +320,7 @@ model RoomMember {
   id        String   @id @default(cuid())
   roomId    String
   userId    String
+  role      String   @default("member")
   room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())

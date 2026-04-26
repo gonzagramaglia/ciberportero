@@ -13,7 +13,7 @@ export const translations = {
         credits: "Inspirado en el trabajo de zzzNata",
         metadata: {
             roomsTitle: "Ingreso a las Salas",
-            lobbyTitle: "Lista de las Salas",
+            lobbyTitle: "Salas de Estudio",
             testRoom: "Sala de Prueba",
             guestRoom: "Sala Invitado",
             roomsDesc: "Portal colaborativo para estudiantes de Ciberdefensa."
@@ -260,7 +260,7 @@ export const translations = {
         ],
         rooms: {
             title: "Ingreso a las Salas",
-            lobbyTitle: "Lista de las Salas",
+            lobbyTitle: "Salas de Estudio",
             description: "Tu espacio colaborativo para estudiar en grupo, compartir capturas de ejercicios y resolver dudas juntos.",
             access: "Acceso",
             signInPrompt: "Iniciá sesión para unirte a grupos de estudio o crear el tuyo propio.",
@@ -293,7 +293,8 @@ export const translations = {
                 joined: "Se unió",
                 placeholderName: "Nombre...",
                 categoryCreated: "Categoría creada",
-                subcategoryCreated: "Subcategoría creada"
+                subcategoryCreated: "Subcategoría creada",
+                manageStructure: "Gestionar Estructura"
             },
             chat: {
                 whatAreYouThinking: "¿Qué estás pensando?",
@@ -334,7 +335,7 @@ export const translations = {
         credits: "Inspired by zzzNata's project",
         metadata: {
             roomsTitle: "Ciberportero | Rooms",
-            lobbyTitle: "Room List",
+            lobbyTitle: "Study Rooms",
             testRoom: "Test Room",
             guestRoom: "Guest Room",
             roomsDesc: "Access your collaborative study rooms."
@@ -581,7 +582,7 @@ export const translations = {
         ],
         rooms: {
             title: "Room Entry",
-            lobbyTitle: "Room List",
+            lobbyTitle: "Study Rooms",
             description: "Your collaborative space to study in groups, share exercise screenshots, and solve doubts together.",
             access: "Room Entry",
             signInPrompt: "Sign in to join study groups or create your own.",
@@ -614,7 +615,8 @@ export const translations = {
                 joined: "Joined",
                 placeholderName: "Name...",
                 categoryCreated: "Category created",
-                subcategoryCreated: "Subcategory created"
+                subcategoryCreated: "Subcategory created",
+                manageStructure: "Manage Structure"
             },
             chat: {
                 whatAreYouThinking: "What's on your mind?",
@@ -655,7 +657,7 @@ export const translations = {
         credits: "Inspirado no trabalho de zzzNata",
         metadata: {
             roomsTitle: "Ingresso às Salas",
-            lobbyTitle: "Lista das Salas",
+            lobbyTitle: "Salas de Estudo",
             testRoom: "Sala de Teste",
             guestRoom: "Sala de Convidado",
             roomsDesc: "Acesse suas salas de estudo colaborativas."
@@ -902,7 +904,7 @@ export const translations = {
         ],
         rooms: {
             title: "Ingresso às Salas",
-            lobbyTitle: "Lista das Salas",
+            lobbyTitle: "Salas de Estudo",
             description: "Seu espaço colaborativo para estudar em grupo, compartilhar capturas de exercícios e resolver dúvidas juntos.",
             access: "Ingresso às Salas",
             signInPrompt: "Faça login para participar de grupos de estudo ou criar o seu próprio.",
@@ -935,7 +937,8 @@ export const translations = {
                 joined: "Entrou em",
                 placeholderName: "Nome...",
                 categoryCreated: "Categoria criada",
-                subcategoryCreated: "Subcategoria criada"
+                subcategoryCreated: "Subcategoria criada",
+                manageStructure: "Gerenciar Estrutura"
             },
             chat: {
                 whatAreYouThinking: "O que você está pensando?",
