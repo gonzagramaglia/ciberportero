@@ -279,10 +279,19 @@ export const guestStore = {
 
             if (container) {
                 if (parentId) {
-                    let parent = (container.messages || []).find((m: any) => m.id === parentId);
+                    const allTopMessages = container.messages || container.generalMessages || [];
+                    let parent = allTopMessages.find((m: any) => m.id === parentId);
+                    
                     if (!parent) {
-                        for (const m of (container.messages || [])) {
+                        for (const m of allTopMessages) {
                             parent = (m.replies || []).find((r: any) => r.id === parentId);
+                            if (parent) break;
+                            
+                            // Check level 3
+                            for (const r of (m.replies || [])) {
+                                parent = (r.replies || []).find((nr: any) => nr.id === parentId);
+                                if (parent) break;
+                            }
                             if (parent) break;
                         }
                     }
@@ -319,32 +328,64 @@ export const guestStore = {
         return null;
     },
 
-    deleteMessage(containerId: string, msgId: string, isReply = false, parentId?: string) {
+    deleteMessage(msgId: string) {
         const data = this.getData();
+        if (!data) return;
+
         for (const room of data.rooms) {
-            let container: any = null;
-            if (containerId === 'general') container = room;
-            else {
-                for (const cat of room.categories) {
-                    const sub = cat.subcategories.find(s => s.id === containerId);
-                    if (sub) { container = sub; break; }
-                }
+            // 1. Check General Chat Top Level
+            const gmIndex = (room.generalMessages || []).findIndex((m: any) => m.id === msgId);
+            if (gmIndex !== -1) {
+                room.generalMessages.splice(gmIndex, 1);
+                this.saveData(data);
+                return;
             }
 
-            if (container) {
-                const messages = containerId === 'general' ? room.generalMessages : container.messages;
-                if (isReply && parentId) {
-                    const parent = messages.find((m: any) => m.id === parentId);
-                    if (parent) {
-                        parent.replies = parent.replies.filter((r: any) => r.id !== msgId);
+            // 2. Check General Chat Replies (L2 & L3)
+            for (const m of (room.generalMessages || [])) {
+                const rIndex = (m.replies || []).findIndex((r: any) => r.id === msgId);
+                if (rIndex !== -1) {
+                    m.replies.splice(rIndex, 1);
+                    this.saveData(data);
+                    return;
+                }
+                for (const r of (m.replies || [])) {
+                    const nrIndex = (r.replies || []).findIndex((nr: any) => nr.id === msgId);
+                    if (nrIndex !== -1) {
+                        r.replies.splice(nrIndex, 1);
                         this.saveData(data);
                         return;
                     }
-                } else {
-                    if (containerId === 'general') room.generalMessages = room.generalMessages.filter((m: any) => m.id !== msgId);
-                    else container.messages = container.messages.filter((m: any) => m.id !== msgId);
-                    this.saveData(data);
-                    return;
+                }
+            }
+
+            // 3. Check Subcategories
+            for (const cat of (room.categories || [])) {
+                for (const sub of (cat.subcategories || [])) {
+                    // Top level
+                    const mIndex = (sub.messages || []).findIndex((m: any) => m.id === msgId);
+                    if (mIndex !== -1) {
+                        sub.messages.splice(mIndex, 1);
+                        this.saveData(data);
+                        return;
+                    }
+                    // Replies (L2 & L3)
+                    for (const m of (sub.messages || [])) {
+                        const rIndex = (m.replies || []).findIndex((r: any) => r.id === msgId);
+                        if (rIndex !== -1) {
+                            m.replies.splice(rIndex, 1);
+                            this.saveData(data);
+                            return;
+                        }
+                        for (const r of (m.replies || [])) {
+                            const nrIndex = (r.replies || []).findIndex((nr: any) => nr.id === msgId);
+                            if (nrIndex !== -1) {
+                                r.replies.splice(nrIndex, 1);
+                                this.saveData(data);
+                                return;
+                            }
+                        }
+                    }
                 }
             }
         }

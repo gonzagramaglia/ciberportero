@@ -193,10 +193,10 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     }
                 } else {
                     const { getSubcategoryMessages, getAllRoomMessages, getGeneralMessages } = await import('@/lib/salasActions');
-                    const roomId = window.location.pathname.split('/').pop();
+                    const targetRoomId = roomId || propRoomId;
                     if (isHistory) {
-                        if (roomId) {
-                            const dbMsgs = await getAllRoomMessages(roomId);
+                        if (targetRoomId) {
+                            const dbMsgs = await getAllRoomMessages(targetRoomId);
                             setMessages(dbMsgs.map((m: any) => ({
                                 ...m,
                                 subcategoryName: m.subcategory?.name || 'Chat General',
@@ -204,7 +204,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                             })));
                         }
                     } else if (isGeneral) {
-                        if (roomId) setMessages(await getGeneralMessages(roomId));
+                        if (targetRoomId) setMessages(await getGeneralMessages(targetRoomId));
                     } else {
                         setMessages(await getSubcategoryMessages(currentSubId!));
                     }
@@ -231,12 +231,11 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
         
         try {
             if (isGuest) {
-                const roomId = window.location.pathname.split('/').pop();
-                guestStore.deleteMessage(isGeneral ? 'general' : currentSubId!, msgId, isReply, parentId);
+                guestStore.deleteMessage(msgId);
                 toast.success(lang === 'es' ? 'Mensaje eliminado' : 'Message deleted');
                 
-                if (isGeneral && roomId) {
-                    const room = guestStore.getRoom(roomId);
+                if (isGeneral) {
+                    const room = guestStore.getRoom(roomId || propRoomId || 'test-room');
                     setMessages([...(room?.generalMessages || [])].reverse());
                 } else if (currentSubId) {
                     const sub = guestStore.getSubcategory(currentSubId);
@@ -451,11 +450,11 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                             <img src={r.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent((r.user.name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}`} className="reply-avatar" />
                                             <div className="reply-meta">
                                                 <span className="reply-user">{r.user.name}{(isReplyMe && !r.user.name.includes('(tú)')) ? ' (tú)' : ''}</span>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                                                <div className="reply-date-row">
                                                     <span className="reply-time">{formatMessageDate(new Date(r.createdAt), lang)}</span>
                                                     {isReplyMe && (
                                                         <button onClick={() => handleDeleteMessage(r.id, true, msg.id)} className={`reply-del-btn ${confirmDeleteId === r.id ? 'confirming' : ''}`}>
-                                                            {confirmDeleteId === r.id ? (lang === 'es' ? '¿Seguro?' : 'Sure?') : <Trash2 size={12} />}
+                                                            {confirmDeleteId === r.id ? <><span>¿</span><Trash2 size={12} /><span>?</span></> : <Trash2 size={12} />}
                                                         </button>
                                                     )}
                                                 </div>
@@ -479,11 +478,11 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                                                 <img src={nr.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent((nr.user.name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}`} className="reply-avatar mini" />
                                                                 <div className="reply-meta">
                                                                     <span className="reply-user mini">{nr.user.name}{(isNestedReplyMe && !nr.user.name.includes('(tú)')) ? ' (tú)' : ''}</span>
-                                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                                                                    <div className="reply-date-row">
                                                                         <span className="reply-time mini">{formatMessageDate(new Date(nr.createdAt), lang)}</span>
                                                                         {isNestedReplyMe && (
                                                                             <button onClick={() => handleDeleteMessage(nr.id, true, msg.id)} className={`reply-del-btn ${confirmDeleteId === nr.id ? 'confirming' : ''}`}>
-                                                                                {confirmDeleteId === nr.id ? (lang === 'es' ? '¿Seguro?' : 'Sure?') : <Trash2 size={10} />}
+                                                                                {confirmDeleteId === nr.id ? <><span>¿</span><Trash2 size={10} /><span>?</span></> : <Trash2 size={10} />}
                                                                             </button>
                                                                         )}
                                                                     </div>
@@ -491,9 +490,6 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                                             </div>
                                                             <div className="reply-body">
                                                                 <p className="reply-text mini">{renderFormattedText(nr.content)}</p>
-                                                                <button onClick={() => setReplyingTo(nr)} className="reply-action-btn">
-                                                                    <ReplyIcon size={10} /> <span>{lang === 'es' ? 'Responder' : 'Reply'}</span>
-                                                                </button>
                                                             </div>
                                                             {renderInlineReplyBox(nr)}
                                                         </div>
@@ -543,6 +539,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     const sub = guestStore.getSubcategory(currentSubId!);
                     setMessages([...(sub?.messages || [])].reverse());
                 }
+                toast.success(isReply ? (lang === 'es' ? 'Respuesta enviada' : 'Reply sent') : (lang === 'es' ? 'Mensaje enviado' : 'Message sent'));
             } else {
                 let res;
                 if (isGeneral) {
@@ -555,8 +552,9 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     if (isReply) { setReplyText(''); setReplyingTo(null); } else { setText(''); }
                     setSelectedImages([]);
                     const { getSubcategoryMessages, getGeneralMessages } = await import('@/lib/salasActions');
-                    if (isGeneral && roomId) setMessages(await getGeneralMessages(roomId));
+                    if (isGeneral && (roomId || propRoomId)) setMessages(await getGeneralMessages(roomId || propRoomId));
                     else setMessages(await getSubcategoryMessages(currentSubId!));
+                    toast.success(isReply ? (lang === 'es' ? 'Respuesta enviada' : 'Reply sent') : (lang === 'es' ? 'Mensaje enviado' : 'Message sent'));
                 } else toast.error(res.error || 'Error');
             }
         } catch (error) { toast.error("Error al enviar"); } finally { setSending(false); setUploading(false); }
@@ -898,6 +896,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .reply-meta { flex: 1; display: flex; align-items: center; gap: 0.6rem; }
                 .reply-user { font-weight: 900; font-size: 0.85rem; color: #1e293b; }
                 .reply-time { font-size: 0.75rem; color: #94a3b8; font-weight: 700; }
+                .reply-date-row { display: flex; align-items: center; gap: 0.8rem; }
                 .reply-body { margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.4rem; }
                 .reply-text { font-size: 1rem; margin: 0; color: #475569; line-height: 1.5; font-weight: 500; }
                 .reply-action-btn { display: flex; align-items: center; gap: 0.4rem; background: none; border: none; color: #94a3b8; font-size: 0.75rem; font-weight: 800; cursor: pointer; width: fit-content; padding: 0.2rem 0; transition: all 0.2s; }
@@ -964,6 +963,8 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     textarea { min-height: 140px; }
                     .reply-input-area textarea { min-height: 100px; }
                     .input-card { padding: 0.75rem; }
+                    .reply-meta { flex-direction: column; align-items: flex-start; gap: 0.1rem; }
+                    .reply-date-row { flex-direction: row-reverse; justify-content: flex-end; }
                 }
             `}</style>
         </div>
