@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Pencil, Plus, Trash2, Hash, Check, Folder, FolderOpen, History as HistoryIcon, MessageSquare, X, Settings2, GripVertical, CheckCircle2, ShieldCheck } from 'lucide-react';
-import { createCategory, createSubcategory } from '@/lib/salasActions';
+import { createCategory, createSubcategory, updateCategory, deleteCategory, updateSubcategory, deleteSubcategory } from '@/lib/salasActions';
 import { toast } from 'react-hot-toast';
 import { translations } from '@/lib/translations';
 import { guestStore } from '@/lib/guestStore';
@@ -77,51 +77,177 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
         return () => window.removeEventListener('subcategory-change', syncRoom);
     }, [isGuest, initialRoom.id]);
 
-    const handleUpdateCat = (catId: string, value: string) => {
+    const handleUpdateCat = async (catId: string, value: string) => {
         if (!value) return;
         if (isGuest) {
             guestStore.updateCategory(room.id, catId, value);
             setRoom({ ...guestStore.getRoom(room.id) } as any);
             setEditingId(null);
             toast.success(lang === 'es' ? 'Categoría actualizada' : 'Category updated');
+        } else {
+            setLoading(true);
+            try {
+                const res = await updateCategory(catId, value);
+                if (res.success) {
+                    const { getRoomInfo } = await import('@/lib/salasActions');
+                    setRoom(await getRoomInfo(room.id));
+                    setEditingId(null);
+                    toast.success(lang === 'es' ? 'Categoría actualizada' : 'Category updated');
+                } else toast.error(res.error || 'Error');
+            } catch (error) { toast.error("Error"); } finally { setLoading(false); }
         }
     };
 
-    const handleDeleteCat = (catId: string) => {
+    const handleDeleteCat = async (catId: string) => {
         if (!confirm(lang === 'es' ? '¿Eliminar categoría y todas sus subcategorías?' : 'Delete category and all its subcategories?')) return;
         if (isGuest) {
             guestStore.deleteCategory(room.id, catId);
             setRoom({ ...guestStore.getRoom(room.id) } as any);
             toast.success(lang === 'es' ? 'Categoría eliminada' : 'Category deleted');
+        } else {
+            setLoading(true);
+            try {
+                const res = await deleteCategory(catId);
+                if (res.success) {
+                    const { getRoomInfo } = await import('@/lib/salasActions');
+                    setRoom(await getRoomInfo(room.id));
+                    toast.success(lang === 'es' ? 'Categoría eliminada' : 'Category deleted');
+                } else toast.error(res.error || 'Error');
+            } catch (error) { toast.error("Error"); } finally { setLoading(false); }
         }
     };
 
-    const handleUpdateSub = (subId: string, value: string) => {
+    const slugifyName = (text: string) => {
+        return text.toString().toLowerCase().trim()
+            .replace(/\s+/g, '-')
+            .replace(/_/g, '-')
+            .replace(/[^\w-]+/g, '')
+            .replace(/--+/g, '-');
+    };
+
+    const handleUpdateSub = async (subId: string, value: string) => {
         if (!value) return;
+        const slugValue = slugifyName(value);
         if (isGuest) {
+            guestStore.updateSubcategory(room.id, subId, slugValue);
+            setRoom({ ...guestStore.getRoom(room.id) } as any);
+            setEditingId(null);
+            toast.success(lang === 'es' ? 'Subcategoría actualizada' : 'Subcategory updated');
+        } else {
+            setLoading(true);
             try {
-                const updated = guestStore.updateSubcategory(room.id, subId, value);
-                if (updated) {
-                    setRoom({ ...guestStore.getRoom(room.id) } as any);
+                const res = await updateSubcategory(subId, slugValue);
+                if (res.success) {
+                    const { getRoomInfo } = await import('@/lib/salasActions');
+                    setRoom(await getRoomInfo(room.id));
                     setEditingId(null);
                     toast.success(lang === 'es' ? 'Subcategoría actualizada' : 'Subcategory updated');
-                    if (currentSubId === subId) window.location.hash = updated.id;
-                }
-            } catch (err: any) {
-                if (err.message === 'DUPLICATE_NAME') {
-                    toast.error(lang === 'es' ? 'Ese nombre ya está en uso en esta sala' : 'That name is already in use in this room');
-                }
-            }
+                } else toast.error(res.error || 'Error');
+            } catch (error) { toast.error("Error"); } finally { setLoading(false); }
         }
     };
 
-    const handleDeleteSub = (subId: string) => {
-        if (!confirm(lang === 'es' ? '¿Eliminar subcategoría?' : 'Delete subcategory?')) return;
+    const handleDeleteSub = async (subId: string) => {
+        if (!confirm(lang === 'es' ? '¿Eliminar esta subcategoría?' : 'Delete this subcategory?')) return;
         if (isGuest) {
             guestStore.deleteSubcategory(subId);
             setRoom({ ...guestStore.getRoom(room.id) } as any);
             toast.success(lang === 'es' ? 'Subcategoría eliminada' : 'Subcategory deleted');
+        } else {
+            setLoading(true);
+            try {
+                const res = await deleteSubcategory(subId);
+                if (res.success) {
+                    const { getRoomInfo } = await import('@/lib/salasActions');
+                    setRoom(await getRoomInfo(room.id));
+                    toast.success(lang === 'es' ? 'Subcategoría eliminada' : 'Subcategory deleted');
+                } else toast.error(res.error || 'Error');
+            } catch (error) { toast.error("Error"); } finally { setLoading(false); }
         }
+    };
+
+    const handleAddCategory = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!newName) return;
+        setLoading(true);
+        try {
+            if (isGuest) {
+                guestStore.createCategory(room.id, newName);
+                setRoom({ ...guestStore.getRoom(room.id) } as any);
+                setIsAddingCategory(false);
+                setNewName('');
+                toast.success(lang === 'es' ? 'Categoría creada' : 'Category created');
+            } else {
+                const res = await createCategory(room.id, newName);
+                if (res.success) {
+                    const { getRoomInfo } = await import('@/lib/salasActions');
+                    setRoom(await getRoomInfo(room.id));
+                    setIsAddingCategory(false);
+                    setNewName('');
+                    toast.success(lang === 'es' ? 'Categoría creada' : 'Category created');
+                } else toast.error(res.error || 'Error');
+            }
+        } finally { setLoading(false); }
+    };
+
+    const handleAddSub = async (e: React.FormEvent, catId: string) => {
+        e.preventDefault();
+        if (!newName) return;
+        const slugValue = slugifyName(newName);
+        setLoading(true);
+        try {
+            if (isGuest) {
+                guestStore.createSubcategory(catId, slugValue);
+                setRoom({ ...guestStore.getRoom(room.id) } as any);
+                setIsAddingSub(null);
+                setNewName('');
+                toast.success(lang === 'es' ? 'Subcategoría creada' : 'Subcategory created');
+            } else {
+                const res = await createSubcategory(catId, slugValue);
+                if (res.success) {
+                    const { getRoomInfo } = await import('@/lib/salasActions');
+                    setRoom(await getRoomInfo(room.id));
+                    setIsAddingSub(null);
+                    setNewName('');
+                    toast.success(lang === 'es' ? 'Subcategoría creada' : 'Subcategory created');
+                } else toast.error(res.error || 'Error');
+            }
+        } finally { setLoading(false); }
+    };
+
+    const handleModalAdd = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!modalNewName) return;
+        setLoading(true);
+        try {
+            if (isAddingInModal?.type === 'cat') {
+                if (isGuest) {
+                    guestStore.createCategory(room.id, modalNewName);
+                    setRoom({ ...guestStore.getRoom(room.id) } as any);
+                } else {
+                    const res = await createCategory(room.id, modalNewName);
+                    if (res.success) {
+                        const { getRoomInfo } = await import('@/lib/salasActions');
+                        setRoom(await getRoomInfo(room.id));
+                    }
+                }
+            } else if (isAddingInModal?.type === 'sub' && isAddingInModal.catId) {
+                const slugValue = slugifyName(modalNewName);
+                if (isGuest) {
+                    guestStore.createSubcategory(isAddingInModal.catId, slugValue);
+                    setRoom({ ...guestStore.getRoom(room.id) } as any);
+                } else {
+                    const res = await createSubcategory(isAddingInModal.catId, slugValue);
+                    if (res.success) {
+                        const { getRoomInfo } = await import('@/lib/salasActions');
+                        setRoom(await getRoomInfo(room.id));
+                    }
+                }
+            }
+            setIsAddingInModal(null);
+            setModalNewName('');
+            toast.success(lang === 'es' ? 'Añadido con éxito' : 'Added successfully');
+        } catch (error) { toast.error("Error"); } finally { setLoading(false); }
     };
 
     const onDragStart = (e: React.DragEvent, type: 'cat' | 'sub', id: string, catId?: string) => {
@@ -174,88 +300,6 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 setRoom({ ...guestStore.getRoom(room.id) } as any);
             }
         }
-    };
-
-    const handleModalAdd = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!modalNewName || !isAddingInModal) return;
-        if (isGuest) {
-            try {
-                if (isAddingInModal.type === 'cat') {
-                    guestStore.createCategory(room.id, modalNewName);
-                } else if (isAddingInModal.catId) {
-                    guestStore.createSubcategory(isAddingInModal.catId, modalNewName);
-                }
-                setRoom({ ...guestStore.getRoom(room.id) } as any);
-                toast.success(lang === 'es' ? 'Creado con éxito' : 'Created successfully');
-                setIsAddingInModal(null);
-                setModalNewName('');
-            } catch (err: any) {
-                if (err.message === 'DUPLICATE_NAME') {
-                    toast.error(lang === 'es' ? 'Ese nombre ya existe' : 'That name already exists');
-                }
-            }
-        } else {
-            setLoading(true);
-            let res;
-            if (isAddingInModal.type === 'cat') {
-                res = await createCategory(room.id, modalNewName);
-            } else if (isAddingInModal.catId) {
-                res = await createSubcategory(isAddingInModal.catId, modalNewName);
-            }
-            
-            if (res?.success) {
-                toast.success(lang === 'es' ? 'Creado con éxito' : 'Created successfully');
-                setIsAddingInModal(null);
-                setModalNewName('');
-                // Note: Revalidation will refresh the page or we could update local state
-                // For simplicity, we'll wait for revalidatePath to kick in
-                window.location.reload();
-            } else {
-                toast.error(res?.error || 'Error');
-            }
-            setLoading(false);
-        }
-    };
-
-    const handleAddCategory = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!newName) return;
-        setLoading(true);
-        if (isGuest) {
-            guestStore.createCategory(room.id, newName);
-            setRoom({ ...guestStore.getRoom(room.id) } as any);
-            toast.success(roomsT.sidebar.categoryCreated);
-            setIsAddingCategory(false);
-            setNewName('');
-        } else {
-            const res = await createCategory(room.id, newName);
-            if (res.success) { toast.success(roomsT.sidebar.categoryCreated); setIsAddingCategory(false); setNewName(''); }
-        }
-        setLoading(false);
-    };
-
-    const handleAddSub = async (e: React.FormEvent, catId: string) => {
-        e.preventDefault();
-        if (!newName) return;
-        setLoading(true);
-        if (isGuest) {
-            try {
-                guestStore.createSubcategory(catId, newName);
-                setRoom({ ...guestStore.getRoom(room.id) } as any);
-                toast.success(roomsT.sidebar.subcategoryCreated);
-                setIsAddingSub(null);
-                setNewName('');
-            } catch (err: any) {
-                if (err.message === 'DUPLICATE_NAME') {
-                    toast.error(lang === 'es' ? 'Ese nombre ya existe' : 'That name already exists');
-                }
-            }
-        } else {
-            const res = await createSubcategory(catId, newName);
-            if (res.success) { toast.success(roomsT.sidebar.subcategoryCreated); setIsAddingSub(null); setNewName(''); }
-        }
-        setLoading(false);
     };
 
     const generalSub = room.categories?.flatMap((c: any) => c.subcategories).find((s: any) => s.name === 'Chat General');
@@ -459,7 +503,17 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                         </div>
                         <div className="modal-footer">
                             <button className="btn-footer cancel" onClick={() => setIsManageModalOpen(false)}>Cerrar</button>
-                            <button className="btn-footer confirm" onClick={() => setIsManageModalOpen(false)}>
+                            <button className="btn-footer confirm" onClick={() => {
+                                if (editingId) {
+                                    const isSub = room.categories.some((c: any) => c.subcategories.some((s: any) => s.id === editingId));
+                                    if (isSub) handleUpdateSub(editingId, editValue);
+                                    else handleUpdateCat(editingId, editValue);
+                                }
+                                if (modalNewName) {
+                                    handleModalAdd(new Event('submit') as any);
+                                }
+                                setIsManageModalOpen(false);
+                            }}>
                                 <CheckCircle2 size={18} /> Listo
                             </button>
                         </div>

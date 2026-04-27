@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { MessageSquare, Send, Loader2, History as HistoryIcon, Image as ImageIcon, X, ChevronLeft, ChevronRight, Hash, Paperclip, MessageCircle, Reply as ReplyIcon, Trash2 } from 'lucide-react';
-import { addRoomMessage, deleteMessage, addGeneralMessage } from '@/lib/salasActions';
+import { MessageSquare, Send, Loader2, History as HistoryIcon, Image as ImageIcon, X, ChevronLeft, ChevronRight, Hash, Paperclip, MessageCircle, Reply as ReplyIcon, Trash2, Pencil, Check } from 'lucide-react';
+import { addRoomMessage, deleteMessage, addGeneralMessage, updateCategory } from '@/lib/salasActions';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'react-hot-toast';
 import { translations } from '@/lib/translations';
@@ -29,6 +29,8 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
     const roomsT = t.rooms;
 
     const [room, setRoom] = useState<any>(null);
+    const [editingCatId, setEditingCatId] = useState<string | null>(null);
+    const [editCatValue, setEditCatValue] = useState('');
 
     useEffect(() => {
         const getRoomData = async () => {
@@ -282,8 +284,37 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
         } catch (error) { toast.error("Error al enviar"); } finally { setSending(false); setUploading(false); }
     };
 
-    const currentCat = isGuest && !isGeneral && !isHistory ? guestStore.getCategoryBySubId(currentSubId!) : null;
-    const currentSub = isGuest && !isGeneral && !isHistory ? guestStore.getSubcategory(currentSubId!) : null;
+    const handleUpdateCat = async (catId: string, name: string) => {
+        if (!name) return;
+        try {
+            if (isGuest) {
+                guestStore.updateCategory(room.id, catId, name);
+                setRoom({ ...guestStore.getRoom(room.id) } as any);
+            } else {
+                const res = await updateCategory(catId, name);
+                if (res.success) {
+                    const { getRoomInfo } = await import('@/lib/salasActions');
+                    setRoom(await getRoomInfo(room.id));
+                } else toast.error(res.error || 'Error');
+            }
+            setEditingCatId(null);
+            toast.success(lang === 'es' ? 'Categoría actualizada' : 'Category updated');
+        } catch (error) { toast.error("Error al actualizar"); }
+    };
+
+    const findCurrentContext = () => {
+        if (!room || isGeneral || isHistory) return { cat: null, sub: null };
+        for (const cat of room.categories) {
+            const sub = (cat.subcategories as any[]).find((s: any) => s.id === currentSubId);
+            if (sub) return { cat, sub };
+        }
+        return { cat: null, sub: null };
+    };
+
+    const context = findCurrentContext();
+    const currentCat = context.cat as any;
+    const currentSub = context.sub as any;
+    const canManage = isGuest || (session?.user?.id === room?.creatorId || room?.members?.find((m: any) => m.userId === session?.user?.id)?.role === 'admin');
 
     return (
         <div className="room-chat-wrapper">
@@ -306,7 +337,33 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                             </>
                         ) : currentSub ? (
                             <>
-                                <span className="path-segment active">{currentCat?.name || roomsT.chat.chatTitle}</span>
+                                <div className="breadcrumb-item">
+                                    {editingCatId === currentCat?.id ? (
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                            <input 
+                                                autoFocus
+                                                value={editCatValue}
+                                                onChange={e => setEditCatValue(e.target.value)}
+                                                onKeyDown={e => e.key === 'Enter' && handleUpdateCat(currentCat!.id, editCatValue)}
+                                                onBlur={() => setEditingCatId(null)}
+                                                className="breadcrumb-edit-input"
+                                            />
+                                            <Check size={14} color="#10b981" style={{ cursor: 'pointer' }} onClick={() => handleUpdateCat(currentCat!.id, editCatValue)} />
+                                        </div>
+                                    ) : (
+                                        <span className="path-segment active">
+                                            {currentCat?.name || roomsT.chat.chatTitle}
+                                            {canManage && (
+                                                <button 
+                                                    className="breadcrumb-edit-btn"
+                                                    onClick={() => { setEditingCatId(currentCat!.id); setEditCatValue(currentCat!.name); }}
+                                                >
+                                                    <Pencil size={12} />
+                                                </button>
+                                            )}
+                                        </span>
+                                    )}
+                                </div>
                                 <span className="path-separator"><ChevronRight size={14} /></span>
                                 <span className="path-segment sub">
                                     <Hash size={14} />
@@ -482,6 +539,11 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                 
                 .status-badge { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.6rem 1.4rem; border-radius: 14px; border: 1px solid #e2e8f0; font-size: 0.9rem; }
                 .path-segment { font-weight: 800; color: #94a3b8; display: flex; align-items: center; gap: 0.4rem; }
+                .breadcrumb-item { display: flex; align-items: center; }
+                .breadcrumb-edit-btn { background: none; border: none; padding: 4px; color: #94a3b8; cursor: pointer; border-radius: 4px; transition: all 0.2s; margin-left: 4px; display: inline-flex; align-items: center; vertical-align: middle; }
+                .breadcrumb-edit-btn:hover { color: var(--accent); background: rgba(0, 112, 243, 0.05); }
+                .breadcrumb-edit-input { background: white; border: 1px solid #e2e8f0; border-radius: 6px; padding: 2px 8px; font-size: 0.9rem; color: #1e293b; font-weight: 600; width: 150px; outline: none; }
+                .breadcrumb-edit-input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(0, 112, 243, 0.1); }
                 .path-segment.active { color: var(--accent); }
                 .path-segment.sub { color: #1e293b; }
                 .path-separator { opacity: 0.3; margin: 0 0.2rem; color: #94a3b8; }

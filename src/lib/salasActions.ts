@@ -107,6 +107,13 @@ export async function createCategory(roomId: string, name: string) {
   }
 }
 
+function slugify(text: string) {
+  return text.toString().toLowerCase().trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w-]+/g, '')
+    .replace(/--+/g, '-');
+}
+
 export async function createSubcategory(categoryId: string, name: string) {
   const session = await auth();
   if (!session?.user?.id) return { error: "No autenticado" };
@@ -119,8 +126,11 @@ export async function createSubcategory(categoryId: string, name: string) {
     
     if (category?.room.creatorId !== session.user.id) return { error: "No autorizado" };
 
+    const slug = slugify(name);
+    // Note: If multiple subcategories have same slug in global scope it might fail if ID is slug.
+    // Assuming ID is CUID or similar, and we add a slug field or just use slug as ID if unique.
     await db.roomSubcategory.create({
-      data: { categoryId, name }
+      data: { categoryId, name, id: `${categoryId}-${slug}` }
     });
 
     revalidatePath(`/salas/${category.roomId}`);
@@ -129,6 +139,59 @@ export async function createSubcategory(categoryId: string, name: string) {
     console.error(error);
     return { error: "Error al crear subcategoría" };
   }
+}
+
+export async function updateCategory(categoryId: string, name: string) {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "No autenticado" };
+  try {
+    const category = await db.roomCategory.findUnique({ where: { id: categoryId } });
+    const room = await db.room.findUnique({ where: { id: category?.roomId } });
+    if (room?.creatorId !== session.user.id) return { error: "No autorizado" };
+    await db.roomCategory.update({ where: { id: categoryId }, data: { name } });
+    revalidatePath(`/salas/${room?.id}`);
+    return { success: true };
+  } catch (error) { return { error: "Error al actualizar" }; }
+}
+
+export async function deleteCategory(categoryId: string) {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "No autenticado" };
+  try {
+    const category = await db.roomCategory.findUnique({ where: { id: categoryId }, include: { room: true } });
+    if (category?.room.creatorId !== session.user.id) return { error: "No autorizado" };
+    await db.roomCategory.delete({ where: { id: categoryId } });
+    revalidatePath(`/salas/${category?.roomId}`);
+    return { success: true };
+  } catch (error) { return { error: "Error al eliminar" }; }
+}
+
+export async function updateSubcategory(subId: string, name: string) {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "No autenticado" };
+  try {
+    const sub = await db.roomSubcategory.findUnique({ where: { id: subId }, include: { category: { include: { room: true } } } });
+    if (sub?.category.room.creatorId !== session.user.id) return { error: "No autorizado" };
+    
+    await db.roomSubcategory.update({ 
+        where: { id: subId }, 
+        data: { name } 
+    });
+    revalidatePath(`/salas/${sub?.category.roomId}`);
+    return { success: true };
+  } catch (error) { return { error: "Error al actualizar" }; }
+}
+
+export async function deleteSubcategory(subId: string) {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "No autenticado" };
+  try {
+    const sub = await db.roomSubcategory.findUnique({ where: { id: subId }, include: { category: { include: { room: true } } } });
+    if (sub?.category.room.creatorId !== session.user.id) return { error: "No autorizado" };
+    await db.roomSubcategory.delete({ where: { id: subId } });
+    revalidatePath(`/salas/${sub?.category.roomId}`);
+    return { success: true };
+  } catch (error) { return { error: "Error al eliminar" }; }
 }
 
 export async function addRoomMessage(subcategoryId: string, content: string, images: string[] = [], parentId?: string) {
