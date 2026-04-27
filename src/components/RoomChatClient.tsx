@@ -278,6 +278,44 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
         });
     };
 
+    const renderInlineReplyBox = (target: any) => {
+        if (replyingTo?.id !== target.id) return null;
+        return (
+            <div className="inline-reply-box fade-in" style={{ marginTop: '0.75rem' }}>
+                <div className="reply-banner">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                        <div className="reply-indicator-dot" />
+                        <span>{lang === 'es' ? 'Respondiendo a' : 'Replying to'} <strong>{target.user?.name || target.user?.id || 'Usuario'}</strong></span>
+                    </div>
+                    <button type="button" onClick={() => setReplyingTo(null)} className="close-reply-btn"><X size={16} /></button>
+                </div>
+                <div className="reply-input-area">
+                    <form onSubmit={(e) => handleSend(e, true)}>
+                        <textarea autoFocus value={replyText} onChange={e => setReplyText(e.target.value)} placeholder={roomsT.chat.whatAreYouThinking} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(e, true); } }} />
+                        <div className="reply-footer">
+                                            <div style={{ display: 'flex', gap: '0.6rem' }}>
+                                                <a href="https://emojis.hoy.today/" target="_blank" rel="noopener noreferrer" className="icon-btn emoji-hide-mobile" title={lang === 'es' ? 'Emojis' : 'Emojis'}>
+                                                    <Smile size={18} />
+                                                </a>
+                                <button type="button" onClick={() => fileInputRef.current?.click()} className="icon-btn" title={lang === 'es' ? 'Subir imagen' : 'Upload image'}>
+                                    <ImageIcon size={18} />
+                                </button>
+                            </div>
+                            <button type="submit" disabled={sending || (!replyText.trim() && selectedImages.length === 0)} className="room-btn-primary mini" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.6rem 1.2rem', width: 'auto' }}>
+                                {sending ? <Loader2 size={18} className="spin" /> : (
+                                    <>
+                                        <span>{lang === 'es' ? 'Responder' : 'Reply'}</span>
+                                        <Send size={14} />
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        );
+    };
+
     const pinnedMessagesList = messages.filter((m: any) => m.isPinned).sort((a: any, b: any) => (a.pinOrder || 0) - (b.pinOrder || 0));
 
     const findCurrentContext = () => {
@@ -353,11 +391,11 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     <div className="msg-header">
                         <img src={msg.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent((msg.user.name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}`} className="msg-avatar" />
                         <div className="msg-meta">
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                            <div className="msg-meta-header">
                                 <span className="msg-user">{msg.user.name}{(isMe && !msg.user.name.includes('(tú)')) ? ' (tú)' : ''}</span>
                                 {msg.user.role === 'admin' && <ShieldCheck size={14} className="admin-badge-icon" />}
                             </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                            <div className="msg-meta-info">
                                 <span className="msg-date">{formatMessageDate(new Date(msg.createdAt), lang)}</span>
                                 {canDelete && (
                                     <button onClick={() => handleDeleteMessage(msg.id)} className={`btn-delete-top ${confirmDeleteId === msg.id ? 'confirming' : ''}`}>
@@ -367,17 +405,19 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                             </div>
                         </div>
                         <div className="msg-header-actions" style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                            {isPinnedView && canManage && (
-                                <div className="reorder-actions" style={{ display: 'flex', gap: '0.2rem', marginRight: '0.4rem' }}>
+                            <div className="pin-controls-group">
+                                {isPinnedView && canManage && (
                                     <button onClick={() => handleMovePin(msg.id, 'up')} className="reorder-btn" title={lang === 'es' ? 'Subir' : 'Move up'}><ChevronUp size={16} /></button>
+                                )}
+                                {canManage && (
+                                    <button onClick={() => handlePinMessage(msg.id)} className={`btn-pin-top ${msg.isPinned ? 'active' : ''}`} title={msg.isPinned ? 'Despinear' : 'Pinear'}>
+                                        {msg.isPinned ? <PinOff size={16} /> : <Pin size={16} />}
+                                    </button>
+                                )}
+                                {isPinnedView && canManage && (
                                     <button onClick={() => handleMovePin(msg.id, 'down')} className="reorder-btn" title={lang === 'es' ? 'Bajar' : 'Move down'}><ChevronDown size={16} /></button>
-                                </div>
-                            )}
-                            {canManage && (
-                                <button onClick={() => handlePinMessage(msg.id)} className={`btn-pin-top ${msg.isPinned ? 'active' : ''}`} title={msg.isPinned ? 'Despinear' : 'Pinear'}>
-                                    {msg.isPinned ? <PinOff size={16} /> : <Pin size={16} />}
-                                </button>
-                            )}
+                                )}
+                            </div>
                         </div>
                     </div>
 
@@ -393,40 +433,8 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     </div>
 
                     <div className="msg-actions">
-                        {replyingTo?.id === msg.id ? (
-                            <div className="inline-reply-box">
-                                <div className="reply-banner">
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                                        <div className="reply-indicator-dot" />
-                                        <span>{lang === 'es' ? 'Respondiendo a' : 'Replying to'} <strong>{msg.user.name}</strong></span>
-                                    </div>
-                                    <button type="button" onClick={() => setReplyingTo(null)} className="close-reply-btn"><X size={16} /></button>
-                                </div>
-                                <div className="reply-input-area">
-                                    <form onSubmit={(e) => handleSend(e, true)}>
-                                        <textarea autoFocus value={replyText} onChange={e => setReplyText(e.target.value)} placeholder={roomsT.chat.whatAreYouThinking} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(e, true); } }} />
-                                        <div className="reply-footer">
-                                            <div style={{ display: 'flex', gap: '0.6rem' }}>
-                                                <a href="https://emojis.hoy.today/" target="_blank" rel="noopener noreferrer" className="icon-btn" title={lang === 'es' ? 'Emojis' : 'Emojis'}>
-                                                    <Smile size={18} />
-                                                </a>
-                                                <button type="button" onClick={() => fileInputRef.current?.click()} className="icon-btn" title={lang === 'es' ? 'Subir imagen' : 'Upload image'}>
-                                                    <ImageIcon size={18} />
-                                                </button>
-                                            </div>
-                                            <button type="submit" disabled={sending || (!replyText.trim() && selectedImages.length === 0)} className="room-btn-primary mini" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.6rem 1.2rem', width: 'auto' }}>
-                                                {sending ? <Loader2 size={18} className="spin" /> : (
-                                                    <>
-                                                        <span>{lang === 'es' ? 'Responder' : 'Reply'}</span>
-                                                        <Send size={14} />
-                                                    </>
-                                                )}
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        ) : (
+                        {renderInlineReplyBox(msg)}
+                        {replyingTo?.id !== msg.id && (
                             <button onClick={() => setReplyingTo(msg)} className="btn-reply-trigger">
                                 <ReplyIcon size={14} /> <span>{lang === 'es' ? 'Responder' : 'Reply'}</span>
                             </button>
@@ -453,7 +461,46 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="reply-body"><p className="reply-text">{renderFormattedText(r.content)}</p></div>
+                                        <div className="reply-body">
+                                            <p className="reply-text">{renderFormattedText(r.content)}</p>
+                                            <button onClick={() => setReplyingTo(r)} className="reply-action-btn">
+                                                <ReplyIcon size={12} /> <span>{lang === 'es' ? 'Responder' : 'Reply'}</span>
+                                            </button>
+                                        </div>
+                                        {renderInlineReplyBox(r)}
+
+                                        {r.replies && r.replies.length > 0 && (
+                                            <div className="nested-replies-list">
+                                                {r.replies.map((nr: any) => {
+                                                    const isNestedReplyMe = nr.userId === session?.user?.id || (isGuest && (nr.userId === 'guest-me' || nr.user.name === 'Invitado'));
+                                                    return (
+                                                        <div key={nr.id} className="nested-reply-item">
+                                                            <div className="reply-header">
+                                                                <img src={nr.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent((nr.user.name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}`} className="reply-avatar mini" />
+                                                                <div className="reply-meta">
+                                                                    <span className="reply-user mini">{nr.user.name}{(isNestedReplyMe && !nr.user.name.includes('(tú)')) ? ' (tú)' : ''}</span>
+                                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                                                                        <span className="reply-time mini">{formatMessageDate(new Date(nr.createdAt), lang)}</span>
+                                                                        {isNestedReplyMe && (
+                                                                            <button onClick={() => handleDeleteMessage(nr.id, true, msg.id)} className={`reply-del-btn ${confirmDeleteId === nr.id ? 'confirming' : ''}`}>
+                                                                                {confirmDeleteId === nr.id ? (lang === 'es' ? '¿Seguro?' : 'Sure?') : <Trash2 size={10} />}
+                                                                            </button>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="reply-body">
+                                                                <p className="reply-text mini">{renderFormattedText(nr.content)}</p>
+                                                                <button onClick={() => setReplyingTo(nr)} className="reply-action-btn">
+                                                                    <ReplyIcon size={10} /> <span>{lang === 'es' ? 'Responder' : 'Reply'}</span>
+                                                                </button>
+                                                            </div>
+                                                            {renderInlineReplyBox(nr)}
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        )}
                                     </div>
                                 );
                             })}
@@ -486,23 +533,20 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 }
             }
             if (isGuest) {
-                const roomId = window.location.pathname.split('/').pop();
-                const msg = guestStore.addMessage(isGeneral ? 'general' : currentSubId!, content, imageUrls, isReply ? replyingTo?.id : undefined);
-                if (msg) {
-                    if (isReply) { setReplyText(''); setReplyingTo(null); } else { setText(''); }
-                    setSelectedImages([]);
-                    const room = guestStore.getRoom(roomId || 'test-room');
-                    if (isGeneral) setMessages([...(room?.generalMessages || [])].reverse());
-                    else {
-                        const sub = guestStore.getSubcategory(currentSubId!);
-                        setMessages([...(sub?.messages || [])].reverse());
-                    }
+                guestStore.addMessage(isGeneral ? 'general' : currentSubId!, content, imageUrls, isReply ? replyingTo?.id : undefined);
+                if (isReply) { setReplyText(''); setReplyingTo(null); } else { setText(''); }
+                setSelectedImages([]);
+                
+                const room = guestStore.getRoom(roomId || 'test-room');
+                if (isGeneral) setMessages([...(room?.generalMessages || [])].reverse());
+                else {
+                    const sub = guestStore.getSubcategory(currentSubId!);
+                    setMessages([...(sub?.messages || [])].reverse());
                 }
             } else {
                 let res;
                 if (isGeneral) {
-                    const roomId = window.location.pathname.split('/').pop();
-                    res = await addGeneralMessage(roomId!, content, imageUrls, isReply ? replyingTo?.id : undefined);
+                    res = await addGeneralMessage(roomId || '', content, imageUrls, isReply ? replyingTo?.id : undefined);
                 } else {
                     res = await addRoomMessage(currentSubId!, content, imageUrls, isReply ? replyingTo?.id : undefined);
                 }
@@ -511,7 +555,6 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     if (isReply) { setReplyText(''); setReplyingTo(null); } else { setText(''); }
                     setSelectedImages([]);
                     const { getSubcategoryMessages, getGeneralMessages } = await import('@/lib/salasActions');
-                    const roomId = window.location.pathname.split('/').pop();
                     if (isGeneral && roomId) setMessages(await getGeneralMessages(roomId));
                     else setMessages(await getSubcategoryMessages(currentSubId!));
                 } else toast.error(res.error || 'Error');
@@ -651,7 +694,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                 )}
                                 <div className="input-footer-row">
                                     <div className="input-actions-left">
-                                        <a href="https://emojis.hoy.today/" target="_blank" rel="noopener noreferrer" className="icon-btn" title={lang === 'es' ? 'Emojis' : 'Emojis'}>
+                                        <a href="https://emojis.hoy.today/" target="_blank" rel="noopener noreferrer" className="icon-btn emoji-hide-mobile" title={lang === 'es' ? 'Emojis' : 'Emojis'}>
                                             <Smile size={20} />
                                         </a>
                                         <button type="button" onClick={() => fileInputRef.current?.click()} className="icon-btn" title={lang === 'es' ? 'Subir imagen' : 'Upload image'}>
@@ -679,7 +722,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 </a>
 
                 <div className="messages-scroller">
-                    {pinnedMessagesList.length > 0 && (
+                    {pinnedMessagesList.length > 0 && !isHistory && (
                         <div className="pinned-section-wrapper fade-in">
                             <div className="pinned-header">
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
@@ -816,6 +859,9 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .message-card { background: #fff; border: 1px solid #f1f5f9; border-radius: 24px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
                 .msg-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
                 .msg-avatar { width: 44px; height: 44px; border-radius: 14px; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+                .msg-meta { flex: 1; display: flex; flex-direction: column; gap: 0.1rem; }
+                .msg-meta-header { display: flex; align-items: center; gap: 0.6rem; }
+                .msg-meta-info { display: flex; align-items: center; gap: 0.8rem; }
                 .msg-user { font-weight: 900; color: #1e293b; font-size: 1.05rem; }
                 .msg-date { font-size: 0.8rem; color: #94a3b8; font-weight: 700; }
                 .msg-link { color: var(--accent); text-decoration: none; font-weight: 700; word-break: break-all; }
@@ -852,10 +898,20 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .reply-meta { flex: 1; display: flex; align-items: center; gap: 0.6rem; }
                 .reply-user { font-weight: 900; font-size: 0.85rem; color: #1e293b; }
                 .reply-time { font-size: 0.75rem; color: #94a3b8; font-weight: 700; }
+                .reply-body { margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.4rem; }
                 .reply-text { font-size: 1rem; margin: 0; color: #475569; line-height: 1.5; font-weight: 500; }
+                .reply-action-btn { display: flex; align-items: center; gap: 0.4rem; background: none; border: none; color: #94a3b8; font-size: 0.75rem; font-weight: 800; cursor: pointer; width: fit-content; padding: 0.2rem 0; transition: all 0.2s; }
+                .reply-action-btn:hover { color: var(--accent); }
                 .reply-del-btn { background: #f8fafc; border: 1px solid #f1f5f9; padding: 0.4rem 0.6rem; color: #64748b; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; transition: all 0.2s; border-radius: 8px; font-size: 0.75rem; font-weight: 800; }
                 .reply-del-btn:hover { color: #ef4444; background: #fff1f2; border-color: #fee2e2; }
                 .reply-del-btn.confirming { color: #ef4444; font-weight: 800; background: #fff1f2; padding: 0.3rem 0.6rem; border: 1px solid #fee2e2; }
+
+                .nested-replies-list { margin-top: 0.75rem; margin-left: 1.5rem; border-left: 2px solid #f1f5f9; padding-left: 1rem; display: flex; flex-direction: column; gap: 0.75rem; }
+                .nested-reply-item { background: #fcfdfe; border: 1px solid #f8fafc; padding: 0.6rem; border-radius: 12px; }
+                .reply-avatar.mini { width: 24px; height: 24px; }
+                .reply-user.mini { font-size: 0.8rem; }
+                .reply-time.mini { font-size: 0.7rem; }
+                .reply-text.mini { font-size: 0.9rem; }
 
                 .inline-reply-box { margin-top: 1rem; border: 2px solid #f1f5f9; border-radius: 20px; overflow: hidden; background: #fcfdfe; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: all 0.2s; }
                 
@@ -876,6 +932,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
 
                 .reorder-btn { background: #f8fafc; border: 1px solid #f1f5f9; color: #94a3b8; padding: 0.4rem; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
                 .reorder-btn:hover { color: var(--accent); background: #f1f5f9; border-color: #e2e8f0; }
+                .pin-controls-group { display: flex; align-items: center; gap: 0.4rem; }
 
                 .message-highlight { animation: flash 2s ease-out; }
                 @keyframes flash {
@@ -896,6 +953,10 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
                 @media (max-width: 768px) {
+                    .pin-controls-group { flex-direction: column; gap: 0.2rem !important; }
+                    .emoji-hide-mobile { display: none; }
+                    .msg-meta-info { flex-direction: row-reverse; justify-content: flex-end; }
+                    
                     .main-input-sticky { position: static; margin-bottom: 1rem; }
                     .log-row-content { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
                     .log-tags { align-self: flex-start; }

@@ -279,7 +279,13 @@ export const guestStore = {
 
             if (container) {
                 if (parentId) {
-                    const parent = container.messages?.find((m: any) => m.id === parentId);
+                    let parent = (container.messages || []).find((m: any) => m.id === parentId);
+                    if (!parent) {
+                        for (const m of (container.messages || [])) {
+                            parent = (m.replies || []).find((r: any) => r.id === parentId);
+                            if (parent) break;
+                        }
+                    }
                     if (parent) {
                         if (!parent.replies) parent.replies = [];
                         const newReply = {

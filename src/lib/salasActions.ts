@@ -3,6 +3,12 @@
 import { db } from "@/lib/db";
 import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
+import { supabaseAdmin } from "@/lib/supabase";
+
+const getStoragePathFromUrl = (url: string) => {
+  if (!url || !url.includes('/public/images/')) return null;
+  return url.split('/public/images/').pop();
+};
 
 export async function createRoom(name: string, secretCode: string, slug: string) {
   const session = await auth();
@@ -192,12 +198,30 @@ export async function deleteSubcategory(subId: string) {
   const session = await auth();
   if (!session?.user?.id) return { error: "No autenticado" };
   try {
-    const sub = await db.roomSubcategory.findUnique({ where: { id: subId }, include: { category: { include: { room: true } } } });
+    const sub = await db.roomSubcategory.findUnique({ 
+      where: { id: subId }, 
+      include: { 
+        category: { include: { room: true } },
+        messages: { select: { images: true } }
+      } 
+    });
     if (sub?.category.room.creatorId !== session.user.id) return { error: "No autorizado" };
+    
+    // Collect all images from all messages in this subcategory
+    const allImages = sub.messages.flatMap(m => (m.images || []) as any[]);
+    const pathsToDelete = allImages.map(url => getStoragePathFromUrl(url)).filter(Boolean) as string[];
+    
+    if (pathsToDelete.length > 0) {
+      await supabaseAdmin.storage.from('images').remove(pathsToDelete);
+    }
+
     await db.roomSubcategory.delete({ where: { id: subId } });
     revalidatePath(`/salas/${sub?.category.roomId}`);
     return { success: true };
-  } catch (error) { return { error: "Error al eliminar" }; }
+  } catch (error) { 
+    console.error(error);
+    return { error: "Error al eliminar subcategoría" }; 
+  }
 }
 
 export async function addRoomMessage(subcategoryId: string, content: string, images: string[] = [], parentId?: string) {
@@ -347,7 +371,13 @@ export async function getSubcategoryMessages(subcategoryId: string) {
         user: { select: { id: true, name: true, image: true } },
         replies: {
           include: {
-            user: { select: { id: true, name: true, image: true } }
+            user: { select: { id: true, name: true, image: true } },
+            replies: {
+              include: {
+                user: { select: { id: true, name: true, image: true } }
+              },
+              orderBy: { createdAt: 'asc' }
+            }
           },
           orderBy: { createdAt: 'asc' }
         }
@@ -369,7 +399,13 @@ export async function getGeneralMessages(roomId: string) {
         user: { select: { id: true, name: true, image: true } },
         replies: {
           include: {
-            user: { select: { id: true, name: true, image: true } }
+            user: { select: { id: true, name: true, image: true } },
+            replies: {
+              include: {
+                user: { select: { id: true, name: true, image: true } }
+              },
+              orderBy: { createdAt: 'asc' }
+            }
           },
           orderBy: { createdAt: 'asc' }
         }
@@ -559,10 +595,17 @@ export async function deleteMessage(messageId: string) {
 
     if (!message) return { error: "Mensaje no encontrado" };
 
-    // Authorized if owner or admin
     const isAdmin = session.user.role === 'admin' || session.user.email === 'ciberportero@gmail.com';
     if (message.userId !== session.user.id && !isAdmin) {
       return { error: "No autorizado" };
+    }
+
+    // Delete images from Supabase Storage
+    if (message.images && (message.images as any).length > 0) {
+      const paths = (message.images as any[]).map(url => getStoragePathFromUrl(url)).filter(Boolean) as string[];
+      if (paths.length > 0) {
+        await supabaseAdmin.storage.from('images').remove(paths);
+      }
     }
 
     await db.roomMessage.delete({
