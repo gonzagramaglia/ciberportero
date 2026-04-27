@@ -10,6 +10,8 @@ export interface GuestMessage {
     userId?: string;
     createdAt: string;
     replies: any[];
+    isPinned?: boolean;
+    pinOrder?: number;
 }
 
 export interface GuestSubcategory {
@@ -48,7 +50,7 @@ interface GuestData {
 }
 
 const DEFAULT_DATA: GuestData = {
-    version: 26, // Incremented version to force update
+    version: 29, // Incremented version to force update
     rooms: [
         {
             id: 'test-room',
@@ -197,7 +199,14 @@ export const guestStore = {
             if (!r.generalMessages) r.generalMessages = [];
             if (!r.members) r.members = [];
             r.members.forEach((m: any) => {
-                if (!m.role) m.role = (m.id === 'guest-me' || m.id === 'm1') ? 'admin' : 'member';
+                if (r.id === 'test-room') {
+                    if (m.id === 'guest-me' || m.user.name === 'Invitado') m.role = 'member';
+                    else if (m.id === 'm1') m.role = 'admin';
+                    else if (!m.role) m.role = 'member';
+                } else {
+                    if (m.id === 'guest-me' || m.id === 'm1' || m.user.name === 'Invitado') m.role = 'admin';
+                    else if (!m.role) m.role = 'member';
+                }
                 // Migrate legacy Lucas G. name to Invitado
                 if (m.id === 'guest-me' && m.user.name === 'Lucas G.') {
                     m.user.name = 'Invitado';
@@ -526,5 +535,83 @@ export const guestStore = {
             return true;
         }
         return false;
+    },
+    
+    togglePin(subId: string, msgId: string) {
+        const data = this.getData();
+        let targetMsg: GuestMessage | null = null;
+        let targetList: GuestMessage[] | null = null;
+        
+        if (subId === 'general') {
+            for (const room of data.rooms) {
+                const msg = room.generalMessages.find(m => m.id === msgId);
+                if (msg) { 
+                    targetMsg = msg;
+                    targetList = room.generalMessages;
+                    break; 
+                }
+            }
+        } else {
+            // Find directly in data object to maintain reference
+            for (const room of data.rooms) {
+                for (const cat of room.categories) {
+                    const sub = cat.subcategories.find(s => s.id === subId);
+                    if (sub) {
+                        const msg = sub.messages.find(m => m.id === msgId);
+                        if (msg) {
+                            targetMsg = msg;
+                            targetList = sub.messages;
+                            break;
+                        }
+                    }
+                }
+                if (targetMsg) break;
+            }
+        }
+
+        if (targetMsg && targetList) {
+            targetMsg.isPinned = !targetMsg.isPinned;
+            if (targetMsg.isPinned) {
+                const maxOrder = Math.max(0, ...targetList.filter(m => m.isPinned).map(m => m.pinOrder || 0));
+                targetMsg.pinOrder = maxOrder + 1;
+            }
+            this.saveData(data);
+            return targetMsg;
+        }
+        return null;
+    },
+
+    reorderPins(subId: string, orderedIds: string[]) {
+        const data = this.getData();
+        let targetList: GuestMessage[] | null = null;
+
+        if (subId === 'general') {
+            for (const room of data.rooms) {
+                if (room.generalMessages.some(m => orderedIds.includes(m.id))) {
+                    targetList = room.generalMessages;
+                    break;
+                }
+            }
+        } else {
+            // Find directly in data object
+            for (const room of data.rooms) {
+                for (const cat of room.categories) {
+                    const sub = cat.subcategories.find(s => s.id === subId);
+                    if (sub) {
+                        targetList = sub.messages;
+                        break;
+                    }
+                }
+                if (targetList) break;
+            }
+        }
+
+        if (targetList) {
+            orderedIds.forEach((id, idx) => {
+                const msg = targetList!.find(m => m.id === id);
+                if (msg) msg.pinOrder = idx;
+            });
+            this.saveData(data);
+        }
     }
 };

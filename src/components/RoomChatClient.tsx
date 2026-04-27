@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { MessageSquare, Send, Loader2, History as HistoryIcon, Image as ImageIcon, X, ChevronLeft, ChevronRight, Hash, Paperclip, MessageCircle, Reply as ReplyIcon, Trash2, Pencil, Check, Smile, ClipboardClock } from 'lucide-react';
-import { addRoomMessage, deleteMessage, addGeneralMessage, updateCategory, updateSubcategory } from '@/lib/salasActions';
+import { MessageSquare, Send, Loader2, History as HistoryIcon, Image as ImageIcon, X, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, Hash, Paperclip, MessageCircle, Reply as ReplyIcon, Trash2, Pencil, Check, Smile, ClipboardClock, Pin, PinOff, GripVertical, ShieldCheck } from 'lucide-react';
+import { addRoomMessage, deleteMessage, addGeneralMessage, updateCategory, updateSubcategory, togglePinMessage, reorderPinnedMessages } from '@/lib/salasActions';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'react-hot-toast';
 import { translations } from '@/lib/translations';
@@ -22,14 +22,18 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
     const [sending, setSending] = useState(false);
     const [replyingTo, setReplyingTo] = useState<any>(null);
     const [selectedImages, setSelectedImages] = useState<File[]>([]);
+    const [isDragging, setIsDragging] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [targetMessageId, setTargetMessageId] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const [draggingPinId, setDraggingPinId] = useState<string | null>(null);
 
     const t = translations[lang as keyof typeof translations] || translations.es;
     const roomsT = t.rooms;
 
     const [room, setRoom] = useState<any>(null);
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
     const [editingCatId, setEditingCatId] = useState<string | null>(null);
     const [editCatValue, setEditCatValue] = useState('');
     const [editingSubId, setEditingSubId] = useState<string | null>(null);
@@ -47,7 +51,12 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
 
         if (roomId) getRoomData(roomId);
         
-        const handleRefresh = () => roomId && getRoomData(roomId);
+        const handleRefresh = () => {
+            if (roomId) {
+                getRoomData(roomId);
+                setRefreshTrigger(prev => prev + 1);
+            }
+        };
         window.addEventListener('room-data-updated', handleRefresh);
         return () => window.removeEventListener('room-data-updated', handleRefresh);
     }, [isGuest, roomId]);
@@ -83,7 +92,6 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 return;
             }
 
-            // If we have room data, check if ID exists. If not, maybe refresh
             if (room?.categories) {
                 const exists = room.categories.some((c: any) => 
                     c.subcategories?.some((s: any) => 
@@ -170,14 +178,14 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                 }
                             };
 
-                            room.categories.forEach(c => {
-                                c.subcategories.forEach(s => {
-                                    s.messages.forEach(m => processMsg(m, c.name, s.name, s.id));
+                            room.categories.forEach((c: any) => {
+                                c.subcategories.forEach((s: any) => {
+                                    s.messages.forEach((m: any) => processMsg(m, c.name, s.name, s.id));
                                 });
                             });
-                            room.generalMessages.forEach(m => processMsg(m, 'General', 'Chat General', 'general'));
+                            room.generalMessages.forEach((m: any) => processMsg(m, 'General', 'Chat General', 'general'));
                             
-                            setMessages(allMsgs.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
+                            setMessages(allMsgs.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
                         }
                     } else {
                         const sub = guestStore.getSubcategory(currentSubId!);
@@ -208,7 +216,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
             }
         };
         loadMessages();
-    }, [currentSubId, isGuest, isGeneral, isHistory]);
+    }, [currentSubId, isGuest, isGeneral, isHistory, refreshTrigger]);
 
     const handleDeleteMessage = async (msgId: string, isReply = false, parentId?: string) => {
         if (confirmDeleteId !== msgId) {
@@ -246,6 +254,187 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 }
             }
         } catch (err) { console.error(err); }
+    };
+
+    const pinnedMessagesList = messages.filter((m: any) => m.isPinned).sort((a: any, b: any) => (a.pinOrder || 0) - (b.pinOrder || 0));
+
+    const findCurrentContext = () => {
+        if (!room?.categories || isGeneral || isHistory) return { cat: null, sub: null };
+        for (const cat of room.categories) {
+            if (!cat.subcategories) continue;
+            const sub = (cat.subcategories as any[]).find((s: any) => 
+                s.id === currentSubId || 
+                (s.id.includes('-') && s.id.split('-').slice(1).join('-') === currentSubId) ||
+                (currentSubId?.includes('-') && currentSubId.split('-').slice(1).join('-') === s.id)
+            );
+            if (sub) return { cat, sub };
+        }
+        return { cat: null, sub: null };
+    };
+
+    const context = findCurrentContext();
+    const currentCat = context.cat as any;
+    const currentSub = context.sub as any;
+    const myMember = room?.members?.find((m: any) => m.userId === session?.user?.id || (isGuest && (m.id === 'guest-me' || m.user.name === 'Invitado')));
+    const isAdmin = myMember?.role === 'admin';
+    const isReallyCreator = (room?.creatorId === session?.user?.id && !!session?.user?.id) || (isGuest && room?.creatorId === 'guest' && roomId !== 'test-room');
+    
+    let canManage = (!!session?.user?.id && (isReallyCreator || isAdmin)) || (isGuest && isAdmin);
+    if (isGuest && roomId === 'test-room') canManage = false;
+
+    const handleMovePin = async (msgId: string, dir: 'up' | 'down') => {
+        const currentIndex = pinnedMessagesList.findIndex((m: any) => m.id === msgId);
+        if (currentIndex === -1) return;
+        
+        const newIndex = currentIndex + (dir === 'up' ? -1 : 1);
+        if (newIndex < 0 || newIndex >= pinnedMessagesList.length) return;
+        
+        const newList = [...pinnedMessagesList];
+        const [moved] = newList.splice(currentIndex, 1);
+        newList.splice(newIndex, 0, moved);
+        
+        const orderedIds = newList.map((m: any) => m.id);
+        
+        if (isGuest) {
+            const sid = currentSubId || 'general';
+            guestStore.reorderPins(sid, orderedIds);
+            setRefreshTrigger(prev => prev + 1);
+        } else {
+            await reorderPinnedMessages(currentSubId === 'general' ? (roomId || '') : (currentSubId || ''), orderedIds);
+            setRefreshTrigger(prev => prev + 1);
+        }
+    };
+
+    const handlePinMessage = async (msgId: string) => {
+        if (isGuest) {
+            const sid = currentSubId || 'general';
+            guestStore.togglePin(sid, msgId);
+            setRefreshTrigger(prev => prev + 1);
+            toast.success(lang === 'es' ? 'Estado de pin actualizado' : 'Pin state updated');
+        } else {
+            const res = await togglePinMessage(msgId);
+            if (res.error) toast.error(res.error);
+            else {
+                toast.success(lang === 'es' ? 'Estado de pin actualizado' : 'Pin state updated');
+                setRefreshTrigger(prev => prev + 1);
+            }
+        }
+    };
+
+    const renderMessage = (msg: any, isPinnedView = false) => {
+        const isMe = msg.userId === session?.user?.id || (isGuest && (msg.userId === 'guest-me' || msg.user.name === 'Invitado'));
+        const canDelete = isMe || canManage;
+        
+        return (
+            <div key={msg.id} id={msg.id} className={`message-item-wrapper fade-in ${msg.isPinned ? 'pinned-highlight' : ''} ${isPinnedView ? 'in-pinned-list' : ''}`}>
+                <div className="message-card">
+                    <div className="msg-header">
+                        <img src={msg.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent((msg.user.name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}`} className="msg-avatar" />
+                        <div className="msg-meta">
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                                <span className="msg-user">{msg.user.name}{(isMe && !msg.user.name.includes('(tú)')) ? ' (tú)' : ''}</span>
+                                {msg.user.role === 'admin' && <ShieldCheck size={14} className="admin-badge-icon" />}
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                                <span className="msg-date">{formatMessageDate(new Date(msg.createdAt), lang)}</span>
+                                {canDelete && (
+                                    <button onClick={() => handleDeleteMessage(msg.id)} className={`btn-delete-top ${confirmDeleteId === msg.id ? 'confirming' : ''}`} style={{ padding: '0.3rem', background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer' }}>
+                                        {confirmDeleteId === msg.id ? (lang === 'es' ? '¿Seguro?' : 'Sure?') : <Trash2 size={14} />}
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                        <div className="msg-header-actions" style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                            {isPinnedView && canManage && (
+                                <div className="reorder-actions" style={{ display: 'flex', gap: '0.2rem', marginRight: '0.4rem' }}>
+                                    <button onClick={() => handleMovePin(msg.id, 'up')} className="reorder-btn" title={lang === 'es' ? 'Subir' : 'Move up'}><ChevronUp size={16} /></button>
+                                    <button onClick={() => handleMovePin(msg.id, 'down')} className="reorder-btn" title={lang === 'es' ? 'Bajar' : 'Move down'}><ChevronDown size={16} /></button>
+                                </div>
+                            )}
+                            {canManage && (
+                                <button onClick={() => handlePinMessage(msg.id)} className={`btn-pin-top ${msg.isPinned ? 'active' : ''}`} title={msg.isPinned ? 'Despinear' : 'Pinear'}>
+                                    {msg.isPinned ? <PinOff size={16} /> : <Pin size={16} />}
+                                </button>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="msg-body">
+                        <p className="msg-text">{msg.content}</p>
+                        {msg.images && msg.images.length > 0 && (
+                            <div className="msg-images-grid">
+                                {msg.images.map((img: string, i: number) => (
+                                    <div key={i} className="msg-img-box"><img src={img} alt="Post" onClick={() => window.open(img, '_blank')} /></div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="msg-actions">
+                        {replyingTo?.id === msg.id ? (
+                            <div className="inline-reply-box">
+                                <div className="reply-banner">
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                                        <div className="reply-indicator-dot" />
+                                        <span>{lang === 'es' ? 'Respondiendo a' : 'Replying to'} <strong>{msg.user.name}</strong></span>
+                                    </div>
+                                    <button type="button" onClick={() => setReplyingTo(null)} className="close-reply-btn"><X size={16} /></button>
+                                </div>
+                                <div className="reply-input-area">
+                                    <form onSubmit={(e) => handleSend(e, true)}>
+                                        <textarea autoFocus value={replyText} onChange={e => setReplyText(e.target.value)} placeholder={roomsT.chat.whatAreYouThinking} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(e, true); } }} />
+                                        <div className="reply-footer">
+                                            <div style={{ display: 'flex', gap: '0.6rem' }}>
+                                                <a href="https://emojis.hoy.today/" target="_blank" rel="noopener noreferrer" className="icon-btn" title={lang === 'es' ? 'Emojis' : 'Emojis'}>
+                                                    <Smile size={18} />
+                                                </a>
+                                                <button type="button" onClick={() => fileInputRef.current?.click()} className="icon-btn" title={lang === 'es' ? 'Subir imagen' : 'Upload image'}>
+                                                    <ImageIcon size={18} />
+                                                </button>
+                                            </div>
+                                            <button type="submit" disabled={sending || (!replyText.trim() && selectedImages.length === 0)} className="room-btn-primary mini">
+                                                {sending ? <Loader2 size={18} className="spin" /> : <Send size={14} />}
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        ) : (
+                            <button onClick={() => setReplyingTo(msg)} className="btn-reply-trigger">
+                                <ReplyIcon size={14} /> <span>{lang === 'es' ? 'Responder' : 'Reply'}</span>
+                            </button>
+                        )}
+                    </div>
+
+                    {msg.replies && msg.replies.length > 0 && (
+                        <div className="replies-list">
+                            {msg.replies.map((r: any) => {
+                                const isReplyMe = r.userId === session?.user?.id || (isGuest && (r.userId === 'guest-me' || r.user.name === 'Invitado'));
+                                return (
+                                    <div key={r.id} className="reply-item">
+                                        <div className="reply-header">
+                                            <img src={r.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent((r.user.name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}`} className="reply-avatar" />
+                                            <div className="reply-meta">
+                                                <span className="reply-user">{r.user.name}{(isReplyMe && !r.user.name.includes('(tú)')) ? ' (tú)' : ''}</span>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                                                    <span className="reply-time">{formatMessageDate(new Date(r.createdAt), lang)}</span>
+                                                    {isReplyMe && (
+                                                        <button onClick={() => handleDeleteMessage(r.id, true, msg.id)} className={`reply-del-btn ${confirmDeleteId === r.id ? 'confirming' : ''}`}>
+                                                            {confirmDeleteId === r.id ? (lang === 'es' ? '¿Seguro?' : 'Sure?') : <Trash2 size={12} />}
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="reply-body"><p className="reply-text">{r.content}</p></div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
     };
 
     const handleSend = async (e: React.FormEvent, isReply = false) => {
@@ -327,28 +516,25 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
         } catch (error) { toast.error("Error al actualizar"); }
     };
 
-    const findCurrentContext = () => {
-        if (!room?.categories || isGeneral || isHistory) return { cat: null, sub: null };
-        for (const cat of room.categories) {
-            if (!cat.subcategories) continue;
-            // Try by exact ID or by slug part of ID
-            const sub = (cat.subcategories as any[]).find((s: any) => 
-                s.id === currentSubId || 
-                (s.id.includes('-') && s.id.split('-').slice(1).join('-') === currentSubId) ||
-                (currentSubId?.includes('-') && currentSubId.split('-').slice(1).join('-') === s.id)
-            );
-            if (sub) return { cat, sub };
-        }
-        return { cat: null, sub: null };
+    const handleDrag = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.type === 'dragover' || e.type === 'dragenter') setIsDragging(true);
+        else setIsDragging(false);
     };
 
-    const context = findCurrentContext();
-    const currentCat = context.cat as any;
-    const currentSub = context.sub as any;
-    const userRole = room?.members?.find((m: any) => m.userId === session?.user?.id || (isGuest && m.id === 'guest-me'))?.role;
-    const isAdmin = userRole === 'admin';
-    const isReallyCreator = (room?.creatorId === session?.user?.id && !!session?.user?.id) || (room?.creatorId === 'guest' && isGuest && roomId === 'test-room');
-    const canManage = !!session?.user?.id && (isReallyCreator || isAdmin);
+    const handleDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            const files = Array.from(e.dataTransfer.files);
+            const images = files.filter(f => f.type.startsWith('image/')).slice(0, 3);
+            if (images.length > 0) {
+                setSelectedImages(prev => [...prev, ...images].slice(0, 3));
+            }
+        }
+    };
 
     return (
         <div className="room-chat-wrapper">
@@ -412,7 +598,12 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
 
                 {!isHistory && (
                     <div className="main-input-sticky">
-                        <div className="input-card">
+                        <div 
+                            className={`input-card ${isDragging ? 'is-dragging' : ''}`}
+                            onDragOver={handleDrag}
+                            onDragLeave={handleDrag}
+                            onDrop={handleDrop}
+                        >
                             <form onSubmit={(e) => handleSend(e, false)}>
                                 <textarea 
                                     value={text} 
@@ -423,10 +614,10 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                 />
                                 {selectedImages.length > 0 && (
                                     <div className="preview-row">
-                                        {selectedImages.map((file, i) => (
+                                        {selectedImages.map((file: any, i: number) => (
                                             <div key={i} className="thumb-box">
                                                 <img src={URL.createObjectURL(file)} />
-                                                <button type="button" onClick={() => setSelectedImages(prev => prev.filter((_, idx) => idx !== i))} className="del-img-btn"><X size={12} /></button>
+                                                <button type="button" onClick={() => setSelectedImages(prev => prev.filter((_: any, idx: number) => idx !== i))} className="del-img-btn"><X size={12} /></button>
                                             </div>
                                         ))}
                                     </div>
@@ -461,6 +652,24 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 </a>
 
                 <div className="messages-scroller">
+                    {pinnedMessagesList.length > 0 && (
+                        <div className="pinned-section-wrapper fade-in">
+                            <div className="pinned-header">
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                                    <Pin size={18} color="#f59e0b" fill="#f59e0b" />
+                                    <span>{lang === 'es' ? 'Mensajes Destacados' : 'Pinned Messages'}</span>
+                                </div>
+                                <span className="pinned-badge">{pinnedMessagesList.length}</span>
+                            </div>
+                            <div className="pinned-full-list">
+                                {pinnedMessagesList.map((msg: any) => renderMessage(msg, true))}
+                            </div>
+                            <div className="pinned-divider">
+                                <span>{lang === 'es' ? 'Mensajes Recientes' : 'Recent Messages'}</span>
+                            </div>
+                        </div>
+                    )}
+
                     {loadingMessages ? (
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '4rem 0', gap: '1rem', color: '#94a3b8' }}>
                             <Loader2 className="spin" size={60} color="var(--accent)" strokeWidth={2.5} />
@@ -473,122 +682,36 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                             {!isHistory && <p>{roomsT.chat.startConversation}</p>}
                         </div>
                     ) : (
-                        messages.map((msg: any) => {
-                            const isMe = msg.userId === session?.user?.id || (isGuest && (msg.userId === 'guest-me' || msg.user.name === 'Invitado'));
-                            const isMyMsg = isMe;
-
-                            if (isHistory) {
-                                return (
-                                    <div key={msg.id} className="log-row-premium" onClick={() => handleLogClick(msg)}>
-                                        <div className="accent-bar" />
-                                        <div className="log-row-content" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.6rem' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', width: '100%' }}>
-                                                <img src={msg.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent((msg.user.name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}`} className="log-avatar" />
-                                                <div className="log-main">
-                                                    <div className="log-meta">
-                                                        <span className="log-user">{msg.user.name}{(isMe && !msg.user.name.includes('(tú)')) ? ' (tú)' : ''}</span>
-                                                        <span className="log-time">{formatMessageDate(new Date(msg.createdAt), lang, true)}</span>
-                                                    </div>
-                                                    <p className="log-text">{msg.content}</p>
-                                                </div>
-                                            </div>
-                                            <div className="log-tags" style={{ alignSelf: 'flex-start', marginLeft: '3rem' }}>
-                                                <span className="tag-cat">{msg.categoryName}</span>
-                                                <ChevronRight size={10} />
-                                                <span className="tag-sub">{msg.subcategoryName}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                );
-                            }
-
-                            return (
-                                <div key={msg.id} className="message-item-wrapper" id={msg.id}>
-                                    <div className="message-card">
-                                        <div className="msg-header">
-                                            <img src={msg.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent((msg.user.name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}`} className="msg-avatar" />
-                                            <div className="msg-meta">
-                                                <span className="msg-user">{msg.user.name}{(isMe && !msg.user.name.includes('(tú)')) ? ' (tú)' : ''}</span>
-                                                <span className="msg-date">{formatMessageDate(new Date(msg.createdAt), lang)}</span>
-                                            </div>
-                                        </div>
-                                        <div className="msg-body">
-                                            <p className="msg-text">{msg.content}</p>
-                                            {msg.images && (msg.images as string[]).map((img, i) => (
-                                                <div key={i} className="msg-img-box"><img src={img} onClick={() => window.open(img, '_blank')} /></div>
-                                            ))}
-                                        </div>
-                                        <div className="msg-actions">
-                                            {replyingTo?.id === msg.id ? (
-                                                <div className="inline-reply-box">
-                                                    <div className="reply-banner">
-                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                                                            <div className="reply-indicator-dot" />
-                                                            <span>{lang === 'es' ? 'Respondiendo a' : 'Replying to'} <strong>{msg.user.name}{(isMe && !msg.user.name.includes('(tú)')) ? ' (tú)' : ''}</strong></span>
+                        <div className="messages-list-flow">
+                            {messages.filter((m: any) => !m.isPinned).map((msg: any) => {
+                                if (isHistory) {
+                                    const isMe = msg.userId === session?.user?.id || (isGuest && (msg.userId === 'guest-me' || msg.user.name === 'Invitado'));
+                                    return (
+                                        <div key={msg.id} className="log-row-premium" onClick={() => handleLogClick(msg)}>
+                                            <div className="accent-bar" />
+                                            <div className="log-row-content" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.6rem' }}>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', width: '100%' }}>
+                                                    <img src={msg.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent((msg.user.name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}`} className="log-avatar" />
+                                                    <div className="log-main">
+                                                        <div className="log-meta">
+                                                            <span className="log-user">{msg.user.name}{(isMe && !msg.user.name.includes('(tú)')) ? ' (tú)' : ''}</span>
+                                                            <span className="log-time">{formatMessageDate(new Date(msg.createdAt), lang, true)}</span>
                                                         </div>
-                                                        <button type="button" onClick={() => setReplyingTo(null)} className="close-reply-btn"><X size={16} /></button>
-                                                    </div>
-                                                    <div className="reply-input-area">
-                                                        <form onSubmit={(e) => handleSend(e, true)}>
-                                                            <textarea autoFocus value={replyText} onChange={e => setReplyText(e.target.value)} placeholder={roomsT.chat.whatAreYouThinking} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(e, true); } }} />
-                                                            <div className="reply-footer">
-                                                                <div style={{ display: 'flex', gap: '0.6rem' }}>
-                                                                    <a href="https://emojis.hoy.today/" target="_blank" rel="noopener noreferrer" className="icon-btn" title={lang === 'es' ? 'Emojis' : 'Emojis'}>
-                                                                        <Smile size={20} />
-                                                                    </a>
-                                                                    <button type="button" onClick={() => fileInputRef.current?.click()} className="icon-btn" title={lang === 'es' ? 'Subir imagen' : 'Upload image'}>
-                                                                        <ImageIcon size={20} />
-                                                                    </button>
-                                                                </div>
-                                                                <button type="submit" disabled={sending || uploading || (!replyText.trim() && selectedImages.length === 0)} className="room-btn-primary mini">
-                                                                    {sending ? <Loader2 size={20} className="spin" /> : <Send size={16} />}
-                                                                </button>
-                                                            </div>
-                                                        </form>
+                                                        <p className="log-text">{msg.content}</p>
                                                     </div>
                                                 </div>
-                                            ) : (
-                                                <div className="action-row">
-                                                    <button onClick={() => setReplyingTo(msg)} className="btn-reply-trigger"><ReplyIcon size={14} /> <span>{lang === 'es' ? 'Responder' : 'Reply'}</span></button>
-                                                    {isMyMsg && (
-                                                        <button onClick={() => handleDeleteMessage(msg.id)} className={`btn-delete-trigger ${confirmDeleteId === msg.id ? 'confirming' : ''}`}>
-                                                            <Trash2 size={14} /> 
-                                                            <span>{confirmDeleteId === msg.id ? (lang === 'es' ? '¿Seguro?' : 'Sure?') : (lang === 'es' ? 'Eliminar' : 'Delete')}</span>
-                                                        </button>
-                                                    )}
+                                                <div className="log-tags" style={{ alignSelf: 'flex-start', marginLeft: '3rem' }}>
+                                                    <span className="tag-cat">{msg.categoryName}</span>
+                                                    <ChevronRight size={10} />
+                                                    <span className="tag-sub">{msg.subcategoryName}</span>
                                                 </div>
-                                            )}
-                                        </div>
-                                        {msg.replies && msg.replies.length > 0 && (
-                                            <div className="replies-list">
-                                                {msg.replies.map((r: any) => {
-                                                    const isReplyMe = r.userId === session?.user?.id || (isGuest && (r.userId === 'guest-me' || r.user.name === 'Invitado'));
-                                                    return (
-                                                        <div key={r.id} className="reply-item">
-                                                            <div className="reply-header">
-                                                                <img src={r.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent((r.user.name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}`} className="reply-avatar" />
-                                                                <div className="reply-meta">
-                                                                    <span className="reply-user">{r.user.name}{(isReplyMe && !r.user.name.includes('(tú)')) ? ' (tú)' : ''}</span>
-                                                                    <span className="reply-time">{formatMessageDate(new Date(r.createdAt), lang)}</span>
-                                                                </div>
-                                                                {isReplyMe && (
-                                                                    <button onClick={() => handleDeleteMessage(r.id, true, msg.id)} className={`reply-del-btn ${confirmDeleteId === r.id ? 'confirming' : ''}`}>
-                                                                        {confirmDeleteId === r.id ? (lang === 'es' ? '¿Seguro?' : 'Sure?') : <Trash2 size={12} />}
-                                                                    </button>
-                                                                )}
-                                                            </div>
-                                                            <div className="reply-body">
-                                                                <p className="reply-text">{r.content}</p>
-                                                            </div>
-                                                        </div>
-                                                    );
-                                                })}
                                             </div>
-                                        )}
-                                    </div>
-                                </div>
-                            );
-                        })
+                                        </div>
+                                    );
+                                }
+                                return renderMessage(msg);
+                            })}
+                        </div>
                     )}
                 </div>
             </div>
@@ -608,17 +731,20 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .path-segment.active { color: var(--accent); }
                 .path-segment.sub { color: #1e293b; }
                 .path-separator { opacity: 0.3; margin: 0 0.2rem; color: #94a3b8; }
-                .demo-badge-pill { margin-left: 0.6rem; font-size: 0.65rem; background: #fff1f2; color: #ef4444; padding: 0.1rem 0.5rem; border-radius: 6px; font-weight: 900; border: 1px solid #fee2e2; }
-
-                .header-main-info { display: flex; flex-direction: column; gap: 0.6rem; width: 100%; }
-                .room-description-pill { background: #fff; border: 1px solid #f1f5f9; padding: 0.8rem 1.2rem; border-radius: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
-                .room-description-pill p { margin: 0; font-size: 0.95rem; color: #64748b; line-height: 1.5; font-weight: 500; }
-
+                
                 .main-input-sticky { position: sticky; top: 1rem; z-index: 50; }
-                .input-card { background: #fff; border: 2px solid #f1f5f9; border-radius: 24px; padding: 1rem; box-shadow: 0 10px 40px rgba(0,0,0,0.06); }
+                .input-card { background: #fff; border: 2px solid #f1f5f9; border-radius: 24px; padding: 1rem; box-shadow: 0 10px 40px rgba(0,0,0,0.06); transition: all 0.2s; }
+                .input-card.is-dragging { border-color: var(--accent); background: rgba(0, 112, 243, 0.02); transform: scale(1.02); }
                 textarea { width: 100%; border: none; background: none; outline: none; resize: none; font-size: 1.1rem; color: #1e293b; padding: 0.5rem; min-height: 40px; }
                 .input-footer-row { display: flex; align-items: center; justify-content: space-between; margin-top: 0.5rem; border-top: 1px solid #f8fafc; padding-top: 0.5rem; }
                 .input-actions-left { display: flex; align-items: center; gap: 0.8rem; }
+                
+                .preview-row { display: flex; gap: 1.2rem; margin-top: 1rem; padding: 0.2rem; flex-wrap: wrap; }
+                .thumb-box { position: relative; width: 80px; height: 80px; border-radius: 18px; border: 2px solid #f1f5f9; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 15px rgba(0,0,0,0.05); background: #fff; }
+                .thumb-box:hover { transform: translateY(-4px) scale(1.02); border-color: var(--accent); box-shadow: 0 10px 25px rgba(0, 112, 243, 0.15); }
+                .thumb-box img { width: 100%; height: 100%; object-fit: cover; border-radius: 16px; }
+                .del-img-btn { position: absolute; top: -10px; right: -10px; background: #fff; color: #ef4444; border: 1px solid #fee2e2; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25); transition: all 0.2s ease; z-index: 10; }
+                .del-img-btn:hover { background: #ef4444; color: #fff; transform: scale(1.1) rotate(90deg); border-color: #ef4444; }
                 
                 .icon-btn { background: #f8fafc; border: none; color: #94a3b8; padding: 0.6rem; border-radius: 12px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; text-decoration: none; }
                 .icon-btn:hover { color: var(--accent); background: #f1f5f9; transform: scale(1.05); }
@@ -664,18 +790,15 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .msg-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
                 .msg-avatar { width: 44px; height: 44px; border-radius: 14px; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
                 .msg-user { font-weight: 900; color: #1e293b; font-size: 1.05rem; }
-                .msg-date { font-size: 0.8rem; color: #94a3b8; font-weight: 700; margin-left: 0.8rem; }
+                .msg-date { font-size: 0.8rem; color: #94a3b8; font-weight: 700; }
                 .msg-text { font-size: 1.1rem; line-height: 1.6; color: #334155; margin: 0; font-weight: 500; }
                 .msg-img-box { margin-top: 1rem; border-radius: 16px; overflow: hidden; border: 1px solid #f1f5f9; }
                 .msg-img-box img { width: 100%; max-width: 100%; height: auto; display: block; cursor: pointer; transition: transform 0.2s; }
                 .msg-img-box img:hover { transform: scale(1.01); }
                 
                 .msg-actions { margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid #f8fafc; }
-                .action-row { display: flex; align-items: center; gap: 0.8rem; }
-                .btn-reply-trigger, .btn-delete-trigger { background: #f8fafc; border: 1px solid #f1f5f9; padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.85rem; font-weight: 800; color: #64748b; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s; }
+                .btn-reply-trigger { background: #f8fafc; border: 1px solid #f1f5f9; padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.85rem; font-weight: 800; color: #64748b; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s; }
                 .btn-reply-trigger:hover { color: var(--accent); background: rgba(0, 112, 243, 0.05); border-color: rgba(0, 112, 243, 0.1); }
-                .btn-delete-trigger:hover { color: #ef4444; background: #fff1f2; border-color: #fee2e2; }
-                .btn-delete-trigger.confirming { background: #ef4444; color: #fff; border-color: #ef4444; }
 
                 .empty-view { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6rem 2rem; text-align: center; background: #fff; border: 2px dashed #f1f5f9; border-radius: 32px; }
                 .empty-icon-circle { width: 80px; height: 80px; background: rgba(0, 112, 243, 0.05); color: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; }
@@ -701,12 +824,37 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .reply-user { font-weight: 900; font-size: 0.85rem; color: #1e293b; }
                 .reply-time { font-size: 0.75rem; color: #94a3b8; font-weight: 700; }
                 .reply-text { font-size: 1rem; margin: 0; color: #475569; line-height: 1.5; font-weight: 500; }
-                .reply-del-btn { background: none; border: none; padding: 0.4rem; color: #cbd5e1; cursor: pointer; display: inline-flex; align-items: center; transition: all 0.2s; border-radius: 6px; }
-                .reply-del-btn:hover { color: #ef4444; background: #fff1f2; }
-                .reply-del-btn.confirming { background: #ef4444; color: #fff; padding: 0.2rem 0.6rem; font-weight: 800; font-size: 0.7rem; }
+                .reply-del-btn { background: #f8fafc; border: 1px solid #f1f5f9; padding: 0.4rem 0.6rem; color: #64748b; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; transition: all 0.2s; border-radius: 8px; font-size: 0.75rem; font-weight: 800; }
+                .reply-del-btn:hover { color: #ef4444; background: #fff1f2; border-color: #fee2e2; }
+                .reply-del-btn.confirming { background: #ef4444; color: #fff; border-color: #ef4444; }
 
-                /* Inline Reply Box */
-                .inline-reply-box { margin-top: 1rem; border: 2px solid #f1f5f9; border-radius: 20px; overflow: hidden; background: #fcfdfe; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+                .inline-reply-box { margin-top: 1rem; border: 2px solid #f1f5f9; border-radius: 20px; overflow: hidden; background: #fcfdfe; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: all 0.2s; }
+                
+                .pinned-header { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 0.75rem; padding-left: 0.5rem; }
+                .pinned-section-wrapper { margin-bottom: 1.5rem; }
+                .pinned-full-list { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1rem; }
+                .pinned-divider { display: flex; align-items: center; gap: 1.5rem; margin: 2rem 0 1rem 0; }
+                .pinned-divider::before, .pinned-divider::after { content: ''; flex: 1; height: 1px; background: #e2e8f0; }
+                .pinned-divider span { font-size: 0.8rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em; }
+                
+                .message-card.pinned-highlight { border: 2px solid #fde68a; background: #fffbeb; box-shadow: 0 10px 30px rgba(245, 158, 11, 0.08); }
+                .message-card.in-pinned-list { border-left: 6px solid #f59e0b; }
+                
+                .btn-pin-top, .btn-delete-top { background: #f8fafc; border: 1px solid #f1f5f9; color: #94a3b8; padding: 0.5rem; border-radius: 10px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+                .btn-pin-top:hover, .btn-pin-top.active { color: #f59e0b; background: #fffbeb; border-color: #fde68a; }
+                .btn-delete-top:hover { color: #ef4444; background: #fff1f2; border-color: #fee2e2; }
+                .btn-delete-top.confirming { background: #ef4444; color: #fff; border-color: #ef4444; }
+
+                .reorder-btn { background: #f8fafc; border: 1px solid #f1f5f9; color: #94a3b8; padding: 0.4rem; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+                .reorder-btn:hover { color: var(--accent); background: #f1f5f9; border-color: #e2e8f0; }
+
+                .message-highlight { animation: flash 2s ease-out; }
+                @keyframes flash {
+                    0% { background-color: rgba(250, 204, 21, 0.3); }
+                    100% { background-color: transparent; }
+                }
+
+                .btn-reply-trigger.pinned { color: var(--accent); font-weight: 800; }
                 .reply-banner { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1.2rem; background: #f8fafc; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; color: #64748b; }
                 .reply-indicator-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; }
                 .close-reply-btn { background: #fff; border: 1px solid #e2e8f0; color: #64748b; padding: 0.3rem; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }

@@ -11,7 +11,7 @@ export default async function RoomMainPage({ params }: any) {
   if (!roomId) return null;
 
   const session = await auth();
-  const isGuest = roomId.startsWith('guest-') || roomId === 'test-room' || !session;
+  const isGuest = roomId === 'test-room' || !session;
 
   return (
     <RoomChatClient 

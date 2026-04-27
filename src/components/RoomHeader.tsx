@@ -35,10 +35,11 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
     const [editDesc, setEditDesc] = useState(room.description || '');
     
     const isGuest = roomId === 'test-room' || !session || initialRoom.creatorId === 'guest';
-    const isReallyCreator = (initialRoom.creatorId === session?.user?.id && !!session?.user?.id) || (initialRoom.creatorId === 'guest' && isGuest && roomId === 'test-room');
-    const userRole = room.members?.find((m: any) => m.userId === session?.user?.id || (isGuest && m.id === 'guest-me'))?.role;
-    const isAdmin = userRole === 'admin';
-    const canManageRoom = !!session?.user?.id && (isReallyCreator || isAdmin);
+    const isReallyCreator = (initialRoom.creatorId === session?.user?.id && !!session?.user?.id) || (isGuest && initialRoom.creatorId === 'guest' && roomId !== 'test-room');
+    const myMember = room.members?.find((m: any) => m.userId === session?.user?.id || (isGuest && (m.id === 'guest-me' || m.user.name === 'Invitado')));
+    const isAdmin = myMember?.role === 'admin';
+    let canManageRoom = (!!session?.user?.id && (isReallyCreator || isAdmin)) || (isGuest && isAdmin);
+    if (isGuest && roomId === 'test-room') canManageRoom = false;
 
     useEffect(() => {
         if (isGuest && roomId !== 'test-room') {

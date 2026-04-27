@@ -52,10 +52,11 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
     const isGuest = initialRoom.creatorId === 'guest' || initialRoom.id === 'test-room';
     
     // Check if current user is admin in this room
-    const myMember = room?.members?.find((m: any) => m.userId === session?.user?.id || m.id === 'guest-me');
+    const myMember = room?.members?.find((m: any) => m.userId === session?.user?.id || (isGuest && (m.id === 'guest-me' || m.user.name === 'Invitado')));
     const isAdmin = myMember?.role === 'admin';
-    const isReallyCreator = (initialRoom?.creatorId === session?.user?.id && !!session?.user?.id) || (initialRoom?.creatorId === 'guest' && isGuest && initialRoom.id === 'test-room');
-    const canManage = !!session?.user?.id && (isReallyCreator || isAdmin);
+    const isReallyCreator = (initialRoom?.creatorId === session?.user?.id && !!session?.user?.id) || (isGuest && initialRoom?.creatorId === 'guest' && initialRoom.id !== 'test-room');
+    let canManage = (!!session?.user?.id && (isReallyCreator || isAdmin)) || (isGuest && isAdmin);
+    if (isGuest && (initialRoom.id === 'test-room' || room.id === 'test-room')) canManage = false;
 
     const [isAddingCategory, setIsAddingCategory] = useState(false);
     const [isAddingSub, setIsAddingSub] = useState<string | null>(null);
@@ -384,7 +385,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 <h3 className="section-title">{roomsT.sidebar.members} ({room.members?.length || 0})</h3>
                 <div className="members-list">
                     {room.members?.map((member: any) => {
-                        const isMe = member.id === 'guest-me' || member.id === session?.user?.id;
+                        const isMe = member.id === 'guest-me' || member.id === session?.user?.id || (isGuest && (member.id === 'guest-me' || member.user.name === 'Invitado'));
                         return (
                             <div key={member.id} className="member-item">
                                 <img src={member.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent((member.user.name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}`} alt={member.user.name} className="member-avatar" />

@@ -600,3 +600,87 @@ export async function leaveRoom(roomId: string) {
     return { error: "Error al salir de la sala" };
   }
 }
+export async function togglePinMessage(messageId: string) {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "No autenticado" };
+
+  try {
+    const message = await db.roomMessage.findUnique({
+      where: { id: messageId },
+      include: { subcategory: { include: { category: { include: { room: true } } } } }
+    });
+
+    if (!message) return { error: "Mensaje no encontrado" };
+
+    const isAdmin = session.user.role === 'admin' || session.user.email === 'ciberportero@gmail.com' || message.subcategory.category.room.creatorId === session.user.id;
+    if (!isAdmin) return { error: "No autorizado" };
+
+    const newPinned = !(message as any).isPinned;
+    let pinOrder = (message as any).pinOrder || 0;
+
+    if (newPinned) {
+      const maxPin = await db.roomMessage.aggregate({
+        where: { subcategoryId: message.subcategoryId, isPinned: true } as any,
+        _max: { pinOrder: true } as any
+      });
+      pinOrder = ((maxPin as any)._max.pinOrder || 0) + 1;
+    }
+
+    await db.roomMessage.update({
+      where: { id: messageId },
+      data: { 
+        isPinned: newPinned,
+        pinOrder: pinOrder
+      } as any
+    });
+
+    revalidatePath(`/salas/${message.subcategory.category.roomId}`);
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { error: "Error al pinear mensaje" };
+  }
+}
+
+export async function reorderPinnedMessages(subcategoryId: string, messageIds: string[]) {
+    const session = await auth();
+    if (!session?.user?.id) return { error: "No autenticado" };
+
+    try {
+        let sub = await db.roomSubcategory.findUnique({
+            where: { id: subcategoryId },
+            include: { category: { include: { room: true } } }
+        });
+
+        if (!sub && subcategoryId.length < 30) {
+            // Probably a name or 'general', try finding by room
+            sub = await db.roomSubcategory.findFirst({
+                where: { 
+                    OR: [
+                        { name: 'Chat General', category: { roomId: subcategoryId } },
+                        { name: 'General', category: { roomId: subcategoryId } }
+                    ]
+                },
+                include: { category: { include: { room: true } } }
+            });
+        }
+
+        if (!sub) return { error: "Subcategoría no encontrada" };
+
+        const isAdmin = session.user.role === 'admin' || session.user.email === 'ciberportero@gmail.com' || sub.category.room.creatorId === session.user.id;
+        if (!isAdmin) return { error: "No autorizado" };
+
+        await Promise.all(messageIds.map((id, idx) => 
+            db.roomMessage.update({
+                where: { id },
+                data: { pinOrder: idx } as any
+            })
+        ));
+
+        revalidatePath(`/salas/${sub.category.roomId}`);
+        return { success: true };
+    } catch (error) {
+        console.error(error);
+        return { error: "Error al reordenar" };
+    }
+}

@@ -364,6 +364,8 @@ model RoomMessage {
   parentId       String?
   parent         RoomMessage? @relation("Thread", fields: [parentId], references: [id], onDelete: Cascade)
   replies        RoomMessage[] @relation("Thread")
+  isPinned       Boolean  @default(false)
+  pinOrder       Int      @default(0)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
