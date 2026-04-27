@@ -7,7 +7,7 @@ import { Settings, Check, X, Trash2, Key, History as HistoryIcon, Link as LinkIc
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { translations } from '@/lib/translations';
-import { updateRoom } from '@/lib/salasActions';
+import { updateRoom, deleteRoom, leaveRoom } from '@/lib/salasActions';
 
 interface RoomHeaderProps {
     roomId: string;
@@ -86,12 +86,36 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
         }
     };
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
         if (!confirm(lang === 'es' ? '¿Estás seguro de eliminar esta sala?' : 'Are you sure you want to delete this room?')) return;
         if (isGuest) {
             guestStore.deleteRoom(roomId);
             router.push('/salas/lista');
             toast.success(lang === 'es' ? 'Sala eliminada' : 'Room deleted');
+        } else {
+            const res = await deleteRoom(roomId);
+            if (res.success) {
+                toast.success(lang === 'es' ? 'Sala eliminada' : 'Room deleted');
+                router.push('/salas/lista');
+            } else {
+                toast.error(res.error || 'Error');
+            }
+        }
+    };
+
+    const handleLeaveRoom = async () => {
+        if (!confirm(lang === 'es' ? '¿Estás seguro de salir de esta sala?' : 'Are you sure you want to leave this room?')) return;
+        if (isGuest) {
+            // Guests just go back to list as they aren't 'officially' in a DB room
+            router.push('/salas/lista');
+        } else {
+            const res = await leaveRoom(roomId);
+            if (res.success) {
+                toast.success(lang === 'es' ? 'Has salido de la sala' : 'You left the room');
+                router.push('/salas/lista');
+            } else {
+                toast.error(res.error || 'Error');
+            }
         }
     };
 
@@ -129,15 +153,13 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                         <span className="admin-badge-header">SALA OFICIAL (ADMIN)</span>
                     )}
                 </h1>
-                {isCreator && (
-                    <button 
-                        onClick={() => setIsModalOpen(true)} 
-                        className="config-btn"
-                        title="Configuración de la sala"
-                    >
-                        <Settings size={22} />
-                    </button>
-                )}
+                <button 
+                    onClick={() => setIsModalOpen(true)} 
+                    className="config-btn"
+                    title={isCreator ? "Configuración de la sala" : "Información de la sala"}
+                >
+                    <Settings size={22} />
+                </button>
             </div>
 
             <div className="meta-info-container">
@@ -275,16 +297,25 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                         </div>
 
                         <div className="modal-footer">
-                            <button onClick={handleDelete} className="action-btn delete">
-                                <Trash2 size={18} />
-                                <span>Eliminar Sala</span>
-                            </button>
-                            <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.75rem' }}>
-                                <button onClick={() => setIsModalOpen(false)} className="action-btn cancel">Cancelar</button>
-                                <button onClick={handleUpdate} className="action-btn save">
-                                    <Check size={20} />
-                                    <span>Guardar</span>
+                            {isCreator ? (
+                                <button onClick={handleDelete} className="action-btn delete">
+                                    <Trash2 size={18} />
+                                    <span>Eliminar Sala</span>
                                 </button>
+                            ) : (
+                                <button onClick={handleLeaveRoom} className="action-btn delete">
+                                    <Trash2 size={18} />
+                                    <span>Salir de la Sala</span>
+                                </button>
+                            )}
+                            <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.75rem' }}>
+                                <button onClick={() => setIsModalOpen(false)} className="action-btn cancel">Cerrar</button>
+                                {isCreator && (
+                                    <button onClick={handleUpdate} className="action-btn save">
+                                        <Check size={20} />
+                                        <span>Guardar</span>
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </div>

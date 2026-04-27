@@ -121,7 +121,7 @@ const DEFAULT_DATA: GuestData = {
                                     id: 'm-initial-1',
                                     content: '¿Alguien pudo filtrar los paquetes ICMP en Wireshark? No me queda claro cómo identificar el escaneo de puertos.',
                                     images: [],
-                                    user: { name: 'Lucas G.', image: null },
+                                    user: { name: 'Invitado', image: null },
                                     userId: 'guest-me',
                                     createdAt: new Date(Date.now() - 7200000).toISOString(),
                                     replies: [
@@ -145,7 +145,7 @@ const DEFAULT_DATA: GuestData = {
                                         {
                                             id: 'r-sofi-1',
                                             content: 'Sofi! Creo que el profe dijo que usáramos una variable de entorno en el navegador para que guarde las llaves de sesión en un archivo de texto, y después cargás ese archivo en Wireshark.',
-                                            user: { name: 'Lucas G.', image: null },
+                                            user: { name: 'Invitado', image: null },
                                             userId: 'guest-me',
                                             createdAt: new Date(Date.now() - 10800000).toISOString(),
                                         }
@@ -158,7 +158,7 @@ const DEFAULT_DATA: GuestData = {
             ],
             members: [
                 { id: 'm1', user: { name: 'Admin del Grupo', image: null }, createdAt: new Date(Date.now() - 86400000).toISOString(), role: 'admin' },
-                { id: 'guest-me', user: { name: 'Lucas G.', image: null }, createdAt: new Date().toISOString(), role: 'member' },
+                { id: 'guest-me', user: { name: 'Invitado', image: null }, createdAt: new Date().toISOString(), role: 'member' },
                 { id: 'm2', user: { name: 'Nico B.', image: null }, createdAt: new Date().toISOString(), role: 'member' },
                 { id: 'm3', user: { name: 'Sofi R.', image: null }, createdAt: new Date().toISOString(), role: 'member' }
             ],
@@ -192,17 +192,23 @@ export const guestStore = {
             localStorage.setItem(GUEST_DATA_KEY, JSON.stringify(parsed));
         }
 
+        let saveNeeded = false;
         parsed.rooms.forEach((r: any) => {
             if (!r.generalMessages) r.generalMessages = [];
             if (!r.members) r.members = [];
             r.members.forEach((m: any) => {
                 if (!m.role) m.role = (m.id === 'guest-me' || m.id === 'm1') ? 'admin' : 'member';
-                // Migrate legacy Invitado name to Lucas G.
-                if (m.id === 'guest-me' && m.user.name === 'Invitado') {
-                    m.user.name = 'Lucas G.';
+                // Migrate legacy Lucas G. name to Invitado
+                if (m.id === 'guest-me' && m.user.name === 'Lucas G.') {
+                    m.user.name = 'Invitado';
+                    saveNeeded = true;
                 }
             });
         });
+
+        if (saveNeeded) {
+            localStorage.setItem(GUEST_DATA_KEY, JSON.stringify(parsed));
+        }
 
         return parsed;
     },
@@ -234,7 +240,7 @@ export const guestStore = {
                     subcategories: [{ id: 'sub-chat', name: 'Chat', messages: [] }]
                 }
             ],
-            members: [{ id: 'guest-me', user: { name: 'Lucas G.', image: null }, createdAt: new Date().toISOString(), role: 'admin' }],
+            members: [{ id: 'guest-me', user: { name: 'Invitado', image: null }, createdAt: new Date().toISOString(), role: 'admin' }],
             generalMessages: []
         };
         data.rooms.push(newRoom);
@@ -270,7 +276,7 @@ export const guestStore = {
                         const newReply = {
                             id: `reply-${Date.now()}`,
                             content,
-                            user: { name: 'Lucas G.', image: null },
+                            user: { name: 'Invitado', image: null },
                             userId: 'guest-me',
                             createdAt: new Date().toISOString()
                         };
@@ -283,7 +289,7 @@ export const guestStore = {
                         id: `msg-${Date.now()}`,
                         content,
                         images,
-                        user: { name: 'Lucas G.', image: null },
+                        user: { name: 'Invitado', image: null },
                         userId: 'guest-me',
                         createdAt: new Date().toISOString(),
                         replies: []

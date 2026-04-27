@@ -513,3 +513,24 @@ export async function deleteMessage(messageId: string) {
     return { error: "Error al eliminar mensaje" };
   }
 }
+
+export async function leaveRoom(roomId: string) {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "No autenticado" };
+
+  try {
+    await db.roomMember.delete({
+      where: {
+        roomId_userId: {
+          roomId,
+          userId: session.user.id
+        }
+      }
+    });
+    revalidatePath('/salas/lista');
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { error: "Error al salir de la sala" };
+  }
+}
