@@ -2,16 +2,17 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { MessageSquare, Send, Loader2, History as HistoryIcon, Image as ImageIcon, X, ChevronLeft, ChevronRight, Hash, Paperclip, MessageCircle, Reply as ReplyIcon, Trash2, Pencil, Check } from 'lucide-react';
-import { addRoomMessage, deleteMessage, addGeneralMessage, updateCategory } from '@/lib/salasActions';
+import { MessageSquare, Send, Loader2, History as HistoryIcon, Image as ImageIcon, X, ChevronLeft, ChevronRight, Hash, Paperclip, MessageCircle, Reply as ReplyIcon, Trash2, Pencil, Check, Smile, ClipboardClock } from 'lucide-react';
+import { addRoomMessage, deleteMessage, addGeneralMessage, updateCategory, updateSubcategory } from '@/lib/salasActions';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'react-hot-toast';
 import { translations } from '@/lib/translations';
 import { guestStore } from '@/lib/guestStore';
 
-export default function RoomChatClient({ subcategoryId, initialMessages, isGuest, session }: any) {
+export default function RoomChatClient({ roomId: propRoomId, subcategoryId, initialMessages, isGuest, session }: any) {
     const { lang } = useLanguage();
-    const [currentSubId, setCurrentSubId] = useState<string | null>(subcategoryId || null);
+    const [currentSubId, setCurrentSubId] = useState<string | null>(subcategoryId || 'general');
+    const [roomId, setRoomId] = useState<string | null>(propRoomId || null);
     const [loadingMessages, setLoadingMessages] = useState(true);
     const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
     const confirmTimer = useRef<any>(null);
@@ -31,21 +32,25 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
     const [room, setRoom] = useState<any>(null);
     const [editingCatId, setEditingCatId] = useState<string | null>(null);
     const [editCatValue, setEditCatValue] = useState('');
+    const [editingSubId, setEditingSubId] = useState<string | null>(null);
+    const [editSubValue, setEditSubValue] = useState('');
 
     useEffect(() => {
-        const getRoomData = async () => {
-            const pathParts = window.location.pathname.split('/');
-            const roomId = pathParts.includes('salas') ? pathParts[pathParts.indexOf('salas') + 1] : null;
-            
+        const getRoomData = async (targetId: string) => {
             if (isGuest) {
-                setRoom(guestStore.getRoom(roomId || 'test-room'));
-            } else if (roomId) {
+                setRoom(guestStore.getRoom(targetId || 'test-room'));
+            } else {
                 const { getRoomInfo } = await import('@/lib/salasActions');
-                setRoom(await getRoomInfo(roomId));
+                setRoom(await getRoomInfo(targetId));
             }
         };
-        getRoomData();
-    }, [isGuest]);
+
+        if (roomId) getRoomData(roomId);
+        
+        const handleRefresh = () => roomId && getRoomData(roomId);
+        window.addEventListener('room-data-updated', handleRefresh);
+        return () => window.removeEventListener('room-data-updated', handleRefresh);
+    }, [isGuest, roomId]);
 
     const isGeneral = !currentSubId || currentSubId === 'general';
     const isHistory = currentSubId === 'history';
@@ -72,10 +77,24 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
     }
 
     useEffect(() => {
-        const validateAndSetSubId = (id: string | null) => {
+        const validateAndSetSubId = async (id: string | null) => {
             if (!id || id === 'general' || id === 'history') {
                 setCurrentSubId(id || 'general');
                 return;
+            }
+
+            // If we have room data, check if ID exists. If not, maybe refresh
+            if (room?.categories) {
+                const exists = room.categories.some((c: any) => 
+                    c.subcategories?.some((s: any) => 
+                        s.id === id || (s.id.includes('-') && s.id.split('-').slice(1).join('-') === id)
+                    )
+                );
+                if (!exists && !isGuest && roomId) {
+                    const { getRoomInfo } = await import('@/lib/salasActions');
+                    const updated = await getRoomInfo(roomId);
+                    if (updated) setRoom(updated);
+                }
             }
 
             if (isGuest) {
@@ -284,28 +303,40 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
         } catch (error) { toast.error("Error al enviar"); } finally { setSending(false); setUploading(false); }
     };
 
-    const handleUpdateCat = async (catId: string, name: string) => {
+    const handleUpdateSub = async (subId: string, name: string) => {
         if (!name) return;
         try {
             if (isGuest) {
-                guestStore.updateCategory(room.id, catId, name);
+                const updated = guestStore.updateSubcategory(room.id, subId, name);
                 setRoom({ ...guestStore.getRoom(room.id) } as any);
+                if (updated?.id && updated.id !== subId) {
+                    window.location.hash = updated.id;
+                    setCurrentSubId(updated.id);
+                }
             } else {
-                const res = await updateCategory(catId, name);
+                const res = await updateSubcategory(subId, name);
                 if (res.success) {
                     const { getRoomInfo } = await import('@/lib/salasActions');
-                    setRoom(await getRoomInfo(room.id));
+                    const updatedRoom = await getRoomInfo(room.id);
+                    setRoom(updatedRoom);
                 } else toast.error(res.error || 'Error');
             }
-            setEditingCatId(null);
-            toast.success(lang === 'es' ? 'Categoría actualizada' : 'Category updated');
+            setEditingSubId(null);
+            toast.success(lang === 'es' ? 'Subcategoría actualizada' : 'Subcategory updated');
+            window.dispatchEvent(new CustomEvent('room-data-updated'));
         } catch (error) { toast.error("Error al actualizar"); }
     };
 
     const findCurrentContext = () => {
-        if (!room || isGeneral || isHistory) return { cat: null, sub: null };
+        if (!room?.categories || isGeneral || isHistory) return { cat: null, sub: null };
         for (const cat of room.categories) {
-            const sub = (cat.subcategories as any[]).find((s: any) => s.id === currentSubId);
+            if (!cat.subcategories) continue;
+            // Try by exact ID or by slug part of ID
+            const sub = (cat.subcategories as any[]).find((s: any) => 
+                s.id === currentSubId || 
+                (s.id.includes('-') && s.id.split('-').slice(1).join('-') === currentSubId) ||
+                (currentSubId?.includes('-') && currentSubId.split('-').slice(1).join('-') === s.id)
+            );
             if (sub) return { cat, sub };
         }
         return { cat: null, sub: null };
@@ -314,7 +345,10 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
     const context = findCurrentContext();
     const currentCat = context.cat as any;
     const currentSub = context.sub as any;
-    const canManage = isGuest || (session?.user?.id === room?.creatorId || room?.members?.find((m: any) => m.userId === session?.user?.id)?.role === 'admin');
+    const userRole = room?.members?.find((m: any) => m.userId === session?.user?.id || (isGuest && m.id === 'guest-me'))?.role;
+    const isAdmin = userRole === 'admin';
+    const isReallyCreator = (room?.creatorId === session?.user?.id && !!session?.user?.id) || (room?.creatorId === 'guest' && isGuest && roomId === 'test-room');
+    const canManage = !!session?.user?.id && (isReallyCreator || isAdmin);
 
     return (
         <div className="room-chat-wrapper">
@@ -338,25 +372,32 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                         ) : currentSub ? (
                             <>
                                 <div className="breadcrumb-item">
-                                    {editingCatId === currentCat?.id ? (
+                                    <span className="path-segment active">
+                                        {currentCat?.name || roomsT.chat.chatTitle}
+                                    </span>
+                                </div>
+                                <span className="path-separator"><ChevronRight size={14} /></span>
+                                <div className="breadcrumb-item">
+                                    {editingSubId === currentSub.id ? (
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                             <input 
                                                 autoFocus
-                                                value={editCatValue}
-                                                onChange={e => setEditCatValue(e.target.value)}
-                                                onKeyDown={e => e.key === 'Enter' && handleUpdateCat(currentCat!.id, editCatValue)}
-                                                onBlur={() => setEditingCatId(null)}
+                                                value={editSubValue}
+                                                onChange={e => setEditSubValue(e.target.value)}
+                                                onKeyDown={e => e.key === 'Enter' && handleUpdateSub(currentSub.id, editSubValue)}
+                                                onBlur={() => setEditingSubId(null)}
                                                 className="breadcrumb-edit-input"
                                             />
-                                            <Check size={14} color="#10b981" style={{ cursor: 'pointer' }} onClick={() => handleUpdateCat(currentCat!.id, editCatValue)} />
+                                            <Check size={14} color="#10b981" style={{ cursor: 'pointer' }} onClick={() => handleUpdateSub(currentSub.id, editSubValue)} />
                                         </div>
                                     ) : (
-                                        <span className="path-segment active">
-                                            {currentCat?.name || roomsT.chat.chatTitle}
+                                        <span className="path-segment sub">
+                                            <Hash size={14} />
+                                            {currentSub.name}
                                             {canManage && (
                                                 <button 
                                                     className="breadcrumb-edit-btn"
-                                                    onClick={() => { setEditingCatId(currentCat!.id); setEditCatValue(currentCat!.name); }}
+                                                    onClick={() => { setEditingSubId(currentSub.id); setEditSubValue(currentSub.name); }}
                                                 >
                                                     <Pencil size={12} />
                                                 </button>
@@ -364,11 +405,6 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                                         </span>
                                     )}
                                 </div>
-                                <span className="path-separator"><ChevronRight size={14} /></span>
-                                <span className="path-segment sub">
-                                    <Hash size={14} />
-                                    {currentSub.name}
-                                </span>
                             </>
                         ) : null}
                     </div>
@@ -396,7 +432,15 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                                     </div>
                                 )}
                                 <div className="input-footer-row">
-                                    <button type="button" onClick={() => fileInputRef.current?.click()} className="icon-btn"><ImageIcon size={22} /><input type="file" ref={fileInputRef} hidden accept="image/*" multiple onChange={(e) => { if (e.target.files) setSelectedImages(prev => [...prev, ...Array.from(e.target.files!)].slice(0, 3)); }} /></button>
+                                    <div className="input-actions-left">
+                                        <a href="https://emojis.hoy.today/" target="_blank" rel="noopener noreferrer" className="icon-btn" title={lang === 'es' ? 'Emojis' : 'Emojis'}>
+                                            <Smile size={20} />
+                                        </a>
+                                        <button type="button" onClick={() => fileInputRef.current?.click()} className="icon-btn" title={lang === 'es' ? 'Subir imagen' : 'Upload image'}>
+                                            <ImageIcon size={20} />
+                                            <input type="file" ref={fileInputRef} hidden accept="image/*" multiple onChange={(e) => { if (e.target.files) setSelectedImages(prev => [...prev, ...Array.from(e.target.files!)].slice(0, 3)); }} />
+                                        </button>
+                                    </div>
                                     <button type="submit" disabled={sending || uploading || (!text.trim() && selectedImages.length === 0)} className="room-btn-primary">
                                         {sending ? <Loader2 size={22} className="spin" /> : <><span className="hide-mobile">{roomsT.chat.post}</span><Send size={18} /></>}
                                     </button>
@@ -406,6 +450,16 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                     </div>
                 )}
 
+                <a 
+                    href={lang === 'en' ? 'https://hoy.today/en' : 'https://hoy.today'} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="floating-hoy-btn"
+                    title="Hoy.Today"
+                >
+                    <ClipboardClock size={32} />
+                </a>
+
                 <div className="messages-scroller">
                     {loadingMessages ? (
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '4rem 0', gap: '1rem', color: '#94a3b8' }}>
@@ -414,9 +468,9 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                         </div>
                     ) : messages.length === 0 ? (
                         <div className="empty-view fade-in">
-                            <div className="empty-icon-circle"><MessageSquare size={42} /></div>
-                            <h3>{roomsT.chat.emptyMessages}</h3>
-                            <p>{lang === 'es' ? 'Sé el primero en iniciar la conversación en este chat.' : 'Be the first to start the conversation in this chat.'}</p>
+                            <div className="empty-icon-circle"><MessageSquare size={32} /></div>
+                            <h3>{isHistory ? (lang === 'es' ? 'No hay mensajes todavía' : 'No messages yet') : roomsT.chat.emptyMessages}</h3>
+                            {!isHistory && <p>{roomsT.chat.startConversation}</p>}
                         </div>
                     ) : (
                         messages.map((msg: any) => {
@@ -478,7 +532,14 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                                                         <form onSubmit={(e) => handleSend(e, true)}>
                                                             <textarea autoFocus value={replyText} onChange={e => setReplyText(e.target.value)} placeholder={roomsT.chat.whatAreYouThinking} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(e, true); } }} />
                                                             <div className="reply-footer">
-                                                                <button type="button" onClick={() => fileInputRef.current?.click()} className="icon-btn"><ImageIcon size={20} /></button>
+                                                                <div style={{ display: 'flex', gap: '0.6rem' }}>
+                                                                    <a href="https://emojis.hoy.today/" target="_blank" rel="noopener noreferrer" className="icon-btn" title={lang === 'es' ? 'Emojis' : 'Emojis'}>
+                                                                        <Smile size={20} />
+                                                                    </a>
+                                                                    <button type="button" onClick={() => fileInputRef.current?.click()} className="icon-btn" title={lang === 'es' ? 'Subir imagen' : 'Upload image'}>
+                                                                        <ImageIcon size={20} />
+                                                                    </button>
+                                                                </div>
                                                                 <button type="submit" disabled={sending || uploading || (!replyText.trim() && selectedImages.length === 0)} className="room-btn-primary mini">
                                                                     {sending ? <Loader2 size={20} className="spin" /> : <Send size={16} />}
                                                                 </button>
@@ -557,9 +618,37 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                 .input-card { background: #fff; border: 2px solid #f1f5f9; border-radius: 24px; padding: 1rem; box-shadow: 0 10px 40px rgba(0,0,0,0.06); }
                 textarea { width: 100%; border: none; background: none; outline: none; resize: none; font-size: 1.1rem; color: #1e293b; padding: 0.5rem; min-height: 40px; }
                 .input-footer-row { display: flex; align-items: center; justify-content: space-between; margin-top: 0.5rem; border-top: 1px solid #f8fafc; padding-top: 0.5rem; }
+                .input-actions-left { display: flex; align-items: center; gap: 0.8rem; }
                 
-                .icon-btn { background: #f8fafc; border: none; color: #94a3b8; padding: 0.6rem; border-radius: 12px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+                .icon-btn { background: #f8fafc; border: none; color: #94a3b8; padding: 0.6rem; border-radius: 12px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; text-decoration: none; }
                 .icon-btn:hover { color: var(--accent); background: #f1f5f9; transform: scale(1.05); }
+
+                .floating-hoy-btn {
+                    position: fixed;
+                    bottom: 4rem;
+                    right: 4.5rem;
+                    width: 64px;
+                    height: 64px;
+                    background: #fff;
+                    color: #0f172a;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                    z-index: 9999;
+                    border: 2px solid #e2e8f0;
+                    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    text-decoration: none;
+                }
+                .floating-hoy-btn:hover { 
+                    background: #facc15 !important; 
+                    color: #000 !important; 
+                    transform: scale(1.1) rotate(10deg); 
+                    border-color: #facc15 !important; 
+                    box-shadow: 0 15px 40px rgba(250, 204, 21, 0.4) !important; 
+                }
+                @media (max-width: 768px) { .floating-hoy-btn { display: none; } }
                 
                 .room-btn-primary { 
                     background: linear-gradient(135deg, #0070f3 0%, #00a2ff 100%); 
@@ -630,6 +719,7 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
                 @media (max-width: 768px) {
+                    .main-input-sticky { position: static; margin-bottom: 1rem; }
                     .log-row-content { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
                     .log-tags { align-self: flex-start; }
                     .hide-mobile { display: none; }

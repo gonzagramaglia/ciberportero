@@ -15,6 +15,7 @@ export default async function RoomMainPage({ params }: any) {
 
   return (
     <RoomChatClient 
+      roomId={roomId}
       subcategoryId={null} 
       initialMessages={[]} 
       session={session} 

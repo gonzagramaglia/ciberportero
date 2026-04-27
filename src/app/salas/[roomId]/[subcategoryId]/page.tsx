@@ -5,7 +5,7 @@ import { notFound, redirect } from "next/navigation";
 import { db } from "@/lib/db";
 
 export default async function SubcategoryPage({ params }: any) {
-  const { subcategoryId } = await params;
+  const { roomId, subcategoryId } = await params;
   const session = await auth();
   
   const isGuest = subcategoryId.startsWith('guest-') || subcategoryId.startsWith('sub-');
@@ -27,9 +27,11 @@ export default async function SubcategoryPage({ params }: any) {
 
   return (
     <RoomChatClient 
+      roomId={roomId}
       subcategoryId={subcategoryId} 
       initialMessages={initialMessages} 
       session={session} 
+      isGuest={isGuest}
     />
   );
 }

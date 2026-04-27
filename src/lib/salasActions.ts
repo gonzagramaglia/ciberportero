@@ -127,10 +127,16 @@ export async function createSubcategory(categoryId: string, name: string) {
     if (category?.room.creatorId !== session.user.id) return { error: "No autorizado" };
 
     const slug = slugify(name);
-    // Note: If multiple subcategories have same slug in global scope it might fail if ID is slug.
-    // Assuming ID is CUID or similar, and we add a slug field or just use slug as ID if unique.
-    await db.roomSubcategory.create({
-      data: { categoryId, name, id: `${categoryId}-${slug}` }
+    let finalId = slug;
+    const existing = await db.roomSubcategory.findFirst({
+      where: { categoryId, id: finalId }
+    });
+    if (existing) {
+      finalId = `${slug}-${Math.random().toString(36).substring(2, 6)}`;
+    }
+
+    const res = await db.roomSubcategory.create({
+      data: { categoryId, name, id: finalId }
     });
 
     revalidatePath(`/salas/${category.roomId}`);
@@ -274,10 +280,7 @@ export async function getMyRooms() {
 
 export async function getRoomInfo(roomId: string) {
   try {
-    return await db.room.findUnique({
-      where: { id: roomId },
-      select: { id: true, name: true, description: true }
-    });
+    return await getRoomData(roomId);
   } catch (error) {
     console.error("getRoomInfo Error:", error);
     return null;

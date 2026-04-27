@@ -35,7 +35,10 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
     const [editDesc, setEditDesc] = useState(room.description || '');
     
     const isGuest = roomId === 'test-room' || !session || initialRoom.creatorId === 'guest';
-    const isCreator = initialRoom.creatorId === 'guest' || initialRoom.creatorId === session?.user?.id;
+    const isReallyCreator = (initialRoom.creatorId === session?.user?.id && !!session?.user?.id) || (initialRoom.creatorId === 'guest' && isGuest && roomId === 'test-room');
+    const userRole = room.members?.find((m: any) => m.userId === session?.user?.id || (isGuest && m.id === 'guest-me'))?.role;
+    const isAdmin = userRole === 'admin';
+    const canManageRoom = !!session?.user?.id && (isReallyCreator || isAdmin);
 
     useEffect(() => {
         if (isGuest && roomId !== 'test-room') {
@@ -156,7 +159,7 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                 <button 
                     onClick={() => setIsModalOpen(true)} 
                     className="config-btn"
-                    title={isCreator ? "Configuración de la sala" : "Información de la sala"}
+                    title={canManageRoom ? "Configuración de la sala" : "Información de la sala"}
                 >
                     <Settings size={22} />
                 </button>
@@ -205,6 +208,7 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                                         value={editName}
                                         onChange={e => setEditName(e.target.value)}
                                         placeholder={roomsT.sidebar.placeholderName}
+                                        disabled={!canManageRoom}
                                     />
                                 </div>
 
@@ -220,6 +224,7 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                                         onChange={e => setEditDesc(e.target.value)}
                                         placeholder="Describe el propósito de esta sala de estudio..."
                                         className="desc-textarea"
+                                        disabled={!canManageRoom}
                                     />
                                 </div>
 
@@ -232,6 +237,7 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                                                 value={editCode}
                                                 onChange={e => setEditCode(e.target.value)}
                                                 placeholder="Ej: MAGIOS2026"
+                                                disabled={!canManageRoom}
                                             />
                                         </div>
                                     </div>
@@ -243,61 +249,64 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                                                 value={editSlug}
                                                 onChange={e => setEditSlug(e.target.value)}
                                                 placeholder="slug-de-sala"
+                                                disabled={!canManageRoom}
                                             />
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="modal-section" style={{ marginTop: '1rem' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-                                    <Users size={18} color="#94a3b8" />
-                                    <h4 className="section-title-modal" style={{ margin: 0 }}>Gestionar Miembros</h4>
-                                </div>
-                                <div className="members-manage-list">
-                                    {room.members?.map((member: any) => {
-                                        const isMe = member.id === 'guest-me';
-                                        return (
-                                            <div key={member.id} className="member-manage-row">
-                                                <img 
-                                                    src={member.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent((member.user.name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}`} 
-                                                    className="member-mini-avatar" 
-                                                />
-                                                <div className="member-meta">
-                                                    <span className="member-name">
-                                                        {member.user.name} {isMe ? '(tú)' : ''}
-                                                    </span>
-                                                    <span className={`role-badge ${member.role}`}>
-                                                        {member.role === 'admin' ? 'Admin' : 'Miembro'}
-                                                    </span>
-                                                </div>
-                                                {!isMe && (
-                                                    <div className="member-actions">
-                                                        <button 
-                                                            onClick={() => handleToggleAdmin(member.id)}
-                                                            className={`member-action-btn ${member.role === 'admin' ? 'active' : ''}`}
-                                                            title={member.role === 'admin' ? 'Quitar Admin' : 'Hacer Admin'}
-                                                        >
-                                                            <Shield size={16} />
-                                                        </button>
-                                                        <button 
-                                                            onClick={() => handleKick(member.id)}
-                                                            className="member-action-btn kick"
-                                                            title="Echar miembro"
-                                                        >
-                                                            <UserMinus size={16} />
-                                                        </button>
+                            {canManageRoom && (
+                                <div className="modal-section" style={{ marginTop: '1rem' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                                        <Users size={18} color="#94a3b8" />
+                                        <h4 className="section-title-modal" style={{ margin: 0 }}>Gestionar Miembros</h4>
+                                    </div>
+                                    <div className="members-manage-list">
+                                        {room.members?.map((member: any) => {
+                                            const isMe = member.id === 'guest-me';
+                                            return (
+                                                <div key={member.id} className="member-manage-row">
+                                                    <img 
+                                                        src={member.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent((member.user.name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}`} 
+                                                        className="member-mini-avatar" 
+                                                    />
+                                                    <div className="member-meta">
+                                                        <span className="member-name">
+                                                            {member.user.name} {isMe ? '(tú)' : ''}
+                                                        </span>
+                                                        <span className={`role-badge ${member.role}`}>
+                                                            {member.role === 'admin' ? 'Admin' : 'Miembro'}
+                                                        </span>
                                                     </div>
-                                                )}
-                                            </div>
-                                        );
-                                    })}
+                                                    {!isMe && (
+                                                        <div className="member-actions">
+                                                            <button 
+                                                                onClick={() => handleToggleAdmin(member.id)}
+                                                                className={`member-action-btn ${member.role === 'admin' ? 'active' : ''}`}
+                                                                title={member.role === 'admin' ? 'Quitar Admin' : 'Hacer Admin'}
+                                                            >
+                                                                <Shield size={16} />
+                                                            </button>
+                                                            <button 
+                                                                onClick={() => handleKick(member.id)}
+                                                                className="member-action-btn kick"
+                                                                title="Echar miembro"
+                                                            >
+                                                                <UserMinus size={16} />
+                                                            </button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
                                 </div>
-                            </div>
+                            )}
                         </div>
 
                         <div className="modal-footer">
-                            {isCreator ? (
+                            {canManageRoom ? (
                                 <button onClick={handleDelete} className="action-btn delete">
                                     <Trash2 size={18} />
                                     <span>Eliminar Sala</span>
@@ -310,7 +319,7 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                             )}
                             <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.75rem' }}>
                                 <button onClick={() => setIsModalOpen(false)} className="action-btn cancel">Cerrar</button>
-                                {isCreator && (
+                                {canManageRoom && (
                                     <button onClick={handleUpdate} className="action-btn save">
                                         <Check size={20} />
                                         <span>Guardar</span>

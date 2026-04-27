@@ -52,10 +52,10 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
     const isGuest = initialRoom.creatorId === 'guest' || initialRoom.id === 'test-room';
     
     // Check if current user is admin in this room
-    const myMember = room.members?.find((m: any) => m.id === 'guest-me' || m.id === session?.user?.id);
+    const myMember = room?.members?.find((m: any) => m.userId === session?.user?.id || m.id === 'guest-me');
     const isAdmin = myMember?.role === 'admin';
-    const isCreator = initialRoom.creatorId === 'guest' || initialRoom.creatorId === session?.user?.id;
-    const canManage = isCreator || isAdmin;
+    const isReallyCreator = (initialRoom?.creatorId === session?.user?.id && !!session?.user?.id) || (initialRoom?.creatorId === 'guest' && isGuest && initialRoom.id === 'test-room');
+    const canManage = !!session?.user?.id && (isReallyCreator || isAdmin);
 
     const [isAddingCategory, setIsAddingCategory] = useState(false);
     const [isAddingSub, setIsAddingSub] = useState<string | null>(null);
@@ -159,8 +159,9 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 const res = await deleteSubcategory(subId);
                 if (res.success) {
                     const { getRoomInfo } = await import('@/lib/salasActions');
-                    setRoom(await getRoomInfo(room.id));
-                    toast.success(lang === 'es' ? 'Subcategoría eliminada' : 'Subcategory deleted');
+                     setRoom(await getRoomInfo(room.id));
+                     window.dispatchEvent(new CustomEvent('room-data-updated'));
+                     toast.success(lang === 'es' ? 'Subcategoría eliminada' : 'Subcategory deleted');
                 } else toast.error(res.error || 'Error');
             } catch (error) { toast.error("Error"); } finally { setLoading(false); }
         }
@@ -181,10 +182,11 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 const res = await createCategory(room.id, newName);
                 if (res.success) {
                     const { getRoomInfo } = await import('@/lib/salasActions');
-                    setRoom(await getRoomInfo(room.id));
-                    setIsAddingCategory(false);
-                    setNewName('');
-                    toast.success(lang === 'es' ? 'Categoría creada' : 'Category created');
+                     setRoom(await getRoomInfo(room.id));
+                     window.dispatchEvent(new CustomEvent('room-data-updated'));
+                     setIsAddingCategory(false);
+                     setNewName('');
+                     toast.success(lang === 'es' ? 'Categoría creada' : 'Category created');
                 } else toast.error(res.error || 'Error');
             }
         } finally { setLoading(false); }
@@ -206,10 +208,11 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 const res = await createSubcategory(catId, slugValue);
                 if (res.success) {
                     const { getRoomInfo } = await import('@/lib/salasActions');
-                    setRoom(await getRoomInfo(room.id));
-                    setIsAddingSub(null);
-                    setNewName('');
-                    toast.success(lang === 'es' ? 'Subcategoría creada' : 'Subcategory created');
+                     setRoom(await getRoomInfo(room.id));
+                     window.dispatchEvent(new CustomEvent('room-data-updated'));
+                     setIsAddingSub(null);
+                     setNewName('');
+                     toast.success(lang === 'es' ? 'Subcategoría creada' : 'Subcategory created');
                 } else toast.error(res.error || 'Error');
             }
         } finally { setLoading(false); }
@@ -302,12 +305,12 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
         }
     };
 
-    const generalSub = room.categories?.flatMap((c: any) => c.subcategories).find((s: any) => s.name === 'Chat General');
+    const generalSub = (room.categories || []).flatMap((c: any) => c.subcategories || []).find((s: any) => s.name === 'Chat General');
 
     const categories = (room.categories || []).map((cat: any) => ({
         ...cat,
-        subcategories: cat.subcategories.filter((sub: any) => sub.name !== 'Chat General')
-    })).filter((cat: any) => cat.subcategories.length > 0 || (cat.name !== 'General' && cat.name !== 'Chat General'));
+        subcategories: (cat.subcategories || []).filter((sub: any) => sub.name !== 'Chat General')
+    })).filter((cat: any) => (cat.subcategories || []).length > 0 || (cat.name !== 'General' && cat.name !== 'Chat General'));
 
     return (
         <aside className="room-sidebar">
