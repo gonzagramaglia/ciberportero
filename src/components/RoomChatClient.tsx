@@ -256,6 +256,28 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
         } catch (err) { console.error(err); }
     };
 
+    const renderFormattedText = (text: string) => {
+        if (!text) return null;
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        const parts = text.split(urlRegex);
+        return parts.map((part, i) => {
+            if (part.match(urlRegex)) {
+                return <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="msg-link">{part}</a>;
+            }
+            const boldItalicRegex = /(\*[^*]+\*|_[^_]+_)/g;
+            const subParts = part.split(boldItalicRegex);
+            return subParts.map((subPart, j) => {
+                if (subPart.startsWith('*') && subPart.endsWith('*')) {
+                    return <strong key={`${i}-${j}`}>{subPart.slice(1, -1)}</strong>;
+                }
+                if (subPart.startsWith('_') && subPart.endsWith('_')) {
+                    return <em key={`${i}-${j}`}>{subPart.slice(1, -1)}</em>;
+                }
+                return subPart;
+            });
+        });
+    };
+
     const pinnedMessagesList = messages.filter((m: any) => m.isPinned).sort((a: any, b: any) => (a.pinOrder || 0) - (b.pinOrder || 0));
 
     const findCurrentContext = () => {
@@ -338,7 +360,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
                                 <span className="msg-date">{formatMessageDate(new Date(msg.createdAt), lang)}</span>
                                 {canDelete && (
-                                    <button onClick={() => handleDeleteMessage(msg.id)} className={`btn-delete-top ${confirmDeleteId === msg.id ? 'confirming' : ''}`} style={{ padding: '0.3rem', background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer' }}>
+                                    <button onClick={() => handleDeleteMessage(msg.id)} className={`btn-delete-top ${confirmDeleteId === msg.id ? 'confirming' : ''}`}>
                                         {confirmDeleteId === msg.id ? (lang === 'es' ? '¿Seguro?' : 'Sure?') : <Trash2 size={14} />}
                                     </button>
                                 )}
@@ -360,7 +382,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     </div>
 
                     <div className="msg-body">
-                        <p className="msg-text">{msg.content}</p>
+                        <p className="msg-text">{renderFormattedText(msg.content)}</p>
                         {msg.images && msg.images.length > 0 && (
                             <div className="msg-images-grid">
                                 {msg.images.map((img: string, i: number) => (
@@ -392,8 +414,13 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                                     <ImageIcon size={18} />
                                                 </button>
                                             </div>
-                                            <button type="submit" disabled={sending || (!replyText.trim() && selectedImages.length === 0)} className="room-btn-primary mini">
-                                                {sending ? <Loader2 size={18} className="spin" /> : <Send size={14} />}
+                                            <button type="submit" disabled={sending || (!replyText.trim() && selectedImages.length === 0)} className="room-btn-primary mini" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.6rem 1.2rem', width: 'auto' }}>
+                                                {sending ? <Loader2 size={18} className="spin" /> : (
+                                                    <>
+                                                        <span>{lang === 'es' ? 'Responder' : 'Reply'}</span>
+                                                        <Send size={14} />
+                                                    </>
+                                                )}
                                             </button>
                                         </div>
                                     </form>
@@ -426,7 +453,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="reply-body"><p className="reply-text">{r.content}</p></div>
+                                        <div className="reply-body"><p className="reply-text">{renderFormattedText(r.content)}</p></div>
                                     </div>
                                 );
                             })}
@@ -791,6 +818,8 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .msg-avatar { width: 44px; height: 44px; border-radius: 14px; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
                 .msg-user { font-weight: 900; color: #1e293b; font-size: 1.05rem; }
                 .msg-date { font-size: 0.8rem; color: #94a3b8; font-weight: 700; }
+                .msg-link { color: var(--accent); text-decoration: none; font-weight: 700; word-break: break-all; }
+                .msg-link:hover { text-decoration: underline; }
                 .msg-text { font-size: 1.1rem; line-height: 1.6; color: #334155; margin: 0; font-weight: 500; }
                 .msg-img-box { margin-top: 1rem; border-radius: 16px; overflow: hidden; border: 1px solid #f1f5f9; }
                 .msg-img-box img { width: 100%; max-width: 100%; height: auto; display: block; cursor: pointer; transition: transform 0.2s; }
@@ -826,7 +855,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .reply-text { font-size: 1rem; margin: 0; color: #475569; line-height: 1.5; font-weight: 500; }
                 .reply-del-btn { background: #f8fafc; border: 1px solid #f1f5f9; padding: 0.4rem 0.6rem; color: #64748b; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; transition: all 0.2s; border-radius: 8px; font-size: 0.75rem; font-weight: 800; }
                 .reply-del-btn:hover { color: #ef4444; background: #fff1f2; border-color: #fee2e2; }
-                .reply-del-btn.confirming { background: #ef4444; color: #fff; border-color: #ef4444; }
+                .reply-del-btn.confirming { color: #ef4444; font-weight: 800; background: #fff1f2; padding: 0.3rem 0.6rem; border: 1px solid #fee2e2; }
 
                 .inline-reply-box { margin-top: 1rem; border: 2px solid #f1f5f9; border-radius: 20px; overflow: hidden; background: #fcfdfe; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: all 0.2s; }
                 
@@ -843,7 +872,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .btn-pin-top, .btn-delete-top { background: #f8fafc; border: 1px solid #f1f5f9; color: #94a3b8; padding: 0.5rem; border-radius: 10px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
                 .btn-pin-top:hover, .btn-pin-top.active { color: #f59e0b; background: #fffbeb; border-color: #fde68a; }
                 .btn-delete-top:hover { color: #ef4444; background: #fff1f2; border-color: #fee2e2; }
-                .btn-delete-top.confirming { background: #ef4444; color: #fff; border-color: #ef4444; }
+                .btn-delete-top.confirming { color: #ef4444; font-weight: 800; background: #fff1f2; padding: 0.3rem 0.6rem; border: 1px solid #fee2e2; }
 
                 .reorder-btn { background: #f8fafc; border: 1px solid #f1f5f9; color: #94a3b8; padding: 0.4rem; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
                 .reorder-btn:hover { color: var(--accent); background: #f1f5f9; border-color: #e2e8f0; }
