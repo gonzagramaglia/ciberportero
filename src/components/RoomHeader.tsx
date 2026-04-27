@@ -141,25 +141,25 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
             </div>
 
             <div className="meta-info-container">
-                <div className="room-code-badge">
-                    <Key size={14} />
-                    <span>{room.secretCode}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'nowrap' }}>
+                    <div className="room-code-badge">
+                        <Key size={14} />
+                        <span>{room.secretCode}</span>
+                    </div>
+
+                    <a 
+                        href="#history" 
+                        className="mobile-history-btn"
+                        onClick={() => window.dispatchEvent(new CustomEvent('subcategory-change', { detail: 'history' }))}
+                    >
+                        <HistoryIcon size={16} />
+                        <span>HISTORIAL</span>
+                    </a>
                 </div>
 
                 {room.description && (
                     <p className="room-description-text">{room.description}</p>
                 )}
-            </div>
-            
-            <div className="header-actions-row">
-                <a 
-                    href="#history" 
-                    className="mobile-history-btn"
-                    onClick={() => window.dispatchEvent(new CustomEvent('subcategory-change', { detail: 'history' }))}
-                >
-                    <HistoryIcon size={16} />
-                    <span>Historial</span>
-                </a>
             </div>
 
             {/* Config Modal */}
@@ -292,12 +292,25 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
             )}
 
             <style jsx>{`
-                .room-header { margin-bottom: 2rem; position: relative; }
+                .room-header { margin-bottom: 1rem; position: relative; }
                 .title-row { display: flex; align-items: center; gap: 1rem; }
                 .room-title { font-size: 2.5rem; font-weight: 900; margin: 0; display: flex; align-items: center; gap: 0.6rem; }
                 .room-label-tag { font-size: 1rem; color: var(--accent); font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; background: rgba(0, 112, 243, 0.05); padding: 0.2rem 0.6rem; border-radius: 8px; }
-                .demo-badge { font-size: 0.7rem; background: #fff1f2; color: #ef4444; padding: 0.2rem 0.6rem; border-radius: 8px; font-weight: 900; border: 1px solid #fee2e2; margin-left: 0.5rem; letter-spacing: 0.05em; }
-                .admin-badge-header { font-size: 0.7rem; background: #f0fdf4; color: #16a34a; padding: 0.2rem 0.6rem; border-radius: 8px; font-weight: 900; border: 1px solid #dcfce7; margin-left: 0.5rem; letter-spacing: 0.05em; text-transform: uppercase; }
+                .demo-badge, .admin-badge-header, .room-code-badge, .mobile-history-btn { 
+                    font-size: 0.75rem; 
+                    font-weight: 900; 
+                    padding: 0.4rem 0.8rem; 
+                    border-radius: 10px; 
+                    text-transform: uppercase; 
+                    letter-spacing: 0.05em; 
+                    display: inline-flex; 
+                    align-items: center; 
+                    gap: 0.4rem;
+                    height: fit-content;
+                }
+
+                .demo-badge { background: #fff1f2; color: #ef4444; border: 1px solid #fee2e2; margin-left: 0.5rem; }
+                .admin-badge-header { background: #f0fdf4; color: #16a34a; border: 1px solid #dcfce7; margin-left: 0.5rem; }
                 
                 .meta-info-container { display: flex; align-items: center; gap: 1.25rem; margin-top: 1rem; flex-wrap: wrap; }
                 
@@ -306,8 +319,8 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                 .config-btn { background: none; border: none; color: #cbd5e1; cursor: pointer; transition: all 0.3s; padding: 0.5rem; display: flex; align-items: center; justify-content: center; }
                 .config-btn:hover { color: var(--accent); transform: rotate(45deg); }
 
-                .header-actions-row { display: none; align-items: center; gap: 0.6rem; margin-top: 1.25rem; flex-wrap: wrap; }
-                .room-code-badge { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; font-weight: 800; color: var(--accent); background: rgba(0, 112, 243, 0.05); padding: 0.5rem 1rem; border-radius: 12px; border: 1px solid rgba(0, 112, 243, 0.1); height: fit-content; flex-shrink: 0; }
+                .header-actions-row { display: none; align-items: center; gap: 0.6rem; margin-top: 0.75rem; flex-wrap: wrap; }
+                .room-code-badge { color: var(--accent); background: rgba(0, 112, 243, 0.05); border: 1px solid rgba(0, 112, 243, 0.1); }
 
                 /* Modal Styles */
                 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
@@ -366,14 +379,16 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                     to { opacity: 1; transform: translateY(0) scale(1); }
                 }
 
-                .mobile-history-btn { display: none; align-items: center; gap: 0.6rem; background: var(--accent-light); color: var(--accent); padding: 0.5rem 1.2rem; border-radius: 12px; border: 1px solid rgba(0, 112, 243, 0.1); font-size: 0.85rem; font-weight: 800; text-decoration: none; transition: all 0.2s; }
+                .mobile-history-btn { display: none; background: #fff; color: var(--accent); border: 1px solid rgba(0, 112, 243, 0.1); text-decoration: none; transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
                 
                 @media (max-width: 1024px) {
                     .room-title { font-size: 1.75rem; flex-wrap: wrap; }
                     .room-label-tag { font-size: 0.8rem; }
                     .meta-info-container { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
                     .room-description-text { font-size: 0.95rem; }
-                    .header-actions-row { display: inline-flex; margin-top: 1.5rem; flex-wrap: nowrap; }
+                    .header-actions-row { display: flex; margin-top: 1rem; flex-wrap: wrap; gap: 0.8rem; }
+                    .mobile-history-btn { display: flex; }
+                    .demo-badge, .admin-badge-header, .room-code-badge, .mobile-history-btn { font-size: 0.7rem; padding: 0.3rem 0.6rem; border-radius: 8px; margin-left: 0; }
                     .modal-overlay { padding: 1rem; }
                     .modal-content { border-radius: 20px; }
                     .input-row { flex-direction: column; }

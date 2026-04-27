@@ -447,17 +447,19 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                                                     const isReplyMe = r.userId === session?.user?.id || (isGuest && (r.userId === 'guest-me' || r.user.name === 'Invitado'));
                                                     return (
                                                         <div key={r.id} className="reply-item">
-                                                            <img src={r.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent((r.user.name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}`} className="reply-avatar" />
-                                                            <div className="reply-main">
+                                                            <div className="reply-header">
+                                                                <img src={r.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent((r.user.name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}`} className="reply-avatar" />
                                                                 <div className="reply-meta">
                                                                     <span className="reply-user">{r.user.name}{(isReplyMe && !r.user.name.includes('(tú)')) ? ' (tú)' : ''}</span>
                                                                     <span className="reply-time">{formatMessageDate(new Date(r.createdAt), lang)}</span>
-                                                                    {isReplyMe && (
-                                                                        <button onClick={() => handleDeleteMessage(r.id, true, msg.id)} className={`reply-del-btn ${confirmDeleteId === r.id ? 'confirming' : ''}`}>
-                                                                            {confirmDeleteId === r.id ? (lang === 'es' ? '¿Seguro?' : 'Sure?') : <Trash2 size={12} />}
-                                                                        </button>
-                                                                    )}
                                                                 </div>
+                                                                {isReplyMe && (
+                                                                    <button onClick={() => handleDeleteMessage(r.id, true, msg.id)} className={`reply-del-btn ${confirmDeleteId === r.id ? 'confirming' : ''}`}>
+                                                                        {confirmDeleteId === r.id ? (lang === 'es' ? '¿Seguro?' : 'Sure?') : <Trash2 size={12} />}
+                                                                    </button>
+                                                                )}
+                                                            </div>
+                                                            <div className="reply-body">
                                                                 <p className="reply-text">{r.content}</p>
                                                             </div>
                                                         </div>
@@ -541,14 +543,16 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                 .log-row-content { display: flex; align-items: center; justify-content: space-between; gap: 1rem; width: 100%; }
                 .log-tags { display: flex; align-items: center; gap: 0.4rem; font-size: 0.65rem; font-weight: 900; background: #f8fafc; padding: 0.4rem 0.8rem; border-radius: 10px; color: #94a3b8; border: 1px solid #f1f5f9; text-transform: uppercase; letter-spacing: 0.02em; flex-shrink: 0; }
                 
-                .reply-item { display: flex; gap: 1rem; background: #fcfdfe; padding: 1rem; border-radius: 18px; border: 1px solid #f8fafc; }
-                .reply-avatar { width: 30px; height: 30px; border-radius: 9px; }
+                .reply-item { background: #fcfdfe; padding: 1.25rem; border-radius: 20px; border: 1px solid #f8fafc; display: flex; flex-direction: column; gap: 0.8rem; }
+                .reply-header { display: flex; align-items: center; gap: 0.8rem; }
+                .reply-avatar { width: 32px; height: 32px; border-radius: 10px; }
+                .reply-meta { flex: 1; display: flex; align-items: center; gap: 0.6rem; }
                 .reply-user { font-weight: 900; font-size: 0.85rem; color: #1e293b; }
-                .reply-time { font-size: 0.75rem; color: #94a3b8; margin-left: 0.6rem; }
-                .reply-text { font-size: 0.95rem; margin: 0.2rem 0 0 0; color: #475569; line-height: 1.5; }
-                .reply-del-btn { background: none; border: none; padding: 0; margin-left: 0.8rem; color: #cbd5e1; cursor: pointer; display: inline-flex; align-items: center; transition: all 0.2s; }
-                .reply-del-btn:hover { color: #ef4444; }
-                .reply-del-btn.confirming { background: #ef4444; color: #fff; padding: 0.1rem 0.4rem; border-radius: 4px; font-weight: 800; font-size: 0.7rem; }
+                .reply-time { font-size: 0.75rem; color: #94a3b8; font-weight: 700; }
+                .reply-text { font-size: 1rem; margin: 0; color: #475569; line-height: 1.5; font-weight: 500; }
+                .reply-del-btn { background: none; border: none; padding: 0.4rem; color: #cbd5e1; cursor: pointer; display: inline-flex; align-items: center; transition: all 0.2s; border-radius: 6px; }
+                .reply-del-btn:hover { color: #ef4444; background: #fff1f2; }
+                .reply-del-btn.confirming { background: #ef4444; color: #fff; padding: 0.2rem 0.6rem; font-weight: 800; font-size: 0.7rem; }
 
                 /* Inline Reply Box */
                 .inline-reply-box { margin-top: 1rem; border: 2px solid #f1f5f9; border-radius: 20px; overflow: hidden; background: #fcfdfe; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
@@ -567,6 +571,9 @@ export default function RoomChatClient({ subcategoryId, initialMessages, isGuest
                     .log-row-content { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
                     .log-tags { align-self: flex-start; }
                     .hide-mobile { display: none; }
+                    textarea { min-height: 140px; }
+                    .reply-input-area textarea { min-height: 100px; }
+                    .input-card { padding: 0.75rem; }
                 }
             `}</style>
         </div>

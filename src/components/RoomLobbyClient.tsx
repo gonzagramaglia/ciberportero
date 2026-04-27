@@ -225,8 +225,12 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                                             <Key size={12} />
                                             <span>{room.secretCode}</span>
                                         </div>
-                                        
-                                        <div className="room-members-preview" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginTop: '1.5rem' }}>
+                                        {room.description && (
+                                            <p className="room-desc-lobby">{room.description}</p>
+                                        )}
+                                    </div>
+                                    <div className="room-card-actions">
+                                        <div className="room-members-preview" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
                                             <div style={{ display: 'flex' }}>
                                                 {room.members?.slice(0, 6).map((member: any, i: number) => (
                                                     <img 
@@ -257,18 +261,10 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                                                     : 'members'}
                                             </span>
                                         </div>
-                                    </div>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                        {((session?.user?.role === 'admin' || session?.user?.email === 'ciberportero@gmail.com') || isGuest) && (
-                                            <button 
-                                                onClick={(e) => handleDeleteRoom(e, room)}
-                                                className="delete-room-btn"
-                                                title={lang === 'es' ? 'Eliminar sala' : 'Delete room'}
-                                            >
-                                                <Trash2 size={18} />
-                                            </button>
-                                        )}
-                                        <div className="room-card-arrow"><ArrowRight size={24} /></div>
+
+                                        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                                            <div className="room-card-arrow"><ArrowRight size={24} /></div>
+                                        </div>
                                     </div>
                                 </div>
                             ))}
@@ -459,13 +455,46 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                 .card-body p { margin: 0; color: #64748b; font-size: 0.95rem; }
                 .form-submit-button { border: none; color: white; cursor: pointer; transition: all 0.3s; }
                 .form-submit-button:hover:not(:disabled) { transform: translateY(-3px); filter: brightness(1.1); }
-                .room-card { display: flex; align-items: center; justify-content: space-between; padding: 2rem 2.5rem; background: #fff; border-radius: 28px; border: 1px solid var(--border); transition: all 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+                .room-card { display: flex; align-items: center; justify-content: space-between; padding: 2.2rem 2.5rem; background: #fff; border-radius: 32px; border: 1px solid var(--border); transition: all 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
                 .room-card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 25px 50px rgba(0, 112, 243, 0.12); }
-                .room-name { font-size: 1.6rem; font-weight: 950; color: #1e293b; display: flex; align-items: center; letter-spacing: -0.02em; flex-wrap: wrap; gap: 0.8rem; }
-                .demo-badge { font-size: 0.7rem; background: #fff1f2; color: #ef4444; padding: 0.2rem 0.6rem; border-radius: 8px; font-weight: 900; border: 1px solid #fee2e2; text-transform: uppercase; letter-spacing: 0.05em; }
-                .admin-badge-lobby { font-size: 0.7rem; background: #f0fdf4; color: #16a34a; padding: 0.2rem 0.6rem; border-radius: 8px; font-weight: 900; border: 1px solid #dcfce7; text-transform: uppercase; letter-spacing: 0.05em; }
-                .room-code-tag { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 0.6rem; font-size: 0.85rem; font-weight: 800; color: var(--accent); background: rgba(0, 112, 243, 0.05); padding: 0.4rem 0.8rem; border-radius: 10px; }
-                .room-card-arrow { width: 56px; height: 56px; border-radius: 18px; background: #f8fafc; display: flex; align-items: center; justify-content: center; color: #cbd5e1; transition: all 0.3s; }
+                .room-card-info { flex: 1; min-width: 0; }
+                .room-name { font-size: 1.7rem; font-weight: 950; color: #1e293b; display: flex; align-items: center; letter-spacing: -0.02em; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 0.8rem; }
+                .room-desc-lobby { margin: 0.5rem 0 0 0; font-size: 1.05rem; color: #64748b; line-height: 1.5; max-width: 600px; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+                
+                .demo-badge, .admin-badge-lobby, .room-code-tag { 
+                    font-size: 0.75rem; 
+                    font-weight: 900; 
+                    padding: 0.4rem 0.8rem; 
+                    border-radius: 10px; 
+                    text-transform: uppercase; 
+                    letter-spacing: 0.05em; 
+                    display: inline-flex; 
+                    align-items: center; 
+                    gap: 0.4rem;
+                }
+                
+                .demo-badge { background: #fff1f2; color: #ef4444; border: 1px solid #fee2e2; }
+                .admin-badge-lobby { background: #f0fdf4; color: #16a34a; border: 1px solid #dcfce7; }
+                .room-code-tag { margin-top: 0; color: var(--accent); background: rgba(0, 112, 243, 0.05); border: 1px solid rgba(0, 112, 243, 0.1); }
+                
+                .delete-room-btn { 
+                    width: 56px; 
+                    height: 56px; 
+                    border-radius: 18px; 
+                    border: none; 
+                    background: #fff1f2; 
+                    color: #ef4444; 
+                    cursor: pointer; 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: center; 
+                    transition: all 0.2s;
+                    flex-shrink: 0;
+                }
+                .delete-room-btn:hover { background: #ef4444; color: #fff; transform: scale(1.05); }
+                .room-card-actions { display: flex; align-items: center; gap: 0.8rem; }
+
+                .room-card-arrow { width: 56px; height: 56px; border-radius: 18px; background: #f8fafc; display: flex; align-items: center; justify-content: center; color: #cbd5e1; transition: all 0.3s; flex-shrink: 0; }
                 .room-card:hover .room-card-arrow { background: var(--accent); color: #fff; }
                 .room-members-preview img { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
                 .room-members-preview img:hover { transform: translateY(-4px) scale(1.2); z-index: 20 !important; }
@@ -522,6 +551,17 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                         top: 1rem;
                         right: 1rem;
                     }
+                }
+
+                @media (max-width: 640px) {
+                    .room-card { padding: 1.5rem; border-radius: 24px; gap: 1.25rem; flex-direction: column; align-items: stretch; }
+                    .room-card-info { width: 100%; }
+                    .room-name { font-size: 1.4rem; gap: 0.5rem; margin-bottom: 0.5rem; }
+                    .room-card-actions { width: 100%; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #f8fafc; padding-top: 1.25rem; }
+                    .room-card-arrow { width: 48px; height: 48px; border-radius: 14px; }
+                    .demo-badge, .admin-badge-lobby, .room-code-tag { font-size: 0.65rem; padding: 0.3rem 0.6rem; border-radius: 8px; }
+                    .lobby-header-premium { margin-bottom: 2rem; }
+                    .lobby-title { font-size: 2.2rem; }
                 }
             `}</style>
         </div>
