@@ -616,7 +616,14 @@ export async function deleteMessage(messageId: string) {
   try {
     const message = await db.roomMessage.findUnique({
       where: { id: messageId },
-      include: { subcategory: { include: { category: true } } }
+      include: { 
+        subcategory: { include: { category: true } },
+        replies: {
+          include: {
+            replies: true
+          }
+        }
+      }
     });
 
     if (!message) return { error: "Mensaje no encontrado" };
@@ -626,9 +633,19 @@ export async function deleteMessage(messageId: string) {
       return { error: "No autorizado" };
     }
 
+    // Collect all images from parent and all replies
+    const allImages: any[] = [...(message.images || []) as any[]];
+    const collectReplyImages = (reps: any[]) => {
+      reps.forEach(r => {
+        if (r.images) allImages.push(...(r.images as any[]));
+        if (r.replies) collectReplyImages(r.replies);
+      });
+    };
+    if (message.replies) collectReplyImages(message.replies);
+
     // Delete images from Supabase Storage
-    if (message.images && (message.images as any).length > 0) {
-      const paths = (message.images as any[]).map(url => getStoragePathFromUrl(url)).filter(Boolean) as string[];
+    if (allImages.length > 0) {
+      const paths = allImages.map(url => getStoragePathFromUrl(url)).filter(Boolean) as string[];
       if (paths.length > 0) {
         await supabaseAdmin.storage.from('images').remove(paths);
       }
