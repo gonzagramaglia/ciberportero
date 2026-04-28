@@ -5,8 +5,9 @@ import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
 import { supabaseAdmin } from "@/lib/supabase";
 
-const getStoragePathFromUrl = (url: string) => {
-  if (!url || !url.includes('/public/images/')) return null;
+const getStoragePathFromUrl = (img: any) => {
+  const url = typeof img === 'string' ? img : img?.url;
+  if (!url || typeof url !== 'string' || !url.includes('/public/images/')) return null;
   return url.split('/public/images/').pop();
 };
 
