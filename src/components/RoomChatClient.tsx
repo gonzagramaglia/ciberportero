@@ -551,25 +551,33 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
         setSending(true);
         try {
             const imageUrls: any[] = [];
-            if (extUrl.trim()) {
-                const targetLink = isReply ? replyExternalImageLink : externalImageLink;
-                if (targetLink.trim()) imageUrls.push({ url: extUrl.trim(), link: targetLink.trim() });
-                else imageUrls.push(extUrl.trim());
-            }
-            
+            const targetLink = (isReply ? replyExternalImageLink : externalImageLink)?.trim();
+
             if (selectedImages.length > 0) {
                 setUploading(true);
                 for (const file of selectedImages) {
-                    if (isGuest) imageUrls.push(URL.createObjectURL(file));
+                    let url = '';
+                    if (isGuest) url = URL.createObjectURL(file);
                     else {
                         const ext = file.name.split('.').pop();
                         const path = `room-chats/${currentSubId}/${Date.now()}-${Math.random().toString(36).substring(7)}.${ext}`;
                         const { data, error } = await supabase.storage.from('images').upload(path, file);
                         if (error) throw error;
                         const { data: { publicUrl } } = supabase.storage.from('images').getPublicUrl(path);
-                        imageUrls.push(publicUrl);
+                        url = publicUrl;
+                    }
+                    
+                    if (!extUrl.trim() && targetLink) {
+                        imageUrls.push({ url, link: targetLink });
+                    } else {
+                        imageUrls.push(url);
                     }
                 }
+            }
+
+            if (extUrl.trim()) {
+                if (targetLink) imageUrls.push({ url: extUrl.trim(), link: targetLink });
+                else imageUrls.push(extUrl.trim());
             }
             if (isGuest) {
                 guestStore.addMessage(roomId || 'test-room', isGeneral ? 'general' : currentSubId!, content, imageUrls, isReply ? replyingTo?.id : undefined);
