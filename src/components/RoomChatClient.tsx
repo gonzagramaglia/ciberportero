@@ -26,7 +26,9 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
     const [uploading, setUploading] = useState(false);
     const [targetMessageId, setTargetMessageId] = useState<string | null>(null);
     const [externalImageUrl, setExternalImageUrl] = useState('');
+    const [externalImageLink, setExternalImageLink] = useState('');
     const [replyExternalImageUrl, setReplyExternalImageUrl] = useState('');
+    const [replyExternalImageLink, setReplyExternalImageLink] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [draggingPinId, setDraggingPinId] = useState<string | null>(null);
@@ -307,6 +309,15 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                     onChange={(e) => setReplyExternalImageUrl(e.target.value)}
                                     placeholder={lang === 'es' ? 'Link de imagen...' : 'Image link...'}
                                     className="external-url-input hide-mobile"
+                                    style={{ width: '120px' }}
+                                />
+                                <input 
+                                    type="text" 
+                                    value={replyExternalImageLink}
+                                    onChange={(e) => setReplyExternalImageLink(e.target.value)}
+                                    placeholder={lang === 'es' ? 'Asociar link...' : 'Attach link...'}
+                                    className="external-url-input hide-mobile"
+                                    style={{ width: '100px' }}
                                 />
                             </div>
                             <button type="submit" disabled={sending || (!replyText.trim() && selectedImages.length === 0)} className="room-btn-primary mini" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.6rem 1.2rem', width: 'auto' }}>
@@ -389,6 +400,26 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
         }
     };
 
+    const renderMessageImages = (imgs: any[], isMini = false) => {
+        if (!imgs || imgs.length === 0) return null;
+        return (
+            <div className={`msg-images-grid ${isMini ? 'mini' : ''}`}>
+                {imgs.map((img: any, i: number) => {
+                    const src = typeof img === 'string' ? img : img.url;
+                    const link = typeof img === 'string' ? null : img.link;
+                    const imgEl = <img src={src} alt="Post image" onClick={(e) => { if (!link) window.open(src, '_blank'); }} />;
+                    return (
+                        <div key={i} className={`msg-img-box ${isMini ? 'mini' : ''}`}>
+                            {link ? (
+                                <a href={link} target="_blank" rel="noopener noreferrer">{imgEl}</a>
+                            ) : imgEl}
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    };
+
     const renderMessage = (msg: any, isPinnedView = false) => {
         const isMe = msg.userId === session?.user?.id || (isGuest && (msg.userId === 'guest-me' || msg.user.name === 'Invitado'));
         const canDelete = isMe || canManage;
@@ -431,13 +462,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
 
                     <div className="msg-body">
                         <p className="msg-text">{renderFormattedText(msg.content)}</p>
-                        {msg.images && msg.images.length > 0 && (
-                            <div className="msg-images-grid">
-                                {msg.images.map((img: string, i: number) => (
-                                    <div key={i} className="msg-img-box"><img src={img} alt="Post" onClick={() => window.open(img, '_blank')} /></div>
-                                ))}
-                            </div>
-                        )}
+                        {renderMessageImages(msg.images)}
                     </div>
 
                     <div className="msg-actions">
@@ -471,13 +496,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                         </div>
                                         <div className="reply-body">
                                             <p className="reply-text">{renderFormattedText(r.content)}</p>
-                                            {r.images && r.images.length > 0 && (
-                                                <div className="msg-images-grid reply-images">
-                                                    {r.images.map((img: string, i: number) => (
-                                                        <div key={i} className="msg-img-box"><img src={img} alt="Reply" onClick={() => window.open(img, '_blank')} /></div>
-                                                    ))}
-                                                </div>
-                                            )}
+                                            {renderMessageImages(r.images, true)}
                                             <button onClick={() => setReplyingTo(r)} className="reply-action-btn">
                                                 <ReplyIcon size={12} /> <span>{lang === 'es' ? 'Responder' : 'Reply'}</span>
                                             </button>
@@ -506,13 +525,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                                             </div>
                                                             <div className="reply-body">
                                                                 <p className="reply-text mini">{renderFormattedText(nr.content)}</p>
-                                                                {nr.images && nr.images.length > 0 && (
-                                                                    <div className="msg-images-grid reply-images mini">
-                                                                        {nr.images.map((img: string, i: number) => (
-                                                                            <div key={i} className="msg-img-box mini"><img src={img} alt="Reply" onClick={() => window.open(img, '_blank')} /></div>
-                                                                        ))}
-                                                                    </div>
-                                                                )}
+                                                                {renderMessageImages(nr.images, true)}
                                                             </div>
                                                             {renderInlineReplyBox(nr)}
                                                         </div>
@@ -537,8 +550,12 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
         if (!content.trim() && selectedImages.length === 0 && !extUrl.trim()) return;
         setSending(true);
         try {
-            const imageUrls: string[] = [];
-            if (extUrl.trim()) imageUrls.push(extUrl.trim());
+            const imageUrls: any[] = [];
+            if (extUrl.trim()) {
+                const targetLink = isReply ? replyExternalImageLink : externalImageLink;
+                if (targetLink.trim()) imageUrls.push({ url: extUrl.trim(), link: targetLink.trim() });
+                else imageUrls.push(extUrl.trim());
+            }
             
             if (selectedImages.length > 0) {
                 setUploading(true);
@@ -556,7 +573,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
             }
             if (isGuest) {
                 guestStore.addMessage(roomId || 'test-room', isGeneral ? 'general' : currentSubId!, content, imageUrls, isReply ? replyingTo?.id : undefined);
-                if (isReply) { setReplyText(''); setReplyExternalImageUrl(''); setReplyingTo(null); } else { setText(''); setExternalImageUrl(''); }
+                if (isReply) { setReplyText(''); setReplyExternalImageUrl(''); setReplyExternalImageLink(''); setReplyingTo(null); } else { setText(''); setExternalImageUrl(''); setExternalImageLink(''); }
                 setSelectedImages([]);
                 
                 const room = guestStore.getRoom(roomId || 'test-room');
@@ -576,7 +593,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 }
                 
                 if (res.success) {
-                    if (isReply) { setReplyText(''); setReplyExternalImageUrl(''); setReplyingTo(null); } else { setText(''); setExternalImageUrl(''); }
+                    if (isReply) { setReplyText(''); setReplyExternalImageUrl(''); setReplyExternalImageLink(''); setReplyingTo(null); } else { setText(''); setExternalImageUrl(''); setExternalImageLink(''); }
                     setSelectedImages([]);
                     const { getSubcategoryMessages, getGeneralMessages } = await import('@/lib/salasActions');
                     if (isGeneral && (roomId || propRoomId)) setMessages(await getGeneralMessages(roomId || propRoomId));
@@ -603,6 +620,12 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     const { getRoomInfo } = await import('@/lib/salasActions');
                     const updatedRoom = await getRoomInfo(room.id);
                     setRoom(updatedRoom);
+                    
+                    // Update hash if the ID changed (slug-based)
+                    if (res.newId && res.newId !== subId) {
+                        window.location.hash = res.newId;
+                        setCurrentSubId(res.newId);
+                    }
                 } else toast.error(res.error || 'Error');
             }
             setEditingSubId(null);
@@ -730,8 +753,17 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                             type="text" 
                                             value={externalImageUrl}
                                             onChange={(e) => setExternalImageUrl(e.target.value)}
-                                            placeholder={lang === 'es' ? 'Pegar link de imagen...' : 'Paste image link...'}
+                                            placeholder={lang === 'es' ? 'Link de imagen...' : 'Image link...'}
                                             className="external-url-input hide-mobile"
+                                            style={{ width: '130px' }}
+                                        />
+                                        <input 
+                                            type="text" 
+                                            value={externalImageLink}
+                                            onChange={(e) => setExternalImageLink(e.target.value)}
+                                            placeholder={lang === 'es' ? 'Asociar link...' : 'Attach link...'}
+                                            className="external-url-input hide-mobile"
+                                            style={{ width: '110px' }}
                                         />
                                     </div>
                                     <button type="submit" disabled={sending || uploading || (!text.trim() && selectedImages.length === 0 && !externalImageUrl.trim())} className="room-btn-primary">

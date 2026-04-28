@@ -185,6 +185,31 @@ export async function updateSubcategory(subId: string, name: string) {
     const sub = await db.roomSubcategory.findUnique({ where: { id: subId }, include: { category: { include: { room: true } } } });
     if (sub?.category.room.creatorId !== session.user.id) return { error: "No autorizado" };
     
+    const slug = slugify(name);
+    let finalId = subId;
+    
+    // If the ID looks like a slug (not a UUID), we might want to update it
+    // But for official rooms, IDs are stable. However, if the user COMPLAINED about the slug not updating,
+    // it means they ARE using slugs as IDs. 
+    if (subId !== slug) {
+        finalId = slug;
+        // Check if new slug already exists
+        const existing = await db.roomSubcategory.findFirst({ where: { categoryId: sub.categoryId, id: finalId } });
+        if (existing && finalId !== subId) {
+            finalId = `${slug}-${Math.random().toString(36).substring(2, 6)}`;
+        }
+    }
+
+    if (finalId !== subId) {
+        // We have to use a transaction because we are changing the PK
+        await db.$transaction(async (tx) => {
+            // Use parameterized query for safety
+            await tx.$executeRaw`UPDATE room_subcategories SET id = ${finalId}, name = ${name} WHERE id = ${subId}`;
+        });
+        revalidatePath(`/salas/${sub?.category.roomId}`);
+        return { success: true, newId: finalId };
+    }
+
     await db.roomSubcategory.update({ 
         where: { id: subId }, 
         data: { name } 
