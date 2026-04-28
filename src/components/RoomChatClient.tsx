@@ -25,6 +25,8 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
     const [isDragging, setIsDragging] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [targetMessageId, setTargetMessageId] = useState<string | null>(null);
+    const [externalImageUrl, setExternalImageUrl] = useState('');
+    const [replyExternalImageUrl, setReplyExternalImageUrl] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [draggingPinId, setDraggingPinId] = useState<string | null>(null);
@@ -231,7 +233,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
         
         try {
             if (isGuest) {
-                guestStore.deleteMessage(msgId);
+                guestStore.deleteMessage(roomId || propRoomId || 'test-room', msgId);
                 toast.success(lang === 'es' ? 'Mensaje eliminado' : 'Message deleted');
                 
                 if (isGeneral) {
@@ -299,6 +301,13 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                 <button type="button" onClick={() => fileInputRef.current?.click()} className="icon-btn" title={lang === 'es' ? 'Subir imagen' : 'Upload image'}>
                                     <ImageIcon size={18} />
                                 </button>
+                                <input 
+                                    type="text" 
+                                    value={replyExternalImageUrl}
+                                    onChange={(e) => setReplyExternalImageUrl(e.target.value)}
+                                    placeholder={lang === 'es' ? 'Link de imagen...' : 'Image link...'}
+                                    className="external-url-input hide-mobile"
+                                />
                             </div>
                             <button type="submit" disabled={sending || (!replyText.trim() && selectedImages.length === 0)} className="room-btn-primary mini" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.6rem 1.2rem', width: 'auto' }}>
                                 {sending ? <Loader2 size={18} className="spin" /> : (
@@ -462,6 +471,13 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                         </div>
                                         <div className="reply-body">
                                             <p className="reply-text">{renderFormattedText(r.content)}</p>
+                                            {r.images && r.images.length > 0 && (
+                                                <div className="msg-images-grid reply-images">
+                                                    {r.images.map((img: string, i: number) => (
+                                                        <div key={i} className="msg-img-box"><img src={img} alt="Reply" onClick={() => window.open(img, '_blank')} /></div>
+                                                    ))}
+                                                </div>
+                                            )}
                                             <button onClick={() => setReplyingTo(r)} className="reply-action-btn">
                                                 <ReplyIcon size={12} /> <span>{lang === 'es' ? 'Responder' : 'Reply'}</span>
                                             </button>
@@ -490,6 +506,13 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                                             </div>
                                                             <div className="reply-body">
                                                                 <p className="reply-text mini">{renderFormattedText(nr.content)}</p>
+                                                                {nr.images && nr.images.length > 0 && (
+                                                                    <div className="msg-images-grid reply-images mini">
+                                                                        {nr.images.map((img: string, i: number) => (
+                                                                            <div key={i} className="msg-img-box mini"><img src={img} alt="Reply" onClick={() => window.open(img, '_blank')} /></div>
+                                                                        ))}
+                                                                    </div>
+                                                                )}
                                                             </div>
                                                             {renderInlineReplyBox(nr)}
                                                         </div>
@@ -510,10 +533,13 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
     const handleSend = async (e: React.FormEvent, isReply = false) => {
         e.preventDefault();
         const content = isReply ? replyText : text;
-        if (!content.trim() && selectedImages.length === 0) return;
+        const extUrl = isReply ? replyExternalImageUrl : externalImageUrl;
+        if (!content.trim() && selectedImages.length === 0 && !extUrl.trim()) return;
         setSending(true);
         try {
             const imageUrls: string[] = [];
+            if (extUrl.trim()) imageUrls.push(extUrl.trim());
+            
             if (selectedImages.length > 0) {
                 setUploading(true);
                 for (const file of selectedImages) {
@@ -529,12 +555,13 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 }
             }
             if (isGuest) {
-                guestStore.addMessage(isGeneral ? 'general' : currentSubId!, content, imageUrls, isReply ? replyingTo?.id : undefined);
-                if (isReply) { setReplyText(''); setReplyingTo(null); } else { setText(''); }
+                guestStore.addMessage(roomId || 'test-room', isGeneral ? 'general' : currentSubId!, content, imageUrls, isReply ? replyingTo?.id : undefined);
+                if (isReply) { setReplyText(''); setReplyExternalImageUrl(''); setReplyingTo(null); } else { setText(''); setExternalImageUrl(''); }
                 setSelectedImages([]);
                 
                 const room = guestStore.getRoom(roomId || 'test-room');
                 if (isGeneral) setMessages([...(room?.generalMessages || [])].reverse());
+                else if (isHistory) setMessages(guestStore.getAllMessages());
                 else {
                     const sub = guestStore.getSubcategory(currentSubId!);
                     setMessages([...(sub?.messages || [])].reverse());
@@ -549,7 +576,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 }
                 
                 if (res.success) {
-                    if (isReply) { setReplyText(''); setReplyingTo(null); } else { setText(''); }
+                    if (isReply) { setReplyText(''); setReplyExternalImageUrl(''); setReplyingTo(null); } else { setText(''); setExternalImageUrl(''); }
                     setSelectedImages([]);
                     const { getSubcategoryMessages, getGeneralMessages } = await import('@/lib/salasActions');
                     if (isGeneral && (roomId || propRoomId)) setMessages(await getGeneralMessages(roomId || propRoomId));
@@ -699,8 +726,15 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                             <ImageIcon size={20} />
                                             <input type="file" ref={fileInputRef} hidden accept="image/*" multiple onChange={(e) => { if (e.target.files) setSelectedImages(prev => [...prev, ...Array.from(e.target.files!)].slice(0, 3)); }} />
                                         </button>
+                                        <input 
+                                            type="text" 
+                                            value={externalImageUrl}
+                                            onChange={(e) => setExternalImageUrl(e.target.value)}
+                                            placeholder={lang === 'es' ? 'Pegar link de imagen...' : 'Paste image link...'}
+                                            className="external-url-input hide-mobile"
+                                        />
                                     </div>
-                                    <button type="submit" disabled={sending || uploading || (!text.trim() && selectedImages.length === 0)} className="room-btn-primary">
+                                    <button type="submit" disabled={sending || uploading || (!text.trim() && selectedImages.length === 0 && !externalImageUrl.trim())} className="room-btn-primary">
                                         {sending ? <Loader2 size={22} className="spin" /> : <><span className="hide-mobile">{roomsT.chat.post}</span><Send size={18} /></>}
                                     </button>
                                 </div>
@@ -765,7 +799,11 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                                             <span className="log-user">{msg.user.name}{(isMe && !msg.user.name.includes('(tú)')) ? ' (tú)' : ''}</span>
                                                             <span className="log-time">{formatMessageDate(new Date(msg.createdAt), lang, true)}</span>
                                                         </div>
-                                                        <p className="log-text">{msg.content}</p>
+                                                        <div className="log-text" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                                            {msg.images && msg.images.length > 0 && <ImageIcon size={14} className="log-msg-icon" />}
+                                                            <span>{msg.content || (msg.images?.length > 0 ? (lang === 'es' ? '[Imagen]' : '[Image]') : '')}</span>
+                                                            {msg.images && msg.images.length > 1 && <span className="log-img-count">({msg.images.length})</span>}
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div className="log-tags" style={{ alignSelf: 'flex-start', marginLeft: '3rem' }}>
@@ -785,6 +823,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
             </div>
 
             <style jsx global>{`
+                textarea, input, button { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important; }
                 .room-chat-wrapper { display: flex; flex-direction: column; min-height: 100vh; max-width: 850px; margin: 0 auto; position: relative; padding: 0 1rem; }
                 .chat-content-container { display: flex; flex-direction: column; gap: 1.5rem; padding-bottom: 5rem; }
                 .chat-top-header { margin-top: 1rem; display: flex; align-items: center; }
@@ -803,7 +842,8 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .main-input-sticky { position: sticky; top: 1rem; z-index: 50; }
                 .input-card { background: #fff; border: 2px solid #f1f5f9; border-radius: 24px; padding: 1rem; box-shadow: 0 10px 40px rgba(0,0,0,0.06); transition: all 0.2s; }
                 .input-card.is-dragging { border-color: var(--accent); background: rgba(0, 112, 243, 0.02); transform: scale(1.02); }
-                textarea { width: 100%; border: none; background: none; outline: none; resize: none; font-size: 1.1rem; color: #1e293b; padding: 0.5rem; min-height: 40px; }
+                textarea { width: 100%; border: none; background: none; outline: none; resize: none; font-size: 1.1rem; color: #1e293b; padding: 0.5rem; min-height: 40px; font-weight: 500; }
+                textarea::placeholder { color: #94a3b8; font-weight: 500; }
                 .input-footer-row { display: flex; align-items: center; justify-content: space-between; margin-top: 0.5rem; border-top: 1px solid #f8fafc; padding-top: 0.5rem; }
                 .input-actions-left { display: flex; align-items: center; gap: 0.8rem; }
                 
@@ -813,6 +853,27 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .thumb-box img { width: 100%; height: 100%; object-fit: cover; border-radius: 16px; }
                 .del-img-btn { position: absolute; top: -10px; right: -10px; background: #fff; color: #ef4444; border: 1px solid #fee2e2; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25); transition: all 0.2s ease; z-index: 10; }
                 .del-img-btn:hover { background: #ef4444; color: #fff; transform: scale(1.1) rotate(90deg); border-color: #ef4444; }
+
+                .external-url-input { 
+                    border: 1px solid #e2e8f0; 
+                    border-radius: 12px; 
+                    padding: 0 0.8rem; 
+                    font-size: 0.85rem; 
+                    width: 200px; 
+                    height: 38px;
+                    outline: none; 
+                    transition: all 0.2s; 
+                    background: #f8fafc;
+                    font-weight: 600;
+                    color: #475569;
+                }
+                .external-url-input::placeholder { color: #cbd5e1; font-weight: 500; }
+                .external-url-input:focus { 
+                    border-color: var(--accent); 
+                    background: #fff; 
+                    box-shadow: 0 0 0 2px rgba(0, 112, 243, 0.05);
+                    color: #1e293b;
+                }
                 
                 .icon-btn { background: #f8fafc; border: none; color: #94a3b8; padding: 0.6rem; border-radius: 12px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; text-decoration: none; }
                 .icon-btn:hover { color: var(--accent); background: #f1f5f9; transform: scale(1.05); }
@@ -864,10 +925,14 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .msg-date { font-size: 0.8rem; color: #94a3b8; font-weight: 700; }
                 .msg-link { color: var(--accent); text-decoration: none; font-weight: 700; word-break: break-all; }
                 .msg-link:hover { text-decoration: underline; }
-                .msg-text { font-size: 1.1rem; line-height: 1.6; color: #334155; margin: 0; font-weight: 500; }
+                .msg-text { font-size: 1.05rem; line-height: 1.6; color: #334155; margin: 0; font-weight: 500; letter-spacing: -0.01em; }
                 .msg-img-box { margin-top: 1rem; border-radius: 16px; overflow: hidden; border: 1px solid #f1f5f9; }
+                .msg-img-box.mini { border-radius: 10px; margin-top: 0.5rem; }
                 .msg-img-box img { width: 100%; max-width: 100%; height: auto; display: block; cursor: pointer; transition: transform 0.2s; }
                 .msg-img-box img:hover { transform: scale(1.01); }
+                .msg-images-grid { display: grid; gap: 0.8rem; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+                .msg-images-grid.reply-images { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.5rem; margin-top: 0.5rem; }
+                .msg-images-grid.mini { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.4rem; }
                 
                 .msg-actions { margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid #f8fafc; }
                 .btn-reply-trigger { background: #f8fafc; border: 1px solid #f1f5f9; padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.85rem; font-weight: 800; color: #64748b; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s; }
@@ -887,8 +952,11 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .log-user { font-weight: 900; font-size: 0.9rem; color: #1e293b; }
                 .log-time { font-size: 0.75rem; color: #94a3b8; margin-left: 0.6rem; font-weight: 700; }
                 .log-text { margin: 0.1rem 0 0 0; font-size: 0.95rem; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
+                .log-msg-icon { color: var(--accent); flex-shrink: 0; }
+                .log-img-count { font-size: 0.8rem; color: #94a3b8; font-weight: 700; }
                 .log-row-content { display: flex; align-items: center; justify-content: space-between; gap: 1rem; width: 100%; }
                 .log-tags { display: flex; align-items: center; gap: 0.4rem; font-size: 0.65rem; font-weight: 900; background: #f8fafc; padding: 0.4rem 0.8rem; border-radius: 10px; color: #94a3b8; border: 1px solid #f1f5f9; text-transform: uppercase; letter-spacing: 0.02em; flex-shrink: 0; }
+                .log-img-indicator { display: flex; align-items: center; gap: 0.2rem; background: rgba(0, 112, 243, 0.05); color: var(--accent); padding: 0.1rem 0.4rem; border-radius: 6px; font-size: 0.7rem; font-weight: 800; }
                 
                 .reply-item { background: #fcfdfe; padding: 1.25rem; border-radius: 20px; border: 1px solid #f8fafc; display: flex; flex-direction: column; gap: 0.8rem; }
                 .reply-header { display: flex; align-items: center; gap: 0.8rem; }
@@ -898,7 +966,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .reply-time { font-size: 0.75rem; color: #94a3b8; font-weight: 700; }
                 .reply-date-row { display: flex; align-items: center; gap: 0.8rem; }
                 .reply-body { margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.4rem; }
-                .reply-text { font-size: 1rem; margin: 0; color: #475569; line-height: 1.5; font-weight: 500; }
+                .reply-text { font-size: 0.95rem; margin: 0; color: #475569; line-height: 1.5; font-weight: 500; letter-spacing: -0.005em; }
                 .reply-action-btn { display: flex; align-items: center; gap: 0.4rem; background: none; border: none; color: #94a3b8; font-size: 0.75rem; font-weight: 800; cursor: pointer; width: fit-content; padding: 0.2rem 0; transition: all 0.2s; }
                 .reply-action-btn:hover { color: var(--accent); }
                 .reply-del-btn { background: #f8fafc; border: 1px solid #f1f5f9; padding: 0.4rem 0.6rem; color: #64748b; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; transition: all 0.2s; border-radius: 8px; font-size: 0.75rem; font-weight: 800; }

@@ -261,23 +261,39 @@ export const guestStore = {
         return this.getData().rooms.find(r => r.id === id);
     },
 
-    addMessage(containerId: string, content: string, images: string[], parentId?: string) {
+    getAllMessages() {
         const data = this.getData();
-        for (const room of data.rooms) {
-            let container: any = null;
-            if (containerId === 'general') {
-                container = room;
-            } else {
-                for (const cat of room.categories) {
-                    const sub = cat.subcategories.find(s => s.id === containerId);
-                    if (sub) {
-                        container = sub;
-                        break;
-                    }
+        const all: GuestMessage[] = [];
+        data.rooms.forEach(room => {
+            all.push(...(room.generalMessages || []));
+            room.categories.forEach(cat => {
+                cat.subcategories.forEach(sub => {
+                    all.push(...(sub.messages || []));
+                });
+            });
+        });
+        return all.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    },
+
+    addMessage(roomId: string, containerId: string, content: string, images: string[], parentId?: string) {
+        const data = this.getData();
+        const room = data.rooms.find(r => r.id === roomId);
+        if (!room) return null;
+
+        let container: any = null;
+        if (containerId === 'general') {
+            container = room;
+        } else {
+            for (const cat of room.categories) {
+                const sub = cat.subcategories.find(s => s.id === containerId);
+                if (sub) {
+                    container = sub;
+                    break;
                 }
             }
+        }
 
-            if (container) {
+        if (container) {
                 if (parentId) {
                     const allTopMessages = container.messages || container.generalMessages || [];
                     let parent = allTopMessages.find((m: any) => m.id === parentId);
@@ -300,9 +316,11 @@ export const guestStore = {
                         const newReply = {
                             id: `reply-${Date.now()}`,
                             content,
+                            images: images || [],
                             user: { name: 'Invitado', image: null },
                             userId: 'guest-me',
-                            createdAt: new Date().toISOString()
+                            createdAt: new Date().toISOString(),
+                            replies: []
                         };
                         parent.replies.push(newReply);
                         this.saveData(data);
@@ -322,18 +340,19 @@ export const guestStore = {
                     else container.messages.push(newMessage);
                     this.saveData(data);
                     return newMessage;
-                }
             }
         }
         return null;
     },
 
-    deleteMessage(msgId: string) {
+    deleteMessage(roomId: string, msgId: string) {
         const data = this.getData();
         if (!data) return;
 
-        for (const room of data.rooms) {
-            // 1. Check General Chat Top Level
+        const room = data.rooms.find(r => r.id === roomId);
+        if (!room) return;
+        
+        // 1. Check General Chat Top Level
             const gmIndex = (room.generalMessages || []).findIndex((m: any) => m.id === msgId);
             if (gmIndex !== -1) {
                 room.generalMessages.splice(gmIndex, 1);
@@ -385,7 +404,6 @@ export const guestStore = {
                                 return;
                             }
                         }
-                    }
                 }
             }
         }
