@@ -420,7 +420,16 @@ export async function getGeneralMessages(roomId: string) {
   try {
     if (!db || !db.roomMessage) return [];
     return await db.roomMessage.findMany({
-      where: { subcategory: { name: 'Chat General', category: { roomId } }, parentId: null },
+      where: { 
+        subcategory: { 
+          OR: [
+            { name: 'Chat General', category: { roomId } },
+            { name: 'General', category: { roomId } },
+            { category: { name: 'General', roomId } }
+          ]
+        }, 
+        parentId: null 
+      },
       include: {
         user: { select: { id: true, name: true, image: true } },
         replies: {
@@ -583,8 +592,7 @@ export async function getAllRoomMessages(roomId: string) {
         OR: [
           { subcategory: { category: { roomId } } },
           { subcategory: { name: 'Chat General', category: { roomId } } }
-        ],
-        parentId: null 
+        ]
       },
       include: {
         user: { select: { id: true, name: true, image: true } },
@@ -594,12 +602,6 @@ export async function getAllRoomMessages(roomId: string) {
             name: true,
             category: { select: { name: true } }
           } 
-        },
-        replies: {
-          include: {
-            user: { select: { id: true, name: true, image: true } }
-          },
-          orderBy: { createdAt: 'asc' }
         }
       },
       orderBy: { createdAt: 'desc' }
