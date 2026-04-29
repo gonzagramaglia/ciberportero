@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { ChevronLeft } from "lucide-react";
-import { getRoomData } from "@/lib/salasActions";
+import { getRoomDetails } from "@/lib/salasActions";
 import RoomSidebar from "@/components/RoomSidebar";
 import { cookies } from "next/headers";
 import { Locale, translations } from "@/lib/translations";
@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
       };
     }
 
-    const room = await getRoomData(roomId);
+    const room = await getRoomDetails(roomId);
     if (room) {
       return {
         title: room.name,
@@ -63,7 +63,7 @@ export default async function RoomDetailLayout({ children, params }: any) {
 
   let room = null;
   if (session && roomId) {
-    room = await getRoomData(roomId);
+    room = await getRoomDetails(roomId);
   }
 
   const isGuestRoom = !room;

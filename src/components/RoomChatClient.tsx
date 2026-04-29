@@ -104,17 +104,29 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     )
                 );
                 if (!exists && !isGuest && roomId) {
-                    const { getRoomInfo } = await import('@/lib/salasActions');
-                    const updated = await getRoomInfo(roomId);
-                    if (updated) setRoom(updated);
+                    const { getRoomDetails } = await import('@/lib/salasActions');
+                    const data = await getRoomDetails(id);
+                    if (!data) {
+                        // Redirección si no hay acceso o no existe la sala
+                        if (!session) {
+                            window.location.href = '/salas';
+                        } else {
+                            window.location.href = '/salas/lista';
+                        }
+                        return;
+                    }
+                    setRoom(data);
                 }
             }
 
             if (isGuest) {
                 const sub = guestStore.getSubcategory(id);
                 if (!sub) {
-                    window.location.hash = 'general';
-                    setCurrentSubId('general');
+                    if (!session) {
+                        window.location.href = '/salas';
+                    } else {
+                        window.location.href = '/salas/lista';
+                    }
                     return;
                 }
             }

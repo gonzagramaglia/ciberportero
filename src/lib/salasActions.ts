@@ -133,7 +133,10 @@ export async function createSubcategory(categoryId: string, name: string) {
     
     if (category?.room.creatorId !== session.user.id) return { error: "No autorizado" };
 
-    const slug = slugify(name);
+    const decodedName = decodeURIComponent(name).trim();
+    console.log("Intentando crear subcategoría:", decodedName, "en cat:", categoryId);
+    
+    const slug = slugify(decodedName);
     let finalId = slug;
     const existing = await db.roomSubcategory.findFirst({
       where: { categoryId, id: finalId }
@@ -142,15 +145,16 @@ export async function createSubcategory(categoryId: string, name: string) {
       finalId = `${slug}-${Math.random().toString(36).substring(2, 6)}`;
     }
 
-    const res = await db.roomSubcategory.create({
-      data: { categoryId, name, id: finalId }
+    const sub = await db.roomSubcategory.create({
+      data: { categoryId, name: decodedName, id: finalId }
     });
 
+    console.log("Subcategoría creada con éxito:", sub.id, sub.name, "en categoría:", categoryId);
     revalidatePath(`/salas/${category.roomId}`);
-    return { success: true };
-  } catch (error) {
-    console.error(error);
-    return { error: "Error al crear subcategoría" };
+    return { success: true, sub };
+  } catch (error: any) {
+    console.error("Error creating subcategory:", error);
+    return { success: false, error: error.message };
   }
 }
 
@@ -330,14 +334,15 @@ export async function getMyRooms() {
 
 export async function getRoomInfo(roomId: string) {
   try {
-    return await getRoomData(roomId);
+    return await getRoomDetails(roomId);
   } catch (error) {
     console.error("getRoomInfo Error:", error);
     return null;
   }
 }
 
-export async function getRoomData(rawRoomId: string) {
+export async function getRoomDetails(rawRoomId: string) {
+  import('next/cache').then(({ unstable_noStore }) => unstable_noStore());
   try {
     const roomId = decodeURIComponent(rawRoomId).trim();
     const session = await auth();
@@ -383,10 +388,11 @@ export async function getRoomData(rawRoomId: string) {
 
     return room;
   } catch (error) {
-    console.error("getRoomData Error:", error);
+    console.error("getRoomDetails Error:", error);
     return null;
   }
 }
+
 
 export async function getSubcategoryMessages(subcategoryId: string) {
   try {
