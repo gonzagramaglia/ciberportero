@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { MessageSquare, Send, Loader2, History as HistoryIcon, Image as ImageIcon, X, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, Hash, Paperclip, MessageCircle, Reply as ReplyIcon, Trash2, Pencil, Check, Smile, ClipboardClock, Pin, PinOff, GripVertical, ShieldCheck } from 'lucide-react';
+import { MessageSquare, Send, Loader2, History as HistoryIcon, Image as ImageIcon, X, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, Hash, Paperclip, MessageCircle, Reply as ReplyIcon, Trash2, Pencil, Check, Smile, ClipboardClock, Pin, PinOff, GripVertical, ShieldCheck, Search } from 'lucide-react';
 import { addRoomMessage, deleteMessage, addGeneralMessage, updateCategory, updateSubcategory, togglePinMessage, reorderPinnedMessages } from '@/lib/salasActions';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'react-hot-toast';
@@ -29,6 +29,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
     const [externalImageLink, setExternalImageLink] = useState('');
     const [replyExternalImageUrl, setReplyExternalImageUrl] = useState('');
     const [replyExternalImageLink, setReplyExternalImageLink] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [draggingPinId, setDraggingPinId] = useState<string | null>(null);
@@ -54,7 +55,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
         };
 
         if (roomId) getRoomData(roomId);
-        
+
         const handleRefresh = () => {
             if (roomId) {
                 getRoomData(roomId);
@@ -70,7 +71,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
 
     function formatMessageDate(date: Date, lang: string, short = false) {
         const connector = lang === 'es' ? ' a las ' : lang === 'pt' ? ' às ' : ' at ';
-        
+
         if (lang !== 'es') {
             return date.toLocaleDateString(lang === 'pt' ? 'pt-BR' : 'en-US', {
                 weekday: 'long', day: 'numeric', month: 'long'
@@ -78,14 +79,14 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 hour: '2-digit', minute: '2-digit', hour12: false
             });
         }
-        
+
         const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
         const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
         const dayName = days[date.getDay()];
         const day = date.getDate();
         const month = months[date.getMonth()];
         const time = date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: false });
-        
+
         return `${dayName} ${day} de ${month}${connector}${time}`;
     }
 
@@ -97,8 +98,8 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
             }
 
             if (room?.categories) {
-                const exists = room.categories.some((c: any) => 
-                    c.subcategories?.some((s: any) => 
+                const exists = room.categories.some((c: any) =>
+                    c.subcategories?.some((s: any) =>
                         s.id === id || (s.id.includes('-') && s.id.split('-').slice(1).join('-') === id)
                     )
                 );
@@ -188,7 +189,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                 });
                             });
                             room.generalMessages.forEach((m: any) => processMsg(m, 'General', 'Chat General', 'general'));
-                            
+
                             setMessages(allMsgs.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
                         }
                     } else {
@@ -232,12 +233,12 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
 
         if (confirmTimer.current) clearTimeout(confirmTimer.current);
         setConfirmDeleteId(null);
-        
+
         try {
             if (isGuest) {
                 guestStore.deleteMessage(roomId || propRoomId || 'test-room', msgId);
                 toast.success(lang === 'es' ? 'Mensaje eliminado' : 'Message deleted');
-                
+
                 if (isGeneral) {
                     const room = guestStore.getRoom(roomId || propRoomId || 'test-room');
                     setMessages([...(room?.generalMessages || [])].reverse());
@@ -296,23 +297,23 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     <form onSubmit={(e) => handleSend(e, true)}>
                         <textarea autoFocus value={replyText} onChange={e => setReplyText(e.target.value)} placeholder={roomsT.chat.whatAreYouThinking} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(e, true); } }} />
                         <div className="reply-footer">
-                                            <div style={{ display: 'flex', gap: '0.6rem' }}>
-                                                <a href="https://emojis.hoy.today/" target="_blank" rel="noopener noreferrer" className="icon-btn emoji-hide-mobile" title={lang === 'es' ? 'Emojis' : 'Emojis'}>
-                                                    <Smile size={18} />
-                                                </a>
+                            <div style={{ display: 'flex', gap: '0.6rem' }}>
+                                <a href="https://emojis.hoy.today/" target="_blank" rel="noopener noreferrer" className="icon-btn emoji-hide-mobile" title={lang === 'es' ? 'Emojis' : 'Emojis'}>
+                                    <Smile size={18} />
+                                </a>
                                 <button type="button" onClick={() => fileInputRef.current?.click()} className="icon-btn" title={lang === 'es' ? 'Subir imagen' : 'Upload image'}>
                                     <ImageIcon size={18} />
                                 </button>
-                                <input 
-                                    type="text" 
+                                <input
+                                    type="text"
                                     value={replyExternalImageUrl}
                                     onChange={(e) => setReplyExternalImageUrl(e.target.value)}
                                     placeholder={lang === 'es' ? 'Link de imagen...' : 'Image link...'}
                                     className="external-url-input hide-mobile"
                                     style={{ width: '120px' }}
                                 />
-                                <input 
-                                    type="text" 
+                                <input
+                                    type="text"
                                     value={replyExternalImageLink}
                                     onChange={(e) => setReplyExternalImageLink(e.target.value)}
                                     placeholder={lang === 'es' ? 'Asociar link...' : 'Attach link...'}
@@ -341,8 +342,8 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
         if (!room?.categories || isGeneral || isHistory) return { cat: null, sub: null };
         for (const cat of room.categories) {
             if (!cat.subcategories) continue;
-            const sub = (cat.subcategories as any[]).find((s: any) => 
-                s.id === currentSubId || 
+            const sub = (cat.subcategories as any[]).find((s: any) =>
+                s.id === currentSubId ||
                 (s.id.includes('-') && s.id.split('-').slice(1).join('-') === currentSubId) ||
                 (currentSubId?.includes('-') && currentSubId.split('-').slice(1).join('-') === s.id)
             );
@@ -357,23 +358,23 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
     const myMember = room?.members?.find((m: any) => m.userId === session?.user?.id || (isGuest && (m.id === 'guest-me' || m.user.name === 'Invitado')));
     const isAdmin = myMember?.role === 'admin';
     const isReallyCreator = (room?.creatorId === session?.user?.id && !!session?.user?.id) || (isGuest && room?.creatorId === 'guest' && roomId !== 'test-room');
-    
+
     let canManage = (!!session?.user?.id && (isReallyCreator || isAdmin)) || (isGuest && isAdmin);
     if (isGuest && roomId === 'test-room') canManage = false;
 
     const handleMovePin = async (msgId: string, dir: 'up' | 'down') => {
         const currentIndex = pinnedMessagesList.findIndex((m: any) => m.id === msgId);
         if (currentIndex === -1) return;
-        
+
         const newIndex = currentIndex + (dir === 'up' ? -1 : 1);
         if (newIndex < 0 || newIndex >= pinnedMessagesList.length) return;
-        
+
         const newList = [...pinnedMessagesList];
         const [moved] = newList.splice(currentIndex, 1);
         newList.splice(newIndex, 0, moved);
-        
+
         const orderedIds = newList.map((m: any) => m.id);
-        
+
         if (isGuest) {
             const sid = currentSubId || 'general';
             guestStore.reorderPins(sid, orderedIds);
@@ -420,10 +421,27 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
         );
     };
 
+    const highlightText = (text: string, query: string) => {
+        if (!query.trim()) return text;
+        try {
+            const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const parts = text.split(new RegExp(`(${escapedQuery})`, 'gi'));
+            return (
+                <>
+                    {parts.map((part, i) => 
+                        part.toLowerCase() === query.toLowerCase() 
+                            ? <mark key={i} className="search-highlight">{part}</mark> 
+                            : part
+                    )}
+                </>
+            );
+        } catch (e) { return text; }
+    };
+
     const renderMessage = (msg: any, isPinnedView = false) => {
         const isMe = msg.userId === session?.user?.id || (isGuest && (msg.userId === 'guest-me' || msg.user.name === 'Invitado'));
         const canDelete = isMe || canManage;
-        
+
         return (
             <div key={msg.id} id={msg.id} className={`message-item-wrapper fade-in ${msg.isPinned ? 'pinned-highlight' : ''} ${isPinnedView ? 'in-pinned-list' : ''}`}>
                 <div className="message-card">
@@ -566,7 +584,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                         const { data: { publicUrl } } = supabase.storage.from('images').getPublicUrl(path);
                         url = publicUrl;
                     }
-                    
+
                     if (!extUrl.trim() && targetLink) {
                         imageUrls.push({ url, link: targetLink });
                     } else {
@@ -583,7 +601,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 guestStore.addMessage(roomId || 'test-room', isGeneral ? 'general' : currentSubId!, content, imageUrls, isReply ? replyingTo?.id : undefined);
                 if (isReply) { setReplyText(''); setReplyExternalImageUrl(''); setReplyExternalImageLink(''); setReplyingTo(null); } else { setText(''); setExternalImageUrl(''); setExternalImageLink(''); }
                 setSelectedImages([]);
-                
+
                 const room = guestStore.getRoom(roomId || 'test-room');
                 if (isGeneral) setMessages([...(room?.generalMessages || [])].reverse());
                 else if (isHistory) setMessages(guestStore.getAllMessages());
@@ -599,7 +617,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 } else {
                     res = await addRoomMessage(currentSubId!, content, imageUrls, isReply ? replyingTo?.id : undefined);
                 }
-                
+
                 if (res.success) {
                     if (isReply) { setReplyText(''); setReplyExternalImageUrl(''); setReplyExternalImageLink(''); setReplyingTo(null); } else { setText(''); setExternalImageUrl(''); setExternalImageLink(''); }
                     setSelectedImages([]);
@@ -628,7 +646,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     const { getRoomInfo } = await import('@/lib/salasActions');
                     const updatedRoom = await getRoomInfo(room.id);
                     setRoom(updatedRoom);
-                    
+
                     // Update hash if the ID changed (slug-based)
                     if (res.newId && res.newId !== subId) {
                         window.location.hash = res.newId;
@@ -665,75 +683,91 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
     return (
         <div className="room-chat-wrapper">
             <div className="chat-content-container">
-                <div className="chat-top-header">
-                    <div className="status-badge" style={{ background: isHistory ? 'rgba(0, 112, 243, 0.05)' : '#f8fafc', borderColor: isHistory ? 'rgba(0, 112, 243, 0.1)' : '#e2e8f0' }}>
-                        {isHistory ? <HistoryIcon size={16} color="var(--accent)" /> : <MessageSquare size={16} color="var(--accent)" />}
-                        
-                        {isHistory ? (
-                            <>
-                                <span className="path-segment active">{lang === 'es' ? 'Historial' : 'History'}</span>
-                                <span className="path-separator">•</span>
-                                <span className="path-segment">{lang === 'es' ? 'Todos los Mensajes' : 'All Messages'}</span>
-                            </>
-                        ) : isGeneral ? (
-                            <>
-                                <span className="path-segment active">{lang === 'es' ? 'Chat General' : 'General Chat'}</span>
-                                <span className="path-separator">•</span>
-                                <span className="path-segment">{lang === 'es' ? 'Conversación Global' : 'Global Conversation'}</span>
-                            </>
-                        ) : currentSub ? (
-                            <>
-                                <div className="breadcrumb-item">
-                                    <span className="path-segment active">
-                                        {currentCat?.name || roomsT.chat.chatTitle}
-                                    </span>
-                                </div>
-                                <span className="path-separator"><ChevronRight size={14} /></span>
-                                <div className="breadcrumb-item">
-                                    {editingSubId === currentSub.id ? (
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                            <input 
-                                                autoFocus
-                                                value={editSubValue}
-                                                onChange={e => setEditSubValue(e.target.value)}
-                                                onKeyDown={e => e.key === 'Enter' && handleUpdateSub(currentSub.id, editSubValue)}
-                                                onBlur={() => setEditingSubId(null)}
-                                                className="breadcrumb-edit-input"
-                                            />
-                                            <Check size={14} color="#10b981" style={{ cursor: 'pointer' }} onClick={() => handleUpdateSub(currentSub.id, editSubValue)} />
-                                        </div>
-                                    ) : (
-                                        <span className="path-segment sub">
-                                            <Hash size={14} />
-                                            {currentSub.name}
-                                            {canManage && (
-                                                <button 
-                                                    className="breadcrumb-edit-btn"
-                                                    onClick={() => { setEditingSubId(currentSub.id); setEditSubValue(currentSub.name); }}
-                                                >
-                                                    <Pencil size={12} />
-                                                </button>
-                                            )}
+                <div className={`chat-top-row ${isHistory ? 'history-mode' : ''}`}>
+                    <div className="chat-top-header">
+                        <div className="status-badge" style={{ background: isHistory ? 'rgba(0, 112, 243, 0.05)' : '#f8fafc', borderColor: isHistory ? 'rgba(0, 112, 243, 0.1)' : '#e2e8f0' }}>
+                            {isHistory ? <HistoryIcon size={16} color="var(--accent)" /> : <MessageSquare size={16} color="var(--accent)" />}
+
+                            {isHistory ? (
+                                <>
+                                    <span className="path-segment active">{lang === 'es' ? 'Historial' : 'History'}</span>
+                                    <span className="path-separator">•</span>
+                                    <span className="path-segment">{lang === 'es' ? 'Todos los Mensajes' : 'All Messages'}</span>
+                                </>
+                            ) : isGeneral ? (
+                                <>
+                                    <span className="path-segment active">{lang === 'es' ? 'Chat General' : 'General Chat'}</span>
+                                    <span className="path-separator">•</span>
+                                    <span className="path-segment">{lang === 'es' ? 'Conversación Global' : 'Global Conversation'}</span>
+                                </>
+                            ) : currentSub ? (
+                                <>
+                                    <div className="breadcrumb-item">
+                                        <span className="path-segment active">
+                                            {currentCat?.name || roomsT.chat.chatTitle}
                                         </span>
-                                    )}
-                                </div>
-                            </>
-                        ) : null}
+                                    </div>
+                                    <span className="path-separator"><ChevronRight size={14} /></span>
+                                    <div className="breadcrumb-item">
+                                        {editingSubId === currentSub.id ? (
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                                <input
+                                                    autoFocus
+                                                    value={editSubValue}
+                                                    onChange={e => setEditSubValue(e.target.value)}
+                                                    onKeyDown={e => e.key === 'Enter' && handleUpdateSub(currentSub.id, editSubValue)}
+                                                    onBlur={() => setEditingSubId(null)}
+                                                    className="breadcrumb-edit-input"
+                                                />
+                                                <Check size={14} color="#10b981" style={{ cursor: 'pointer' }} onClick={() => handleUpdateSub(currentSub.id, editSubValue)} />
+                                            </div>
+                                        ) : (
+                                            <span className="path-segment sub">
+                                                <Hash size={14} />
+                                                {currentSub.name}
+                                                {canManage && (
+                                                    <button
+                                                        className="breadcrumb-edit-btn"
+                                                        onClick={() => { setEditingSubId(currentSub.id); setEditSubValue(currentSub.name); }}
+                                                    >
+                                                        <Pencil size={12} />
+                                                    </button>
+                                                )}
+                                            </span>
+                                        )}
+                                    </div>
+                                </>
+                            ) : null}
+                        </div>
                     </div>
+                    {isHistory && (
+                        <div className="history-search-container fade-in">
+                            <div className="search-box-wrapper">
+                                <Search size={18} className="search-icon" />
+                                <input 
+                                    type="text"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    placeholder={lang === 'es' ? 'Filtrar logs...' : 'Filter logs...'}
+                                    className="history-search-input"
+                                />
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {!isHistory && (
                     <div className="main-input-sticky">
-                        <div 
+                        <div
                             className={`input-card ${isDragging ? 'is-dragging' : ''}`}
                             onDragOver={handleDrag}
                             onDragLeave={handleDrag}
                             onDrop={handleDrop}
                         >
                             <form onSubmit={(e) => handleSend(e, false)}>
-                                <textarea 
-                                    value={text} 
-                                    onChange={e => setText(e.target.value)} 
+                                <textarea
+                                    value={text}
+                                    onChange={e => setText(e.target.value)}
                                     placeholder={isGeneral ? roomsT.chat.mainPlaceholder : roomsT.chat.whatAreYouThinking}
                                     rows={text.split('\n').length > 2 ? 4 : 1}
                                     onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(e, false); } }}
@@ -757,16 +791,16 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                             <ImageIcon size={20} />
                                             <input type="file" ref={fileInputRef} hidden accept="image/*" multiple onChange={(e) => { if (e.target.files) setSelectedImages(prev => [...prev, ...Array.from(e.target.files!)].slice(0, 3)); }} />
                                         </button>
-                                        <input 
-                                            type="text" 
+                                        <input
+                                            type="text"
                                             value={externalImageUrl}
                                             onChange={(e) => setExternalImageUrl(e.target.value)}
                                             placeholder={lang === 'es' ? 'Link de imagen...' : 'Image link...'}
                                             className="external-url-input hide-mobile"
                                             style={{ width: '130px' }}
                                         />
-                                        <input 
-                                            type="text" 
+                                        <input
+                                            type="text"
                                             value={externalImageLink}
                                             onChange={(e) => setExternalImageLink(e.target.value)}
                                             placeholder={lang === 'es' ? 'Asociar link...' : 'Attach link...'}
@@ -783,10 +817,10 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     </div>
                 )}
 
-                <a 
-                    href={lang === 'en' ? 'https://hoy.today/en' : 'https://hoy.today'} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
+                <a
+                    href={lang === 'en' ? 'https://hoy.today/en' : 'https://hoy.today'}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="floating-hoy-btn"
                     title="Hoy.Today"
                 >
@@ -825,7 +859,17 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                         </div>
                     ) : (
                         <div className="messages-list-flow">
-                            {messages.filter((m: any) => !m.isPinned).map((msg: any) => {
+                            {messages
+                                .filter((m: any) => !m.isPinned)
+                                .filter((m: any) => {
+                                    if (!isHistory || !searchQuery.trim()) return true;
+                                    const q = searchQuery.toLowerCase().trim();
+                                    return (m.content || '').toLowerCase().includes(q) || 
+                                           (m.user?.name || '').toLowerCase().includes(q) ||
+                                           (m.categoryName || '').toLowerCase().includes(q) ||
+                                           (m.subcategoryName || '').toLowerCase().includes(q);
+                                })
+                                .map((msg: any) => {
                                 if (isHistory) {
                                     const isMe = msg.userId === session?.user?.id || (isGuest && (msg.userId === 'guest-me' || msg.user.name === 'Invitado'));
                                     return (
@@ -841,7 +885,12 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                                         </div>
                                                         <div className="log-text" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                                                             {msg.images && msg.images.length > 0 && <ImageIcon size={14} className="log-msg-icon" />}
-                                                            <span>{msg.content || (msg.images?.length > 0 ? (lang === 'es' ? '[Imagen]' : '[Image]') : '')}</span>
+                                                            <span>
+                                                                {searchQuery.trim() && isHistory 
+                                                                    ? highlightText(msg.content || (msg.images?.length > 0 ? (lang === 'es' ? '[Imagen]' : '[Image]') : ''), searchQuery) 
+                                                                    : (msg.content || (msg.images?.length > 0 ? (lang === 'es' ? '[Imagen]' : '[Image]') : ''))
+                                                                }
+                                                            </span>
                                                             {msg.images && msg.images.length > 1 && <span className="log-img-count">({msg.images.length})</span>}
                                                         </div>
                                                     </div>
@@ -983,6 +1032,19 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .empty-view h3 { margin: 0 0 0.5rem 0; font-size: 1.5rem; font-weight: 900; color: #1e293b; }
                 .empty-view p { margin: 0; color: #94a3b8; font-weight: 600; font-size: 1.1rem; max-width: 300px; line-height: 1.5; }
                 
+                .chat-top-row { display: flex; flex-direction: column; margin-top: 1rem; gap: 1rem; }
+                .chat-top-row.history-mode { flex-direction: row; align-items: center; justify-content: space-between; }
+                .chat-top-header { margin-top: 0; display: flex; align-items: center; }
+                
+                .history-search-container { flex: 1; margin-bottom: 0; max-width: 600px; }
+                .search-box-wrapper { position: relative; display: flex; align-items: center; background: #fff; border: 2px solid #f1f5f9; border-radius: 14px; padding: 0 1.2rem; transition: all 0.2s; box-shadow: 0 4px 20px rgba(0,0,0,0.04); width: 100%; }
+                .search-box-wrapper:focus-within { border-color: #fbbf24; background: #fff; box-shadow: 0 8px 25px rgba(251, 191, 36, 0.12); transform: translateY(-1px); }
+                .search-icon { color: #94a3b8; margin-right: 0.8rem; transition: color 0.2s; }
+                .search-box-wrapper:focus-within .search-icon { color: #fbbf24; }
+                .history-search-input { background: transparent; border: none; color: #1e293b; padding: 0.85rem 0; width: 100%; outline: none; font-size: 1rem; font-weight: 600; }
+                .history-search-input::placeholder { color: #cbd5e1; font-weight: 500; }
+                .search-highlight { background: #fef3c7; color: #92400e; padding: 0 2px; border-radius: 2px; font-weight: 800; border-bottom: 2px solid #fbbf24; }
+
                 .log-row-premium { display: flex; align-items: center; gap: 1.2rem; padding: 0.8rem 1.2rem; background: #fff; border-radius: 18px; border: 1px solid #f1f5f9; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; margin-bottom: 0.5rem; }
                 .log-row-premium:hover { border-color: var(--accent); transform: translateX(8px); }
                 .accent-bar { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--accent); opacity: 0; }
@@ -1064,6 +1126,8 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     .emoji-hide-mobile { display: none; }
                     .msg-meta-info { flex-direction: row-reverse; justify-content: flex-end; }
                     
+                    .chat-top-row.history-mode { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
+                    .history-search-container { width: 100%; min-width: 0; }
                     .main-input-sticky { position: static; margin-bottom: 1rem; }
                     .log-row-content { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
                     .log-tags { align-self: flex-start; }
