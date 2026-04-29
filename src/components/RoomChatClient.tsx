@@ -1014,7 +1014,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .msg-date { font-size: 0.8rem; color: #94a3b8; font-weight: 700; }
                 .msg-link { color: var(--accent); text-decoration: none; font-weight: 700; word-break: break-all; }
                 .msg-link:hover { text-decoration: underline; }
-                .msg-text { font-size: 1.05rem; line-height: 1.6; color: #334155; margin: 0; font-weight: 500; letter-spacing: -0.01em; }
+                .msg-text { font-size: 1.05rem; line-height: 1.6; color: #334155; margin: 0; font-weight: 500; letter-spacing: -0.01em; white-space: pre-wrap; }
                 .msg-img-box { margin-top: 1rem; border-radius: 16px; overflow: hidden; border: 1px solid #f1f5f9; }
                 .msg-img-box.mini { border-radius: 10px; margin-top: 0.5rem; }
                 .msg-img-box img { width: 100%; max-width: 100%; height: auto; display: block; cursor: pointer; transition: transform 0.2s; }
@@ -1068,7 +1068,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .reply-time { font-size: 0.75rem; color: #94a3b8; font-weight: 700; }
                 .reply-date-row { display: flex; align-items: center; gap: 0.8rem; }
                 .reply-body { margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.4rem; }
-                .reply-text { font-size: 0.95rem; margin: 0; color: #475569; line-height: 1.5; font-weight: 500; letter-spacing: -0.005em; }
+                .reply-text { font-size: 0.95rem; margin: 0; color: #475569; line-height: 1.5; font-weight: 500; letter-spacing: -0.005em; white-space: pre-wrap; }
                 .reply-action-btn { display: flex; align-items: center; gap: 0.4rem; background: none; border: none; color: #94a3b8; font-size: 0.75rem; font-weight: 800; cursor: pointer; width: fit-content; padding: 0.2rem 0; transition: all 0.2s; }
                 .reply-action-btn:hover { color: var(--accent); }
                 .reply-del-btn { background: #f8fafc; border: 1px solid #f1f5f9; padding: 0.4rem 0.6rem; color: #64748b; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; transition: all 0.2s; border-radius: 8px; font-size: 0.75rem; font-weight: 800; }

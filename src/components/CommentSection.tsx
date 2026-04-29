@@ -238,7 +238,8 @@ function CommentCard({ comment, depth, lang, session, postSlug, podcastSlug, onR
           border: '1px solid #f0f0f0', 
           lineHeight: '1.6', 
           color: '#333', 
-          fontSize: isNested ? '0.95rem' : '1.05rem' 
+          fontSize: isNested ? '0.95rem' : '1.05rem',
+          whiteSpace: 'pre-wrap'
         }}>
           <div>{comment.content}</div>
           
