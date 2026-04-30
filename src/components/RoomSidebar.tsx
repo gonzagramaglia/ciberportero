@@ -392,7 +392,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                 <div className="member-info">
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                                         <span className="member-name">{member.user.name}{(isMe && !member.user.name.includes('(tú)')) ? ' (tú)' : ''}</span>
-                                        {member.role === 'admin' && <ShieldCheck size={14} className="admin-badge-icon" />}
+                                        {(member.role === 'admin' || member.userId === room.creatorId) && <ShieldCheck size={14} className="admin-badge-icon" />}
                                     </div>
                                     <span className="member-date">Se unió el {new Date(member.createdAt).toLocaleDateString(lang, { day: 'numeric', month: 'long' })}</span>
                                 </div>

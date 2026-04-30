@@ -36,7 +36,8 @@ export async function createRoom(name: string, secretCode: string, slug: string)
         creatorId: session.user.id,
         members: {
           create: {
-            userId: session.user.id
+            userId: session.user.id,
+            role: 'admin'
           }
         },
         categories: {
@@ -44,7 +45,8 @@ export async function createRoom(name: string, secretCode: string, slug: string)
             name: "General",
             subcategories: {
               create: {
-                name: "Chat General"
+                name: "Chat General",
+                id: "general"
               }
             }
           }
@@ -100,13 +102,16 @@ export async function createCategory(roomId: string, name: string) {
 
   try {
     const room = await db.room.findUnique({ where: { id: roomId } });
-    if (room?.creatorId !== session.user.id) return { error: "No autorizado" };
+    const isAdmin = session.user.email === 'ciberportero@gmail.com' || session.user.email === 'gonzalogramagia@gmail.com' || session.user.role === 'admin';
+    if (room?.creatorId !== session.user.id && !isAdmin) return { error: "No autorizado" };
 
     await db.roomCategory.create({
       data: { roomId, name }
     });
 
     revalidatePath(`/salas/${roomId}`);
+    revalidatePath(`/salas/${roomId}`, 'layout');
+    revalidatePath('/salas/lista');
     return { success: true };
   } catch (error) {
     console.error(error);
@@ -131,7 +136,10 @@ export async function createSubcategory(categoryId: string, name: string) {
       include: { room: true }
     });
     
-    if (category?.room.creatorId !== session.user.id) return { error: "No autorizado" };
+    if (!category) return { error: "Categoría no encontrada" };
+
+    const isAdmin = session.user.email === 'ciberportero@gmail.com' || session.user.email === 'gonzalogramagia@gmail.com' || session.user.role === 'admin';
+    if (category.room.creatorId !== session.user.id && !isAdmin) return { error: "No autorizado" };
 
     const decodedName = decodeURIComponent(name).trim();
     console.log("Intentando crear subcategoría:", decodedName, "en cat:", categoryId);
@@ -151,6 +159,8 @@ export async function createSubcategory(categoryId: string, name: string) {
 
     console.log("Subcategoría creada con éxito:", sub.id, sub.name, "en categoría:", categoryId);
     revalidatePath(`/salas/${category.roomId}`);
+    revalidatePath(`/salas/${category.roomId}`, 'layout');
+    revalidatePath('/salas/lista');
     return { success: true, sub };
   } catch (error: any) {
     console.error("Error creating subcategory:", error);

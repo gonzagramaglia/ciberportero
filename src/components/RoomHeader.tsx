@@ -276,8 +276,8 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                                                         <span className="member-name">
                                                             {member.user.name} {isMe ? '(tú)' : ''}
                                                         </span>
-                                                        <span className={`role-badge ${member.role}`}>
-                                                            {member.role === 'admin' ? 'Admin' : 'Miembro'}
+                                                        <span className={`role-badge ${(member.role === 'admin' || member.userId === room.creatorId) ? 'admin' : 'member'}`}>
+                                                            {(member.role === 'admin' || member.userId === room.creatorId) ? 'Admin' : 'Miembro'}
                                                         </span>
                                                     </div>
                                                     {!isMe && (
