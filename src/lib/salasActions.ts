@@ -45,8 +45,7 @@ export async function createRoom(name: string, secretCode: string, slug: string)
             name: "General",
             subcategories: {
               create: {
-                name: "Chat General",
-                id: "general"
+                name: "Chat General"
               }
             }
           }
