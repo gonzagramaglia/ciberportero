@@ -145,16 +145,19 @@ export async function createSubcategory(categoryId: string, name: string) {
     console.log("Intentando crear subcategoría:", decodedName, "en cat:", categoryId);
     
     const slug = slugify(decodedName);
-    let finalId = slug;
+    const finalId = `${categoryId}-${slug}`;
+    
+    console.log("Creando subcategoría con ID único:", finalId);
     const existing = await db.roomSubcategory.findFirst({
-      where: { categoryId, id: finalId }
+      where: { id: finalId }
     });
+    let actualId = finalId;
     if (existing) {
-      finalId = `${slug}-${Math.random().toString(36).substring(2, 6)}`;
+      actualId = `${finalId}-${Math.random().toString(36).substring(2, 6)}`;
     }
 
     const sub = await db.roomSubcategory.create({
-      data: { categoryId, name: decodedName, id: finalId }
+      data: { categoryId, name: decodedName, id: actualId }
     });
 
     console.log("Subcategoría creada con éxito:", sub.id, sub.name, "en categoría:", categoryId);
