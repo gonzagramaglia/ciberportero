@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Pencil, Plus, Trash2, Hash, Check, Folder, FolderOpen, History as HistoryIcon, MessageSquare, X, Settings2, GripVertical, CheckCircle2, ShieldCheck } from 'lucide-react';
-import { createCategory, createSubcategory, updateCategory, deleteCategory, updateSubcategory, deleteSubcategory } from '@/lib/salasActions';
+import { createCategory, createSubcategory, updateCategory, deleteCategory, updateSubcategory, deleteSubcategory, moveSubcategory } from '@/lib/salasActions';
 import { toast } from 'react-hot-toast';
 import { translations } from '@/lib/translations';
 import { guestStore } from '@/lib/guestStore';
@@ -293,15 +293,30 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
         } else if (draggingItem.type === 'sub') {
             const finalDestCatId = destCatId || targetId;
             if (draggingItem.catId && finalDestCatId) {
-                const data = guestStore.getRoom(room.id);
-                if (!data) return;
-                const destCat = data.categories.find(c => c.id === finalDestCatId);
-                if (!destCat) return;
-                let newIdx = 0;
-                if (targetType === 'sub') newIdx = destCat.subcategories.findIndex(s => s.id === targetId);
-                else newIdx = destCat.subcategories.length;
-                guestStore.moveSubcategory(draggingItem.catId, finalDestCatId, draggingItem.id, newIdx);
-                setRoom({ ...guestStore.getRoom(room.id) } as any);
+                if (isGuest) {
+                    const data = guestStore.getRoom(room.id);
+                    if (!data) return;
+                    const destCat = data.categories.find(c => c.id === finalDestCatId);
+                    if (!destCat) return;
+                    let newIdx = 0;
+                    if (targetType === 'sub') newIdx = destCat.subcategories.findIndex(s => s.id === targetId);
+                    else newIdx = destCat.subcategories.length;
+                    guestStore.moveSubcategory(draggingItem.catId, finalDestCatId, draggingItem.id, newIdx);
+                    setRoom({ ...guestStore.getRoom(room.id) } as any);
+                } else {
+                    // Acción para usuarios reales
+                    setLoading(true);
+                    moveSubcategory(draggingItem.id, finalDestCatId).then(res => {
+                        if (res.success) {
+                            toast.success(lang === 'es' ? 'Subcategoría movida' : 'Subcategory moved');
+                            import('@/lib/salasActions').then(async ({ getRoomInfo }) => {
+                                setRoom(await getRoomInfo(room.id));
+                            });
+                        } else {
+                            toast.error(res.error || 'Error');
+                        }
+                    }).finally(() => setLoading(false));
+                }
             }
         }
     };

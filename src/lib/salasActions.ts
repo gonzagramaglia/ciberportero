@@ -172,6 +172,35 @@ export async function createSubcategory(categoryId: string, name: string) {
   }
 }
 
+export async function moveSubcategory(subId: string, newCategoryId: string) {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "No autenticado" };
+
+  try {
+    const sub = await db.roomSubcategory.findUnique({
+      where: { id: subId },
+      include: { category: { include: { room: true } } }
+    });
+
+    if (!sub) return { error: "Subcategoría no encontrada" };
+
+    const isAdmin = session.user.email === 'ciberportero@gmail.com' || session.user.email === 'gonzalogramagia@gmail.com' || session.user.role === 'admin';
+    if (sub.category.room.creatorId !== session.user.id && !isAdmin) return { error: "No autorizado" };
+
+    await db.roomSubcategory.update({
+      where: { id: subId },
+      data: { categoryId: newCategoryId }
+    });
+
+    revalidatePath(`/salas/${sub.category.roomId}`);
+    revalidatePath(`/salas/${sub.category.roomId}`, 'layout');
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error moving subcategory:", error);
+    return { error: error.message || "Error al mover subcategoría" };
+  }
+}
+
 export async function updateCategory(categoryId: string, name: string) {
   const session = await auth();
   if (!session?.user?.id) return { error: "No autenticado" };
