@@ -145,7 +145,8 @@ export async function createSubcategory(categoryId: string, name: string) {
     console.log("Intentando crear subcategoría:", decodedName, "en cat:", categoryId);
     
     const slug = slugify(decodedName);
-    const finalId = `${categoryId}-${slug}`;
+    // Usar solo el final del ID de categoría para que no sea tan largo pero siga siendo único
+    const finalId = `${categoryId.slice(-4)}-${slug}`;
     
     console.log("Creando subcategoría con ID único:", finalId);
     const existing = await db.roomSubcategory.findFirst({
