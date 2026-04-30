@@ -22,6 +22,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
     const [sending, setSending] = useState(false);
     const [replyingTo, setReplyingTo] = useState<any>(null);
     const [selectedImages, setSelectedImages] = useState<File[]>([]);
+    const [replySelectedImages, setReplySelectedImages] = useState<File[]>([]);
     const [isDragging, setIsDragging] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [targetMessageId, setTargetMessageId] = useState<string | null>(null);
@@ -305,15 +306,41 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     </div>
                     <button type="button" onClick={() => setReplyingTo(null)} className="close-reply-btn"><X size={16} /></button>
                 </div>
-                <div className="reply-input-area">
+                <div 
+                    className={`reply-input-area ${isDragging ? 'is-dragging' : ''}`}
+                    onDragOver={handleDrag}
+                    onDragLeave={handleDrag}
+                    onDrop={(e) => handleDrop(e, true)}
+                >
                     <form onSubmit={(e) => handleSend(e, true)}>
                         <textarea autoFocus value={replyText} onChange={e => setReplyText(e.target.value)} placeholder={roomsT.chat.whatAreYouThinking} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(e, true); } }} />
+                        
+                        {replySelectedImages.length > 0 && (
+                            <div className="preview-row" style={{ padding: '0 0.5rem 0.5rem 0.5rem' }}>
+                                {replySelectedImages.map((file: any, i: number) => (
+                                    <div key={i} className="thumb-box" style={{ width: '60px', height: '60px' }}>
+                                        <img src={URL.createObjectURL(file)} />
+                                        <button type="button" onClick={() => setReplySelectedImages(prev => prev.filter((_: any, idx: number) => idx !== i))} className="del-img-btn"><X size={10} /></button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
                         <div className="reply-footer">
                             <div style={{ display: 'flex', gap: '0.6rem' }}>
                                 <a href="https://emojis.hoy.today/" target="_blank" rel="noopener noreferrer" className="icon-btn emoji-hide-mobile" title={lang === 'es' ? 'Emojis' : 'Emojis'}>
                                     <Smile size={18} />
                                 </a>
-                                <button type="button" onClick={() => fileInputRef.current?.click()} className="icon-btn" title={lang === 'es' ? 'Subir imagen' : 'Upload image'}>
+                                <button type="button" onClick={() => {
+                                    const input = document.createElement('input');
+                                    input.type = 'file';
+                                    input.accept = 'image/*';
+                                    input.multiple = true;
+                                    input.onchange = (e: any) => {
+                                        if (e.target.files) setReplySelectedImages(prev => [...prev, ...Array.from(e.target.files!)].slice(0, 3) as File[]);
+                                    };
+                                    input.click();
+                                }} className="icon-btn" title={lang === 'es' ? 'Subir imagen' : 'Upload image'}>
                                     <ImageIcon size={18} />
                                 </button>
                                 <input
@@ -577,15 +604,17 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
         e.preventDefault();
         const content = isReply ? replyText : text;
         const extUrl = isReply ? replyExternalImageUrl : externalImageUrl;
-        if (!content.trim() && selectedImages.length === 0 && !extUrl.trim()) return;
+        const imagesToUpload = isReply ? replySelectedImages : selectedImages;
+
+        if (!content.trim() && imagesToUpload.length === 0 && !extUrl.trim()) return;
         setSending(true);
         try {
             const imageUrls: any[] = [];
             const targetLink = (isReply ? replyExternalImageLink : externalImageLink)?.trim();
 
-            if (selectedImages.length > 0) {
+            if (imagesToUpload.length > 0) {
                 setUploading(true);
-                for (const file of selectedImages) {
+                for (const file of imagesToUpload) {
                     let url = '';
                     if (isGuest) url = URL.createObjectURL(file);
                     else {
@@ -611,8 +640,18 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
             }
             if (isGuest) {
                 guestStore.addMessage(roomId || 'test-room', isGeneral ? 'general' : currentSubId!, content, imageUrls, isReply ? replyingTo?.id : undefined);
-                if (isReply) { setReplyText(''); setReplyExternalImageUrl(''); setReplyExternalImageLink(''); setReplyingTo(null); } else { setText(''); setExternalImageUrl(''); setExternalImageLink(''); }
-                setSelectedImages([]);
+                if (isReply) { 
+                    setReplyText(''); 
+                    setReplyExternalImageUrl(''); 
+                    setReplyExternalImageLink(''); 
+                    setReplyingTo(null); 
+                    setReplySelectedImages([]);
+                } else { 
+                    setText(''); 
+                    setExternalImageUrl(''); 
+                    setExternalImageLink(''); 
+                    setSelectedImages([]);
+                }
 
                 const room = guestStore.getRoom(roomId || 'test-room');
                 if (isGeneral) setMessages([...(room?.generalMessages || [])].reverse());
@@ -631,8 +670,18 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 }
 
                 if (res.success) {
-                    if (isReply) { setReplyText(''); setReplyExternalImageUrl(''); setReplyExternalImageLink(''); setReplyingTo(null); } else { setText(''); setExternalImageUrl(''); setExternalImageLink(''); }
-                    setSelectedImages([]);
+                    if (isReply) { 
+                        setReplyText(''); 
+                        setReplyExternalImageUrl(''); 
+                        setReplyExternalImageLink(''); 
+                        setReplyingTo(null); 
+                        setReplySelectedImages([]);
+                    } else { 
+                        setText(''); 
+                        setExternalImageUrl(''); 
+                        setExternalImageLink(''); 
+                        setSelectedImages([]);
+                    }
                     const { getSubcategoryMessages, getGeneralMessages } = await import('@/lib/salasActions');
                     if (isGeneral && (roomId || propRoomId)) setMessages(await getGeneralMessages(roomId || propRoomId));
                     else setMessages(await getSubcategoryMessages(currentSubId!));
@@ -679,7 +728,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
         else setIsDragging(false);
     };
 
-    const handleDrop = (e: React.DragEvent) => {
+    const handleDrop = (e: React.DragEvent, isReply = false) => {
         e.preventDefault();
         e.stopPropagation();
         setIsDragging(false);
@@ -687,7 +736,8 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
             const files = Array.from(e.dataTransfer.files);
             const images = files.filter(f => f.type.startsWith('image/')).slice(0, 3);
             if (images.length > 0) {
-                setSelectedImages(prev => [...prev, ...images].slice(0, 3));
+                if (isReply) setReplySelectedImages(prev => [...prev, ...images].slice(0, 3));
+                else setSelectedImages(prev => [...prev, ...images].slice(0, 3));
             }
         }
     };
@@ -774,7 +824,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                             className={`input-card ${isDragging ? 'is-dragging' : ''}`}
                             onDragOver={handleDrag}
                             onDragLeave={handleDrag}
-                            onDrop={handleDrop}
+                            onDrop={(e) => handleDrop(e, false)}
                         >
                             <form onSubmit={(e) => handleSend(e, false)}>
                                 <textarea
@@ -1126,7 +1176,8 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .reply-indicator-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; }
                 .close-reply-btn { background: #fff; border: 1px solid #e2e8f0; color: #64748b; padding: 0.3rem; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
                 .close-reply-btn:hover { background: #fee2e2; color: #ef4444; border-color: #fecaca; transform: scale(1.1); }
-                .reply-input-area { padding: 0.5rem; }
+                .reply-input-area { padding: 0.5rem; transition: all 0.2s; border: 2px solid transparent; border-radius: 12px; }
+                .reply-input-area.is-dragging { background: rgba(0, 112, 243, 0.05); border-color: var(--accent); border-style: dashed; }
                 .reply-input-area textarea { min-height: 80px; padding: 0.75rem; font-size: 1.05rem; }
                 .reply-footer { display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 1rem; border-top: 1px solid #f8fafc; }
 
