@@ -306,9 +306,17 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 } else {
                     // Acción para usuarios reales
                     setLoading(true);
-                    moveSubcategory(draggingItem.id, finalDestCatId).then(res => {
+                    const destCat = room.categories.find((c: any) => c.id === finalDestCatId);
+                    let newIdx = 0;
+                    if (targetType === 'sub' && destCat) {
+                        newIdx = destCat.subcategories.findIndex((s: any) => s.id === targetId);
+                    } else if (destCat) {
+                        newIdx = destCat.subcategories.length;
+                    }
+
+                    moveSubcategory(draggingItem.id, finalDestCatId, newIdx).then(res => {
                         if (res.success) {
-                            toast.success(lang === 'es' ? 'Subcategoría movida' : 'Subcategory moved');
+                            toast.success(lang === 'es' ? 'Orden actualizado' : 'Order updated');
                             import('@/lib/salasActions').then(async ({ getRoomInfo }) => {
                                 setRoom(await getRoomInfo(room.id));
                             });
@@ -482,7 +490,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                                     <input autoFocus value={modalNewName} onChange={e => setModalNewName(e.target.value)} placeholder="Nueva subcategoría..." onBlur={() => !modalNewName && setIsAddingInModal(null)} />
                                                     <button type="submit" className="btn-save-mini"><Check size={14} /></button>
                                                 </form>
-                                            ) : (
+                                            ) : (draggingItem?.type === 'sub' && draggingItem.catId === cat.id) ? null : (
                                                 <button 
                                                     className={`btn-add-sub-subtle ${draggingItem?.type === 'sub' ? 'drop-active' : ''}`}
                                                     onClick={() => setIsAddingInModal({ type: 'sub', catId: cat.id })}

@@ -172,7 +172,7 @@ export async function createSubcategory(categoryId: string, name: string) {
   }
 }
 
-export async function moveSubcategory(subId: string, newCategoryId: string) {
+export async function moveSubcategory(subId: string, newCategoryId: string, newOrder?: number) {
   const session = await auth();
   if (!session?.user?.id) return { error: "No autenticado" };
 
@@ -187,10 +187,32 @@ export async function moveSubcategory(subId: string, newCategoryId: string) {
     const isAdmin = session.user.email === 'ciberportero@gmail.com' || session.user.email === 'gonzalogramagia@gmail.com' || session.user.role === 'admin';
     if (sub.category.room.creatorId !== session.user.id && !isAdmin) return { error: "No autorizado" };
 
-    await db.roomSubcategory.update({
-      where: { id: subId },
-      data: { categoryId: newCategoryId }
-    });
+    if (newOrder !== undefined) {
+      // Reordenamiento complejo
+      const siblings = await db.roomSubcategory.findMany({
+        where: { categoryId: newCategoryId },
+        orderBy: { order: 'asc' }
+      });
+
+      const otherSiblings = siblings.filter(s => s.id !== subId);
+      otherSiblings.splice(newOrder, 0, sub);
+
+      // Actualizar todos en una transacción
+      await db.$transaction(
+        otherSiblings.map((s, idx) => 
+          db.roomSubcategory.update({
+            where: { id: s.id },
+            data: { categoryId: newCategoryId, order: idx }
+          })
+        )
+      );
+    } else {
+      // Solo cambio de categoría al final
+      await db.roomSubcategory.update({
+        where: { id: subId },
+        data: { categoryId: newCategoryId }
+      });
+    }
 
     revalidatePath(`/salas/${sub.category.roomId}`);
     revalidatePath(`/salas/${sub.category.roomId}`, 'layout');
@@ -408,6 +430,7 @@ export async function getRoomDetails(rawRoomId: string) {
         categories: {
           include: {
             subcategories: {
+              orderBy: { order: 'asc' },
               include: {
                 messages: true
               }
