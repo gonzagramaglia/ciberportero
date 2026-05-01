@@ -144,10 +144,13 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
 
     const handleUpdateSub = async (subId: string, name: string, slug?: string) => {
         if (!name) return;
+        
+        // Find current sub to check if we need to update URL
+        const oldSub = room.categories.flatMap((c: any) => c.subcategories).find((s: any) => s.id === subId);
         const finalSlug = slug || strictSlugify(name);
+        
         if (isGuest) {
             guestStore.updateSubcategory(room.id, subId, name);
-            // Note: guestStore updateSubcategory might need updating to handle name vs slug separately
             setRoom({ ...guestStore.getRoom(room.id) } as any);
             setEditingId(null);
             window.dispatchEvent(new CustomEvent('room-data-updated'));
@@ -158,7 +161,17 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 const res = await updateSubcategory(subId, name, finalSlug);
                 if (res.success) {
                     const { getRoomInfo } = await import('@/lib/salasActions');
-                    setRoom(await getRoomInfo(room.id));
+                    const updatedRoom = await getRoomInfo(room.id);
+                    if (updatedRoom) {
+                        setRoom(updatedRoom);
+                        
+                        // If we edited the sub we are currently in, update the URL hash
+                        if (oldSub && (window.location.hash === `#${oldSub.slug}` || window.location.hash === `#${oldSub.id}`)) {
+                            const newSub = updatedRoom.categories.flatMap((c: any) => c.subcategories).find((s: any) => s.id === subId);
+                            if (newSub) window.location.hash = `#${newSub.slug}`;
+                        }
+                    }
+
                     window.dispatchEvent(new CustomEvent('room-data-updated'));
                     setEditingId(null);
                     toast.success(lang === 'es' ? 'Subcategoría actualizada' : 'Subcategory updated');
@@ -535,7 +548,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                                         <div className="edit-input-wrapper complex">
                                                             <div className="input-with-label">
                                                                 <label>Editar Slug (# canal)</label>
-                                                                <input autoFocus value={editSlugValue} onChange={e => setEditSlugValue(strictSlugify(e.target.value))} placeholder="ej: matrices" />
+                                                                <input autoFocus value={editSlugValue} onChange={e => setEditSlugValue(strictSlugify(e.target.value))} onKeyDown={e => e.key === 'Enter' && handleUpdateSub(sub.id, sub.name, editSlugValue)} placeholder="ej: matrices" />
                                                             </div>
                                                             <div className="edit-actions">
                                                                 <button onClick={() => handleUpdateSub(sub.id, sub.name, editSlugValue)} className="btn-save-mini"><Check size={14} /></button>
