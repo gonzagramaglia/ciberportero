@@ -493,7 +493,7 @@ export const guestStore = {
         if (room) { room.categories = room.categories.filter(c => c.id !== catId); this.saveData(data); }
     },
 
-    updateSubcategory(roomId: string, subId: string, name: string) {
+    updateSubcategory(roomId: string, subId: string, name: string, slug?: string) {
         const data = this.getData();
         const room = data.rooms.find(r => r.id === roomId);
         if (!room) return;
@@ -517,9 +517,12 @@ export const guestStore = {
             }
 
             targetSub.name = name;
-            targetSub.slug = newSlug;
-            // Technical ID remains stable unless needed, but here we update it for consistency
-            if (parentCat) targetSub.id = `${parentCat.id}-${newSlug}-${Date.now()}`;
+            if (slug) {
+                const newSlug = strictSlugify(slug);
+                targetSub.slug = newSlug;
+                // Only update technical ID if slug changed
+                if (parentCat) targetSub.id = `${parentCat.id}-${newSlug}-${Date.now()}`;
+            }
             this.saveData(data);
             return targetSub;
         }

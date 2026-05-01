@@ -423,7 +423,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                         window.dispatchEvent(new CustomEvent('subcategory-change', { detail: sub.id }));
                                         setCurrentSubId(sub.id);
                                         scrollToChat();
-                                    }}><Hash size={14} />{sub.slug || strictSlugify(sub.name)}</a>
+                                    }}>{sub.slug || strictSlugify(sub.name).startsWith('#') ? '' : '#'}{sub.slug || strictSlugify(sub.name)}</a>
                                 ))}
                                 {isAddingSub === cat.id && (
                                     <form onSubmit={(e) => handleAddSub(e, cat.id)} className="fade-in sub-add-form">
@@ -508,25 +508,20 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                                     {editingId === sub.id ? (
                                                         <div className="edit-input-wrapper complex">
                                                             <div className="input-with-label">
-                                                                <label>Nombre (Breadcrumb)</label>
-                                                                <input autoFocus value={editValue} onChange={e => setEditValue(e.target.value)} />
-                                                            </div>
-                                                            <div className="input-with-label">
-                                                                <label>Slug (# canal)</label>
-                                                                <input value={editSlugValue} onChange={e => setEditSlugValue(strictSlugify(e.target.value))} placeholder="ej: matrices" />
+                                                                <label>Editar Slug (# canal)</label>
+                                                                <input autoFocus value={editSlugValue} onChange={e => setEditSlugValue(strictSlugify(e.target.value))} placeholder="ej: matrices" />
                                                             </div>
                                                             <div className="edit-actions">
-                                                                <button onClick={() => handleUpdateSub(sub.id, editValue, editSlugValue)} className="btn-save-mini"><Check size={14} /></button>
+                                                                <button onClick={() => handleUpdateSub(sub.id, sub.name, editSlugValue)} className="btn-save-mini"><Check size={14} /></button>
                                                                 <button onClick={() => setEditingId(null)} className="btn-cancel-mini"><X size={14} /></button>
                                                             </div>
                                                         </div>
                                                     ) : (
                                                         <>
                                                             <div className="drag-handle small"><GripVertical size={14} /></div>
-                                                            <Hash size={14} className="icon-sub" />
-                                                            <div className="sub-info-display">
+                                                            <div className="sub-info-display horizontal">
                                                                 <span className="slug-display">#{sub.slug || strictSlugify(sub.name)}</span>
-                                                                <span className="name-display">{sub.name}</span>
+                                                                <span className="name-display-grey">({sub.name})</span>
                                                             </div>
                                                             <div className="actions">
                                                                 <button onClick={() => handleReorderSub(cat.id, sub.id, 'up')} className="btn-action reorder" title={lang === 'es' ? 'Subir' : 'Move up'} disabled={cat.subcategories.indexOf(sub) === 0}><ChevronUp size={14} /></button>
@@ -675,9 +670,9 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 .input-with-label input { padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; }
                 .edit-actions { display: flex; justify-content: flex-end; gap: 0.5rem; }
                 
-                .sub-info-display { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-                .slug-display { font-size: 0.85rem; font-weight: 900; color: #334155; }
-                .name-display { font-size: 0.75rem; color: #94a3b8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+                .sub-info-display.horizontal { flex: 1; display: flex; align-items: center; gap: 0.5rem; min-width: 0; }
+                .slug-display { font-size: 0.9rem; font-weight: 800; color: #334155; }
+                .name-display-grey { font-size: 0.8rem; color: #94a3b8; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
                 .add-form-modal { margin-bottom: 0.5rem; }
                 .add-form-modal input, .add-sub-modal input { flex: 1; background: none; border: none; outline: none; font-weight: 700; font-size: 0.95rem; color: #1e293b; min-width: 0; }

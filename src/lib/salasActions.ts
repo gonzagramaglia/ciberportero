@@ -261,11 +261,14 @@ export async function updateSubcategory(subId: string, name: string, slug?: stri
         if (existing) return { error: "Ya existe una subcategoría con ese nombre en esta categoría." };
     }
     
-    const targetSlug = slug ? strictSlugify(slug) : strictSlugify(name);
+    const updateData: any = { name };
+    if (slug) {
+        updateData.slug = strictSlugify(slug);
+    }
     
     await db.roomSubcategory.update({ 
         where: { id: subId }, 
-        data: { name, slug: targetSlug } 
+        data: updateData 
     });
     
     revalidatePath(`/salas/${sub.category.roomId}`);
