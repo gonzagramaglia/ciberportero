@@ -101,10 +101,15 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
 
     useEffect(() => {
         const validateAndSetSubId = async (id: string | null) => {
-            if (!id || id === 'general' || id === 'history') {
-                setCurrentSubId(id || 'general');
-                return;
+            // Set ID immediately to update UI (breadcrumbs/highlight)
+            const targetId = id || 'general';
+            if (currentSubId !== targetId) {
+                setCurrentSubId(targetId);
+                setMessages([]); // Clear old messages immediately
+                setLoadingMessages(true);
             }
+
+            if (!id || id === 'general' || id === 'history') return;
 
             if (room?.categories) {
                 const exists = room.categories.some((c: any) =>
@@ -115,16 +120,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 if (!exists && !isGuest && roomId) {
                     const { getRoomDetails } = await import('@/lib/salasActions');
                     const data = await getRoomDetails(id);
-                    if (!data) {
-                        // Redirección si no hay acceso o no existe la sala
-                        if (!session) {
-                            window.location.href = '/salas';
-                        } else {
-                            window.location.href = '/salas/lista';
-                        }
-                        return;
-                    }
-                    setRoom(data);
+                    if (data) setRoom(data);
                 }
             }
 
@@ -185,6 +181,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
 
     useEffect(() => {
         const loadMessages = async () => {
+            if (!currentSubId) return;
             setLoadingMessages(true);
             try {
                 if (isGuest) {

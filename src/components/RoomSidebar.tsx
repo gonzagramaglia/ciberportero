@@ -423,7 +423,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                         window.dispatchEvent(new CustomEvent('subcategory-change', { detail: sub.id }));
                                         setCurrentSubId(sub.id);
                                         scrollToChat();
-                                    }}>{sub.slug || strictSlugify(sub.name).startsWith('#') ? '' : '#'}{sub.slug || strictSlugify(sub.name)}</a>
+                                    }}>{(sub.slug || strictSlugify(sub.name)).startsWith('#') ? '' : '#'}{sub.slug || strictSlugify(sub.name)}</a>
                                 ))}
                                 {isAddingSub === cat.id && (
                                     <form onSubmit={(e) => handleAddSub(e, cat.id)} className="fade-in sub-add-form">
