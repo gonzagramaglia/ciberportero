@@ -115,11 +115,24 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
             }
 
             if (room?.categories) {
-                const exists = room.categories.some((c: any) =>
-                    c.subcategories?.some((s: any) =>
-                        s.id === id || (s.id.includes('-') && s.id.split('-').slice(1).join('-') === id)
-                    )
-                );
+                let actualId = id;
+                let foundSub = null;
+                for (const c of room.categories) {
+                    const s = c.subcategories?.find((s: any) => s.id === id || s.slug === id);
+                    if (s) {
+                        foundSub = s;
+                        actualId = s.id;
+                        break;
+                    }
+                }
+
+                if (foundSub && currentSubId !== actualId) {
+                    setCurrentSubId(actualId);
+                    setMessages([]);
+                    setLoadingMessages(true);
+                }
+
+                const exists = !!foundSub;
                 if (!exists && !isGuest && roomId) {
                     const { getRoomDetails } = await import('@/lib/salasActions');
                     const data = await getRoomDetails(id);

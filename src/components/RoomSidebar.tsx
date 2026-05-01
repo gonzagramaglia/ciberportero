@@ -419,7 +419,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                             </div>
                             <div className="sub-list">
                                 {cat.subcategories.map((sub: any) => (
-                                    <a key={sub.id} href={`#${sub.id}`} className={`sub-link ${currentSubId === sub.id ? 'active' : ''}`} onClick={(e) => {
+                                    <a key={sub.id} href={`#${sub.slug || sub.id}`} className={`sub-link ${currentSubId === sub.id || currentSubId === sub.slug ? 'active' : ''}`} onClick={(e) => {
                                         window.dispatchEvent(new CustomEvent('subcategory-change', { detail: sub.id }));
                                         setCurrentSubId(sub.id);
                                         scrollToChat();
