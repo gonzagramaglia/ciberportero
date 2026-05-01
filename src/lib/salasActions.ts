@@ -142,19 +142,21 @@ export async function createSubcategory(categoryId: string, name: string) {
     if (category.room.creatorId !== session.user.id && !isAdmin) return { error: "No autorizado" };
 
     const decodedName = decodeURIComponent(name).trim();
-    const slug = strictSlugify(decodedName);
+    const catPrefix = categoryId.slice(-4);
+    const baseSlug = strictSlugify(decodedName);
+    const finalSlug = `${catPrefix}-${baseSlug}`;
     
     // Check for duplicate names within the same category
     const existing = category.subcategories.find(s => s.name.toLowerCase() === decodedName.toLowerCase());
     if (existing) return { error: "Ya existe una subcategoría con ese nombre en esta categoría." };
 
-    const finalId = `${categoryId.slice(-4)}-${slug}-${Date.now()}`;
+    const finalId = `${catPrefix}-${baseSlug}-${Date.now()}`;
     
     const sub = await db.roomSubcategory.create({
       data: { 
         categoryId, 
         name: decodedName, 
-        slug: slug,
+        slug: finalSlug,
         id: finalId 
       }
     });
@@ -263,7 +265,8 @@ export async function updateSubcategory(subId: string, name: string, slug?: stri
     
     const updateData: any = { name };
     if (slug) {
-        updateData.slug = strictSlugify(slug);
+        const catPrefix = sub.category.id.slice(-4) || 'sub';
+        updateData.slug = `${catPrefix}-${strictSlugify(slug)}`;
     }
     
     await db.roomSubcategory.update({ 
