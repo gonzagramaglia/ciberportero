@@ -410,6 +410,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
             if (!cat.subcategories) continue;
             const sub = (cat.subcategories as any[]).find((s: any) =>
                 s.id === currentSubId ||
+                s.slug === currentSubId ||
                 (s.id.includes('-') && s.id.split('-').slice(1).join('-') === currentSubId) ||
                 (currentSubId?.includes('-') && currentSubId.split('-').slice(1).join('-') === s.id)
             );
