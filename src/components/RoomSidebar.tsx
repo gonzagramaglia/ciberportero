@@ -72,11 +72,22 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
             if (isGuest) {
                 const gRoom = guestStore.getRoom(initialRoom.id);
                 if (gRoom) setRoom({ ...gRoom });
+            } else {
+                // For registered users, we could also re-fetch here
+                import('@/lib/salasActions').then(m => {
+                    m.getRoomInfo(room.id).then(data => {
+                        if (data) setRoom(data);
+                    });
+                });
             }
         };
         syncRoom();
         window.addEventListener('subcategory-change', syncRoom);
-        return () => window.removeEventListener('subcategory-change', syncRoom);
+        window.addEventListener('room-data-updated', syncRoom);
+        return () => {
+            window.removeEventListener('subcategory-change', syncRoom);
+            window.removeEventListener('room-data-updated', syncRoom);
+        };
     }, [isGuest, initialRoom.id]);
 
     const handleUpdateCat = async (catId: string, value: string) => {
@@ -85,6 +96,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
             guestStore.updateCategory(room.id, catId, value);
             setRoom({ ...guestStore.getRoom(room.id) } as any);
             setEditingId(null);
+            window.dispatchEvent(new CustomEvent('room-data-updated'));
             toast.success(lang === 'es' ? 'Categoría actualizada' : 'Category updated');
         } else {
             setLoading(true);
@@ -93,6 +105,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 if (res.success) {
                     const { getRoomInfo } = await import('@/lib/salasActions');
                     setRoom(await getRoomInfo(room.id));
+                    window.dispatchEvent(new CustomEvent('room-data-updated'));
                     setEditingId(null);
                     toast.success(lang === 'es' ? 'Categoría actualizada' : 'Category updated');
                 } else toast.error(res.error || 'Error');
@@ -105,6 +118,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
         if (isGuest) {
             guestStore.deleteCategory(room.id, catId);
             setRoom({ ...guestStore.getRoom(room.id) } as any);
+            window.dispatchEvent(new CustomEvent('room-data-updated'));
             toast.success(lang === 'es' ? 'Categoría eliminada' : 'Category deleted');
         } else {
             setLoading(true);
@@ -113,6 +127,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 if (res.success) {
                     const { getRoomInfo } = await import('@/lib/salasActions');
                     setRoom(await getRoomInfo(room.id));
+                    window.dispatchEvent(new CustomEvent('room-data-updated'));
                     toast.success(lang === 'es' ? 'Categoría eliminada' : 'Category deleted');
                 } else toast.error(res.error || 'Error');
             } catch (error) { toast.error("Error"); } finally { setLoading(false); }
@@ -135,6 +150,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
             // Note: guestStore updateSubcategory might need updating to handle name vs slug separately
             setRoom({ ...guestStore.getRoom(room.id) } as any);
             setEditingId(null);
+            window.dispatchEvent(new CustomEvent('room-data-updated'));
             toast.success(lang === 'es' ? 'Subcategoría actualizada' : 'Subcategory updated');
         } else {
             setLoading(true);
@@ -143,6 +159,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 if (res.success) {
                     const { getRoomInfo } = await import('@/lib/salasActions');
                     setRoom(await getRoomInfo(room.id));
+                    window.dispatchEvent(new CustomEvent('room-data-updated'));
                     setEditingId(null);
                     toast.success(lang === 'es' ? 'Subcategoría actualizada' : 'Subcategory updated');
                 } else toast.error(res.error || 'Error');
@@ -155,6 +172,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
         if (isGuest) {
             guestStore.deleteSubcategory(subId);
             setRoom({ ...guestStore.getRoom(room.id) } as any);
+            window.dispatchEvent(new CustomEvent('room-data-updated'));
             toast.success(lang === 'es' ? 'Subcategoría eliminada' : 'Subcategory deleted');
         } else {
             setLoading(true);
@@ -180,6 +198,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 setRoom({ ...guestStore.getRoom(room.id) } as any);
                 setIsAddingCategory(false);
                 setNewName('');
+                window.dispatchEvent(new CustomEvent('room-data-updated'));
                 toast.success(lang === 'es' ? 'Categoría creada' : 'Category created');
             } else {
                 const res = await createCategory(room.id, newName);
@@ -206,6 +225,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 setRoom({ ...guestStore.getRoom(room.id) } as any);
                 setIsAddingSub(null);
                 setNewName('');
+                window.dispatchEvent(new CustomEvent('room-data-updated'));
                 toast.success(lang === 'es' ? 'Subcategoría creada' : 'Subcategory created');
             } else {
                 const res = await createSubcategory(catId, newName);
@@ -251,6 +271,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
             }
             setIsAddingInModal(null);
             setModalNewName('');
+            window.dispatchEvent(new CustomEvent('room-data-updated'));
             toast.success(lang === 'es' ? 'Añadido con éxito' : 'Added successfully');
         } catch (error) { toast.error("Error"); } finally { setLoading(false); }
     };
@@ -269,6 +290,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
         if (isGuest) {
             guestStore.moveSubcategory(catId, catId, subId, newIdx);
             setRoom({ ...guestStore.getRoom(room.id) } as any);
+            window.dispatchEvent(new CustomEvent('room-data-updated'));
         } else {
             setLoading(true);
             try {
@@ -276,6 +298,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 if (res.success) {
                     const { getRoomInfo } = await import('@/lib/salasActions');
                     setRoom(await getRoomInfo(room.id));
+                    window.dispatchEvent(new CustomEvent('room-data-updated'));
                     toast.success(lang === 'es' ? 'Orden actualizado' : 'Order updated');
                 } else {
                     toast.error(res.error || 'Error');
@@ -330,6 +353,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
             newCats.splice(destIdx, 0, moved);
             guestStore.reorderCategories(room.id, newCats);
             setRoom({ ...room, categories: newCats });
+            window.dispatchEvent(new CustomEvent('room-data-updated'));
         } else if (draggingItem.type === 'sub') {
             const finalDestCatId = destCatId || targetId;
             if (draggingItem.catId && finalDestCatId) {
@@ -343,6 +367,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                     else newIdx = destCat.subcategories.length;
                     guestStore.moveSubcategory(draggingItem.catId, finalDestCatId, draggingItem.id, newIdx);
                     setRoom({ ...guestStore.getRoom(room.id) } as any);
+                    window.dispatchEvent(new CustomEvent('room-data-updated'));
                 } else {
                     // Acción para usuarios reales
                     setLoading(true);
@@ -357,6 +382,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                     moveSubcategory(draggingItem.id, finalDestCatId, newIdx).then(res => {
                         if (res.success) {
                             toast.success(lang === 'es' ? 'Orden actualizado' : 'Order updated');
+                            window.dispatchEvent(new CustomEvent('room-data-updated'));
                             import('@/lib/salasActions').then(async ({ getRoomInfo }) => {
                                 setRoom(await getRoomInfo(room.id));
                             });
@@ -586,9 +612,10 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                             <button className="btn-footer cancel" onClick={() => setIsManageModalOpen(false)}>Cerrar</button>
                             <button className="btn-footer confirm" onClick={() => {
                                 if (editingId) {
-                                    const isSub = room.categories.some((c: any) => c.subcategories.some((s: any) => s.id === editingId));
-                                    if (isSub) handleUpdateSub(editingId, editValue);
+                                    const isSub = room.categories.some((c: any) => c.subcategories.some((s: any) => s.id === editingId || s.slug === editingId));
+                                    if (isSub) handleUpdateSub(editingId, editValue, editSlugValue);
                                     else handleUpdateCat(editingId, editValue);
+                                    window.dispatchEvent(new CustomEvent('room-data-updated'));
                                 }
                                 if (modalNewName) {
                                     handleModalAdd(new Event('submit') as any);
