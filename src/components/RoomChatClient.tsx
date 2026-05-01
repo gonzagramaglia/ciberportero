@@ -103,13 +103,16 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
         const validateAndSetSubId = async (id: string | null) => {
             // Set ID immediately to update UI (breadcrumbs/highlight)
             const targetId = id || 'general';
-            if (currentSubId !== targetId) {
+            if (currentSubId !== targetId || messages.length === 0) {
                 setCurrentSubId(targetId);
-                setMessages([]); // Clear old messages immediately
+                setMessages([]); 
                 setLoadingMessages(true);
             }
 
-            if (!id || id === 'general' || id === 'history') return;
+            if (!id || id === 'general' || id === 'history') {
+                setLoadingMessages(true);
+                return;
+            }
 
             if (room?.categories) {
                 const exists = room.categories.some((c: any) =>
@@ -181,7 +184,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
 
     useEffect(() => {
         const loadMessages = async () => {
-            if (!currentSubId) return;
+            const sid = currentSubId || 'general';
             setLoadingMessages(true);
             try {
                 if (isGuest) {
@@ -227,9 +230,15 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                             })));
                         }
                     } else if (isGeneral) {
-                        if (targetRoomId) setMessages(await getGeneralMessages(targetRoomId));
+                        if (targetRoomId) {
+                            const genMsgs = await getGeneralMessages(targetRoomId);
+                            setMessages(genMsgs || []);
+                        }
                     } else {
-                        setMessages(await getSubcategoryMessages(currentSubId!));
+                        if (currentSubId) {
+                            const subMsgs = await getSubcategoryMessages(currentSubId);
+                            setMessages(subMsgs || []);
+                        }
                     }
                 }
             } catch (err) {
