@@ -298,8 +298,9 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
         setDraggingItem(null);
     };
 
-    const onDragOver = (e: React.DragEvent) => {
+    const onDragOver = (e: React.DragEvent, targetCatId?: string) => {
         e.preventDefault();
+        if (draggingItem?.type === 'sub' && draggingItem.catId === targetCatId) return;
         const target = e.currentTarget as HTMLElement;
         target.classList.add('drag-over');
     };
@@ -480,7 +481,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                 {categories.length === 0 && !isAddingInModal && <p className="empty-modal-text">No hay categorías para gestionar.</p>}
                                 
                                 {categories.map((cat: any) => (
-                                    <div key={cat.id} className="manage-item-group" onDragOver={onDragOver} onDragLeave={onDragLeave} onDrop={(e) => onDrop(e, cat.id, 'cat')}>
+                                    <div key={cat.id} className="manage-item-group" onDragOver={(e) => onDragOver(e, cat.id)} onDragLeave={onDragLeave} onDrop={(e) => onDrop(e, cat.id, 'cat')}>
                                         <div className="manage-row category" draggable onDragStart={(e) => onDragStart(e, 'cat', cat.id)} onDragEnd={onDragEnd}>
                                             {editingId === cat.id ? (
                                                 <div className="edit-input-wrapper">
@@ -502,7 +503,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                         </div>
                                         <div className="manage-subs">
                                             {cat.subcategories.map((sub: any) => (
-                                                <div key={sub.id} className="manage-row sub" draggable onDragStart={(e) => onDragStart(e, 'sub', sub.id, cat.id)} onDragEnd={onDragEnd} onDragOver={onDragOver} onDragLeave={onDragLeave} onDrop={(e) => onDrop(e, sub.id, 'sub', cat.id)}>
+                                                <div key={sub.id} className="manage-row sub" draggable onDragStart={(e) => onDragStart(e, 'sub', sub.id, cat.id)} onDragEnd={onDragEnd} onDragOver={(e) => onDragOver(e, cat.id)} onDragLeave={onDragLeave} onDrop={(e) => onDrop(e, sub.id, 'sub', cat.id)}>
                                                     {editingId === sub.id ? (
                                                         <div className="edit-input-wrapper">
                                                             <input autoFocus value={editValue} onChange={e => setEditValue(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleUpdateSub(sub.id, editValue)} />
@@ -534,7 +535,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                                 <button 
                                                     className={`btn-add-sub-subtle ${draggingItem?.type === 'sub' ? 'drop-active' : ''}`}
                                                     onClick={() => setIsAddingInModal({ type: 'sub', catId: cat.id })}
-                                                    onDragOver={onDragOver}
+                                                    onDragOver={(e) => onDragOver(e, cat.id)}
                                                     onDragLeave={onDragLeave}
                                                     onDrop={(e) => onDrop(e, cat.id, 'cat')}
                                                 >
@@ -649,14 +650,18 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
 
                 .manage-row { display: flex; align-items: center; gap: 0.7rem; padding: 0.7rem 1rem; border-radius: 16px; transition: all 0.2s; min-height: 54px; }
                 .manage-row:hover { background: #f8fafc; }
-                .manage-row.category { background: #fcfdfe; margin-bottom: 0.4rem; border: 1px solid #f1f5f9; }
-                .manage-row.sub { margin-left: 1.2rem; font-size: 0.9rem; border: 1px solid transparent; }
+                .manage-row.category { background: #fcfdfe; margin-bottom: 0.4rem; border: 1px solid #f1f5f9; cursor: grab; }
+                .manage-row.category:active { cursor: grabbing; }
+                .manage-row.sub { margin-left: 1.2rem; font-size: 0.9rem; border: 1px solid transparent; cursor: grab; }
+                .manage-row.sub:active { cursor: grabbing; }
                 .manage-row .name { flex: 1; font-weight: 800; color: #334155; font-size: 0.95rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
                 
                 .add-form-modal { margin-bottom: 0.5rem; }
                 .add-form-modal input, .add-sub-modal input { flex: 1; background: none; border: none; outline: none; font-weight: 700; font-size: 0.95rem; color: #1e293b; min-width: 0; }
                 
-                .drag-handle { color: #cbd5e1; cursor: grab; padding: 0.2rem; flex-shrink: 0; }
+                .drag-handle { color: #cbd5e1; cursor: grab; padding: 0.5rem; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 8px; transition: all 0.2s; }
+                .drag-handle:hover { background: #f1f5f9; color: var(--accent); }
+                .drag-handle.small { padding: 0.4rem; }
                 .drag-handle:active { cursor: grabbing; }
 
                 .actions { display: flex; gap: 0.4rem; }

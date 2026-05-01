@@ -922,6 +922,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     ) : (
                         <div className="messages-list-flow">
                             {messages
+                                .filter((m: any) => isHistory ? true : !m.isPinned)
                                 .filter((m: any) => {
                                     if (!isHistory || !searchQuery.trim()) return true;
                                     const q = searchQuery.toLowerCase().trim();
@@ -934,7 +935,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                 if (isHistory) {
                                     const isMe = msg.userId === session?.user?.id || (isGuest && (msg.userId === 'guest-me' || msg.user.name === 'Invitado'));
                                     return (
-                                        <div key={msg.id} className="log-row-premium" onClick={() => handleLogClick(msg)}>
+                                        <div key={msg.id} className={`log-row-premium ${msg.isPinned ? 'is-pinned-log' : ''}`} onClick={() => handleLogClick(msg)}>
                                             <div className="accent-bar" />
                                             <div className="log-row-content" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.6rem' }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', width: '100%' }}>
@@ -1154,6 +1155,8 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 
                 .message-card.pinned-highlight { border: 2px solid #fde68a; background: #fffbeb; box-shadow: 0 10px 30px rgba(245, 158, 11, 0.08); }
                 .message-card.in-pinned-list { border-left: 6px solid #f59e0b; }
+                .log-row-premium.is-pinned-log { background: #fffbeb; border-color: #fde68a; }
+                .log-row-premium.is-pinned-log .accent-bar { background: #f59e0b; }
                 
                 .btn-pin-top, .btn-delete-top { background: #f8fafc; border: 1px solid #f1f5f9; color: #94a3b8; padding: 0.5rem; border-radius: 10px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
                 .btn-pin-top:hover, .btn-pin-top.active { color: #f59e0b; background: #fffbeb; border-color: #fde68a; }
