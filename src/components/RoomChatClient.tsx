@@ -810,7 +810,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                         ) : (
                                             <span className="path-segment sub">
                                                 <Hash size={14} className="hash-icon-breadcrumb" />
-                                                <span className="slug-label">{currentSub.slug || strictSlugify(currentSub.name)}</span>
+                                                <span className="slug-label">{(currentSub.slug || '').includes('-') ? (currentSub.slug || '').split('-').slice(1).join('-') : (currentSub.slug || strictSlugify(currentSub.name))}</span>
                                                 <span className="name-label-breadcrumb">{currentSub.name}</span>
                                                 {canManage && (
                                                     <button
