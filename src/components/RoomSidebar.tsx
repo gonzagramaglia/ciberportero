@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Pencil, Plus, Trash2, Hash, Check, Folder, FolderOpen, History as HistoryIcon, MessageSquare, X, Settings2, GripVertical, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { Pencil, Plus, Trash2, Hash, Check, Folder, FolderOpen, History as HistoryIcon, MessageSquare, X, Settings2, GripVertical, CheckCircle2, ShieldCheck, ChevronUp, ChevronDown } from 'lucide-react';
 import { createCategory, createSubcategory, updateCategory, deleteCategory, updateSubcategory, deleteSubcategory, moveSubcategory } from '@/lib/salasActions';
 import { toast } from 'react-hot-toast';
 import { translations } from '@/lib/translations';
@@ -254,6 +254,39 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
         } catch (error) { toast.error("Error"); } finally { setLoading(false); }
     };
 
+    const handleReorderSub = async (catId: string, subId: string, direction: 'up' | 'down') => {
+        const category = room.categories.find((c: any) => c.id === catId);
+        if (!category) return;
+        
+        const subs = [...category.subcategories];
+        const idx = subs.findIndex(s => s.id === subId);
+        if (idx === -1) return;
+        
+        const newIdx = direction === 'up' ? idx - 1 : idx + 1;
+        if (newIdx < 0 || newIdx >= subs.length) return;
+        
+        if (isGuest) {
+            guestStore.moveSubcategory(catId, catId, subId, newIdx);
+            setRoom({ ...guestStore.getRoom(room.id) } as any);
+        } else {
+            setLoading(true);
+            try {
+                const res = await moveSubcategory(subId, catId, newIdx);
+                if (res.success) {
+                    const { getRoomInfo } = await import('@/lib/salasActions');
+                    setRoom(await getRoomInfo(room.id));
+                    toast.success(lang === 'es' ? 'Orden actualizado' : 'Order updated');
+                } else {
+                    toast.error(res.error || 'Error');
+                }
+            } catch (error) {
+                toast.error("Error");
+            } finally {
+                setLoading(false);
+            }
+        }
+    };
+
     const onDragStart = (e: React.DragEvent, type: 'cat' | 'sub', id: string, catId?: string) => {
         setDraggingItem({ type, id, catId });
         e.dataTransfer.setData('text/plain', id);
@@ -281,6 +314,11 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
         const target = e.currentTarget as HTMLElement;
         target.classList.remove('drag-over');
         if (!draggingItem || draggingItem.id === targetId) return;
+
+        // Block reordering within same category via drag
+        if (draggingItem.type === 'sub' && draggingItem.catId === destCatId) {
+            return;
+        }
 
         if (draggingItem.type === 'cat' && targetType === 'cat') {
             const newCats = [...room.categories];
@@ -477,6 +515,8 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                                             <Hash size={14} className="icon-sub" />
                                                             <span className="name">{sub.name}</span>
                                                             <div className="actions">
+                                                                <button onClick={() => handleReorderSub(cat.id, sub.id, 'up')} className="btn-action reorder" title={lang === 'es' ? 'Subir' : 'Move up'} disabled={cat.subcategories.indexOf(sub) === 0}><ChevronUp size={14} /></button>
+                                                                <button onClick={() => handleReorderSub(cat.id, sub.id, 'down')} className="btn-action reorder" title={lang === 'es' ? 'Bajar' : 'Move down'} disabled={cat.subcategories.indexOf(sub) === cat.subcategories.length - 1}><ChevronDown size={14} /></button>
                                                                 <button onClick={() => { setEditingId(sub.id); setEditValue(sub.name); }} className="btn-action edit"><Pencil size={12} /></button>
                                                                 <button onClick={() => handleDeleteSub(sub.id)} className="btn-action delete"><Trash2 size={12} /></button>
                                                             </div>
@@ -625,6 +665,8 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 .btn-action.plus { background: rgba(16, 185, 129, 0.05); color: #10b981; }
                 .btn-action.plus:hover { background: #10b981; color: #fff; }
                 .btn-action.delete:hover { background: #fee2e2; color: #ef4444; border-color: #fecaca; }
+                .btn-action:disabled { opacity: 0.3; cursor: not-allowed; transform: none !important; background: #f8fafc !important; color: #cbd5e1 !important; border-color: #f1f5f9 !important; }
+                .btn-action.reorder:hover { background: rgba(0, 112, 243, 0.05); color: var(--accent); border-color: rgba(0, 112, 243, 0.1); }
 
                 .btn-add-bottom-subtle { 
                     width: 100%; padding: 1.25rem; border: 2px dashed #e2e8f0; border-radius: 24px; background: none; color: #94a3b8; font-weight: 800; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.75rem; transition: all 0.2s; margin-top: 0.5rem; 

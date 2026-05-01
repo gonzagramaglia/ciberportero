@@ -922,7 +922,6 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     ) : (
                         <div className="messages-list-flow">
                             {messages
-                                .filter((m: any) => !m.isPinned)
                                 .filter((m: any) => {
                                     if (!isHistory || !searchQuery.trim()) return true;
                                     const q = searchQuery.toLowerCase().trim();
