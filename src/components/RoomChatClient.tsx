@@ -9,6 +9,14 @@ import { toast } from 'react-hot-toast';
 import { translations } from '@/lib/translations';
 import { guestStore } from '@/lib/guestStore';
 
+function strictSlugify(text: string) {
+    return text.toString().toLowerCase().trim()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove accents
+        .replace(/[^a-z0-9-]/g, '-') // only allow a-z, 0-9 and -
+        .replace(/-+/g, '-') // collapse multiple -
+        .replace(/^-+|-+$/g, ''); // remove leading/trailing -
+}
+
 export default function RoomChatClient({ roomId: propRoomId, subcategoryId, initialMessages, isGuest, session }: any) {
     const { lang } = useLanguage();
     const [currentSubId, setCurrentSubId] = useState<string | null>(subcategoryId || 'general');
@@ -691,7 +699,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
         } catch (error) { toast.error("Error al enviar"); } finally { setSending(false); setUploading(false); }
     };
 
-    const handleUpdateSub = async (subId: string, name: string) => {
+    const handleUpdateSub = async (subId: string, name: string, slug?: string) => {
         if (!name) return;
         try {
             if (isGuest) {
@@ -702,18 +710,14 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     setCurrentSubId(updated.id);
                 }
             } else {
-                const res = await updateSubcategory(subId, name);
+                const res = await updateSubcategory(subId, name, slug);
                 if (res.success) {
                     const { getRoomInfo } = await import('@/lib/salasActions');
                     const updatedRoom = await getRoomInfo(room.id);
                     setRoom(updatedRoom);
-
-                    // Update hash if the ID changed (slug-based)
-                    if (res.newId && res.newId !== subId) {
-                        window.location.hash = res.newId;
-                        setCurrentSubId(res.newId);
-                    }
-                } else toast.error(res.error || 'Error');
+                } else {
+                    toast.error(res.error || 'Error');
+                }
             }
             setEditingSubId(null);
             toast.success(lang === 'es' ? 'Subcategoría actualizada' : 'Subcategory updated');
@@ -785,8 +789,9 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                             </div>
                                         ) : (
                                             <span className="path-segment sub">
-                                                <Hash size={14} />
-                                                {currentSub.name}
+                                                <Hash size={14} className="hash-icon-breadcrumb" />
+                                                <span className="slug-label">{currentSub.slug || strictSlugify(currentSub.name)}</span>
+                                                <span className="name-label-breadcrumb">{currentSub.name}</span>
                                                 {canManage && (
                                                     <button
                                                         className="breadcrumb-edit-btn"
@@ -1185,6 +1190,10 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
 
                 .spin { animation: spin 1.1s linear infinite; }
                 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+                .slug-label { font-weight: 800; color: #94a3b8; font-family: monospace; margin-right: 0.5rem; font-size: 0.9rem; }
+                .name-label-breadcrumb { font-weight: 800; color: #1e293b; }
+                .hash-icon-breadcrumb { color: #cbd5e1; margin-right: 0.2rem; }
 
                 @media (max-width: 768px) {
                     .pin-controls-group { flex-direction: column; gap: 0.2rem !important; }

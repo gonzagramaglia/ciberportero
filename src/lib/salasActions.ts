@@ -118,11 +118,12 @@ export async function createCategory(roomId: string, name: string) {
   }
 }
 
-function slugify(text: string) {
+function strictSlugify(text: string) {
   return text.toString().toLowerCase().trim()
-    .replace(/\s+/g, '-')
-    .replace(/[^\w-]+/g, '')
-    .replace(/--+/g, '-');
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove accents
+    .replace(/[^a-z0-9-]/g, '-') // only allow a-z, 0-9 and -
+    .replace(/-+/g, '-') // collapse multiple -
+    .replace(/^-+|-+$/g, ''); // remove leading/trailing -
 }
 
 export async function createSubcategory(categoryId: string, name: string) {
@@ -132,7 +133,7 @@ export async function createSubcategory(categoryId: string, name: string) {
   try {
     const category = await db.roomCategory.findUnique({ 
       where: { id: categoryId },
-      include: { room: true }
+      include: { room: true, subcategories: true }
     });
     
     if (!category) return { error: "Categoría no encontrada" };
@@ -141,26 +142,23 @@ export async function createSubcategory(categoryId: string, name: string) {
     if (category.room.creatorId !== session.user.id && !isAdmin) return { error: "No autorizado" };
 
     const decodedName = decodeURIComponent(name).trim();
-    console.log("Intentando crear subcategoría:", decodedName, "en cat:", categoryId);
+    const slug = strictSlugify(decodedName);
     
-    const slug = slugify(decodedName);
-    // Usar solo el final del ID de categoría para que no sea tan largo pero siga siendo único
-    const finalId = `${categoryId.slice(-4)}-${slug}`;
-    
-    console.log("Creando subcategoría con ID único:", finalId);
-    const existing = await db.roomSubcategory.findFirst({
-      where: { id: finalId }
-    });
-    let actualId = finalId;
-    if (existing) {
-      actualId = `${finalId}-${Math.random().toString(36).substring(2, 6)}`;
-    }
+    // Check for duplicate names within the same category
+    const existing = category.subcategories.find(s => s.name.toLowerCase() === decodedName.toLowerCase());
+    if (existing) return { error: "Ya existe una subcategoría con ese nombre en esta categoría." };
 
+    const finalId = `${categoryId.slice(-4)}-${slug}-${Date.now()}`;
+    
     const sub = await db.roomSubcategory.create({
-      data: { categoryId, name: decodedName, id: actualId }
+      data: { 
+        categoryId, 
+        name: decodedName, 
+        slug: slug,
+        id: finalId 
+      }
     });
 
-    console.log("Subcategoría creada con éxito:", sub.id, sub.name, "en categoría:", categoryId);
     revalidatePath(`/salas/${category.roomId}`);
     revalidatePath(`/salas/${category.roomId}`, 'layout');
     revalidatePath('/salas/lista');
@@ -247,45 +245,35 @@ export async function deleteCategory(categoryId: string) {
   } catch (error) { return { error: "Error al eliminar" }; }
 }
 
-export async function updateSubcategory(subId: string, name: string) {
+export async function updateSubcategory(subId: string, name: string, slug?: string) {
   const session = await auth();
   if (!session?.user?.id) return { error: "No autenticado" };
   try {
-    const sub = await db.roomSubcategory.findUnique({ where: { id: subId }, include: { category: { include: { room: true } } } });
-    if (sub?.category.room.creatorId !== session.user.id) return { error: "No autorizado" };
+    const sub = await db.roomSubcategory.findUnique({ 
+      where: { id: subId }, 
+      include: { category: { include: { subcategories: true, room: true } } } 
+    });
+    if (!sub || sub.category.room.creatorId !== session.user.id) return { error: "No autorizado" };
     
-    const slug = slugify(name);
-    let finalId = subId;
+    // Check for duplicate names within the same category only if name changed
+    if (sub.name !== name) {
+        const existing = sub.category.subcategories.find(s => s.name.toLowerCase() === name.toLowerCase() && s.id !== subId);
+        if (existing) return { error: "Ya existe una subcategoría con ese nombre en esta categoría." };
+    }
     
-    // If the ID looks like a slug (not a UUID), we might want to update it
-    // But for official rooms, IDs are stable. However, if the user COMPLAINED about the slug not updating,
-    // it means they ARE using slugs as IDs. 
-    if (subId !== slug) {
-        finalId = slug;
-        // Check if new slug already exists
-        const existing = await db.roomSubcategory.findFirst({ where: { categoryId: sub.categoryId, id: finalId } });
-        if (existing && finalId !== subId) {
-            finalId = `${slug}-${Math.random().toString(36).substring(2, 6)}`;
-        }
-    }
-
-    if (finalId !== subId) {
-        // We have to use a transaction because we are changing the PK
-        await db.$transaction(async (tx) => {
-            // Use parameterized query for safety
-            await tx.$executeRaw`UPDATE room_subcategories SET id = ${finalId}, name = ${name} WHERE id = ${subId}`;
-        });
-        revalidatePath(`/salas/${sub?.category.roomId}`);
-        return { success: true, newId: finalId };
-    }
-
+    const targetSlug = slug ? strictSlugify(slug) : strictSlugify(name);
+    
     await db.roomSubcategory.update({ 
         where: { id: subId }, 
-        data: { name } 
+        data: { name, slug: targetSlug } 
     });
-    revalidatePath(`/salas/${sub?.category.roomId}`);
+    
+    revalidatePath(`/salas/${sub.category.roomId}`);
     return { success: true };
-  } catch (error) { return { error: "Error al actualizar" }; }
+  } catch (error) { 
+    console.error(error);
+    return { error: "Error al actualizar" }; 
+  }
 }
 
 export async function deleteSubcategory(subId: string) {

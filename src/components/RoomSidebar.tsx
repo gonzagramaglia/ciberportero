@@ -17,6 +17,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
     const [draggingItem, setDraggingItem] = useState<{type: 'cat' | 'sub', id: string, catId?: string} | null>(null);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [editValue, setEditValue] = useState('');
+    const [editSlugValue, setEditSlugValue] = useState('');
     const [isAddingInModal, setIsAddingInModal] = useState<{type: 'cat' | 'sub', catId?: string} | null>(null);
     const [modalNewName, setModalNewName] = useState('');
 
@@ -118,26 +119,27 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
         }
     };
 
-    const slugifyName = (text: string) => {
+    const strictSlugify = (text: string) => {
         return text.toString().toLowerCase().trim()
-            .replace(/\s+/g, '-')
-            .replace(/_/g, '-')
-            .replace(/[^\w-]+/g, '')
-            .replace(/--+/g, '-');
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove accents
+            .replace(/[^a-z0-9-]/g, '-') // only allow a-z, 0-9 and -
+            .replace(/-+/g, '-') // collapse multiple -
+            .replace(/^-+|-+$/g, ''); // remove leading/trailing -
     };
 
-    const handleUpdateSub = async (subId: string, value: string) => {
-        if (!value) return;
-        const slugValue = slugifyName(value);
+    const handleUpdateSub = async (subId: string, name: string, slug?: string) => {
+        if (!name) return;
+        const finalSlug = slug || strictSlugify(name);
         if (isGuest) {
-            guestStore.updateSubcategory(room.id, subId, slugValue);
+            guestStore.updateSubcategory(room.id, subId, name);
+            // Note: guestStore updateSubcategory might need updating to handle name vs slug separately
             setRoom({ ...guestStore.getRoom(room.id) } as any);
             setEditingId(null);
             toast.success(lang === 'es' ? 'Subcategoría actualizada' : 'Subcategory updated');
         } else {
             setLoading(true);
             try {
-                const res = await updateSubcategory(subId, slugValue);
+                const res = await updateSubcategory(subId, name, finalSlug);
                 if (res.success) {
                     const { getRoomInfo } = await import('@/lib/salasActions');
                     setRoom(await getRoomInfo(room.id));
@@ -196,17 +198,17 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
     const handleAddSub = async (e: React.FormEvent, catId: string) => {
         e.preventDefault();
         if (!newName) return;
-        const slugValue = slugifyName(newName);
+        const slugValue = strictSlugify(newName);
         setLoading(true);
         try {
             if (isGuest) {
-                guestStore.createSubcategory(catId, slugValue);
+                guestStore.createSubcategory(catId, newName);
                 setRoom({ ...guestStore.getRoom(room.id) } as any);
                 setIsAddingSub(null);
                 setNewName('');
                 toast.success(lang === 'es' ? 'Subcategoría creada' : 'Subcategory created');
             } else {
-                const res = await createSubcategory(catId, slugValue);
+                const res = await createSubcategory(catId, newName);
                 if (res.success) {
                     const { getRoomInfo } = await import('@/lib/salasActions');
                      setRoom(await getRoomInfo(room.id));
@@ -236,12 +238,11 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                     }
                 }
             } else if (isAddingInModal?.type === 'sub' && isAddingInModal.catId) {
-                const slugValue = slugifyName(modalNewName);
                 if (isGuest) {
-                    guestStore.createSubcategory(isAddingInModal.catId, slugValue);
+                    guestStore.createSubcategory(isAddingInModal.catId, modalNewName);
                     setRoom({ ...guestStore.getRoom(room.id) } as any);
                 } else {
-                    const res = await createSubcategory(isAddingInModal.catId, slugValue);
+                    const res = await createSubcategory(isAddingInModal.catId, modalNewName);
                     if (res.success) {
                         const { getRoomInfo } = await import('@/lib/salasActions');
                         setRoom(await getRoomInfo(room.id));
@@ -422,7 +423,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                         window.dispatchEvent(new CustomEvent('subcategory-change', { detail: sub.id }));
                                         setCurrentSubId(sub.id);
                                         scrollToChat();
-                                    }}><Hash size={14} />{sub.name}</a>
+                                    }}><Hash size={14} />{sub.slug || strictSlugify(sub.name)}</a>
                                 ))}
                                 {isAddingSub === cat.id && (
                                     <form onSubmit={(e) => handleAddSub(e, cat.id)} className="fade-in sub-add-form">
@@ -505,20 +506,32 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                             {cat.subcategories.map((sub: any) => (
                                                 <div key={sub.id} className="manage-row sub" draggable onDragStart={(e) => onDragStart(e, 'sub', sub.id, cat.id)} onDragEnd={onDragEnd} onDragOver={(e) => onDragOver(e, cat.id)} onDragLeave={onDragLeave} onDrop={(e) => onDrop(e, sub.id, 'sub', cat.id)}>
                                                     {editingId === sub.id ? (
-                                                        <div className="edit-input-wrapper">
-                                                            <input autoFocus value={editValue} onChange={e => setEditValue(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleUpdateSub(sub.id, editValue)} />
-                                                            <button onClick={() => handleUpdateSub(sub.id, editValue)} className="btn-save-mini"><Check size={14} /></button>
-                                                            <button onClick={() => setEditingId(null)} className="btn-cancel-mini"><X size={14} /></button>
+                                                        <div className="edit-input-wrapper complex">
+                                                            <div className="input-with-label">
+                                                                <label>Nombre (Breadcrumb)</label>
+                                                                <input autoFocus value={editValue} onChange={e => setEditValue(e.target.value)} />
+                                                            </div>
+                                                            <div className="input-with-label">
+                                                                <label>Slug (# canal)</label>
+                                                                <input value={editSlugValue} onChange={e => setEditSlugValue(strictSlugify(e.target.value))} placeholder="ej: matrices" />
+                                                            </div>
+                                                            <div className="edit-actions">
+                                                                <button onClick={() => handleUpdateSub(sub.id, editValue, editSlugValue)} className="btn-save-mini"><Check size={14} /></button>
+                                                                <button onClick={() => setEditingId(null)} className="btn-cancel-mini"><X size={14} /></button>
+                                                            </div>
                                                         </div>
                                                     ) : (
                                                         <>
                                                             <div className="drag-handle small"><GripVertical size={14} /></div>
                                                             <Hash size={14} className="icon-sub" />
-                                                            <span className="name">{sub.name}</span>
+                                                            <div className="sub-info-display">
+                                                                <span className="slug-display">#{sub.slug || strictSlugify(sub.name)}</span>
+                                                                <span className="name-display">{sub.name}</span>
+                                                            </div>
                                                             <div className="actions">
                                                                 <button onClick={() => handleReorderSub(cat.id, sub.id, 'up')} className="btn-action reorder" title={lang === 'es' ? 'Subir' : 'Move up'} disabled={cat.subcategories.indexOf(sub) === 0}><ChevronUp size={14} /></button>
                                                                 <button onClick={() => handleReorderSub(cat.id, sub.id, 'down')} className="btn-action reorder" title={lang === 'es' ? 'Bajar' : 'Move down'} disabled={cat.subcategories.indexOf(sub) === cat.subcategories.length - 1}><ChevronDown size={14} /></button>
-                                                                <button onClick={() => { setEditingId(sub.id); setEditValue(sub.name); }} className="btn-action edit"><Pencil size={12} /></button>
+                                                                <button onClick={() => { setEditingId(sub.id); setEditValue(sub.name); setEditSlugValue(sub.slug || strictSlugify(sub.name)); }} className="btn-action edit"><Pencil size={12} /></button>
                                                                 <button onClick={() => handleDeleteSub(sub.id)} className="btn-action delete"><Trash2 size={12} /></button>
                                                             </div>
                                                         </>
@@ -656,6 +669,16 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 .manage-row.sub:active { cursor: grabbing; }
                 .manage-row .name { flex: 1; font-weight: 800; color: #334155; font-size: 0.95rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
                 
+                .edit-input-wrapper.complex { flex-direction: column; align-items: stretch; gap: 0.8rem; padding: 1rem; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; width: 100%; }
+                .input-with-label { display: flex; flex-direction: column; gap: 0.3rem; }
+                .input-with-label label { font-size: 0.65rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; }
+                .input-with-label input { padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; }
+                .edit-actions { display: flex; justify-content: flex-end; gap: 0.5rem; }
+                
+                .sub-info-display { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+                .slug-display { font-size: 0.85rem; font-weight: 900; color: #334155; }
+                .name-display { font-size: 0.75rem; color: #94a3b8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
                 .add-form-modal { margin-bottom: 0.5rem; }
                 .add-form-modal input, .add-sub-modal input { flex: 1; background: none; border: none; outline: none; font-weight: 700; font-size: 0.95rem; color: #1e293b; min-width: 0; }
                 

@@ -17,6 +17,7 @@ export interface GuestMessage {
 export interface GuestSubcategory {
     id: string;
     name: string;
+    slug: string;
     messages: GuestMessage[];
 }
 
@@ -66,6 +67,7 @@ const DEFAULT_DATA: GuestData = {
                         { 
                             id: 'sub-exams', 
                             name: 'Fechas de Exámenes', 
+                            slug: 'examenes', 
                             messages: [
                                 {
                                     id: 'm-admin-exams',
@@ -89,6 +91,7 @@ const DEFAULT_DATA: GuestData = {
                         { 
                             id: 'sub-links', 
                             name: 'Links Útiles', 
+                            slug: 'links', 
                             messages: [
                                 {
                                     id: 'm-admin-links',
@@ -118,6 +121,7 @@ const DEFAULT_DATA: GuestData = {
                         {
                             id: 'sub-1',
                             name: 'Lab 1 - Análisis de Tráfico',
+                            slug: 'lab-1',
                             messages: [
                                 {
                                     id: 'm-initial-1',
@@ -169,11 +173,12 @@ const DEFAULT_DATA: GuestData = {
     ]
 };
 
-function slugify(text: string) {
+function strictSlugify(text: string) {
     return text.toString().toLowerCase().trim()
-        .replace(/\s+/g, '-')
-        .replace(/[^\w-]+/g, '')
-        .replace(/--+/g, '-');
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove accents
+        .replace(/[^a-z0-9-]/g, '-') // only allow a-z, 0-9 and -
+        .replace(/-+/g, '-') // collapse multiple -
+        .replace(/^-+|-+$/g, ''); // remove leading/trailing -
 }
 
 export const guestStore = {
@@ -246,7 +251,7 @@ export const guestStore = {
                 {
                     id: 'cat-general',
                     name: 'General',
-                    subcategories: [{ id: 'sub-chat', name: 'Chat', messages: [] }]
+                    subcategories: [{ id: 'sub-chat', name: 'Chat', slug: 'chat', messages: [] }]
                 }
             ],
             members: [{ id: 'guest-me', user: { name: 'Invitado', image: null }, createdAt: new Date().toISOString(), role: 'admin' }],
@@ -414,7 +419,7 @@ export const guestStore = {
         const room = data.rooms.find(r => r.id === roomId);
         if (room) {
             const newCat: GuestCategory = {
-                id: `cat-${slugify(name)}-${Date.now()}`,
+                id: `cat-${strictSlugify(name)}-${Date.now()}`,
                 name,
                 subcategories: []
             };
@@ -430,13 +435,18 @@ export const guestStore = {
         for (const room of data.rooms) {
             const cat = room.categories.find(c => c.id === catId);
             if (cat) {
-                let finalId = slugify(name);
-                const allSubs = room.categories.flatMap(c => c.subcategories);
-                if (allSubs.some(s => s.id === finalId)) {
+                const newSlug = strictSlugify(name);
+                // Only check duplicates in the SAME category
+                if (cat.subcategories.some(s => s.name.toLowerCase() === name.toLowerCase())) {
                     throw new Error('DUPLICATE_NAME');
                 }
 
-                const newSub: GuestSubcategory = { id: finalId, name, messages: [] };
+                const newSub: GuestSubcategory = { 
+                    id: `${cat.id}-${newSlug}-${Date.now()}`, 
+                    name, 
+                    slug: newSlug,
+                    messages: [] 
+                };
                 cat.subcategories.push(newSub);
                 this.saveData(data);
                 return newSub;
@@ -453,7 +463,7 @@ export const guestStore = {
             if (secretCode) room.secretCode = secretCode;
             if (description !== undefined) room.description = description;
             if (newSlug) {
-                const slug = slugify(newSlug);
+                const slug = strictSlugify(newSlug);
                 if (slug !== room.id && !data.rooms.some(r => r.id === slug)) {
                     room.id = slug;
                 }
@@ -498,14 +508,18 @@ export const guestStore = {
         }
 
         if (targetSub) {
-            const newId = slugify(name);
-            const allOtherSubs = room.categories.flatMap(c => c.subcategories).filter(s => s.id !== subId);
-            if (allOtherSubs.some(s => s.id === newId)) {
+            const newSlug = strictSlugify(name);
+            const parentCat = room.categories.find(c => c.subcategories.some(s => s.id === subId));
+            
+            // Only check duplicates in the SAME category
+            if (parentCat && parentCat.subcategories.some(s => s.id !== subId && s.name.toLowerCase() === name.toLowerCase())) {
                 throw new Error('DUPLICATE_NAME');
             }
 
             targetSub.name = name;
-            targetSub.id = newId;
+            targetSub.slug = newSlug;
+            // Technical ID remains stable unless needed, but here we update it for consistency
+            if (parentCat) targetSub.id = `${parentCat.id}-${newSlug}-${Date.now()}`;
             this.saveData(data);
             return targetSub;
         }

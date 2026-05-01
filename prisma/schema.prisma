@@ -344,6 +344,7 @@ model RoomCategory {
 model RoomSubcategory {
   id          String   @id @default(cuid())
   name        String
+  slug        String   @default("")
   categoryId  String
   category    RoomCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   messages    RoomMessage[]
