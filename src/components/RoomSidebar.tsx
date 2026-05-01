@@ -419,11 +419,11 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                             </div>
                             <div className="sub-list">
                                 {cat.subcategories.map((sub: any) => (
-                                    <a key={sub.id} href={`#${sub.slug || sub.id}`} className={`sub-link ${currentSubId === sub.id ? 'active' : ''}`} onClick={(e) => {
+                                    <a key={sub.id} href={`#${sub.slug || sub.id}`} className={`sub-link ${currentSubId === sub.id || currentSubId === sub.slug ? 'active' : ''}`} onClick={(e) => {
                                         window.dispatchEvent(new CustomEvent('subcategory-change', { detail: sub.id }));
                                         setCurrentSubId(sub.id);
                                         scrollToChat();
-                                    }}>{(sub.slug || strictSlugify(sub.name)).startsWith('#') ? '' : '#'}{sub.slug || strictSlugify(sub.name)}</a>
+                                    }}>{(sub.slug || '').includes('-') ? '#' + (sub.slug || '').split('-').slice(1).join('-') : '#' + (sub.slug || strictSlugify(sub.name))}</a>
                                 ))}
                                 {isAddingSub === cat.id && (
                                     <form onSubmit={(e) => handleAddSub(e, cat.id)} className="fade-in sub-add-form">
@@ -520,13 +520,18 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                                         <>
                                                             <div className="drag-handle small"><GripVertical size={14} /></div>
                                                             <div className="sub-info-display horizontal">
-                                                                <span className="slug-display">#{sub.slug || strictSlugify(sub.name)}</span>
+                                                                <span className="slug-display">#{(sub.slug || '').includes('-') ? (sub.slug || '').split('-').slice(1).join('-') : (sub.slug || strictSlugify(sub.name))}</span>
                                                                 <span className="name-display-grey">({sub.name})</span>
                                                             </div>
                                                             <div className="actions">
                                                                 <button onClick={() => handleReorderSub(cat.id, sub.id, 'up')} className="btn-action reorder" title={lang === 'es' ? 'Subir' : 'Move up'} disabled={cat.subcategories.indexOf(sub) === 0}><ChevronUp size={14} /></button>
                                                                 <button onClick={() => handleReorderSub(cat.id, sub.id, 'down')} className="btn-action reorder" title={lang === 'es' ? 'Bajar' : 'Move down'} disabled={cat.subcategories.indexOf(sub) === cat.subcategories.length - 1}><ChevronDown size={14} /></button>
-                                                                <button onClick={() => { setEditingId(sub.id); setEditValue(sub.name); setEditSlugValue(sub.slug || strictSlugify(sub.name)); }} className="btn-action edit"><Pencil size={12} /></button>
+                                                                <button onClick={() => { 
+                                                                    setEditingId(sub.id); 
+                                                                    setEditValue(sub.name); 
+                                                                    const coreSlug = (sub.slug || '').includes('-') ? (sub.slug || '').split('-').slice(1).join('-') : (sub.slug || strictSlugify(sub.name));
+                                                                    setEditSlugValue(coreSlug); 
+                                                                }} className="btn-action edit"><Pencil size={12} /></button>
                                                                 <button onClick={() => handleDeleteSub(sub.id)} className="btn-action delete"><Trash2 size={12} /></button>
                                                             </div>
                                                         </>

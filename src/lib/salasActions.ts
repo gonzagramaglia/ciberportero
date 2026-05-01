@@ -142,8 +142,8 @@ export async function createSubcategory(categoryId: string, name: string) {
     if (category.room.creatorId !== session.user.id && !isAdmin) return { error: "No autorizado" };
 
     const decodedName = decodeURIComponent(name).trim();
-    const catPrefix = categoryId.slice(-4);
     const baseSlug = strictSlugify(decodedName);
+    const catPrefix = categoryId.slice(-4);
     const finalSlug = `${catPrefix}-${baseSlug}`;
     
     // Check for duplicate names within the same category
@@ -186,6 +186,29 @@ export async function moveSubcategory(subId: string, newCategoryId: string, newO
     const isAdmin = session.user.email === 'ciberportero@gmail.com' || session.user.email === 'gonzalogramagia@gmail.com' || session.user.role === 'admin';
     if (sub.category.room.creatorId !== session.user.id && !isAdmin) return { error: "No autorizado" };
 
+    // Calculate new slug based on new category
+    const catPrefix = newCategoryId.slice(-4);
+    const coreSlug = sub.slug.includes('-') ? sub.slug.split('-').slice(1).join('-') : sub.slug;
+    const newSlug = `${catPrefix}-${coreSlug}`;
+
+    // Check if this new slug is already taken in the room
+    const existing = await db.roomSubcategory.findFirst({
+        where: { 
+            category: { roomId: sub.category.roomId },
+            id: { not: subId },
+            slug: { equals: newSlug, mode: 'insensitive' }
+        }
+    });
+
+    if (existing) {
+        return { error: "No se puede mover: ya existe una subcategoría con el mismo slug (#) en la categoría de destino." };
+    }
+
+    // Prepare update data
+    const updateData: any = { 
+        categoryId: newCategoryId,
+        slug: newSlug
+    };
     if (newOrder !== undefined) {
       // Reordenamiento complejo
       const siblings = await db.roomSubcategory.findMany({
@@ -198,18 +221,25 @@ export async function moveSubcategory(subId: string, newCategoryId: string, newO
 
       // Actualizar todos en una transacción
       await db.$transaction(
-        otherSiblings.map((s, idx) => 
-          db.roomSubcategory.update({
+        otherSiblings.map((s, idx) => {
+          const data: any = { order: idx };
+          if (s.id === subId) {
+            data.categoryId = newCategoryId;
+            data.slug = newSlug;
+          } else {
+            data.categoryId = newCategoryId;
+          }
+          return db.roomSubcategory.update({
             where: { id: s.id },
-            data: { categoryId: newCategoryId, order: idx }
-          })
-        )
+            data
+          });
+        })
       );
     } else {
       // Solo cambio de categoría al final
       await db.roomSubcategory.update({
         where: { id: subId },
-        data: { categoryId: newCategoryId }
+        data: updateData
       });
     }
 
