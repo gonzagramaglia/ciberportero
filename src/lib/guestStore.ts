@@ -51,7 +51,7 @@ interface GuestData {
 }
 
 const DEFAULT_DATA: GuestData = {
-    version: 29, // Incremented version to force update
+    version: 30, // Incremented version to force update and show general messages
     rooms: [
         {
             id: 'test-room',
@@ -168,7 +168,26 @@ const DEFAULT_DATA: GuestData = {
                 { id: 'm2', user: { name: 'Nico B.', image: null }, createdAt: new Date().toISOString(), role: 'member' },
                 { id: 'm3', user: { name: 'Sofi R.', image: null }, createdAt: new Date().toISOString(), role: 'member' }
             ],
-            generalMessages: []
+            generalMessages: [
+                {
+                    id: 'm-gen-1',
+                    content: '¡Bienvenidos al Grupo de Estudio! Este es el chat general para coordinar temas globales de la cursada.',
+                    images: [],
+                    user: { name: 'Admin del Grupo', image: null },
+                    userId: 'm1',
+                    createdAt: new Date(Date.now() - 345600000).toISOString(),
+                    replies: []
+                },
+                {
+                    id: 'm-gen-2',
+                    content: 'Hola a todos. ¿Saben si mañana hay clase presencial o es por Meet?',
+                    images: [],
+                    user: { name: 'Nico B.', image: null },
+                    userId: 'm2',
+                    createdAt: new Date(Date.now() - 86400000).toISOString(),
+                    replies: []
+                }
+            ]
         }
     ]
 };

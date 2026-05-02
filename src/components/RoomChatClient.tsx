@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { MessageSquare, Send, Loader2, History as HistoryIcon, Image as ImageIcon, X, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, Hash, Paperclip, MessageCircle, Reply as ReplyIcon, Trash2, Pencil, Check, Smile, ClipboardClock, Pin, PinOff, GripVertical, ShieldCheck, Search } from 'lucide-react';
+import { MessageSquare, Send, Loader2, History as HistoryIcon, Image as ImageIcon, X, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, Hash, Paperclip, MessageCircle, Reply as ReplyIcon, Trash2, Pencil, Check, Smile, ClipboardClock, Pin, PinOff, GripVertical, ShieldCheck, Search, Youtube } from 'lucide-react';
 import { addRoomMessage, deleteMessage, addGeneralMessage, updateCategory, updateSubcategory, togglePinMessage, reorderPinnedMessages } from '@/lib/salasActions';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'react-hot-toast';
@@ -101,23 +101,25 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
 
     useEffect(() => {
         const validateAndSetSubId = async (id: string | null) => {
-            // Set ID immediately to update UI (breadcrumbs/highlight)
-            const targetId = id || 'general';
-            if (currentSubId !== targetId || messages.length === 0) {
-                setCurrentSubId(targetId);
-                setMessages([]); 
-                setLoadingMessages(true);
+            let activeRoom = room;
+
+            if (isGuest && !activeRoom) {
+                activeRoom = guestStore.getRoom(roomId!) || guestStore.getRooms()[0];
+                if (activeRoom) setRoom(activeRoom as any);
             }
 
             if (!id || id === 'general' || id === 'history') {
-                setLoadingMessages(true);
+                const targetId = id || 'general';
+                setCurrentSubId(targetId);
+                setMessages([]);
+                setLoadingMessages(true); // Force loading state to trigger loadMessages effectively
                 return;
             }
 
-            if (room?.categories) {
-                let actualId = id;
+            let actualId = id;
+            if (activeRoom?.categories) {
                 let foundSub = null;
-                for (const c of room.categories) {
+                for (const c of activeRoom.categories) {
                     const s = c.subcategories?.find((s: any) => s.id === id || s.slug === id);
                     if (s) {
                         foundSub = s;
@@ -128,8 +130,6 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
 
                 if (foundSub && currentSubId !== actualId) {
                     setCurrentSubId(actualId);
-                    setMessages([]);
-                    setLoadingMessages(true);
                 }
 
                 const exists = !!foundSub;
@@ -141,17 +141,19 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
             }
 
             if (isGuest) {
-                const sub = guestStore.getSubcategory(id);
-                if (!sub) {
-                    if (!session) {
-                        window.location.href = '/salas';
-                    } else {
-                        window.location.href = '/salas/lista';
+                if (actualId && actualId !== 'general' && actualId !== 'history') {
+                    const sub = guestStore.getSubcategory(actualId);
+                    if (!sub) {
+                        if (!session) {
+                            window.location.href = '/salas';
+                        } else {
+                            window.location.href = '/salas/lista';
+                        }
+                        return;
                     }
-                    return;
                 }
             }
-            setCurrentSubId(id);
+            setCurrentSubId(actualId || 'general');
         };
 
         const handleHashChange = () => {
@@ -171,7 +173,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
             window.removeEventListener('hashchange', handleHashChange);
             window.removeEventListener('subcategory-change', handleCustomChange);
         };
-    }, [isGuest]);
+    }, [isGuest, roomId]);
 
     const handleLogClick = (msg: any) => {
         const subId = msg.subcategoryId || msg.subcategory?.id || 'general';
@@ -201,12 +203,11 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
             setLoadingMessages(true);
             try {
                 if (isGuest) {
-                    const roomId = window.location.pathname.split('/').pop();
-                    const room = guestStore.getRoom(roomId || 'test-room');
-                    if (isGeneral) {
-                        setMessages([...(room?.generalMessages || [])].reverse());
-                    } else if (isHistory) {
-                        if (room) {
+                    const targetRoom = guestStore.getRoom(roomId!) || guestStore.getRooms()[0];
+                    if (currentSubId === 'general' || !currentSubId) {
+                        setMessages([...(targetRoom?.generalMessages || [])].reverse());
+                    } else if (currentSubId === 'history') {
+                        if (targetRoom) {
                             const allMsgs: any[] = [];
                             const processMsg = (m: any, catName: string, subName: string, subId: string) => {
                                 allMsgs.push({ ...m, subcategoryId: subId, categoryName: catName, subcategoryName: subName });
@@ -217,12 +218,12 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                 }
                             };
 
-                            room.categories.forEach((c: any) => {
+                            targetRoom.categories.forEach((c: any) => {
                                 c.subcategories.forEach((s: any) => {
                                     s.messages.forEach((m: any) => processMsg(m, c.name, s.name, s.id));
                                 });
                             });
-                            room.generalMessages.forEach((m: any) => processMsg(m, 'General', 'Chat General', 'general'));
+                            targetRoom.generalMessages.forEach((m: any) => processMsg(m, 'General', 'Chat General', 'general'));
 
                             setMessages(allMsgs.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
                         }
@@ -261,7 +262,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
             }
         };
         loadMessages();
-    }, [currentSubId, isGuest, isGeneral, isHistory, refreshTrigger]);
+    }, [currentSubId, isGuest, isGeneral, isHistory, refreshTrigger, roomId, messages.length === 0]);
 
     const handleDeleteMessage = async (msgId: string, isReply = false, parentId?: string) => {
         if (confirmDeleteId !== msgId) {
@@ -905,6 +906,16 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 )}
 
                 <a
+                    href="https://www.youtube.com/@ciberportero/playlists"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="floating-youtube-btn"
+                    title="YouTube Playlists"
+                >
+                    <Youtube size={32} />
+                </a>
+
+                <a
                     href={lang === 'en' ? 'https://hoy.today/en' : 'https://hoy.today'}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -1060,27 +1071,58 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     right: 4.5rem;
                     width: 64px;
                     height: 64px;
-                    background: #fff;
-                    color: #0f172a;
+                    background: rgba(255,255,255,0.1);
+                    backdrop-filter: blur(12px);
+                    color: var(--accent);
                     border-radius: 50%;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-                    z-index: 9999;
-                    border: 2px solid #e2e8f0;
+                    z-index: 999;
                     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
                     text-decoration: none;
+                    border: 2px solid rgba(0, 112, 243, 0.1);
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
                 }
                 .floating-hoy-btn:hover { 
-                    background: #facc15 !important; 
-                    color: #000 !important; 
-                    transform: scale(1.1) rotate(10deg); 
-                    border-color: #facc15 !important; 
-                    box-shadow: 0 15px 40px rgba(250, 204, 21, 0.4) !important; 
+                    transform: scale(1.1) rotate(-5deg);
+                    background: #facc15;
+                    color: #000;
+                    border-color: #facc15;
+                    box-shadow: 0 15px 45px rgba(250, 204, 21, 0.45);
                 }
-                @media (max-width: 768px) { .floating-hoy-btn { display: none; } }
-                
+
+                .floating-youtube-btn {
+                    position: fixed;
+                    bottom: 4rem;
+                    left: 4.5rem;
+                    width: 64px;
+                    height: 64px;
+                    background: rgba(255,255,255,0.1);
+                    backdrop-filter: blur(12px);
+                    color: #ff0000;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 999;
+                    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    text-decoration: none;
+                    border: 2px solid rgba(255, 0, 0, 0.1);
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+                }
+                .floating-youtube-btn:hover {
+                    transform: scale(1.1) rotate(5deg);
+                    background: #facc15;
+                    color: #000;
+                    border-color: #facc15;
+                    box-shadow: 0 15px 45px rgba(250, 204, 21, 0.45);
+                }
+
+                @media (max-width: 768px) { 
+                    .floating-hoy-btn, .floating-youtube-btn { display: none; } 
+                }
+
                 .room-btn-primary { 
                     background: linear-gradient(135deg, #0070f3 0%, #00a2ff 100%); 
                     color: #fff; border: none; padding: 0 1.8rem; height: 46px; border-radius: 14px; font-weight: 800; display: flex; align-items: center; gap: 0.6rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(0, 112, 243, 0.3);

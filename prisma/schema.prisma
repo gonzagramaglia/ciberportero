@@ -335,6 +335,7 @@ model RoomCategory {
   roomId        String
   room          Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
   subcategories RoomSubcategory[]
+  order         Int      @default(0)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 

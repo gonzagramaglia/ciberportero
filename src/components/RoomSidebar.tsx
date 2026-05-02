@@ -161,9 +161,12 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 const res = await updateSubcategory(subId, name, finalSlug);
                 if (res.success) {
                     const { getRoomInfo } = await import('@/lib/salasActions');
-                    const updatedRoom = await getRoomInfo(room.id);
+                    const updatedRoom: any = await getRoomInfo(room.id);
                     if (updatedRoom) {
                         setRoom(updatedRoom);
+                        
+                        // Notify other components BEFORE changing URL
+                        window.dispatchEvent(new CustomEvent('room-data-updated'));
                         
                         // If we edited the sub we are currently in, update the URL hash
                         if (oldSub && (window.location.hash === `#${oldSub.slug}` || window.location.hash === `#${oldSub.id}`)) {
@@ -172,7 +175,6 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                         }
                     }
 
-                    window.dispatchEvent(new CustomEvent('room-data-updated'));
                     setEditingId(null);
                     toast.success(lang === 'es' ? 'Subcategoría actualizada' : 'Subcategory updated');
                 } else toast.error(res.error || 'Error');
@@ -324,6 +326,36 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
         }
     };
 
+    const handleReorderCat = async (catId: string, direction: 'up' | 'down') => {
+        const cats = [...room.categories];
+        const idx = cats.findIndex(c => c.id === catId);
+        if (idx === -1) return;
+        
+        const newIdx = direction === 'up' ? idx - 1 : idx + 1;
+        if (newIdx < 0 || newIdx >= cats.length) return;
+        
+        const [moved] = cats.splice(idx, 1);
+        cats.splice(newIdx, 0, moved);
+        
+        if (isGuest) {
+            guestStore.reorderCategories(room.id, cats);
+            setRoom({ ...guestStore.getRoom(room.id) } as any);
+            window.dispatchEvent(new CustomEvent('room-data-updated'));
+        } else {
+            setLoading(true);
+            try {
+                const { reorderCategories } = await import('@/lib/salasActions');
+                const res = await reorderCategories(room.id, cats.map(c => c.id));
+                if (res.success) {
+                    const { getRoomInfo } = await import('@/lib/salasActions');
+                    setRoom(await getRoomInfo(room.id));
+                    window.dispatchEvent(new CustomEvent('room-data-updated'));
+                    toast.success(lang === 'es' ? 'Orden de categorías actualizado' : 'Category order updated');
+                } else toast.error(res.error || 'Error');
+            } catch (error) { toast.error("Error"); } finally { setLoading(false); }
+        }
+    };
+
     const onDragStart = (e: React.DragEvent, type: 'cat' | 'sub', id: string, catId?: string) => {
         setDraggingItem({ type, id, catId });
         e.dataTransfer.setData('text/plain', id);
@@ -364,9 +396,23 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
             const destIdx = newCats.findIndex(c => c.id === targetId);
             const [moved] = newCats.splice(srcIdx, 1);
             newCats.splice(destIdx, 0, moved);
-            guestStore.reorderCategories(room.id, newCats);
-            setRoom({ ...room, categories: newCats });
-            window.dispatchEvent(new CustomEvent('room-data-updated'));
+            
+            if (isGuest) {
+                guestStore.reorderCategories(room.id, newCats);
+                setRoom({ ...guestStore.getRoom(room.id) } as any);
+                window.dispatchEvent(new CustomEvent('room-data-updated'));
+            } else {
+                setLoading(true);
+                import('@/lib/salasActions').then(async (m) => {
+                    const res = await m.reorderCategories(room.id, newCats.map(c => c.id));
+                    if (res.success) {
+                        setRoom(await m.getRoomInfo(room.id));
+                        window.dispatchEvent(new CustomEvent('room-data-updated'));
+                        toast.success(lang === 'es' ? 'Orden actualizado' : 'Order updated');
+                    } else toast.error(res.error || 'Error');
+                    setLoading(false);
+                });
+            }
         } else if (draggingItem.type === 'sub') {
             const finalDestCatId = destCatId || targetId;
             if (draggingItem.catId && finalDestCatId) {
@@ -423,6 +469,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                         href="#general"
                         className={`sub-link ${!currentSubId || currentSubId === 'general' || currentSubId === generalSub?.id ? 'active' : ''}`}
                         onClick={(e) => {
+                            window.location.hash = '';
                             window.dispatchEvent(new CustomEvent('subcategory-change', { detail: 'general' }));
                             setCurrentSubId('general');
                             scrollToChat();
@@ -520,7 +567,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                             <div className="manage-list">
                                 {categories.length === 0 && !isAddingInModal && <p className="empty-modal-text">No hay categorías para gestionar.</p>}
                                 
-                                {categories.map((cat: any) => (
+                                 {categories.map((cat: any, catIdx: number) => (
                                     <div key={cat.id} className="manage-item-group" onDragOver={(e) => onDragOver(e, cat.id)} onDragLeave={onDragLeave} onDrop={(e) => onDrop(e, cat.id, 'cat')}>
                                         <div className="manage-row category" draggable onDragStart={(e) => onDragStart(e, 'cat', cat.id)} onDragEnd={onDragEnd}>
                                             {editingId === cat.id ? (
@@ -535,6 +582,8 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                                     <Folder size={18} className="icon-cat" />
                                                     <span className="name">{cat.name}</span>
                                                     <div className="actions">
+                                                        <button onClick={() => handleReorderCat(cat.id, 'up')} className="btn-action reorder" title={lang === 'es' ? 'Subir' : 'Move up'} disabled={catIdx === 0}><ChevronUp size={16} /></button>
+                                                        <button onClick={() => handleReorderCat(cat.id, 'down')} className="btn-action reorder" title={lang === 'es' ? 'Bajar' : 'Move down'} disabled={catIdx === categories.length - 1}><ChevronDown size={16} /></button>
                                                         <button onClick={() => { setEditingId(cat.id); setEditValue(cat.name); }} className="btn-action edit"><Pencil size={14} /></button>
                                                         <button onClick={() => handleDeleteCat(cat.id)} className="btn-action delete"><Trash2 size={14} /></button>
                                                     </div>

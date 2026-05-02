@@ -277,6 +277,30 @@ export async function deleteCategory(categoryId: string) {
   } catch (error) { return { error: "Error al eliminar" }; }
 }
 
+export async function reorderCategories(roomId: string, categoryIds: string[]) {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "No autenticado" };
+  try {
+    const room = await db.room.findUnique({ where: { id: roomId } });
+    if (room?.creatorId !== session.user.id) return { error: "No autorizado" };
+
+    await db.$transaction(
+      categoryIds.map((id, index) => 
+        db.roomCategory.update({
+          where: { id },
+          data: { order: index } as any
+        })
+      )
+    );
+
+    revalidatePath(`/salas/${roomId}`);
+    return { success: true };
+  } catch (error) {
+    console.error("Error reordering categories:", error);
+    return { error: "Error al reordenar" };
+  }
+}
+
 export async function updateSubcategory(subId: string, name: string, slug?: string) {
   const session = await auth();
   if (!session?.user?.id) return { error: "No autenticado" };
@@ -458,7 +482,8 @@ export async function getRoomDetails(rawRoomId: string) {
                 messages: true
               }
             }
-          }
+          },
+          orderBy: { order: 'asc' } as any
         },
         creator: {
           select: { role: true, email: true }
@@ -511,8 +536,23 @@ export async function getSubcategoryMessages(subcategoryId: string) {
   }
 }
 
-export async function getGeneralMessages(roomId: string) {
+export async function getGeneralMessages(rawRoomId: string) {
   try {
+    const session = await auth();
+    if (!session?.user?.id) return [];
+
+    // Resolve technical ID
+    let roomId = rawRoomId;
+    const roomRecord = await db.room.findUnique({
+      where: { id: rawRoomId }
+    });
+    if (roomRecord) roomId = roomRecord.id;
+
+    const isMember = await db.roomMember.findUnique({
+      where: { roomId_userId: { roomId, userId: session.user.id } }
+    });
+    if (!isMember) return [];
+
     if (!db || !db.roomMessage) return [];
     return await db.roomMessage.findMany({
       where: { 
@@ -672,10 +712,17 @@ export async function deleteRoom(roomId: string) {
     return { error: "Error al eliminar sala" };
   }
 }
-export async function getAllRoomMessages(roomId: string) {
+export async function getAllRoomMessages(rawRoomId: string) {
   try {
     const session = await auth();
     if (!session?.user?.id) return [];
+
+    // Resolve technical ID
+    let roomId = rawRoomId;
+    const roomRecord = await db.room.findUnique({
+      where: { id: rawRoomId }
+    });
+    if (roomRecord) roomId = roomRecord.id;
 
     const isMember = await db.roomMember.findUnique({
       where: { roomId_userId: { roomId, userId: session.user.id } }
@@ -686,7 +733,8 @@ export async function getAllRoomMessages(roomId: string) {
       where: { 
         OR: [
           { subcategory: { category: { roomId } } },
-          { subcategory: { name: 'Chat General', category: { roomId } } }
+          { subcategory: { name: 'Chat General', category: { roomId } } },
+          { subcategory: { name: 'General', category: { roomId } } }
         ]
       },
       include: {
