@@ -126,9 +126,10 @@ function strictSlugify(text: string) {
     .replace(/^-+|-+$/g, ''); // remove leading/trailing -
 }
 
-export async function createSubcategory(categoryId: string, name: string) {
+export async function createSubcategory(categoryId: string, name: string, description?: string) {
   const session = await auth();
   if (!session?.user?.id) return { error: "No autenticado" };
+  if (description && description.length > 150) return { error: "La descripción no puede superar los 150 caracteres" };
 
   try {
     const category = await db.roomCategory.findUnique({ 
@@ -157,6 +158,7 @@ export async function createSubcategory(categoryId: string, name: string) {
         categoryId, 
         name: decodedName, 
         slug: finalSlug,
+        description,
         id: finalId 
       }
     });
@@ -301,9 +303,10 @@ export async function reorderCategories(roomId: string, categoryIds: string[]) {
   }
 }
 
-export async function updateSubcategory(subId: string, name: string, slug?: string) {
+export async function updateSubcategory(subId: string, name: string, slug?: string, description?: string) {
   const session = await auth();
   if (!session?.user?.id) return { error: "No autenticado" };
+  if (description && description.length > 150) return { error: "La descripción no puede superar los 150 caracteres" };
   try {
     const sub = await db.roomSubcategory.findUnique({ 
       where: { id: subId }, 
@@ -318,6 +321,7 @@ export async function updateSubcategory(subId: string, name: string, slug?: stri
     }
     
     const updateData: any = { name };
+    if (description !== undefined) updateData.description = description;
     if (slug) {
         const catPrefix = sub.category.id.slice(-4) || 'sub';
         updateData.slug = `${catPrefix}-${strictSlugify(slug)}`;

@@ -183,9 +183,7 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                     </a>
                 </div>
 
-                {room.description && (
-                    <p className="room-description-text">{room.description}</p>
-                )}
+                {/* Room description removed from here to avoid repetition with the chat breadcrumb area */}
             </div>
 
             {/* Config Modal */}

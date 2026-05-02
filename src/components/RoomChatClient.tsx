@@ -52,6 +52,8 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
     const [editCatValue, setEditCatValue] = useState('');
     const [editingSubId, setEditingSubId] = useState<string | null>(null);
     const [editSubValue, setEditSubValue] = useState('');
+    const [editingDesc, setEditingDesc] = useState(false);
+    const [editDescValue, setEditDescValue] = useState('');
 
     useEffect(() => {
         const getRoomData = async (targetId: string) => {
@@ -101,6 +103,11 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
 
     useEffect(() => {
         const validateAndSetSubId = async (id: string | null) => {
+            // Immediately clear messages and show loader if we're switching
+            if (id !== currentSubId) {
+                setMessages([]);
+                setLoadingMessages(true);
+            }
             let activeRoom = room;
 
             if (isGuest && !activeRoom) {
@@ -110,9 +117,9 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
 
             if (!id || id === 'general' || id === 'history') {
                 const targetId = id || 'general';
-                setCurrentSubId(targetId);
                 setMessages([]);
-                setLoadingMessages(true); // Force loading state to trigger loadMessages effectively
+                setLoadingMessages(true);
+                setCurrentSubId(targetId);
                 return;
             }
 
@@ -141,6 +148,8 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 }
 
                 if (foundSub && currentSubId !== actualId) {
+                    setMessages([]);
+                    setLoadingMessages(true);
                     setCurrentSubId(actualId);
                 }
             }
@@ -184,6 +193,8 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
         const subId = msg.subcategoryId || msg.subcategory?.id || 'general';
         window.location.hash = `#${subId}`;
         window.dispatchEvent(new CustomEvent('subcategory-change', { detail: subId }));
+        setMessages([]);
+        setLoadingMessages(true);
         setCurrentSubId(subId);
         setTargetMessageId(msg.id);
     };
@@ -725,18 +736,18 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
         } catch (error) { toast.error("Error al enviar"); } finally { setSending(false); setUploading(false); }
     };
 
-    const handleUpdateSub = async (subId: string, name: string, slug?: string) => {
+    const handleUpdateSub = async (subId: string, name: string, slug?: string, description?: string) => {
         if (!name) return;
         try {
             if (isGuest) {
-                const updated = guestStore.updateSubcategory(room.id, subId, name);
+                const updated = guestStore.updateSubcategory(room.id, subId, name, undefined, description);
                 setRoom({ ...guestStore.getRoom(room.id) } as any);
                 if (updated?.id && updated.id !== subId) {
                     window.location.hash = updated.id;
                     setCurrentSubId(updated.id);
                 }
             } else {
-                const res = await updateSubcategory(subId, name, slug);
+                const res = await updateSubcategory(subId, name, slug, description);
                 if (res.success) {
                     const { getRoomInfo } = await import('@/lib/salasActions');
                     const updatedRoom = await getRoomInfo(room.id);
@@ -746,6 +757,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 }
             }
             setEditingSubId(null);
+            setEditingDesc(false);
             toast.success(lang === 'es' ? 'Subcategoría actualizada' : 'Subcategory updated');
             window.dispatchEvent(new CustomEvent('room-data-updated'));
         } catch (error) { toast.error("Error al actualizar"); }
@@ -848,6 +860,93 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                         </div>
                     )}
                 </div>
+
+                {(isGeneral || currentSub) && !isHistory && (
+                    <div className="subcategory-description-row fade-in">
+                        {editingDesc ? (
+                            <div className="desc-edit-container">
+                                <textarea
+                                    autoFocus
+                                    value={editDescValue}
+                                    onChange={e => setEditDescValue(e.target.value.slice(0, 150))}
+                                    placeholder={lang === 'es' ? 'Agregá una descripción corta (máx 150 caracteres)...' : 'Add a short description (max 150 chars)...'}
+                                    onBlur={() => setEditingDesc(false)}
+                                    onKeyDown={e => {
+                                        if (e.key === 'Enter' && !e.shiftKey) {
+                                            e.preventDefault();
+                                            if (isGeneral) {
+                                                if (isGuest) {
+                                                    const updated = guestStore.updateRoom(room.id, room.name, room.id, room.secretCode, editDescValue);
+                                                    if (updated) {
+                                                        setRoom({...room, description: updated.description});
+                                                        setEditingDesc(false);
+                                                        window.dispatchEvent(new CustomEvent('room-data-updated'));
+                                                        toast.success(lang === 'es' ? 'Descripción actualizada' : 'Description updated');
+                                                    }
+                                                } else {
+                                                    (async () => {
+                                                        const { updateRoom } = await import('@/lib/salasActions');
+                                                        const res = await updateRoom(room.id, room.name, room.id, room.secretCode, editDescValue);
+                                                        if (res.success) {
+                                                            setRoom({...room, description: editDescValue});
+                                                            setEditingDesc(false);
+                                                            toast.success(lang === 'es' ? 'Descripción actualizada' : 'Description updated');
+                                                        }
+                                                    })();
+                                                }
+                                            } else {
+                                                handleUpdateSub(currentSub.id, currentSub.name, undefined, editDescValue);
+                                            }
+                                        }
+                                    }}
+                                    className="desc-edit-input"
+                                />
+                                <div className="desc-edit-footer">
+                                    <span className={`char-count ${editDescValue.length >= 140 ? 'warning' : ''}`}>{editDescValue.length}/150</span>
+                                    <button className="desc-save-btn" onClick={() => {
+                                        if (isGeneral) {
+                                            if (isGuest) {
+                                                const updated = guestStore.updateRoom(room.id, room.name, room.id, room.secretCode, editDescValue);
+                                                if (updated) {
+                                                    setRoom({...room, description: updated.description});
+                                                    setEditingDesc(false);
+                                                    window.dispatchEvent(new CustomEvent('room-data-updated'));
+                                                    toast.success(lang === 'es' ? 'Descripción actualizada' : 'Description updated');
+                                                }
+                                            } else {
+                                                 (async () => {
+                                                    const { updateRoom } = await import('@/lib/salasActions');
+                                                    const res = await updateRoom(room.id, room.name, room.id, room.secretCode, editDescValue);
+                                                    if (res.success) {
+                                                        setRoom({...room, description: editDescValue});
+                                                        setEditingDesc(false);
+                                                        toast.success(lang === 'es' ? 'Descripción actualizada' : 'Description updated');
+                                                    }
+                                                })();
+                                            }
+                                        } else {
+                                            handleUpdateSub(currentSub.id, currentSub.name, undefined, editDescValue);
+                                        }
+                                    }}>
+                                        <Check size={14} />
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className={`desc-display-container ${canManage ? 'can-edit' : ''}`} onClick={() => {
+                                if (canManage) {
+                                    setEditingDesc(true);
+                                    setEditDescValue(isGeneral ? (room?.description || '') : (currentSub?.description || ''));
+                                }
+                            }}>
+                                <p className={`desc-text ${!(isGeneral ? room?.description : currentSub?.description) ? 'empty' : ''}`}>
+                                    {(isGeneral ? room?.description : currentSub?.description) || (canManage ? (lang === 'es' ? 'Hacé clic para agregar una descripción...' : 'Click to add a description...') : '')}
+                                </p>
+                                {canManage && <Pencil size={12} className="desc-edit-icon" />}
+                            </div>
+                        )}
+                    </div>
+                )}
 
                 {!isHistory && (
                     <div className="main-input-sticky">
@@ -1031,6 +1130,23 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .path-segment.sub { color: #1e293b; }
                 .path-separator { opacity: 0.3; margin: 0 0.2rem; color: #94a3b8; }
                 
+                .subcategory-description-row { margin-top: 0.5rem; padding-left: 0.5rem; border-left: 2px solid #f1f5f9; transition: all 0.2s; width: 100%; }
+                .desc-display-container { display: flex; align-items: flex-start; gap: 0.6rem; padding: 0.6rem 1rem; border-radius: 12px; transition: all 0.2s; width: 100%; background: #fcfdfe; border: 1px solid #f1f5f9; }
+                .desc-display-container.can-edit { cursor: pointer; }
+                .desc-display-container.can-edit:hover { background: rgba(0, 112, 243, 0.03); border-color: rgba(0, 112, 243, 0.1); }
+                .desc-text { margin: 0; font-size: 0.95rem; color: #64748b; font-weight: 500; line-height: 1.5; flex: 1; }
+                .desc-text.empty { opacity: 0.5; font-style: italic; }
+                .desc-edit-icon { color: #cbd5e1; margin-top: 0.2rem; opacity: 0.4; transition: all 0.2s; flex-shrink: 0; }
+                .desc-display-container:hover .desc-edit-icon { opacity: 1; color: var(--accent); }
+                
+                .desc-edit-container { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 1rem; width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+                .desc-edit-input { width: 100%; border: none; background: transparent; outline: none; resize: vertical; font-size: 0.95rem; color: #1e293b; font-weight: 500; min-height: 80px; padding: 0.4rem; line-height: 1.5; font-family: inherit; }
+                .desc-edit-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 0.4rem; padding-top: 0.4rem; border-top: 1px solid #f8fafc; }
+                .char-count { font-size: 0.75rem; color: #94a3b8; font-weight: 700; }
+                .char-count.warning { color: #ef4444; }
+                .desc-save-btn { background: #10b981; color: white; border: none; border-radius: 6px; padding: 0.3rem 0.6rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+                .desc-save-btn:hover { background: #059669; transform: scale(1.05); }
+                
                 .main-input-sticky { position: sticky; top: 1rem; z-index: 50; }
                 .input-card { background: #fff; border: 2px solid #f1f5f9; border-radius: 24px; padding: 1rem; box-shadow: 0 10px 40px rgba(0,0,0,0.06); transition: all 0.2s; }
                 .input-card.is-dragging { border-color: var(--accent); background: rgba(0, 112, 243, 0.02); transform: scale(1.02); }
@@ -1165,7 +1281,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .empty-icon-circle { width: 80px; height: 80px; background: rgba(0, 112, 243, 0.05); color: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; }
                 .empty-view h3 { margin: 0 0 0.5rem 0; font-size: 1.5rem; font-weight: 900; color: #1e293b; }
                 .empty-view p { margin: 0; color: #94a3b8; font-weight: 600; font-size: 1.1rem; max-width: 300px; line-height: 1.5; }
-                .loader-view { border: none; background: transparent; padding: 10rem 2rem; }
+                .loader-view { border: none; background: transparent; padding: 4rem 2rem 10rem 2rem; }
                 .spin-slow { animation: spin 2s linear infinite; }
                 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
                 

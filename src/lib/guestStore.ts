@@ -18,6 +18,7 @@ export interface GuestSubcategory {
     id: string;
     name: string;
     slug: string;
+    description?: string;
     messages: GuestMessage[];
 }
 
@@ -51,12 +52,12 @@ interface GuestData {
 }
 
 const DEFAULT_DATA: GuestData = {
-    version: 30, // Incremented version to force update and show general messages
+    version: 31, // Incremented version to force update and show general messages
     rooms: [
         {
             id: 'test-room',
             name: 'Grupo de Estudio Ciberdefensa 🛡️',
-            description: 'Espacio colaborativo para estudiantes de Ciberdefensa. Compartimos material, resolvemos dudas de laboratorios y nos preparamos para los parciales juntos.',
+            description: 'Canal principal para coordinar actividades del grupo de estudio y anuncios importantes.',
             secretCode: 'CIBERDEFENSA2026',
             creatorId: 'm1',
             categories: [
@@ -68,6 +69,7 @@ const DEFAULT_DATA: GuestData = {
                             id: 'sub-exams', 
                             name: 'Fechas de Exámenes', 
                             slug: 'examenes', 
+                            description: 'Cronograma actualizado de parciales, recuperatorios y finales de la cursada.',
                             messages: [
                                 {
                                     id: 'm-admin-exams',
@@ -92,6 +94,7 @@ const DEFAULT_DATA: GuestData = {
                             id: 'sub-links', 
                             name: 'Links Útiles', 
                             slug: 'links', 
+                            description: 'Acceso rápido a SIU Guaraní, Moodle, repositorios y bibliografía digital.',
                             messages: [
                                 {
                                     id: 'm-admin-links',
@@ -122,6 +125,7 @@ const DEFAULT_DATA: GuestData = {
                             id: 'sub-1',
                             name: 'Lab 1 - Análisis de Tráfico',
                             slug: 'lab-1',
+                            description: 'Consultas técnicas sobre Wireshark, protocolos TCP/IP y resolución de guías.',
                             messages: [
                                 {
                                     id: 'm-initial-1',
@@ -449,7 +453,7 @@ export const guestStore = {
         return null;
     },
 
-    createSubcategory(catId: string, name: string) {
+    createSubcategory(catId: string, name: string, description?: string) {
         const data = this.getData();
         for (const room of data.rooms) {
             const cat = room.categories.find(c => c.id === catId);
@@ -464,6 +468,7 @@ export const guestStore = {
                     id: `${cat.id}-${newSlug}-${Date.now()}`, 
                     name, 
                     slug: newSlug,
+                    description: description || '',
                     messages: [] 
                 };
                 cat.subcategories.push(newSub);
@@ -512,7 +517,7 @@ export const guestStore = {
         if (room) { room.categories = room.categories.filter(c => c.id !== catId); this.saveData(data); }
     },
 
-    updateSubcategory(roomId: string, subId: string, name: string, slug?: string) {
+    updateSubcategory(roomId: string, subId: string, name: string, slug?: string, description?: string) {
         const data = this.getData();
         const room = data.rooms.find(r => r.id === roomId);
         if (!room) return;
@@ -536,6 +541,7 @@ export const guestStore = {
             }
 
             targetSub.name = name;
+            if (description !== undefined) targetSub.description = description;
             if (slug) {
                 const newSlug = strictSlugify(slug);
                 targetSub.slug = newSlug;

@@ -20,6 +20,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
     const [editSlugValue, setEditSlugValue] = useState('');
     const [isAddingInModal, setIsAddingInModal] = useState<{type: 'cat' | 'sub', catId?: string} | null>(null);
     const [modalNewName, setModalNewName] = useState('');
+    const [editDescValue, setEditDescValue] = useState('');
 
     const scrollToChat = () => {
         if (window.innerWidth <= 1024) {
@@ -142,7 +143,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
             .replace(/^-+|-+$/g, ''); // remove leading/trailing -
     };
 
-    const handleUpdateSub = async (subId: string, name: string, slug?: string) => {
+    const handleUpdateSub = async (subId: string, name: string, slug?: string, description?: string) => {
         if (!name) return;
         
         // Find current sub to check if we need to update URL
@@ -150,7 +151,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
         const finalSlug = slug || strictSlugify(name);
         
         if (isGuest) {
-            guestStore.updateSubcategory(room.id, subId, name);
+            guestStore.updateSubcategory(room.id, subId, name, undefined, description);
             setRoom({ ...guestStore.getRoom(room.id) } as any);
             setEditingId(null);
             window.dispatchEvent(new CustomEvent('room-data-updated'));
@@ -158,7 +159,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
         } else {
             setLoading(true);
             try {
-                const res = await updateSubcategory(subId, name, finalSlug);
+                const res = await updateSubcategory(subId, name, finalSlug, description);
                 if (res.success) {
                     const { getRoomInfo } = await import('@/lib/salasActions');
                     const updatedRoom: any = await getRoomInfo(room.id);
@@ -596,14 +597,28 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                                     {editingId === sub.id ? (
                                                         <div className="edit-input-wrapper complex">
                                                             <div className="input-with-label">
-                                                                <label>Editar Slug (# canal)</label>
+                                                                <label>{lang === 'es' ? 'Nombre' : 'Name'}</label>
+                                                                <input value={editValue} onChange={e => setEditValue(e.target.value)} placeholder="Nombre..." />
+                                                            </div>
+                                                            <div className="input-with-label">
+                                                                <label>Slug (# canal)</label>
                                                                 <div className="input-hash-wrapper">
                                                                     <span className="hash-prefix">#</span>
-                                                                    <input autoFocus value={editSlugValue} onChange={e => setEditSlugValue(strictSlugify(e.target.value))} onKeyDown={e => e.key === 'Enter' && handleUpdateSub(sub.id, sub.name, editSlugValue)} placeholder="ej: matrices" />
+                                                                    <input value={editSlugValue} onChange={e => setEditSlugValue(strictSlugify(e.target.value))} placeholder="ej: matrices" />
                                                                 </div>
                                                             </div>
+                                                            <div className="input-with-label">
+                                                                <label>{lang === 'es' ? 'Descripción (opcional)' : 'Description (optional)'}</label>
+                                                                <textarea 
+                                                                    value={editDescValue} 
+                                                                    onChange={e => setEditDescValue(e.target.value.slice(0, 150))} 
+                                                                    placeholder={lang === 'es' ? 'Máx 150 caracteres...' : 'Max 150 chars...'}
+                                                                    className="modal-textarea-desc"
+                                                                />
+                                                                <span className="char-count-modal">{editDescValue.length}/150</span>
+                                                            </div>
                                                             <div className="edit-actions">
-                                                                <button onClick={() => handleUpdateSub(sub.id, sub.name, editSlugValue)} className="btn-save-mini"><Check size={14} /></button>
+                                                                <button onClick={() => handleUpdateSub(sub.id, editValue, editSlugValue, editDescValue)} className="btn-save-mini"><Check size={14} /></button>
                                                                 <button onClick={() => setEditingId(null)} className="btn-cancel-mini"><X size={14} /></button>
                                                             </div>
                                                         </div>
@@ -621,6 +636,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                                                     setEditValue(sub.name); 
                                                                     const coreSlug = (sub.slug || '').includes('-') ? (sub.slug || '').split('-').slice(1).join('-') : (sub.slug || strictSlugify(sub.name));
                                                                     setEditSlugValue(coreSlug); 
+                                                                    setEditDescValue(sub.description || '');
                                                                 }} className="btn-action edit"><Pencil size={12} /></button>
                                                                 <button onClick={() => handleDeleteSub(sub.id)} className="btn-action delete"><Trash2 size={12} /></button>
                                                             </div>
@@ -677,7 +693,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                             <button className="btn-footer confirm" onClick={() => {
                                 if (editingId) {
                                     const isSub = room.categories.some((c: any) => c.subcategories.some((s: any) => s.id === editingId || s.slug === editingId));
-                                    if (isSub) handleUpdateSub(editingId, editValue, editSlugValue);
+                                    if (isSub) handleUpdateSub(editingId, editValue, editSlugValue, editDescValue);
                                     else handleUpdateCat(editingId, editValue);
                                     window.dispatchEvent(new CustomEvent('room-data-updated'));
                                 }
@@ -763,7 +779,12 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 .edit-input-wrapper.complex { flex-direction: column; align-items: stretch; gap: 0.8rem; padding: 1rem; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; width: 100%; }
                 .input-with-label { display: flex; flex-direction: column; gap: 0.3rem; }
                 .input-with-label label { font-size: 0.65rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; }
-                .input-with-label input { padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; }
+                .input-hash-wrapper input { flex: 1; border: none; outline: none; background: transparent; font-size: 0.9rem; font-weight: 700; color: #1e293b; padding: 0.2rem 0; }
+                
+                .modal-textarea-desc { width: 100%; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.6rem; font-size: 0.85rem; min-height: 60px; resize: vertical; outline: none; transition: border-color 0.2s; font-family: inherit; }
+                .modal-textarea-desc:focus { border-color: var(--accent); }
+                .char-count-modal { align-self: flex-end; font-size: 0.65rem; font-weight: 800; color: #94a3b8; margin-top: -0.2rem; }
+
                 .edit-actions { display: flex; justify-content: flex-end; gap: 0.5rem; }
                 
                 .sub-info-display.horizontal { flex: 1; display: flex; align-items: center; gap: 0.5rem; min-width: 0; }
