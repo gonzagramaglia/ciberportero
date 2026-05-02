@@ -117,9 +117,21 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
             }
 
             let actualId = id;
-            if (activeRoom?.categories) {
+            let currentRoomData = activeRoom;
+
+            // If room is missing categories, try to fetch it first
+            if (!currentRoomData?.categories && !isGuest && roomId) {
+                const { getRoomDetails } = await import('@/lib/salasActions');
+                const data = await getRoomDetails(roomId);
+                if (data) {
+                    setRoom(data);
+                    currentRoomData = data;
+                }
+            }
+
+            if (currentRoomData?.categories) {
                 let foundSub = null;
-                for (const c of activeRoom.categories) {
+                for (const c of currentRoomData.categories) {
                     const s = c.subcategories?.find((s: any) => s.id === id || s.slug === id);
                     if (s) {
                         foundSub = s;
@@ -130,13 +142,6 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
 
                 if (foundSub && currentSubId !== actualId) {
                     setCurrentSubId(actualId);
-                }
-
-                const exists = !!foundSub;
-                if (!exists && !isGuest && roomId) {
-                    const { getRoomDetails } = await import('@/lib/salasActions');
-                    const data = await getRoomDetails(id);
-                    if (data) setRoom(data);
                 }
             }
 

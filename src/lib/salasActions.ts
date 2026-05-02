@@ -371,10 +371,18 @@ export async function addRoomMessage(subcategoryId: string, content: string, ima
   if (!session?.user?.id) return { error: "No autenticado" };
 
   try {
-    const subcategory = await db.roomSubcategory.findUnique({
+    let subcategory = await db.roomSubcategory.findUnique({
       where: { id: subcategoryId },
       include: { category: { include: { room: true } } }
     });
+
+    if (!subcategory) {
+      // Try to find by slug if ID failed
+      subcategory = await db.roomSubcategory.findFirst({
+        where: { slug: subcategoryId },
+        include: { category: { include: { room: true } } }
+      });
+    }
 
     if (!subcategory) return { error: "Subcategoría no encontrada" };
 
