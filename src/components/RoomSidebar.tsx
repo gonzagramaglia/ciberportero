@@ -561,7 +561,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                         </div>
                         <div className="modal-body">
                             <div className="modal-actions-top">
-                                <p className="modal-tip">💡 Arrastrá para reordenar o mover entre categorías.</p>
+                                <p className="modal-tip">💡 Arrastrá y soltá para mover entre categorías</p>
                             </div>
 
                             <div className="manage-list">
@@ -597,7 +597,10 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                                         <div className="edit-input-wrapper complex">
                                                             <div className="input-with-label">
                                                                 <label>Editar Slug (# canal)</label>
-                                                                <input autoFocus value={editSlugValue} onChange={e => setEditSlugValue(strictSlugify(e.target.value))} onKeyDown={e => e.key === 'Enter' && handleUpdateSub(sub.id, sub.name, editSlugValue)} placeholder="ej: matrices" />
+                                                                <div className="input-hash-wrapper">
+                                                                    <span className="hash-prefix">#</span>
+                                                                    <input autoFocus value={editSlugValue} onChange={e => setEditSlugValue(strictSlugify(e.target.value))} onKeyDown={e => e.key === 'Enter' && handleUpdateSub(sub.id, sub.name, editSlugValue)} placeholder="ej: matrices" />
+                                                                </div>
                                                             </div>
                                                             <div className="edit-actions">
                                                                 <button onClick={() => handleUpdateSub(sub.id, sub.name, editSlugValue)} className="btn-save-mini"><Check size={14} /></button>
@@ -609,7 +612,6 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                                             <div className="drag-handle small"><GripVertical size={14} /></div>
                                                             <div className="sub-info-display horizontal">
                                                                 <span className="slug-display">#{(sub.slug || '').includes('-') ? (sub.slug || '').split('-').slice(1).join('-') : (sub.slug || strictSlugify(sub.name))}</span>
-                                                                <span className="name-display-grey">({sub.name})</span>
                                                             </div>
                                                             <div className="actions">
                                                                 <button onClick={() => handleReorderSub(cat.id, sub.id, 'up')} className="btn-action reorder" title={lang === 'es' ? 'Subir' : 'Move up'} disabled={cat.subcategories.indexOf(sub) === 0}><ChevronUp size={14} /></button>
@@ -806,6 +808,10 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 .btn-save-mini { background: #10b981; color: #fff; border: none; width: 32px; height: 32px; border-radius: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
                 .btn-cancel-mini { background: #f1f5f9; color: #64748b; border: none; width: 32px; height: 32px; border-radius: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 
+                .input-hash-wrapper { display: flex; align-items: center; background: #fff; border: 2px solid var(--accent); border-radius: 10px; padding: 0 0.8rem; flex: 1; }
+                .hash-prefix { color: var(--accent); font-weight: 900; font-size: 1rem; margin-right: 0.1rem; }
+                .input-hash-wrapper input { border: none !important; padding: 0.4rem 0 !important; }
+                
                 .empty-cat-dropzone { padding: 0.8rem; text-align: center; font-size: 0.8rem; font-weight: 700; color: #94a3b8; border: 2px dashed #e2e8f0; border-radius: 14px; margin: 0.4rem 1.2rem; transition: all 0.2s; }
                 
                 .fade-up { animation: fade-up 0.4s cubic-bezier(0.16, 1, 0.3, 1); }

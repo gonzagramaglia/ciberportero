@@ -950,9 +950,9 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     )}
 
                     {loadingMessages ? (
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '4rem 0', gap: '1rem', color: '#94a3b8' }}>
-                            <Loader2 className="spin" size={60} color="var(--accent)" strokeWidth={2.5} />
-                            <span style={{ fontWeight: '700', fontSize: '0.9rem' }}>{lang === 'es' ? 'Cargando mensajes...' : 'Loading messages...'}</span>
+                        <div className="empty-view loader-view fade-in">
+                            <div className="empty-icon-circle spin-slow"><Loader2 size={32} /></div>
+                            <h3>{lang === 'es' ? 'Cargando mensajes...' : 'Loading messages...'}</h3>
                         </div>
                     ) : messages.length === 0 ? (
                         <div className="empty-view fade-in">
@@ -1165,6 +1165,10 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .empty-icon-circle { width: 80px; height: 80px; background: rgba(0, 112, 243, 0.05); color: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; }
                 .empty-view h3 { margin: 0 0 0.5rem 0; font-size: 1.5rem; font-weight: 900; color: #1e293b; }
                 .empty-view p { margin: 0; color: #94a3b8; font-weight: 600; font-size: 1.1rem; max-width: 300px; line-height: 1.5; }
+                .loader-view { border: none; background: transparent; padding: 10rem 2rem; }
+                .spin-slow { animation: spin 2s linear infinite; }
+                @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+                
                 
                 .chat-top-row { display: flex; flex-direction: column; margin-top: 1rem; gap: 1rem; }
                 .chat-top-row.history-mode { flex-direction: row; align-items: center; justify-content: space-between; }

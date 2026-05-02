@@ -400,7 +400,7 @@ export async function addRoomMessage(subcategoryId: string, content: string, ima
 
     await db.roomMessage.create({
       data: {
-        content,
+        content: content.trim(),
         subcategoryId,
         userId: session.user.id,
         images,
