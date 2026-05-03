@@ -816,24 +816,13 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                             {currentCat?.name || roomsT.chat.chatTitle}
                                         </span>
                                     </div>
-                                    <span className="path-separator"><ChevronRight size={16} /></span>
+                                    <span className="path-separator"><ChevronRight size={18} /></span>
                                     <div className="breadcrumb-item">
                                         {editingSubId === currentSub.id ? (
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
                                                 <span className="path-segment sub" style={{ opacity: 0.6, display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
-                                                    {canManage ? (
-                                                        <button
-                                                            className="breadcrumb-edit-btn config-trigger"
-                                                            style={{ marginLeft: 0, marginRight: '0.1rem', padding: '2px', opacity: 1, pointerEvents: 'auto' }}
-                                                            onClick={() => window.dispatchEvent(new CustomEvent('open-management-modal', { detail: { subId: currentSub.id } }))}
-                                                            title={lang === 'es' ? 'Gestionar subcategoría' : 'Manage subcategory'}
-                                                        >
-                                                            <Settings size={14} />
-                                                        </button>
-                                                    ) : (
-                                                        <Hash size={14} />
-                                                    )}
-                                                    <span className="slug-label" style={{ marginRight: '0.2rem' }}>{(currentSub.slug || '').includes('-') ? (currentSub.slug || '').split('-').slice(1).join('-') : (currentSub.slug || strictSlugify(currentSub.name))}</span>
+                                                    <Hash size={14} />
+                                                    <span className="slug-label" style={{ marginRight: '0.8rem' }}>{(currentSub.slug || '').includes('-') ? (currentSub.slug || '').split('-').slice(1).join('-') : (currentSub.slug || strictSlugify(currentSub.name))}</span>
                                                 </span>
                                                 {canManage && (
                                                     <button
@@ -870,7 +859,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                                 ) : (
                                                     <Hash size={14} className="hash-icon-breadcrumb" />
                                                 )}
-                                                <span className="slug-label" style={{ marginRight: '0.5rem' }}>{(currentSub.slug || '').includes('-') ? (currentSub.slug || '').split('-').slice(1).join('-') : (currentSub.slug || strictSlugify(currentSub.name))}</span>
+                                                <span className="slug-label" style={{ marginRight: '0.8rem' }}>{(currentSub.slug || '').includes('-') ? (currentSub.slug || '').split('-').slice(1).join('-') : (currentSub.slug || strictSlugify(currentSub.name))}</span>
                                                 <span className="name-label-breadcrumb">{currentSub.name}</span>
                                                 {canManage && (
                                                     <button

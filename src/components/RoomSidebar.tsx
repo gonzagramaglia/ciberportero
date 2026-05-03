@@ -624,7 +624,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                                                 <label>Slug (# canal)</label>
                                                                 <div className="input-hash-wrapper">
                                                                     <span className="hash-prefix">#</span>
-                                                                    <input autoFocus value={editSlugValue} onChange={e => setEditSlugValue(strictSlugify(e.target.value))} placeholder="ej: matrices" />
+                                                                    <input autoFocus value={editSlugValue} onChange={e => setEditSlugValue(strictSlugify(e.target.value))} onFocus={e => e.target.select()} placeholder="ej: matrices" />
                                                                 </div>
                                                             </div>
                                                             <div className="input-with-label">
@@ -632,6 +632,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                                                 <textarea 
                                                                     value={editDescValue} 
                                                                     onChange={e => setEditDescValue(e.target.value.slice(0, 600))} 
+                                                                    onFocus={e => e.target.select()}
                                                                     placeholder={lang === 'es' ? 'Máx 600 caracteres...' : 'Max 600 chars...'}
                                                                     className="modal-textarea-desc"
                                                                 />
