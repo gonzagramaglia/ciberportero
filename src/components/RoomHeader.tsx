@@ -11,14 +11,14 @@ import { updateRoom, deleteRoom, leaveRoom } from '@/lib/salasActions';
 
 interface RoomHeaderProps {
     roomId: string;
-    initialRoom: { 
-        name: string, 
-        description?: string, 
-        secretCode: string, 
-        creatorId: string, 
+    initialRoom: {
+        name: string,
+        description?: string,
+        secretCode: string,
+        creatorId: string,
         creatorRole?: string,
         creatorEmail?: string,
-        members: GuestMember[] 
+        members: GuestMember[]
     };
     session: any;
 }
@@ -28,12 +28,12 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
     const router = useRouter();
     const [room, setRoom] = useState(initialRoom);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    
+
     const [editName, setEditName] = useState(room.name);
     const [editSlug, setEditSlug] = useState(roomId);
     const [editCode, setEditCode] = useState(room.secretCode);
     const [editDesc, setEditDesc] = useState(room.description || '');
-    
+
     const isGuest = roomId === 'test-room' || !session || initialRoom.creatorId === 'guest';
     const isReallyCreator = (initialRoom.creatorId === session?.user?.id && !!session?.user?.id) || (isGuest && initialRoom.creatorId === 'guest' && roomId !== 'test-room');
     const myMember = room.members?.find((m: any) => m.userId === session?.user?.id || (isGuest && (m.id === 'guest-me' || m.user.name === 'Invitado')));
@@ -157,8 +157,8 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                         <span className="admin-badge-header">SALA OFICIAL (ADMIN)</span>
                     )}
                 </h1>
-                <button 
-                    onClick={() => setIsModalOpen(true)} 
+                <button
+                    onClick={() => setIsModalOpen(true)}
                     className="config-btn"
                     title={canManageRoom ? "Configuración de la sala" : "Información de la sala"}
                 >
@@ -168,13 +168,8 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
 
             <div className="meta-info-container">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'nowrap' }}>
-                    <div className="room-code-badge">
-                        <Key size={14} />
-                        <span>{room.secretCode}</span>
-                    </div>
-
-                    <a 
-                        href="#history" 
+                    <a
+                        href="#history"
                         className="mobile-history-btn"
                         onClick={() => window.dispatchEvent(new CustomEvent('subcategory-change', { detail: 'history' }))}
                     >
@@ -197,13 +192,13 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                             <h3>Configuración de la Sala</h3>
                             <button className="close-btn" onClick={() => setIsModalOpen(false)}><X size={20} /></button>
                         </div>
-                        
+
                         <div className="modal-body">
                             <div className="modal-section">
                                 <h4 className="section-title-modal">General</h4>
                                 <div className="input-group">
                                     <label>{roomsT.edit.nameLabel}</label>
-                                    <input 
+                                    <input
                                         value={editName}
                                         onChange={e => setEditName(e.target.value)}
                                         placeholder={roomsT.sidebar.placeholderName}
@@ -218,7 +213,7 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                                             {getWordCount(editDesc)} / 150 palabras
                                         </span>
                                     </div>
-                                    <textarea 
+                                    <textarea
                                         value={editDesc}
                                         onChange={e => setEditDesc(e.target.value)}
                                         placeholder="Describe el propósito de esta sala de estudio..."
@@ -232,7 +227,7 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                                         <label>Código Secreto</label>
                                         <div className="input-with-icon">
                                             <Key size={16} />
-                                            <input 
+                                            <input
                                                 value={editCode}
                                                 onChange={e => setEditCode(e.target.value)}
                                                 placeholder="Ej: MAGIOS2026"
@@ -244,7 +239,7 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                                         <label>URL / Slug</label>
                                         <div className="input-with-icon">
                                             <LinkIcon size={16} />
-                                            <input 
+                                            <input
                                                 value={editSlug}
                                                 onChange={e => setEditSlug(e.target.value)}
                                                 placeholder="slug-de-sala"
@@ -266,9 +261,9 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                                             const isMe = member.id === 'guest-me';
                                             return (
                                                 <div key={member.id} className="member-manage-row">
-                                                    <img 
-                                                        src={member.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent((member.user.name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}`} 
-                                                        className="member-mini-avatar" 
+                                                    <img
+                                                        src={member.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent((member.user.name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}`}
+                                                        className="member-mini-avatar"
                                                     />
                                                     <div className="member-meta">
                                                         <span className="member-name">
@@ -280,14 +275,14 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                                                     </div>
                                                     {!isMe && (
                                                         <div className="member-actions">
-                                                            <button 
+                                                            <button
                                                                 onClick={() => handleToggleAdmin(member.id)}
                                                                 className={`member-action-btn ${member.role === 'admin' ? 'active' : ''}`}
                                                                 title={member.role === 'admin' ? 'Quitar Admin' : 'Hacer Admin'}
                                                             >
                                                                 <Shield size={16} />
                                                             </button>
-                                                            <button 
+                                                            <button
                                                                 onClick={() => handleKick(member.id)}
                                                                 className="member-action-btn kick"
                                                                 title="Echar miembro"
