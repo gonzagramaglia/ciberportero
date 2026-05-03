@@ -143,7 +143,9 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 const sub = room.categories.flatMap((c: any) => c.subcategories).find((s: any) => s.id === subId);
                 if (sub) {
                     setEditingId(sub.id);
-                    setEditSlugValue(sub.slug || (sub.name ? strictSlugify(sub.name) : ''));
+                    // Extract core slug (after first hyphen)
+                    const coreSlug = (sub.slug || '').includes('-') ? (sub.slug || '').split('-').slice(1).join('-') : (sub.slug || strictSlugify(sub.name));
+                    setEditSlugValue(coreSlug.replace(/^#/, ''));
                     setEditDescValue(sub.description || '');
                 }
             }
@@ -165,10 +167,12 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
         
         // Find current sub to check if we need to update URL
         const oldSub = room.categories.flatMap((c: any) => c.subcategories).find((s: any) => s.id === subId);
-        const finalSlug = slug || strictSlugify(name);
+        const prefix = oldSub?.categoryId?.slice(-4) || '';
+        const coreSlug = slug || strictSlugify(name);
+        const finalSlug = prefix ? `${prefix}-${coreSlug}` : coreSlug;
         
         if (isGuest) {
-            guestStore.updateSubcategory(room.id, subId, name, undefined, description);
+            guestStore.updateSubcategory(room.id, subId, name, finalSlug, description);
             setRoom({ ...guestStore.getRoom(room.id) } as any);
             setEditingId(null);
             window.dispatchEvent(new CustomEvent('room-data-updated'));
@@ -649,8 +653,8 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                                                     setEditingId(sub.id); 
                                                                     setEditValue(sub.name); 
                                                                     const coreSlug = (sub.slug || '').includes('-') ? (sub.slug || '').split('-').slice(1).join('-') : (sub.slug || strictSlugify(sub.name));
-                                                                    setEditSlugValue(coreSlug); 
-                                                                    setEditDescValue(sub.description || '');
+                                                                    setEditSlugValue(coreSlug.replace(/^#/, '')); 
+                                                                    setEditDescValue(sub.description || ''); 
                                                                 }} className="btn-action edit"><Pencil size={12} /></button>
                                                                 <button onClick={() => handleDeleteSub(sub.id)} className="btn-action delete"><Trash2 size={12} /></button>
                                                             </div>

@@ -819,11 +819,21 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                     <span className="path-separator"><ChevronRight size={14} /></span>
                                     <div className="breadcrumb-item">
                                         {editingSubId === currentSub.id ? (
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
                                                 <span className="path-segment sub" style={{ opacity: 0.6, pointerEvents: 'none', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
                                                     <Hash size={14} />
-                                                    <span className="slug-label">{(currentSub.slug || '').includes('-') ? (currentSub.slug || '').split('-').slice(1).join('-') : (currentSub.slug || strictSlugify(currentSub.name))}</span>
+                                                    <span className="slug-label" style={{ marginRight: '0.2rem' }}>{(currentSub.slug || '').includes('-') ? (currentSub.slug || '').split('-').slice(1).join('-') : (currentSub.slug || strictSlugify(currentSub.name))}</span>
                                                 </span>
+                                                {canManage && (
+                                                    <button
+                                                        className="breadcrumb-edit-btn"
+                                                        style={{ marginLeft: 0, marginRight: '0.4rem' }}
+                                                        onClick={() => window.dispatchEvent(new CustomEvent('open-management-modal', { detail: { subId: currentSub.id } }))}
+                                                        title={lang === 'es' ? 'Gestionar subcategoría' : 'Manage subcategory'}
+                                                    >
+                                                        <Settings size={12} />
+                                                    </button>
+                                                )}
                                                 <input
                                                     autoFocus
                                                     value={editSubValue}
@@ -833,15 +843,16 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                                     className="breadcrumb-edit-input-clean"
                                                     placeholder={lang === 'es' ? 'Nombre...' : 'Name...'}
                                                 />
-                                                <Check size={14} color="#10b981" style={{ cursor: 'pointer' }} onClick={() => handleUpdateSub(currentSub.id, editSubValue)} />
+                                                <Check size={14} color="#10b981" style={{ cursor: 'pointer', marginLeft: '0.4rem' }} onClick={() => handleUpdateSub(currentSub.id, editSubValue)} />
                                             </div>
                                         ) : (
                                             <span className="path-segment sub">
                                                 <Hash size={14} className="hash-icon-breadcrumb" />
-                                                <span className="slug-label">{(currentSub.slug || '').includes('-') ? (currentSub.slug || '').split('-').slice(1).join('-') : (currentSub.slug || strictSlugify(currentSub.name))}</span>
+                                                <span className="slug-label" style={{ marginRight: '0.2rem' }}>{(currentSub.slug || '').includes('-') ? (currentSub.slug || '').split('-').slice(1).join('-') : (currentSub.slug || strictSlugify(currentSub.name))}</span>
                                                 {canManage && (
                                                     <button
                                                         className="breadcrumb-edit-btn"
+                                                        style={{ marginLeft: 0, marginRight: '0.4rem' }}
                                                         onClick={() => window.dispatchEvent(new CustomEvent('open-management-modal', { detail: { subId: currentSub.id } }))}
                                                         title={lang === 'es' ? 'Gestionar subcategoría' : 'Manage subcategory'}
                                                     >
@@ -1308,7 +1319,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .empty-icon-circle { width: 80px; height: 80px; background: rgba(0, 112, 243, 0.05); color: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; }
                 .empty-view h3 { margin: 0 0 0.5rem 0; font-size: 1.5rem; font-weight: 900; color: #1e293b; }
                 .empty-view p { margin: 0; color: #94a3b8; font-weight: 600; font-size: 1.1rem; max-width: 300px; line-height: 1.5; }
-                .loader-view { border: none; background: transparent; padding: 9rem 2rem 10rem 2rem; display: flex; align-items: center; justify-content: center; }
+                .loader-view { border: none; background: transparent; padding: 10rem 2rem 10rem 2rem; display: flex; align-items: center; justify-content: center; }
                 .spin-slow { animation: spin 2s linear infinite; }
                 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
                 
@@ -1418,7 +1429,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     .chat-top-row.history-mode { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
                     .history-search-container { width: 100%; min-width: 0; }
                     .main-input-sticky { position: static; margin-bottom: 1rem; }
-                    .loader-view { min-height: 400px; padding-top: 9rem; align-items: center; }
+                    .loader-view { min-height: 400px; padding-top: 10rem; align-items: center; }
                     .log-row-content { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
                     .log-tags { align-self: flex-start; }
                     .hide-mobile { display: none; }
