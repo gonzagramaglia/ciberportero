@@ -306,7 +306,7 @@ export async function reorderCategories(roomId: string, categoryIds: string[]) {
 export async function updateSubcategory(subId: string, name: string, slug?: string, description?: string) {
   const session = await auth();
   if (!session?.user?.id) return { error: "No autenticado" };
-  if (description && description.length > 150) return { error: "La descripción no puede superar los 150 caracteres" };
+  if (description && description.length > 600) return { error: "La descripción no puede superar los 600 caracteres" };
   try {
     const sub = await db.roomSubcategory.findUnique({ 
       where: { id: subId }, 
@@ -673,6 +673,7 @@ export async function getAllRooms() {
 export async function updateRoom(roomId: string, name: string, newSlug: string, secretCode: string, description?: string) {
   const session = await auth();
   if (!session?.user?.id) return { error: "No autenticado" };
+  if (description && description.length > 600) return { error: "La descripción no puede superar los 600 caracteres" };
 
   try {
     const room = await db.room.findUnique({ where: { id: roomId } });

@@ -565,6 +565,47 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                 <p className="modal-tip">💡 Arrastrá y soltá para mover entre categorías</p>
                             </div>
 
+                            <div className="room-settings-box">
+                                <h4 className="settings-title">{lang === 'es' ? 'Información General (Chat General)' : 'General Info (General Chat)'}</h4>
+                                <div className="manage-row room-edit-row">
+                                    <div className="edit-input-wrapper complex">
+                                        <div className="input-with-label">
+                                            <label>{lang === 'es' ? 'Nombre de la Sala' : 'Room Name'}</label>
+                                            <input 
+                                                value={room.name} 
+                                                onChange={e => setRoom({...room, name: e.target.value})} 
+                                            />
+                                        </div>
+                                        <div className="input-with-label">
+                                            <label>{lang === 'es' ? 'Descripción General' : 'General Description'}</label>
+                                            <textarea 
+                                                value={room.description || ''} 
+                                                onChange={e => setRoom({...room, description: e.target.value.slice(0, 600)})} 
+                                                placeholder={lang === 'es' ? 'Máx 600 caracteres...' : 'Max 600 chars...'}
+                                                className="modal-textarea-desc"
+                                            />
+                                            <span className="char-count-modal">{(room.description || '').length}/600</span>
+                                        </div>
+                                        <div className="edit-actions">
+                                            <button onClick={async () => {
+                                                if (isGuest) {
+                                                    guestStore.updateRoom(room.id, room.name, room.id, room.secretCode, room.description);
+                                                    window.dispatchEvent(new CustomEvent('room-data-updated'));
+                                                    toast.success(lang === 'es' ? 'Sala actualizada' : 'Room updated');
+                                                } else {
+                                                    const { updateRoom } = await import('@/lib/salasActions');
+                                                    const res = await updateRoom(room.id, room.name, room.id, room.secretCode, room.description);
+                                                    if (res.success) {
+                                                        window.dispatchEvent(new CustomEvent('room-data-updated'));
+                                                        toast.success(lang === 'es' ? 'Sala actualizada' : 'Room updated');
+                                                    } else toast.error(res.error || 'Error');
+                                                }
+                                            }} className="btn-save-mini"><CheckCircle2 size={16} /> {lang === 'es' ? 'Guardar Cambios de la Sala' : 'Save Room Changes'}</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div className="manage-list">
                                 {categories.length === 0 && !isAddingInModal && <p className="empty-modal-text">No hay categorías para gestionar.</p>}
                                 
@@ -597,10 +638,6 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                                     {editingId === sub.id ? (
                                                         <div className="edit-input-wrapper complex">
                                                             <div className="input-with-label">
-                                                                <label>{lang === 'es' ? 'Nombre' : 'Name'}</label>
-                                                                <input value={editValue} onChange={e => setEditValue(e.target.value)} placeholder="Nombre..." />
-                                                            </div>
-                                                            <div className="input-with-label">
                                                                 <label>Slug (# canal)</label>
                                                                 <div className="input-hash-wrapper">
                                                                     <span className="hash-prefix">#</span>
@@ -611,11 +648,11 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                                                 <label>{lang === 'es' ? 'Descripción (opcional)' : 'Description (optional)'}</label>
                                                                 <textarea 
                                                                     value={editDescValue} 
-                                                                    onChange={e => setEditDescValue(e.target.value.slice(0, 150))} 
-                                                                    placeholder={lang === 'es' ? 'Máx 150 caracteres...' : 'Max 150 chars...'}
+                                                                    onChange={e => setEditDescValue(e.target.value.slice(0, 600))} 
+                                                                    placeholder={lang === 'es' ? 'Máx 600 caracteres...' : 'Max 600 chars...'}
                                                                     className="modal-textarea-desc"
                                                                 />
-                                                                <span className="char-count-modal">{editDescValue.length}/150</span>
+                                                                <span className="char-count-modal">{editDescValue.length}/600</span>
                                                             </div>
                                                             <div className="edit-actions">
                                                                 <button onClick={() => handleUpdateSub(sub.id, editValue, editSlugValue, editDescValue)} className="btn-save-mini"><Check size={14} /></button>
@@ -826,6 +863,10 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
 
                 .edit-input-wrapper { display: flex; align-items: center; gap: 0.4rem; flex: 1; }
                 .edit-input-wrapper input { flex: 1; padding: 0.4rem 0.8rem; border-radius: 10px; border: 2px solid var(--accent); background: #fff; font-size: 0.95rem; font-weight: 700; outline: none; min-width: 0; }
+                .room-settings-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem; }
+                .settings-title { margin: 0 0 1rem 0; font-size: 0.9rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
+                .room-edit-row { background: transparent !important; border: none !important; padding: 0 !important; margin: 0 !important; }
+                .btn-save-mini.large { padding: 0.6rem 1.2rem; font-size: 0.9rem; width: auto; height: auto; }
                 .btn-save-mini { background: #10b981; color: #fff; border: none; width: 32px; height: 32px; border-radius: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
                 .btn-cancel-mini { background: #f1f5f9; color: #64748b; border: none; width: 32px; height: 32px; border-radius: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 

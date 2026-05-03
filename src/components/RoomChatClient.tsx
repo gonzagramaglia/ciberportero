@@ -820,14 +820,17 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                     <div className="breadcrumb-item">
                                         {editingSubId === currentSub.id ? (
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                                <input
-                                                    autoFocus
-                                                    value={editSubValue}
-                                                    onChange={e => setEditSubValue(e.target.value)}
-                                                    onKeyDown={e => e.key === 'Enter' && handleUpdateSub(currentSub.id, editSubValue)}
-                                                    onBlur={() => setEditingSubId(null)}
-                                                    className="breadcrumb-edit-input"
-                                                />
+                                                <div className="input-hash-wrapper-breadcrumb">
+                                                    <Hash size={14} className="hash-prefix-breadcrumb" />
+                                                    <input
+                                                        autoFocus
+                                                        value={editSubValue}
+                                                        onChange={e => setEditSubValue(e.target.value)}
+                                                        onKeyDown={e => e.key === 'Enter' && handleUpdateSub(currentSub.id, editSubValue)}
+                                                        onBlur={() => setEditingSubId(null)}
+                                                        className="breadcrumb-edit-input"
+                                                    />
+                                                </div>
                                                 <Check size={14} color="#10b981" style={{ cursor: 'pointer' }} onClick={() => handleUpdateSub(currentSub.id, editSubValue)} />
                                             </div>
                                         ) : (
@@ -937,17 +940,20 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                     </button>
                                 </div>
                             </div>
-                        ) : (
-                            <div className={`desc-display-container ${canManage ? 'can-edit' : ''}`} onClick={() => {
-                                if (canManage) {
-                                    setEditingDesc(true);
-                                    setEditDescValue(isGeneral ? (room?.description || '') : (currentSub?.description || ''));
-                                }
-                            }}>
-                                <p className={`desc-text ${!(isGeneral ? room?.description : currentSub?.description) ? 'empty' : ''}`}>
-                                    {(isGeneral ? room?.description : currentSub?.description) || (canManage ? (lang === 'es' ? 'Hacé clic para agregar una descripción...' : 'Click to add a description...') : '')}
+                        ) : (isGeneral ? room?.description : currentSub?.description) ? (
+                            <div className="desc-display-container">
+                                <p className="desc-text">
+                                    {renderFormattedText((isGeneral ? room?.description : currentSub?.description) || '')}
                                 </p>
-                                {canManage && <Pencil size={12} className="desc-edit-icon" />}
+                            </div>
+                        ) : (
+                            <div className="desc-display-container">
+                                <p className="desc-text empty">
+                                    {canManage 
+                                        ? (lang === 'es' ? 'Agregá una descripción desde el editor de categorías/subcategorías' : 'Add a description from the category/subcategory editor')
+                                        : (lang === 'es' ? 'Aquí pronto va a haber una descripción' : 'A description will be available here soon')
+                                    }
+                                </p>
                             </div>
                         )}
                     </div>
@@ -1129,8 +1135,10 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .breadcrumb-item { display: flex; align-items: center; }
                 .breadcrumb-edit-btn { background: none; border: none; padding: 4px; color: #94a3b8; cursor: pointer; border-radius: 4px; transition: all 0.2s; margin-left: 4px; display: inline-flex; align-items: center; vertical-align: middle; }
                 .breadcrumb-edit-btn:hover { color: var(--accent); background: rgba(0, 112, 243, 0.05); }
-                .breadcrumb-edit-input { background: white; border: 1px solid #e2e8f0; border-radius: 6px; padding: 2px 8px; font-size: 0.9rem; color: #1e293b; font-weight: 600; width: 150px; outline: none; }
-                .breadcrumb-edit-input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(0, 112, 243, 0.1); }
+                .input-hash-wrapper-breadcrumb { display: flex; align-items: center; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0 0.5rem; transition: all 0.2s; }
+                .input-hash-wrapper-breadcrumb:focus-within { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(0, 112, 243, 0.05); }
+                .hash-prefix-breadcrumb { color: #94a3b8; margin-right: 0.2rem; }
+                .breadcrumb-edit-input { border: none !important; padding: 0.3rem 0 !important; font-size: 0.85rem !important; font-weight: 700 !important; width: 120px !important; outline: none !important; background: transparent !important; }
                 .path-segment.active { color: var(--accent); }
                 .path-segment.sub { color: #1e293b; }
                 .path-separator { opacity: 0.3; margin: 0 0.2rem; color: #94a3b8; }
@@ -1286,7 +1294,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .empty-icon-circle { width: 80px; height: 80px; background: rgba(0, 112, 243, 0.05); color: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; }
                 .empty-view h3 { margin: 0 0 0.5rem 0; font-size: 1.5rem; font-weight: 900; color: #1e293b; }
                 .empty-view p { margin: 0; color: #94a3b8; font-weight: 600; font-size: 1.1rem; max-width: 300px; line-height: 1.5; }
-                .loader-view { border: none; background: transparent; padding: 4rem 2rem 10rem 2rem; }
+                .loader-view { border: none; background: transparent; padding: 15rem 2rem 10rem 2rem; display: flex; align-items: flex-start; justify-content: center; }
                 .spin-slow { animation: spin 2s linear infinite; }
                 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
                 
@@ -1396,6 +1404,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     .chat-top-row.history-mode { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
                     .history-search-container { width: 100%; min-width: 0; }
                     .main-input-sticky { position: static; margin-bottom: 1rem; }
+                    .loader-view { min-height: 400px; padding-top: 15rem; align-items: flex-start; }
                     .log-row-content { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
                     .log-tags { align-self: flex-start; }
                     .hide-mobile { display: none; }
