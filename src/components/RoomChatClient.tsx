@@ -824,20 +824,11 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                                     <Hash size={14} />
                                                     <span className="slug-label" style={{ marginRight: '0.8rem' }}>{(currentSub.slug || '').includes('-') ? (currentSub.slug || '').split('-').slice(1).join('-') : (currentSub.slug || strictSlugify(currentSub.name))}</span>
                                                 </span>
-                                                {canManage && (
-                                                    <button
-                                                        className="breadcrumb-edit-btn"
-                                                        style={{ marginLeft: 0, marginRight: '0.4rem' }}
-                                                        onClick={() => window.dispatchEvent(new CustomEvent('open-management-modal', { detail: { subId: currentSub.id } }))}
-                                                        title={lang === 'es' ? 'Gestionar subcategoría' : 'Manage subcategory'}
-                                                    >
-                                                        <Settings size={12} />
-                                                    </button>
-                                                )}
                                                 <input
                                                     autoFocus
                                                     value={editSubValue}
                                                     onChange={e => setEditSubValue(e.target.value)}
+                                                    onFocus={e => e.target.select()}
                                                     onKeyDown={e => e.key === 'Enter' && handleUpdateSub(currentSub.id, editSubValue)}
                                                     onBlur={() => setEditingSubId(null)}
                                                     className="breadcrumb-edit-input-clean"
