@@ -816,12 +816,23 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                             {currentCat?.name || roomsT.chat.chatTitle}
                                         </span>
                                     </div>
-                                    <span className="path-separator"><ChevronRight size={14} /></span>
+                                    <span className="path-separator"><ChevronRight size={16} /></span>
                                     <div className="breadcrumb-item">
                                         {editingSubId === currentSub.id ? (
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
-                                                <span className="path-segment sub" style={{ opacity: 0.6, pointerEvents: 'none', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
-                                                    <Hash size={14} />
+                                                <span className="path-segment sub" style={{ opacity: 0.6, display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                                                    {canManage ? (
+                                                        <button
+                                                            className="breadcrumb-edit-btn config-trigger"
+                                                            style={{ marginLeft: 0, marginRight: '0.1rem', padding: '2px', opacity: 1, pointerEvents: 'auto' }}
+                                                            onClick={() => window.dispatchEvent(new CustomEvent('open-management-modal', { detail: { subId: currentSub.id } }))}
+                                                            title={lang === 'es' ? 'Gestionar subcategoría' : 'Manage subcategory'}
+                                                        >
+                                                            <Settings size={14} />
+                                                        </button>
+                                                    ) : (
+                                                        <Hash size={14} />
+                                                    )}
                                                     <span className="slug-label" style={{ marginRight: '0.2rem' }}>{(currentSub.slug || '').includes('-') ? (currentSub.slug || '').split('-').slice(1).join('-') : (currentSub.slug || strictSlugify(currentSub.name))}</span>
                                                 </span>
                                                 {canManage && (
@@ -846,19 +857,20 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                                 <Check size={14} color="#10b981" style={{ cursor: 'pointer', marginLeft: '0.4rem' }} onClick={() => handleUpdateSub(currentSub.id, editSubValue)} />
                                             </div>
                                         ) : (
-                                            <span className="path-segment sub">
-                                                <Hash size={14} className="hash-icon-breadcrumb" />
-                                                <span className="slug-label" style={{ marginRight: '0.2rem' }}>{(currentSub.slug || '').includes('-') ? (currentSub.slug || '').split('-').slice(1).join('-') : (currentSub.slug || strictSlugify(currentSub.name))}</span>
-                                                {canManage && (
+                                            <span className="path-segment sub" style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                                                {canManage ? (
                                                     <button
-                                                        className="breadcrumb-edit-btn"
-                                                        style={{ marginLeft: 0, marginRight: '0.4rem' }}
+                                                        className="breadcrumb-edit-btn config-trigger"
+                                                        style={{ marginLeft: 0, marginRight: '0.1rem', padding: '2px' }}
                                                         onClick={() => window.dispatchEvent(new CustomEvent('open-management-modal', { detail: { subId: currentSub.id } }))}
                                                         title={lang === 'es' ? 'Gestionar subcategoría' : 'Manage subcategory'}
                                                     >
-                                                        <Settings size={12} />
+                                                        <Settings size={14} />
                                                     </button>
+                                                ) : (
+                                                    <Hash size={14} className="hash-icon-breadcrumb" />
                                                 )}
+                                                <span className="slug-label" style={{ marginRight: '0.5rem' }}>{(currentSub.slug || '').includes('-') ? (currentSub.slug || '').split('-').slice(1).join('-') : (currentSub.slug || strictSlugify(currentSub.name))}</span>
                                                 <span className="name-label-breadcrumb">{currentSub.name}</span>
                                                 {canManage && (
                                                     <button
@@ -1166,7 +1178,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .breadcrumb-edit-input { border: none; outline: none; background: transparent; font-size: 0.9rem; font-weight: 700; color: #1e293b; padding: 0.4rem 0.2rem; width: 140px; }
                 .path-segment.active { color: var(--accent); }
                 .path-segment.sub { color: #1e293b; }
-                .path-separator { opacity: 0.3; margin: 0 0.2rem; color: #94a3b8; }
+                .path-separator { opacity: 0.3; margin: 0 0.4rem; color: #94a3b8; display: flex; align-items: center; justify-content: center; height: 100%; }
                 
                 .subcategory-description-row { margin-top: 0.5rem; padding-left: 0.5rem; border-left: 2px solid #f1f5f9; transition: all 0.2s; width: 100%; }
                 .desc-display-container { display: flex; align-items: flex-start; gap: 0.6rem; padding: 0.6rem 1rem; border-radius: 12px; transition: all 0.2s; width: 100%; background: #fcfdfe; border: 1px solid #f1f5f9; }

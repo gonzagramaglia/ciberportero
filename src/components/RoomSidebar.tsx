@@ -168,7 +168,9 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
         // Find current sub to check if we need to update URL
         const oldSub = room.categories.flatMap((c: any) => c.subcategories).find((s: any) => s.id === subId);
         const prefix = oldSub?.categoryId?.slice(-4) || '';
-        const coreSlug = slug || strictSlugify(name);
+        // Logic: if slug is provided, use it. If not, try to keep the old one (stripping prefix). If no old one, slugify name.
+        const currentCoreSlug = oldSub?.slug ? oldSub.slug.split('-').slice(1).join('-') : strictSlugify(name);
+        const coreSlug = slug !== undefined ? slug : currentCoreSlug;
         const finalSlug = prefix ? `${prefix}-${coreSlug}` : coreSlug;
         
         if (isGuest) {
@@ -622,7 +624,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                                                 <label>Slug (# canal)</label>
                                                                 <div className="input-hash-wrapper">
                                                                     <span className="hash-prefix">#</span>
-                                                                    <input value={editSlugValue} onChange={e => setEditSlugValue(strictSlugify(e.target.value))} placeholder="ej: matrices" />
+                                                                    <input autoFocus value={editSlugValue} onChange={e => setEditSlugValue(strictSlugify(e.target.value))} placeholder="ej: matrices" />
                                                                 </div>
                                                             </div>
                                                             <div className="input-with-label">
