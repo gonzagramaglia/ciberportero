@@ -521,7 +521,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                     <h3 className="section-title">{roomsT.sidebar.categories}</h3>
                     {canManage && (
                         <button onClick={() => setIsManageModalOpen(true)} className="action-btn-sidebar manage" title={roomsT.sidebar.manageStructure}>
-                            <Settings2 size={18} />
+                            <Wrench size={18} />
                         </button>
                     )}
                 </div>
@@ -558,7 +558,11 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                         window.dispatchEvent(new CustomEvent('subcategory-change', { detail: sub.id }));
                                         setCurrentSubId(sub.id);
                                         scrollToChat();
-                                    }}>{(sub.slug || '').includes('-') ? '#' + (sub.slug || '').split('-').slice(1).join('-') : '#' + (sub.slug || strictSlugify(sub.name))}</a>
+                                    }}>{(() => {
+                                        const parts = (sub.slug || '').split('-');
+                                        const display = (parts.length > 1 && parts[0].length === 4) ? parts.slice(1).join('-') : (sub.slug || strictSlugify(sub.name));
+                                        return '#' + display;
+                                    })()}</a>
                                 ))}
                                 {isAddingSub === cat.id && (
                                     <form onSubmit={(e) => handleAddSub(e, cat.id)} className="fade-in sub-add-form">
@@ -622,7 +626,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                         <div className="manage-row category" draggable onDragStart={(e) => onDragStart(e, 'cat', cat.id)} onDragEnd={onDragEnd}>
                                             {editingId === cat.id ? (
                                                 <div className="edit-input-wrapper">
-                                                    <input autoFocus value={editValue} onChange={e => setEditValue(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleUpdateCat(cat.id, editValue)} />
+                                                    <input autoFocus value={editValue} onChange={e => setEditValue(e.target.value)} onFocus={e => e.target.select()} onKeyDown={e => e.key === 'Enter' && handleUpdateCat(cat.id, editValue)} />
                                                     <button onClick={() => handleUpdateCat(cat.id, editValue)} className="btn-save-mini"><Check size={16} /></button>
                                                     <button onClick={() => setEditingId(null)} className="btn-cancel-mini"><X size={16} /></button>
                                                 </div>
@@ -649,7 +653,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                                                 <label>Slug (# canal)</label>
                                                                 <div className="input-hash-wrapper">
                                                                     <span className="hash-prefix">#</span>
-                                                                    <input autoFocus value={editSlugValue} onChange={e => setEditSlugValue(strictSlugify(e.target.value))} onFocus={e => e.target.select()} placeholder="ej: matrices" />
+                                                                    <input autoFocus value={editSlugValue} onChange={e => setEditSlugValue(strictSlugify(e.target.value))} onFocus={e => e.target.select()} onKeyDown={e => e.key === 'Enter' && handleUpdateSub(sub.id, editValue, editSlugValue, editDescValue)} placeholder="ej: matrices" />
                                                                 </div>
                                                             </div>
                                                             <div className="input-with-label">
@@ -658,6 +662,12 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                                                     value={editDescValue} 
                                                                     onChange={e => setEditDescValue(e.target.value.slice(0, 600))} 
                                                                     onFocus={e => e.target.select()}
+                                                                    onKeyDown={e => {
+                                                                        if (e.key === 'Enter' && !e.shiftKey) {
+                                                                            e.preventDefault();
+                                                                            handleUpdateSub(sub.id, editValue, editSlugValue, editDescValue);
+                                                                        }
+                                                                    }}
                                                                     placeholder={lang === 'es' ? 'Máx 600 caracteres...' : 'Max 600 chars...'}
                                                                     className="modal-textarea-desc"
                                                                 />
@@ -672,7 +682,10 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                                         <>
                                                             <div className="drag-handle small"><GripVertical size={14} /></div>
                                                             <div className="sub-info-display horizontal">
-                                                                <span className="slug-display">#{(sub.slug || '').includes('-') ? (sub.slug || '').split('-').slice(1).join('-') : (sub.slug || strictSlugify(sub.name))}</span>
+                                                                <span className="slug-display">#{(() => {
+                                                                    const parts = (sub.slug || '').split('-');
+                                                                    return (parts.length > 1 && parts[0].length === 4) ? parts.slice(1).join('-') : (sub.slug || strictSlugify(sub.name));
+                                                                })()}</span>
                                                             </div>
                                                             <div className="actions">
                                                                 <button onClick={() => handleReorderSub(cat.id, sub.id, 'up')} className="btn-action reorder" title={lang === 'es' ? 'Subir' : 'Move up'} disabled={cat.subcategories.indexOf(sub) === 0}><ChevronUp size={14} /></button>
@@ -764,16 +777,16 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 .section-title { margin: 0; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.75rem; font-weight: 800; color: #94a3b8; }
                 .action-btn-sidebar { border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; background: transparent; }
                 .action-btn-sidebar.manage { 
-                    color: #10b981; 
-                    background: rgba(16, 185, 129, 0.08); 
+                    color: #94a3b8; 
+                    background: transparent; 
                     width: 32px; 
                     height: 32px; 
                     border-radius: 10px; 
                     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                 }
                 .action-btn-sidebar.manage:hover { 
-                    color: #059669; 
-                    background: rgba(16, 185, 129, 0.15); 
+                    color: var(--accent); 
+                    background: rgba(0, 112, 243, 0.08); 
                 }
                 .action-btn-sidebar.manage svg { transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
                 .action-btn-sidebar.manage:hover svg { transform: scaleY(-1); }

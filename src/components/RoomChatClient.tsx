@@ -828,7 +828,10 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
                                                 <span className="path-segment sub" style={{ opacity: 0.6, display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
                                                     <Hash size={14} />
-                                                    <span className="slug-label" style={{ marginRight: '0.8rem' }}>{(currentSub.slug || '').includes('-') ? (currentSub.slug || '').split('-').slice(1).join('-') : (currentSub.slug || strictSlugify(currentSub.name))}</span>
+                                                    <span className="slug-label" style={{ marginRight: '0.8rem' }}>{(() => {
+                                                        const parts = (currentSub.slug || '').split('-');
+                                                        return (parts.length > 1 && parts[0].length === 4) ? parts.slice(1).join('-') : (currentSub.slug || strictSlugify(currentSub.name));
+                                                    })()}</span>
                                                 </span>
                                                 <input
                                                     autoFocus
@@ -856,7 +859,10 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                                 ) : (
                                                     <Hash size={14} className="hash-icon-breadcrumb" />
                                                 )}
-                                                <span className="slug-label" style={{ marginRight: '0.8rem' }}>{(currentSub.slug || '').includes('-') ? (currentSub.slug || '').split('-').slice(1).join('-') : (currentSub.slug || strictSlugify(currentSub.name))}</span>
+                                                <span className="slug-label" style={{ marginRight: '0.8rem' }}>{(() => {
+                                                    const parts = (currentSub.slug || '').split('-');
+                                                    return (parts.length > 1 && parts[0].length === 4) ? parts.slice(1).join('-') : (currentSub.slug || strictSlugify(currentSub.name));
+                                                })()}</span>
                                                 <span className="name-label-breadcrumb">{currentSub.name}</span>
                                                 {canManage && (
                                                     <button
