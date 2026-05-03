@@ -103,12 +103,24 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
     }
 
     useEffect(() => {
+        const scrollToBreadcrumb = () => {
+            const el = document.getElementById('chat-top-anchor');
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+
         const validateAndSetSubId = async (id: string | null) => {
             // Immediately clear messages and show loader if we're switching
             if (id !== currentSubId) {
                 setMessages([]);
                 setLoadingMessages(true);
-                setCurrentSubId(id); // Set it immediately so UI can react (e.g. breadcrumb)
+                setCurrentSubId(id);
+                // On mobile, scroll to top when changing
+                if (window.innerWidth < 768) {
+                    setTimeout(scrollToBreadcrumb, 100);
+                }
+            } else {
+                // If it's the same, ensure we're NOT loading
+                setLoadingMessages(false);
             }
             let activeRoom = room;
 
@@ -119,9 +131,13 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
 
             if (!id || id === 'general' || id === 'history') {
                 const targetId = id || 'general';
-                setMessages([]);
-                setLoadingMessages(true);
-                setCurrentSubId(targetId);
+                if (targetId !== currentSubId) {
+                    setMessages([]);
+                    setLoadingMessages(true);
+                    setCurrentSubId(targetId);
+                } else {
+                    setLoadingMessages(false);
+                }
                 return;
             }
 
@@ -150,9 +166,13 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 }
 
                 if (foundSub && currentSubId !== actualId) {
+                    // Only reload if the UUID is actually different from what we have
                     setMessages([]);
                     setLoadingMessages(true);
                     setCurrentSubId(actualId);
+                } else if (!foundSub) {
+                    // If not found, stop loading
+                    setLoadingMessages(false);
                 }
             }
 
@@ -793,8 +813,9 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
     return (
         <div className="room-chat-wrapper">
             <div className="chat-content-container">
+                <div id="chat-top-anchor" style={{ height: '1px' }} />
                 <div className={`chat-top-row ${isHistory ? 'history-mode' : ''}`}>
-                    <div className="chat-top-header">
+                    <div className="chat-top-header" id="room-breadcrumb-focus">
                         <div className="status-badge" style={{ background: isHistory ? 'rgba(0, 112, 243, 0.05)' : '#f8fafc', borderColor: isHistory ? 'rgba(0, 112, 243, 0.1)' : '#e2e8f0' }}>
                             {isHistory ? <HistoryIcon size={16} color="var(--accent)" /> : <MessageSquare size={16} color="var(--accent)" />}
 
@@ -1169,7 +1190,11 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 textarea, input, button { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important; }
                 .room-chat-wrapper { display: flex; flex-direction: column; min-height: 100vh; max-width: 850px; margin: 0 auto; position: relative; padding: 0 1rem; }
                 .chat-content-container { display: flex; flex-direction: column; gap: 1.5rem; padding-bottom: 5rem; }
-                .chat-top-header { margin-top: 1rem; display: flex; align-items: center; }
+                .chat-top-header { margin-top: 1rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+                @media (max-width: 768px) {
+                    .chat-top-header { flex-direction: column; align-items: flex-start; gap: 0.4rem; padding: 0.5rem 0; }
+                    .path-separator { display: none; }
+                }
                 
                 .status-badge { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.6rem 1.4rem; border-radius: 14px; border: 1px solid #e2e8f0; font-size: 0.9rem; }
                 .path-segment { font-weight: 800; color: #94a3b8; display: flex; align-items: center; gap: 0.4rem; }

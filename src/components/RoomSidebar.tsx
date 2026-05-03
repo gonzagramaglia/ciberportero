@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Pencil, Plus, Trash2, Hash, Check, Folder, FolderOpen, History as HistoryIcon, MessageSquare, X, Settings2, GripVertical, CheckCircle2, ShieldCheck, ChevronUp, ChevronDown, Wrench } from 'lucide-react';
-import { createCategory, createSubcategory, updateCategory, deleteCategory, updateSubcategory, deleteSubcategory, moveSubcategory } from '@/lib/salasActions';
+import { createCategory, createSubcategory, updateCategory, deleteCategory, updateSubcategory, deleteSubcategory, moveSubcategory, getRoomInfo } from '@/lib/salasActions';
 import { toast } from 'react-hot-toast';
 import { translations } from '@/lib/translations';
 import { guestStore } from '@/lib/guestStore';
@@ -25,9 +25,12 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
     const scrollToChat = () => {
         if (window.innerWidth <= 1024) {
             setTimeout(() => {
-                const chatArea = document.getElementById('chat-scroll-top') || document.querySelector('.room-chat-client');
-                if (chatArea) {
-                    chatArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                const chatHeader = document.getElementById('room-breadcrumb-focus');
+                if (chatHeader) {
+                    chatHeader.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } else {
+                    const chatArea = document.getElementById('chat-scroll-top') || document.querySelector('.room-chat-client');
+                    if (chatArea) chatArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             }, 100);
         }
@@ -208,28 +211,29 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
             toast.success(lang === 'es' ? 'Subcategoría actualizada' : 'Subcategory updated');
         } else {
             setLoading(true);
+            const tid = toast.loading(lang === 'es' ? 'Guardando...' : 'Saving...');
             try {
                 const res = await updateSubcategory(subId, name, coreSlug, description);
                 if (res.success) {
-                    const { getRoomInfo } = await import('@/lib/salasActions');
                     const updatedRoom: any = await getRoomInfo(room.id);
                     if (updatedRoom) {
                         setRoom(updatedRoom);
-                        
-                        // Notify other components BEFORE changing URL
                         window.dispatchEvent(new CustomEvent('room-data-updated'));
-                        
-                        // If we edited the sub we are currently in, update the URL hash
                         if (oldSub && (window.location.hash === `#${oldSub.slug}` || window.location.hash === `#${oldSub.id}`)) {
                             const newSub = updatedRoom.categories.flatMap((c: any) => c.subcategories).find((s: any) => s.id === subId);
                             if (newSub) window.location.hash = `#${newSub.slug}`;
                         }
                     }
-
                     setEditingId(null);
-                    toast.success(lang === 'es' ? 'Subcategoría actualizada' : 'Subcategory updated');
-                } else toast.error(res.error || 'Error');
-            } catch (error) { toast.error("Error"); } finally { setLoading(false); }
+                    toast.success(lang === 'es' ? 'Subcategoría actualizada' : 'Subcategory updated', { id: tid });
+                } else {
+                    toast.error(res.error || 'Error', { id: tid });
+                }
+            } catch (error) { 
+                toast.error("Error", { id: tid }); 
+            } finally { 
+                setLoading(false); 
+            }
         }
     };
 
@@ -637,7 +641,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                 
                                  {categories.map((cat: any, catIdx: number) => (
                                     <div key={cat.id} className="manage-item-group" onDragOver={(e) => onDragOver(e, cat.id)} onDragLeave={onDragLeave} onDrop={(e) => onDrop(e, cat.id, 'cat')}>
-                                        <div className="manage-row category" draggable onDragStart={(e) => onDragStart(e, 'cat', cat.id)} onDragEnd={onDragEnd}>
+                                        <div className="manage-row category" draggable={!editingId} onDragStart={(e) => onDragStart(e, 'cat', cat.id)} onDragEnd={onDragEnd}>
                                             {editingId === cat.id ? (
                                                 <div className="edit-input-wrapper">
                                                     <input autoFocus value={editValue} onChange={e => setEditValue(e.target.value)} onFocus={e => e.target.select()} onKeyDown={e => e.key === 'Enter' && handleUpdateCat(cat.id, editValue)} />
@@ -660,7 +664,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                         </div>
                                         <div className="manage-subs">
                                             {cat.subcategories.map((sub: any) => (
-                                                <div key={sub.id} className="manage-row sub" draggable onDragStart={(e) => onDragStart(e, 'sub', sub.id, cat.id)} onDragEnd={onDragEnd} onDragOver={(e) => onDragOver(e, cat.id)} onDragLeave={onDragLeave} onDrop={(e) => onDrop(e, sub.id, 'sub', cat.id)}>
+                                                <div key={sub.id} className="manage-row sub" draggable={!editingId} onDragStart={(e) => onDragStart(e, 'sub', sub.id, cat.id)} onDragEnd={onDragEnd} onDragOver={(e) => onDragOver(e, cat.id)} onDragLeave={onDragLeave} onDrop={(e) => onDrop(e, sub.id, 'sub', cat.id)}>
                                                     {editingId === sub.id ? (
                                                         <div className="edit-input-wrapper complex">
                                                             <div className="input-with-label">
