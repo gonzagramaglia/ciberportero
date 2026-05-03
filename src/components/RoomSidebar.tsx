@@ -83,11 +83,14 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
             }
         };
         syncRoom();
+        const handleOpenManage = () => setIsManageModalOpen(true);
         window.addEventListener('subcategory-change', syncRoom);
         window.addEventListener('room-data-updated', syncRoom);
+        window.addEventListener('open-management-modal', handleOpenManage);
         return () => {
             window.removeEventListener('subcategory-change', syncRoom);
             window.removeEventListener('room-data-updated', syncRoom);
+            window.removeEventListener('open-management-modal', handleOpenManage);
         };
     }, [isGuest, initialRoom.id]);
 
@@ -778,7 +781,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 .input-with-label label { font-size: 0.65rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; }
                 .input-hash-wrapper input { flex: 1; border: none; outline: none; background: transparent; font-size: 0.9rem; font-weight: 700; color: #1e293b; padding: 0.2rem 0; }
                 
-                .modal-textarea-desc { width: 100%; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.6rem; font-size: 0.85rem; min-height: 60px; resize: vertical; outline: none; transition: border-color 0.2s; font-family: inherit; }
+                .modal-textarea-desc { width: 100%; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.6rem; font-size: 0.85rem; min-height: 120px; resize: vertical; outline: none; transition: border-color 0.2s; font-family: inherit; }
                 .modal-textarea-desc:focus { border-color: var(--accent); }
                 .char-count-modal { align-self: flex-end; font-size: 0.65rem; font-weight: 800; color: #94a3b8; margin-top: -0.2rem; }
 

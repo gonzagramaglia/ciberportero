@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { MessageSquare, Send, Loader2, History as HistoryIcon, Image as ImageIcon, X, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, Hash, Paperclip, MessageCircle, Reply as ReplyIcon, Trash2, Pencil, Check, Smile, ClipboardClock, Pin, PinOff, GripVertical, ShieldCheck, Search, Youtube } from 'lucide-react';
+import { MessageSquare, Send, Loader2, History as HistoryIcon, Image as ImageIcon, X, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, Hash, Paperclip, MessageCircle, Reply as ReplyIcon, Trash2, Pencil, Check, Smile, ClipboardClock, Pin, PinOff, GripVertical, ShieldCheck, Search, Youtube, Settings } from 'lucide-react';
 import { addRoomMessage, deleteMessage, addGeneralMessage, updateCategory, updateSubcategory, togglePinMessage, reorderPinnedMessages } from '@/lib/salasActions';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'react-hot-toast';
@@ -842,8 +842,18 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                                     <button
                                                         className="breadcrumb-edit-btn"
                                                         onClick={() => { setEditingSubId(currentSub.id); setEditSubValue(currentSub.name); }}
+                                                        title={lang === 'es' ? 'Editar nombre' : 'Edit name'}
                                                     >
                                                         <Pencil size={12} />
+                                                    </button>
+                                                )}
+                                                {canManage && (
+                                                    <button
+                                                        className="breadcrumb-edit-btn"
+                                                        onClick={() => window.dispatchEvent(new CustomEvent('open-management-modal'))}
+                                                        title={lang === 'es' ? 'Gestionar subcategoría' : 'Manage subcategory'}
+                                                    >
+                                                        <Settings size={12} />
                                                     </button>
                                                 )}
                                             </span>
@@ -1294,7 +1304,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .empty-icon-circle { width: 80px; height: 80px; background: rgba(0, 112, 243, 0.05); color: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; }
                 .empty-view h3 { margin: 0 0 0.5rem 0; font-size: 1.5rem; font-weight: 900; color: #1e293b; }
                 .empty-view p { margin: 0; color: #94a3b8; font-weight: 600; font-size: 1.1rem; max-width: 300px; line-height: 1.5; }
-                .loader-view { border: none; background: transparent; padding: 15rem 2rem 10rem 2rem; display: flex; align-items: flex-start; justify-content: center; }
+                .loader-view { border: none; background: transparent; padding: 8rem 2rem 10rem 2rem; display: flex; align-items: center; justify-content: center; }
                 .spin-slow { animation: spin 2s linear infinite; }
                 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
                 
@@ -1404,7 +1414,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     .chat-top-row.history-mode { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
                     .history-search-container { width: 100%; min-width: 0; }
                     .main-input-sticky { position: static; margin-bottom: 1rem; }
-                    .loader-view { min-height: 400px; padding-top: 15rem; align-items: flex-start; }
+                    .loader-view { min-height: 400px; padding-top: 8rem; align-items: center; }
                     .log-row-content { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
                     .log-tags { align-self: flex-start; }
                     .hide-mobile { display: none; }
