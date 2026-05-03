@@ -465,10 +465,11 @@ export const guestStore = {
                     throw new Error('DUPLICATE_NAME');
                 }
 
+                const catPrefix = cat.id.length >= 4 ? cat.id.slice(-4) : 'sub';
                 const newSub: GuestSubcategory = { 
                     id: `${cat.id}-${newSlug}-${Date.now()}`, 
                     name, 
-                    slug: newSlug,
+                    slug: `${catPrefix}-${newSlug}`,
                     description: description || '',
                     messages: [] 
                 };

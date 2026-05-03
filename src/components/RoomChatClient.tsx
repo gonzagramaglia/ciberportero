@@ -110,8 +110,12 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
     };
 
     const validateAndSetSubId = useCallback(async (targetId: string | null) => {
-        if (!targetId || targetId === 'general') {
-            setCurrentSubId('general');
+        if (!targetId || targetId === 'general' || targetId === 'history') {
+            const mode = targetId === 'history' ? 'history' : 'general';
+            if (currentSubId !== mode) {
+                setMessages([]);
+                setCurrentSubId(mode);
+            }
             return;
         }
 

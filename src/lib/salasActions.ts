@@ -149,7 +149,7 @@ export async function createSubcategory(categoryId: string, name: string, descri
     if (existing) return { error: "Ya existe una subcategoría con ese nombre en esta categoría." };
         
     // Ensure unique slug within the room
-    const catPrefix = categoryId.slice(-4);
+    const catPrefix = categoryId.length >= 4 ? categoryId.slice(-4) : 'sub';
     let finalSlug = `${catPrefix}-${strictSlugify(decodedName)}`;
     const allSubsInRoom = await db.roomSubcategory.findMany({
         where: { category: { roomId: category.roomId } },
@@ -334,7 +334,8 @@ export async function updateSubcategory(subId: string, name: string, slug?: stri
     const updateData: any = { name };
     if (description !== undefined) updateData.description = description;
         if (slug) {
-            const catPrefix = sub.category.id.slice(-4) || 'sub';
+            const catId = sub.category.id;
+            const catPrefix = catId.length >= 4 ? catId.slice(-4) : 'sub';
             let finalSlug = `${catPrefix}-${strictSlugify(slug)}`;
             
             // Ensure unique slug within the room
