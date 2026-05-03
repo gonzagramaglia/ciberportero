@@ -577,7 +577,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                         scrollToChat();
                                     }}>{(() => {
                                         const parts = (sub.slug || '').split('-');
-                                        const display = (parts.length > 1 && parts[0].length === 4) ? parts.slice(1).join('-') : (sub.slug || strictSlugify(sub.name));
+                                        const display = (parts.length > 1 && parts[0].length === 4) ? parts.slice(1).join('-') : (sub.slug || '');
                                         return '#' + display;
                                     })()}</a>
                                 ))}
@@ -701,7 +701,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                                             <div className="sub-info-display horizontal">
                                                                 <span className="slug-display">#{(() => {
                                                                     const parts = (sub.slug || '').split('-');
-                                                                    return (parts.length > 1 && parts[0].length === 4) ? parts.slice(1).join('-') : (sub.slug || strictSlugify(sub.name));
+                                                                    return (parts.length > 1 && parts[0].length === 4) ? parts.slice(1).join('-') : (sub.slug || '');
                                                                 })()}</span>
                                                             </div>
                                                             <div className="actions">

@@ -829,11 +829,11 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                             <div className="skeleton skeleton-breadcrumb" style={{ width: '120px' }} />
                                         ) : editingSubId === currentSub?.id ? (
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
-                                                <span className="path-segment sub" style={{ opacity: 0.6, display: 'flex', alignItems: 'center', gap: '0' }}>
-                                                    <Hash size={11} style={{ marginRight: '-0.2rem' }} />
+                                                <span className="path-segment sub" style={{ opacity: 0.6, display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                                                    <Hash size={11} style={{ marginRight: '0.1rem' }} />
                                                     <span className="slug-label" style={{ marginRight: '0.6rem' }}>{(() => {
                                                         const parts = (currentSub.slug || '').split('-');
-                                                        return (parts.length > 1 && parts[0].length === 4) ? parts.slice(1).join('-') : (currentSub.slug || strictSlugify(currentSub.name));
+                                                        return (parts.length > 1 && parts[0].length === 4) ? parts.slice(1).join('-') : (currentSub.slug || '');
                                                     })()}</span>
                                                 </span>
                                                 <input
@@ -865,7 +865,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                                     )}
                                                     <span className="slug-label" style={{ marginRight: '0.6rem' }}>{(() => {
                                                         const parts = (currentSub.slug || '').split('-');
-                                                        return (parts.length > 1 && parts[0].length === 4) ? parts.slice(1).join('-') : (currentSub.slug || strictSlugify(currentSub.name));
+                                                        return (parts.length > 1 && parts[0].length === 4) ? parts.slice(1).join('-') : (currentSub.slug || '');
                                                     })()}</span>
                                                 </div>
                                                 <div className="name-row-breadcrumb">
