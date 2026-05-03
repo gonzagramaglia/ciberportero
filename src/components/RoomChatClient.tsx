@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { MessageSquare, Send, Loader2, History as HistoryIcon, Image as ImageIcon, X, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, Hash, Paperclip, MessageCircle, Reply as ReplyIcon, Trash2, Pencil, Check, Smile, ClipboardClock, Pin, PinOff, GripVertical, ShieldCheck, Search, Youtube, Settings } from 'lucide-react';
 import { addRoomMessage, deleteMessage, addGeneralMessage, updateCategory, updateSubcategory, togglePinMessage, reorderPinnedMessages } from '@/lib/salasActions';
@@ -102,32 +102,20 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
         return `${dayName} ${day} de ${month}${connector}${time}`;
     }
 
-    const validateAndSetSubId = React.useCallback(async (id: string | null) => {
-        const targetId = id || 'general';
-        
+    const scrollToChat = () => {
         if (window.innerWidth < 768) {
             const el = document.getElementById('room-breadcrumb-focus');
             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
+    };
 
-        let activeRoom = room;
-        if (isGuest && !activeRoom) {
-            const gid = roomId || propRoomId || 'test-room';
-            activeRoom = guestStore.getRoom(gid) || guestStore.getRooms()[0];
-            if (activeRoom && activeRoom.id !== room?.id) setRoom(activeRoom as any);
-        }
-
-        if (targetId === 'general' || targetId === 'history') {
-            if (currentSubId !== targetId) {
-                setMessages([]);
-                setCurrentSubId(targetId);
-            }
+    const validateAndSetSubId = useCallback(async (targetId: string | null) => {
+        if (!targetId || targetId === 'general') {
+            setCurrentSubId('general');
             return;
         }
 
-        let actualId = targetId;
-        let currentRoomData = activeRoom;
-
+        let currentRoomData = room;
         if (isGuest && !currentRoomData && roomId) {
             currentRoomData = guestStore.getRoom(roomId);
         }
@@ -142,26 +130,18 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
         }
 
         if (currentRoomData?.categories) {
-            let foundSub = null;
-            for (const c of currentRoomData.categories) {
-                const s = c.subcategories?.find((s: any) => s.id === targetId || s.slug === targetId);
-                if (s) {
-                    foundSub = s;
-                    actualId = s.id;
-                    break;
-                }
-            }
+            const allSubs = currentRoomData.categories.flatMap((c: any) => c.subcategories || []);
+            let found = allSubs.find((s: any) => s.id === targetId);
+            if (!found) found = allSubs.find((s: any) => s.slug === targetId);
 
-            if (foundSub) {
-                if (currentSubId !== actualId) {
+            if (found) {
+                if (currentSubId !== found.id) {
                     setMessages([]);
-                    setCurrentSubId(actualId);
+                    setCurrentSubId(found.id);
                 }
             } else {
                 setLoadingMessages(false);
             }
-        } else {
-            setCurrentSubId(actualId || 'general');
         }
     }, [roomId, isGuest, room, currentSubId]);
 

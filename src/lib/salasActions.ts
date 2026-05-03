@@ -143,23 +143,33 @@ export async function createSubcategory(categoryId: string, name: string, descri
     if (category.room.creatorId !== session.user.id && !isAdmin) return { error: "No autorizado" };
 
     const decodedName = decodeURIComponent(name).trim();
-    const baseSlug = strictSlugify(decodedName);
-    const catPrefix = categoryId.slice(-4);
-    const finalSlug = `${catPrefix}-${baseSlug}`;
     
     // Check for duplicate names within the same category
     const existing = category.subcategories.find(s => s.name.toLowerCase() === decodedName.toLowerCase());
     if (existing) return { error: "Ya existe una subcategoría con ese nombre en esta categoría." };
-
-    const finalId = `${catPrefix}-${baseSlug}-${Date.now()}`;
+        
+    // Ensure unique slug within the room
+    const catPrefix = categoryId.slice(-4);
+    let finalSlug = `${catPrefix}-${strictSlugify(decodedName)}`;
+    const allSubsInRoom = await db.roomSubcategory.findMany({
+        where: { category: { roomId: category.roomId } },
+        select: { slug: true }
+    });
     
+    let suffix = 1;
+    const originalSlug = finalSlug;
+    while (allSubsInRoom.some(s => s.slug === finalSlug)) {
+        finalSlug = `${originalSlug}-${Math.random().toString(36).substring(2, 5)}`;
+        if (suffix++ > 10) break; // Safety break
+    }
+
     const sub = await db.roomSubcategory.create({
       data: { 
         categoryId, 
         name: decodedName, 
         slug: finalSlug,
         description,
-        id: finalId 
+        order: category.subcategories.length
       }
     });
 
@@ -191,7 +201,7 @@ export async function moveSubcategory(subId: string, newCategoryId: string, newO
     // Calculate new slug based on new category
     const catPrefix = newCategoryId.slice(-4);
     const coreSlug = sub.slug.includes('-') ? sub.slug.split('-').slice(1).join('-') : sub.slug;
-    const newSlug = `${catPrefix}-${coreSlug}`;
+    let newSlug = `${catPrefix}-${coreSlug}`;
 
     // Check if this new slug is already taken in the room
     const existing = await db.roomSubcategory.findFirst({
@@ -323,11 +333,24 @@ export async function updateSubcategory(subId: string, name: string, slug?: stri
     
     const updateData: any = { name };
     if (description !== undefined) updateData.description = description;
-    if (slug) {
-        const catPrefix = sub.category.id.slice(-4) || 'sub';
-        updateData.slug = `${catPrefix}-${strictSlugify(slug)}`;
-    }
-    
+        if (slug) {
+            const catPrefix = sub.category.id.slice(-4) || 'sub';
+            let finalSlug = `${catPrefix}-${strictSlugify(slug)}`;
+            
+            // Ensure unique slug within the room
+            const allSubsInRoom = await db.roomSubcategory.findMany({
+                where: { category: { roomId: sub.category.roomId } },
+                select: { id: true, slug: true }
+            });
+            
+            let suffix = 1;
+            const originalSlug = finalSlug;
+            while (allSubsInRoom.some(s => s.slug === finalSlug && s.id !== subId)) {
+                finalSlug = `${originalSlug}-${Math.random().toString(36).substring(2, 5)}`;
+                if (suffix++ > 10) break;
+            }
+            updateData.slug = finalSlug;
+        }
     await db.roomSubcategory.update({ 
         where: { id: subId }, 
         data: updateData 
