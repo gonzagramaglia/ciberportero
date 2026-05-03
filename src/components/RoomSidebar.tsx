@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Pencil, Plus, Trash2, Hash, Check, Folder, FolderOpen, History as HistoryIcon, MessageSquare, X, Settings2, GripVertical, CheckCircle2, ShieldCheck, ChevronUp, ChevronDown } from 'lucide-react';
 import { createCategory, createSubcategory, updateCategory, deleteCategory, updateSubcategory, deleteSubcategory, moveSubcategory } from '@/lib/salasActions';
 import { toast } from 'react-hot-toast';
@@ -83,14 +83,11 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
             }
         };
         syncRoom();
-        const handleOpenManage = () => setIsManageModalOpen(true);
         window.addEventListener('subcategory-change', syncRoom);
         window.addEventListener('room-data-updated', syncRoom);
-        window.addEventListener('open-management-modal', handleOpenManage);
         return () => {
             window.removeEventListener('subcategory-change', syncRoom);
             window.removeEventListener('room-data-updated', syncRoom);
-            window.removeEventListener('open-management-modal', handleOpenManage);
         };
     }, [isGuest, initialRoom.id]);
 
@@ -137,6 +134,23 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
             } catch (error) { toast.error("Error"); } finally { setLoading(false); }
         }
     };
+
+    useEffect(() => {
+        const handleOpenManage = (e: any) => {
+            setIsManageModalOpen(true);
+            const subId = e.detail?.subId;
+            if (subId) {
+                const sub = room.categories.flatMap((c: any) => c.subcategories).find((s: any) => s.id === subId);
+                if (sub) {
+                    setEditingId(sub.id);
+                    setEditSlugValue(sub.slug || (sub.name ? strictSlugify(sub.name) : ''));
+                    setEditDescValue(sub.description || '');
+                }
+            }
+        };
+        window.addEventListener('open-management-modal', handleOpenManage as any);
+        return () => window.removeEventListener('open-management-modal', handleOpenManage as any);
+    }, [room]);
 
     const strictSlugify = (text: string) => {
         return text.toString().toLowerCase().trim()

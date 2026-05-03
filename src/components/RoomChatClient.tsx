@@ -350,7 +350,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     </div>
                     <button type="button" onClick={() => setReplyingTo(null)} className="close-reply-btn"><X size={16} /></button>
                 </div>
-                <div 
+                <div
                     className={`reply-input-area ${isDraggingReply ? 'is-dragging' : ''}`}
                     onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingReply(true); }}
                     onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingReply(false); }}
@@ -363,7 +363,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 >
                     <form onSubmit={(e) => handleSend(e, true)}>
                         <textarea autoFocus value={replyText} onChange={e => setReplyText(e.target.value)} placeholder={roomsT.chat.whatAreYouThinking} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(e, true); } }} />
-                        
+
                         {replySelectedImages.length > 0 && (
                             <div className="preview-row" style={{ padding: '0 0.5rem 0.5rem 0.5rem' }}>
                                 {replySelectedImages.map((file: any, i: number) => (
@@ -517,9 +517,9 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
             const parts = text.split(new RegExp(`(${escapedQuery})`, 'gi'));
             return (
                 <>
-                    {parts.map((part, i) => 
-                        part.toLowerCase() === query.toLowerCase() 
-                            ? <mark key={i} className="search-highlight">{part}</mark> 
+                    {parts.map((part, i) =>
+                        part.toLowerCase() === query.toLowerCase()
+                            ? <mark key={i} className="search-highlight">{part}</mark>
                             : part
                     )}
                 </>
@@ -690,16 +690,16 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
             }
             if (isGuest) {
                 guestStore.addMessage(roomId || 'test-room', isGeneral ? 'general' : currentSubId!, content, imageUrls, isReply ? replyingTo?.id : undefined);
-                if (isReply) { 
-                    setReplyText(''); 
-                    setReplyExternalImageUrl(''); 
-                    setReplyExternalImageLink(''); 
-                    setReplyingTo(null); 
+                if (isReply) {
+                    setReplyText('');
+                    setReplyExternalImageUrl('');
+                    setReplyExternalImageLink('');
+                    setReplyingTo(null);
                     setReplySelectedImages([]);
-                } else { 
-                    setText(''); 
-                    setExternalImageUrl(''); 
-                    setExternalImageLink(''); 
+                } else {
+                    setText('');
+                    setExternalImageUrl('');
+                    setExternalImageLink('');
                     setSelectedImages([]);
                 }
 
@@ -720,16 +720,16 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 }
 
                 if (res.success) {
-                    if (isReply) { 
-                        setReplyText(''); 
-                        setReplyExternalImageUrl(''); 
-                        setReplyExternalImageLink(''); 
-                        setReplyingTo(null); 
+                    if (isReply) {
+                        setReplyText('');
+                        setReplyExternalImageUrl('');
+                        setReplyExternalImageLink('');
+                        setReplyingTo(null);
                         setReplySelectedImages([]);
-                    } else { 
-                        setText(''); 
-                        setExternalImageUrl(''); 
-                        setExternalImageLink(''); 
+                    } else {
+                        setText('');
+                        setExternalImageUrl('');
+                        setExternalImageLink('');
                         setSelectedImages([]);
                     }
                     const { getSubcategoryMessages, getGeneralMessages } = await import('@/lib/salasActions');
@@ -819,24 +819,35 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                     <span className="path-separator"><ChevronRight size={14} /></span>
                                     <div className="breadcrumb-item">
                                         {editingSubId === currentSub.id ? (
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                                <div className="input-hash-wrapper-breadcrumb">
-                                                    <Hash size={14} className="hash-prefix-breadcrumb" />
-                                                    <input
-                                                        autoFocus
-                                                        value={editSubValue}
-                                                        onChange={e => setEditSubValue(e.target.value)}
-                                                        onKeyDown={e => e.key === 'Enter' && handleUpdateSub(currentSub.id, editSubValue)}
-                                                        onBlur={() => setEditingSubId(null)}
-                                                        className="breadcrumb-edit-input"
-                                                    />
-                                                </div>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                                <span className="path-segment sub" style={{ opacity: 0.6, pointerEvents: 'none', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                                                    <Hash size={14} />
+                                                    <span className="slug-label">{(currentSub.slug || '').includes('-') ? (currentSub.slug || '').split('-').slice(1).join('-') : (currentSub.slug || strictSlugify(currentSub.name))}</span>
+                                                </span>
+                                                <input
+                                                    autoFocus
+                                                    value={editSubValue}
+                                                    onChange={e => setEditSubValue(e.target.value)}
+                                                    onKeyDown={e => e.key === 'Enter' && handleUpdateSub(currentSub.id, editSubValue)}
+                                                    onBlur={() => setEditingSubId(null)}
+                                                    className="breadcrumb-edit-input-clean"
+                                                    placeholder={lang === 'es' ? 'Nombre...' : 'Name...'}
+                                                />
                                                 <Check size={14} color="#10b981" style={{ cursor: 'pointer' }} onClick={() => handleUpdateSub(currentSub.id, editSubValue)} />
                                             </div>
                                         ) : (
                                             <span className="path-segment sub">
                                                 <Hash size={14} className="hash-icon-breadcrumb" />
                                                 <span className="slug-label">{(currentSub.slug || '').includes('-') ? (currentSub.slug || '').split('-').slice(1).join('-') : (currentSub.slug || strictSlugify(currentSub.name))}</span>
+                                                {canManage && (
+                                                    <button
+                                                        className="breadcrumb-edit-btn"
+                                                        onClick={() => window.dispatchEvent(new CustomEvent('open-management-modal', { detail: { subId: currentSub.id } }))}
+                                                        title={lang === 'es' ? 'Gestionar subcategoría' : 'Manage subcategory'}
+                                                    >
+                                                        <Settings size={12} />
+                                                    </button>
+                                                )}
                                                 <span className="name-label-breadcrumb">{currentSub.name}</span>
                                                 {canManage && (
                                                     <button
@@ -845,15 +856,6 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                                         title={lang === 'es' ? 'Editar nombre' : 'Edit name'}
                                                     >
                                                         <Pencil size={12} />
-                                                    </button>
-                                                )}
-                                                {canManage && (
-                                                    <button
-                                                        className="breadcrumb-edit-btn"
-                                                        onClick={() => window.dispatchEvent(new CustomEvent('open-management-modal'))}
-                                                        title={lang === 'es' ? 'Gestionar subcategoría' : 'Manage subcategory'}
-                                                    >
-                                                        <Settings size={12} />
                                                     </button>
                                                 )}
                                             </span>
@@ -867,7 +869,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                         <div className="history-search-container fade-in">
                             <div className="search-box-wrapper">
                                 <Search size={18} className="search-icon" />
-                                <input 
+                                <input
                                     type="text"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -896,7 +898,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                                 if (isGuest) {
                                                     const updated = guestStore.updateRoom(room.id, room.name, room.id, room.secretCode, editDescValue);
                                                     if (updated) {
-                                                        setRoom({...room, description: updated.description});
+                                                        setRoom({ ...room, description: updated.description });
                                                         setEditingDesc(false);
                                                         window.dispatchEvent(new CustomEvent('room-data-updated'));
                                                         toast.success(lang === 'es' ? 'Descripción actualizada' : 'Description updated');
@@ -906,7 +908,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                                         const { updateRoom } = await import('@/lib/salasActions');
                                                         const res = await updateRoom(room.id, room.name, room.id, room.secretCode, editDescValue);
                                                         if (res.success) {
-                                                            setRoom({...room, description: editDescValue});
+                                                            setRoom({ ...room, description: editDescValue });
                                                             setEditingDesc(false);
                                                             toast.success(lang === 'es' ? 'Descripción actualizada' : 'Description updated');
                                                         }
@@ -926,17 +928,17 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                             if (isGuest) {
                                                 const updated = guestStore.updateRoom(room.id, room.name, room.id, room.secretCode, editDescValue);
                                                 if (updated) {
-                                                    setRoom({...room, description: updated.description});
+                                                    setRoom({ ...room, description: updated.description });
                                                     setEditingDesc(false);
                                                     window.dispatchEvent(new CustomEvent('room-data-updated'));
                                                     toast.success(lang === 'es' ? 'Descripción actualizada' : 'Description updated');
                                                 }
                                             } else {
-                                                 (async () => {
+                                                (async () => {
                                                     const { updateRoom } = await import('@/lib/salasActions');
                                                     const res = await updateRoom(room.id, room.name, room.id, room.secretCode, editDescValue);
                                                     if (res.success) {
-                                                        setRoom({...room, description: editDescValue});
+                                                        setRoom({ ...room, description: editDescValue });
                                                         setEditingDesc(false);
                                                         toast.success(lang === 'es' ? 'Descripción actualizada' : 'Description updated');
                                                     }
@@ -959,7 +961,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                         ) : (
                             <div className="desc-display-container">
                                 <p className="desc-text empty">
-                                    {canManage 
+                                    {canManage
                                         ? (lang === 'es' ? 'Agregá una descripción desde el editor de categorías/subcategorías' : 'Add a description from the category/subcategory editor')
                                         : (lang === 'es' ? 'Aquí pronto va a haber una descripción' : 'A description will be available here soon')
                                     }
@@ -1087,48 +1089,48 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                 .filter((m: any) => {
                                     if (!isHistory || !searchQuery.trim()) return true;
                                     const q = searchQuery.toLowerCase().trim();
-                                    return (m.content || '').toLowerCase().includes(q) || 
-                                           (m.user?.name || '').toLowerCase().includes(q) ||
-                                           (m.categoryName || '').toLowerCase().includes(q) ||
-                                           (m.subcategoryName || '').toLowerCase().includes(q);
+                                    return (m.content || '').toLowerCase().includes(q) ||
+                                        (m.user?.name || '').toLowerCase().includes(q) ||
+                                        (m.categoryName || '').toLowerCase().includes(q) ||
+                                        (m.subcategoryName || '').toLowerCase().includes(q);
                                 })
                                 .map((msg: any) => {
-                                if (isHistory) {
-                                    const isMe = msg.userId === session?.user?.id || (isGuest && (msg.userId === 'guest-me' || msg.user.name === 'Invitado'));
-                                    return (
-                                        <div key={msg.id} className={`log-row-premium ${msg.isPinned ? 'is-pinned-log' : ''}`} onClick={() => handleLogClick(msg)}>
-                                            <div className="accent-bar" />
-                                            <div className="log-row-content" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.6rem' }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', width: '100%' }}>
-                                                    <img src={msg.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent((msg.user.name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}`} className="log-avatar" />
-                                                    <div className="log-main">
-                                                        <div className="log-meta">
-                                                            <span className="log-user">{msg.user.name}{(isMe && !msg.user.name.includes('(tú)')) ? ' (tú)' : ''}</span>
-                                                            <span className="log-time">{formatMessageDate(new Date(msg.createdAt), lang, true)}</span>
-                                                        </div>
-                                                        <div className="log-text" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                                                            {msg.images && msg.images.length > 0 && <ImageIcon size={14} className="log-msg-icon" />}
-                                                            <span>
-                                                                {searchQuery.trim() && isHistory 
-                                                                    ? highlightText(msg.content || (msg.images?.length > 0 ? (lang === 'es' ? '[Imagen]' : '[Image]') : ''), searchQuery) 
-                                                                    : (msg.content || (msg.images?.length > 0 ? (lang === 'es' ? '[Imagen]' : '[Image]') : ''))
-                                                                }
-                                                            </span>
-                                                            {msg.images && msg.images.length > 1 && <span className="log-img-count">({msg.images.length})</span>}
+                                    if (isHistory) {
+                                        const isMe = msg.userId === session?.user?.id || (isGuest && (msg.userId === 'guest-me' || msg.user.name === 'Invitado'));
+                                        return (
+                                            <div key={msg.id} className={`log-row-premium ${msg.isPinned ? 'is-pinned-log' : ''}`} onClick={() => handleLogClick(msg)}>
+                                                <div className="accent-bar" />
+                                                <div className="log-row-content" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.6rem' }}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', width: '100%' }}>
+                                                        <img src={msg.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent((msg.user.name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}`} className="log-avatar" />
+                                                        <div className="log-main">
+                                                            <div className="log-meta">
+                                                                <span className="log-user">{msg.user.name}{(isMe && !msg.user.name.includes('(tú)')) ? ' (tú)' : ''}</span>
+                                                                <span className="log-time">{formatMessageDate(new Date(msg.createdAt), lang, true)}</span>
+                                                            </div>
+                                                            <div className="log-text" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                                                {msg.images && msg.images.length > 0 && <ImageIcon size={14} className="log-msg-icon" />}
+                                                                <span>
+                                                                    {searchQuery.trim() && isHistory
+                                                                        ? highlightText(msg.content || (msg.images?.length > 0 ? (lang === 'es' ? '[Imagen]' : '[Image]') : ''), searchQuery)
+                                                                        : (msg.content || (msg.images?.length > 0 ? (lang === 'es' ? '[Imagen]' : '[Image]') : ''))
+                                                                    }
+                                                                </span>
+                                                                {msg.images && msg.images.length > 1 && <span className="log-img-count">({msg.images.length})</span>}
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div className="log-tags" style={{ alignSelf: 'flex-start', marginLeft: '3rem' }}>
-                                                    <span className="tag-cat">{msg.categoryName}</span>
-                                                    <ChevronRight size={10} />
-                                                    <span className="tag-sub">{msg.subcategoryName}</span>
+                                                    <div className="log-tags" style={{ alignSelf: 'flex-start', marginLeft: '3rem' }}>
+                                                        <span className="tag-cat">{msg.categoryName}</span>
+                                                        <ChevronRight size={10} />
+                                                        <span className="tag-sub">{msg.subcategoryName}</span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    );
-                                }
-                                return renderMessage(msg);
-                            })}
+                                        );
+                                    }
+                                    return renderMessage(msg);
+                                })}
                         </div>
                     )}
                 </div>
@@ -1145,10 +1147,12 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .breadcrumb-item { display: flex; align-items: center; }
                 .breadcrumb-edit-btn { background: none; border: none; padding: 4px; color: #94a3b8; cursor: pointer; border-radius: 4px; transition: all 0.2s; margin-left: 4px; display: inline-flex; align-items: center; vertical-align: middle; }
                 .breadcrumb-edit-btn:hover { color: var(--accent); background: rgba(0, 112, 243, 0.05); }
-                .input-hash-wrapper-breadcrumb { display: flex; align-items: center; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0 0.5rem; transition: all 0.2s; }
-                .input-hash-wrapper-breadcrumb:focus-within { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(0, 112, 243, 0.05); }
-                .hash-prefix-breadcrumb { color: #94a3b8; margin-right: 0.2rem; }
-                .breadcrumb-edit-input { border: none !important; padding: 0.3rem 0 !important; font-size: 0.85rem !important; font-weight: 700 !important; width: 120px !important; outline: none !important; background: transparent !important; }
+                .breadcrumb-edit-input-clean { border: 1px solid #e2e8f0; border-radius: 8px; background: #fff; font-size: 0.9rem; font-weight: 700; color: #1e293b; padding: 0.4rem 0.6rem; width: 160px; outline: none; transition: all 0.2s; }
+                .breadcrumb-edit-input-clean:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0, 112, 243, 0.05); }
+                .input-hash-wrapper-breadcrumb { display: flex; align-items: center; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0 0.5rem; transition: all 0.2s; gap: 0.25rem; }
+                .input-hash-wrapper-breadcrumb:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0, 112, 243, 0.05); }
+                .hash-prefix-breadcrumb { color: #94a3b8; flex-shrink: 0; }
+                .breadcrumb-edit-input { border: none; outline: none; background: transparent; font-size: 0.9rem; font-weight: 700; color: #1e293b; padding: 0.4rem 0.2rem; width: 140px; }
                 .path-segment.active { color: var(--accent); }
                 .path-segment.sub { color: #1e293b; }
                 .path-separator { opacity: 0.3; margin: 0 0.2rem; color: #94a3b8; }
@@ -1304,7 +1308,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .empty-icon-circle { width: 80px; height: 80px; background: rgba(0, 112, 243, 0.05); color: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; }
                 .empty-view h3 { margin: 0 0 0.5rem 0; font-size: 1.5rem; font-weight: 900; color: #1e293b; }
                 .empty-view p { margin: 0; color: #94a3b8; font-weight: 600; font-size: 1.1rem; max-width: 300px; line-height: 1.5; }
-                .loader-view { border: none; background: transparent; padding: 8rem 2rem 10rem 2rem; display: flex; align-items: center; justify-content: center; }
+                .loader-view { border: none; background: transparent; padding: 9rem 2rem 10rem 2rem; display: flex; align-items: center; justify-content: center; }
                 .spin-slow { animation: spin 2s linear infinite; }
                 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
                 
@@ -1414,7 +1418,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     .chat-top-row.history-mode { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
                     .history-search-container { width: 100%; min-width: 0; }
                     .main-input-sticky { position: static; margin-bottom: 1rem; }
-                    .loader-view { min-height: 400px; padding-top: 8rem; align-items: center; }
+                    .loader-view { min-height: 400px; padding-top: 9rem; align-items: center; }
                     .log-row-content { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
                     .log-tags { align-self: flex-start; }
                     .hide-mobile { display: none; }
