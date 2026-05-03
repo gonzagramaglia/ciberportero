@@ -170,6 +170,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
 
     const handleLogClick = (msg: any) => {
         const subId = msg.subcategoryId || msg.subcategory?.id || 'general';
+        setTargetMessageId(msg.id);
         window.location.hash = `#${subId}`;
         window.dispatchEvent(new CustomEvent('subcategory-change', { detail: subId }));
     };
@@ -573,7 +574,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                             {msg.replies.map((r: any) => {
                                 const isReplyMe = r.userId === session?.user?.id || (isGuest && (r.userId === 'guest-me' || r.user.name === 'Invitado'));
                                 return (
-                                    <div key={r.id} className="reply-item">
+                                    <div key={r.id} id={r.id} className="reply-item">
                                         <div className="reply-header">
                                             <img src={r.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent((r.user.name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}`} className="reply-avatar" />
                                             <div className="reply-meta">
@@ -598,11 +599,11 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                         {renderInlineReplyBox(r)}
 
                                         {r.replies && r.replies.length > 0 && (
-                                            <div className="nested-replies-list">
+                                            <div className="replies-list level-2">
                                                 {r.replies.map((nr: any) => {
                                                     const isNestedReplyMe = nr.userId === session?.user?.id || (isGuest && (nr.userId === 'guest-me' || nr.user.name === 'Invitado'));
                                                     return (
-                                                        <div key={nr.id} className="nested-reply-item">
+                                                        <div key={nr.id} id={nr.id} className="reply-item">
                                                             <div className="reply-header">
                                                                 <img src={nr.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent((nr.user.name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}`} className="reply-avatar mini" />
                                                                 <div className="reply-meta">
@@ -1126,6 +1127,12 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                                             <div className="log-meta">
                                                                 <span className="log-user">{msg.user.name}{(isMe && !msg.user.name.includes('(tú)')) ? ' (tú)' : ''}</span>
                                                                 <span className="log-time">{formatMessageDate(new Date(msg.createdAt), lang, true)}</span>
+                                                                {msg.parentId && (
+                                                                    <div className="log-reply-tag">
+                                                                        <ReplyIcon size={10} />
+                                                                        <span>{lang === 'es' ? 'Respuesta' : 'Reply'}</span>
+                                                                    </div>
+                                                                )}
                                                             </div>
                                                             <div className="log-text" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                                                                 {msg.images && msg.images.length > 0 && <ImageIcon size={14} className="log-msg-icon" />}
@@ -1377,6 +1384,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .log-row-content { display: flex; align-items: center; justify-content: space-between; gap: 1rem; width: 100%; }
                 .log-tags { display: flex; align-items: center; gap: 0.4rem; font-size: 0.65rem; font-weight: 900; background: #f8fafc; padding: 0.4rem 0.8rem; border-radius: 10px; color: #94a3b8; border: 1px solid #f1f5f9; text-transform: uppercase; letter-spacing: 0.02em; flex-shrink: 0; }
                 .log-img-indicator { display: flex; align-items: center; gap: 0.2rem; background: rgba(0, 112, 243, 0.05); color: var(--accent); padding: 0.1rem 0.4rem; border-radius: 6px; font-size: 0.7rem; font-weight: 800; }
+                .log-reply-tag { display: inline-flex; align-items: center; gap: 0.2rem; background: rgba(0, 112, 243, 0.08); color: var(--accent); padding: 0.1rem 0.5rem; border-radius: 8px; font-size: 0.65rem; font-weight: 900; margin-left: 0.8rem; text-transform: uppercase; }
                 
                 .reply-item { background: #fcfdfe; padding: 1.25rem; border-radius: 20px; border: 1px solid #f8fafc; display: flex; flex-direction: column; gap: 0.8rem; }
                 .reply-header { display: flex; align-items: center; gap: 0.8rem; }
