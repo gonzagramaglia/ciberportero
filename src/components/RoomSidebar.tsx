@@ -155,13 +155,12 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
 
                 if (target) {
                     setEditingId(target.id);
+                    setEditValue(target.name); // Always set name first
                     if (!isCat) {
                         const parts = (target.slug || '').split('-');
                         const coreSlug = (parts.length > 1 && parts[0].length === 4) ? parts.slice(1).join('-') : (target.slug || strictSlugify(target.name));
                         setEditSlugValue(coreSlug.replace(/^#/, ''));
                         setEditDescValue(target.description || '');
-                    } else {
-                        setEditValue(target.name);
                     }
                 }
             }

@@ -1190,7 +1190,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 textarea, input, button { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important; }
                 .room-chat-wrapper { display: flex; flex-direction: column; min-height: 100vh; max-width: 850px; margin: 0 auto; position: relative; padding: 0 1rem; }
                 .chat-content-container { display: flex; flex-direction: column; gap: 1.5rem; padding-bottom: 5rem; }
-                .chat-top-header { margin-top: 1rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+                .chat-top-header { margin-top: 0; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
                 @media (max-width: 768px) {
                     .chat-top-header { flex-direction: column; align-items: flex-start; gap: 0.4rem; padding: 0.5rem 0; }
                     .path-separator { display: none; }
