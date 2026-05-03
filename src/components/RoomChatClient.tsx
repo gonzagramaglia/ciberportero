@@ -32,6 +32,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
     const [selectedImages, setSelectedImages] = useState<File[]>([]);
     const [replySelectedImages, setReplySelectedImages] = useState<File[]>([]);
     const [isDragging, setIsDragging] = useState(false);
+    const [isDraggingReply, setIsDraggingReply] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [targetMessageId, setTargetMessageId] = useState<string | null>(null);
     const [externalImageUrl, setExternalImageUrl] = useState('');
@@ -170,33 +171,32 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
             setCurrentSubId(actualId || 'general');
         };
 
-        const handleHashChange = () => {
+        const updateSubId = () => {
             const hash = window.location.hash.replace('#', '');
+            setMessages([]);
+            setLoadingMessages(true);
             validateAndSetSubId(hash || null);
         };
-
         const handleCustomChange = (e: any) => {
-            if (e.detail !== undefined) validateAndSetSubId(e.detail);
+            if (e.detail !== undefined) {
+                setMessages([]);
+                setLoadingMessages(true);
+                validateAndSetSubId(e.detail);
+            }
         };
-
-        handleHashChange();
-        window.addEventListener('hashchange', handleHashChange);
+        updateSubId();
+        window.addEventListener('hashchange', updateSubId);
         window.addEventListener('subcategory-change', handleCustomChange);
-
         return () => {
-            window.removeEventListener('hashchange', handleHashChange);
+            window.removeEventListener('hashchange', updateSubId);
             window.removeEventListener('subcategory-change', handleCustomChange);
         };
-    }, [isGuest, roomId]);
+    }, [roomId, isGuest]);
 
     const handleLogClick = (msg: any) => {
         const subId = msg.subcategoryId || msg.subcategory?.id || 'general';
         window.location.hash = `#${subId}`;
         window.dispatchEvent(new CustomEvent('subcategory-change', { detail: subId }));
-        setMessages([]);
-        setLoadingMessages(true);
-        setCurrentSubId(subId);
-        setTargetMessageId(msg.id);
     };
 
     useEffect(() => {
@@ -214,15 +214,17 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
     }, [messages, loadingMessages, targetMessageId]);
 
     useEffect(() => {
+        let ignore = false;
         const loadMessages = async () => {
             const sid = currentSubId || 'general';
-            setLoadingMessages(true);
+            if (!ignore) setLoadingMessages(true);
             try {
+                let msgs = [];
                 if (isGuest) {
                     const targetRoom = guestStore.getRoom(roomId!) || guestStore.getRooms()[0];
-                    if (currentSubId === 'general' || !currentSubId) {
-                        setMessages([...(targetRoom?.generalMessages || [])].reverse());
-                    } else if (currentSubId === 'history') {
+                    if (sid === 'general') {
+                        msgs = [...(targetRoom?.generalMessages || [])].reverse();
+                    } else if (sid === 'history') {
                         if (targetRoom) {
                             const allMsgs: any[] = [];
                             const processMsg = (m: any, catName: string, subName: string, subId: string) => {
@@ -233,52 +235,50 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                     });
                                 }
                             };
-
                             targetRoom.categories.forEach((c: any) => {
                                 c.subcategories.forEach((s: any) => {
                                     s.messages.forEach((m: any) => processMsg(m, c.name, s.name, s.id));
                                 });
                             });
                             targetRoom.generalMessages.forEach((m: any) => processMsg(m, 'General', 'Chat General', 'general'));
-
-                            setMessages(allMsgs.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
+                            msgs = allMsgs.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
                         }
                     } else {
-                        const sub = guestStore.getSubcategory(currentSubId!);
-                        setMessages([...(sub?.messages || [])].reverse());
+                        const sub = guestStore.getSubcategory(sid);
+                        msgs = [...(sub?.messages || [])].reverse();
                     }
                 } else {
                     const { getSubcategoryMessages, getAllRoomMessages, getGeneralMessages } = await import('@/lib/salasActions');
                     const targetRoomId = roomId || propRoomId;
-                    if (isHistory) {
+                    if (sid === 'history') {
                         if (targetRoomId) {
                             const dbMsgs = await getAllRoomMessages(targetRoomId);
-                            setMessages(dbMsgs.map((m: any) => ({
+                            msgs = dbMsgs.map((m: any) => ({
                                 ...m,
                                 subcategoryName: m.subcategory?.name || 'Chat General',
                                 categoryName: m.subcategory?.category?.name || 'General'
-                            })));
+                            }));
                         }
-                    } else if (isGeneral) {
+                    } else if (sid === 'general') {
                         if (targetRoomId) {
                             const genMsgs = await getGeneralMessages(targetRoomId);
-                            setMessages(genMsgs || []);
+                            msgs = genMsgs || [];
                         }
                     } else {
-                        if (currentSubId) {
-                            const subMsgs = await getSubcategoryMessages(currentSubId);
-                            setMessages(subMsgs || []);
-                        }
+                        const subMsgs = await getSubcategoryMessages(sid);
+                        msgs = subMsgs || [];
                     }
                 }
+                if (!ignore) setMessages(msgs);
             } catch (err) {
                 console.error("Error loading messages:", err);
             } finally {
-                setLoadingMessages(false);
+                if (!ignore) setLoadingMessages(false);
             }
         };
         loadMessages();
-    }, [currentSubId, isGuest, isGeneral, isHistory, refreshTrigger, roomId, messages.length === 0]);
+        return () => { ignore = true; };
+    }, [currentSubId, roomId, isGuest, refreshTrigger]);
 
     const handleDeleteMessage = async (msgId: string, isReply = false, parentId?: string) => {
         if (confirmDeleteId !== msgId) {
@@ -351,10 +351,15 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     <button type="button" onClick={() => setReplyingTo(null)} className="close-reply-btn"><X size={16} /></button>
                 </div>
                 <div 
-                    className={`reply-input-area ${isDragging ? 'is-dragging' : ''}`}
-                    onDragOver={handleDrag}
-                    onDragLeave={handleDrag}
-                    onDrop={(e) => handleDrop(e, true)}
+                    className={`reply-input-area ${isDraggingReply ? 'is-dragging' : ''}`}
+                    onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingReply(true); }}
+                    onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingReply(false); }}
+                    onDrop={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setIsDraggingReply(false);
+                        handleDrop(e, true);
+                    }}
                 >
                     <form onSubmit={(e) => handleSend(e, true)}>
                         <textarea autoFocus value={replyText} onChange={e => setReplyText(e.target.value)} placeholder={roomsT.chat.whatAreYouThinking} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(e, true); } }} />
@@ -404,7 +409,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                     style={{ width: '100px' }}
                                 />
                             </div>
-                            <button type="submit" disabled={sending || (!replyText.trim() && selectedImages.length === 0)} className="room-btn-primary mini" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.6rem 1.2rem', width: 'auto' }}>
+                            <button type="submit" disabled={sending || (!replyText.trim() && replySelectedImages.length === 0 && !replyExternalImageUrl.trim())} className="room-btn-primary mini" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.6rem 1.2rem', width: 'auto' }}>
                                 {sending ? <Loader2 size={18} className="spin" /> : (
                                     <>
                                         <span>{lang === 'es' ? 'Responder' : 'Reply'}</span>
@@ -1277,7 +1282,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .btn-reply-trigger { background: #f8fafc; border: 1px solid #f1f5f9; padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.85rem; font-weight: 800; color: #64748b; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s; }
                 .btn-reply-trigger:hover { color: var(--accent); background: rgba(0, 112, 243, 0.05); border-color: rgba(0, 112, 243, 0.1); }
 
-                .empty-view { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6rem 2rem; text-align: center; background: #fff; border: 2px dashed #f1f5f9; border-radius: 32px; }
+                .empty-view { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10rem 2rem; text-align: center; background: #fff; border: 2px dashed #f1f5f9; border-radius: 32px; }
                 .empty-icon-circle { width: 80px; height: 80px; background: rgba(0, 112, 243, 0.05); color: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; }
                 .empty-view h3 { margin: 0 0 0.5rem 0; font-size: 1.5rem; font-weight: 900; color: #1e293b; }
                 .empty-view p { margin: 0; color: #94a3b8; font-weight: 600; font-size: 1.1rem; max-width: 300px; line-height: 1.5; }
@@ -1337,6 +1342,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .reply-text.mini { font-size: 0.9rem; }
 
                 .inline-reply-box { margin-top: 1rem; border: 2px solid #f1f5f9; border-radius: 20px; overflow: hidden; background: #fcfdfe; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: all 0.2s; }
+                .reply-input-area.is-dragging { border-color: var(--accent); background: rgba(0, 112, 243, 0.02); }
                 
                 .pinned-header { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 0.75rem; padding-left: 0.5rem; }
                 .pinned-section-wrapper { margin-bottom: 1.5rem; }
