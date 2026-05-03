@@ -108,6 +108,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
             if (id !== currentSubId) {
                 setMessages([]);
                 setLoadingMessages(true);
+                setCurrentSubId(id); // Set it immediately so UI can react (e.g. breadcrumb)
             }
             let activeRoom = room;
 
@@ -1002,13 +1003,19 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                             onDrop={(e) => handleDrop(e, false)}
                         >
                             <form onSubmit={(e) => handleSend(e, false)}>
-                                <textarea
-                                    value={text}
-                                    onChange={e => setText(e.target.value)}
-                                    placeholder={isGeneral ? roomsT.chat.mainPlaceholder : roomsT.chat.whatAreYouThinking}
-                                    rows={text.split('\n').length > 2 ? 4 : 1}
-                                    onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(e, false); } }}
-                                />
+                                {loadingMessages ? (
+                                    <div className="skeleton-input-wrapper">
+                                        <div className="skeleton skeleton-input" />
+                                    </div>
+                                ) : (
+                                    <textarea
+                                        value={text}
+                                        onChange={e => setText(e.target.value)}
+                                        placeholder={isGeneral ? roomsT.chat.mainPlaceholder : roomsT.chat.whatAreYouThinking}
+                                        rows={text.split('\n').length > 2 ? 4 : 1}
+                                        onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(e, false); } }}
+                                    />
+                                )}
                                 {selectedImages.length > 0 && (
                                     <div className="preview-row">
                                         {selectedImages.map((file: any, i: number) => (
@@ -1432,12 +1439,17 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .name-label-breadcrumb { font-weight: 800; color: #1e293b; }
                 .hash-icon-breadcrumb { color: #cbd5e1; margin-right: 0.2rem; }
 
-                .skeleton {
-                    background: linear-gradient(90deg, #f8fafc 25%, #f1f5f9 50%, #f8fafc 75%);
-                    background-size: 200% 100%;
+                .skeleton { 
+                    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%); 
+                    background-size: 200% 100%; 
                     animation: skeleton-loading 1.5s infinite linear;
-                    border-radius: 6px;
+                    border-radius: 4px;
                 }
+                .skeleton-breadcrumb { height: 1.2rem; }
+                .skeleton-desc { height: 1rem; margin-bottom: 0.4rem; }
+                .skeleton-input-wrapper { padding: 0.5rem; height: 40px; display: flex; align-items: center; }
+                .skeleton-input { width: 100%; height: 1.1rem; border-radius: 6px; }
+
                 @keyframes skeleton-loading {
                     0% { background-position: 200% 0; }
                     100% { background-position: -200% 0; }

@@ -167,6 +167,18 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
         return () => window.removeEventListener('open-management-modal', handleOpenManage as any);
     }, [room]);
 
+    useEffect(() => {
+        if (!isManageModalOpen) {
+            setEditingId(null);
+            setEditValue('');
+            setEditSlugValue('');
+            setEditDescValue('');
+            setIsAddingCategory(false);
+            setIsAddingSub(null);
+            setNewName('');
+        }
+    }, [isManageModalOpen]);
+
     const strictSlugify = (text: string) => {
         return text.toString().toLowerCase().trim()
             .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove accents
@@ -181,13 +193,15 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
         // Find current sub to check if we need to update URL
         const oldSub = room.categories.flatMap((c: any) => c.subcategories).find((s: any) => s.id === subId);
         const parts = (oldSub?.slug || '').split('-');
-        const prefix = (parts.length > 1 && parts[0].length === 4) ? parts[0] : (oldSub?.categoryId?.slice(-4) || '');
         const currentCoreSlug = (parts.length > 1 && parts[0].length === 4) ? parts.slice(1).join('-') : (oldSub?.slug || strictSlugify(name));
         const coreSlug = slug !== undefined ? slug : currentCoreSlug;
-        const finalSlug = prefix ? `${prefix}-${coreSlug}` : coreSlug;
+        
+        // We pass the core slug to the action, it will add the prefix
         
         if (isGuest) {
-            guestStore.updateSubcategory(room.id, subId, name, finalSlug, description);
+            const prefix = oldSub?.categoryId?.slice(-4) || '';
+            const gFinalSlug = prefix ? `${prefix}-${coreSlug}` : coreSlug;
+            guestStore.updateSubcategory(room.id, subId, name, gFinalSlug, description);
             setRoom({ ...guestStore.getRoom(room.id) } as any);
             setEditingId(null);
             window.dispatchEvent(new CustomEvent('room-data-updated'));
@@ -195,7 +209,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
         } else {
             setLoading(true);
             try {
-                const res = await updateSubcategory(subId, name, finalSlug, description);
+                const res = await updateSubcategory(subId, name, coreSlug, description);
                 if (res.success) {
                     const { getRoomInfo } = await import('@/lib/salasActions');
                     const updatedRoom: any = await getRoomInfo(room.id);
@@ -653,7 +667,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                                                 <label>Slug (# canal)</label>
                                                                 <div className="input-hash-wrapper">
                                                                     <span className="hash-prefix">#</span>
-                                                                    <input autoFocus value={editSlugValue} onChange={e => setEditSlugValue(strictSlugify(e.target.value))} onFocus={e => e.target.select()} onKeyDown={e => e.key === 'Enter' && handleUpdateSub(sub.id, editValue, editSlugValue, editDescValue)} placeholder="ej: matrices" />
+                                                                    <input value={editSlugValue} onChange={e => setEditSlugValue(strictSlugify(e.target.value))} onFocus={e => e.target.select()} onKeyDown={e => e.key === 'Enter' && handleUpdateSub(sub.id, editValue, editSlugValue, editDescValue)} placeholder="ej: matrices" />
                                                                 </div>
                                                             </div>
                                                             <div className="input-with-label">

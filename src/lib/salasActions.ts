@@ -312,7 +312,8 @@ export async function updateSubcategory(subId: string, name: string, slug?: stri
       where: { id: subId }, 
       include: { category: { include: { subcategories: true, room: true } } } 
     });
-    if (!sub || sub.category.room.creatorId !== session.user.id) return { error: "No autorizado" };
+    const isAdmin = session.user.email === 'ciberportero@gmail.com' || session.user.email === 'gonzalogramagia@gmail.com' || session.user.role === 'admin';
+    if (!sub || (sub.category.room.creatorId !== session.user.id && !isAdmin)) return { error: "No autorizado" };
     
     // Check for duplicate names within the same category only if name changed
     if (sub.name !== name) {
