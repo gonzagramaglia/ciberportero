@@ -711,7 +711,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                                                     setEditingId(sub.id); 
                                                                     setEditValue(sub.name); 
                                                                     const parts = (sub.slug || '').split('-');
-                                                                    const coreSlug = (parts.length > 1 && parts[0].length === 4) ? parts.slice(1).join('-') : (sub.slug || strictSlugify(sub.name));
+                                                                    const coreSlug = (parts.length > 1 && parts[0].length === 4) ? parts.slice(1).join('-') : sub.slug;
                                                                     setEditSlugValue(coreSlug.replace(/^#/, '')); 
                                                                     setEditDescValue(sub.description || ''); 
                                                                 }} className="btn-action edit"><Pencil size={12} /></button>
@@ -815,9 +815,11 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 .category-header:hover { background: #f8fafc; }
                 .cat-name { display: flex; align-items: center; gap: 0.6rem; font-size: 0.95rem; font-weight: 800; color: #1e293b; }
                 .mini-plus-btn { opacity: 0; width: 24px; height: 24px; border-radius: 6px; border: none; background: #e2e8f0; color: #64748b; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-                .mini-wrench-btn { opacity: 0; width: 24px; height: 24px; border-radius: 6px; border: none; background: #f8fafc; color: #94a3b8; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; margin-left: 0.5rem; }
+                .mini-wrench-btn { opacity: 0; width: 24px; height: 24px; border-radius: 8px; border: none; background: transparent; color: #cbd5e1; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); margin-left: 0.5rem; }
+                .mini-wrench-btn svg { transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
                 .category-header:hover .mini-plus-btn, .category-header:hover .mini-wrench-btn { opacity: 1; }
-                .mini-wrench-btn:hover { background: var(--accent); color: #fff; }
+                .mini-wrench-btn:hover { background: rgba(0, 112, 243, 0.08); color: var(--accent); }
+                .mini-wrench-btn:hover svg { transform: scaleY(-1); }
                 .sub-list { padding-left: 0.5rem; margin-left: 1.2rem; border-left: 2px solid #f1f5f9; margin-top: 0.2rem; display: flex; flex-direction: column; gap: 0.25rem; }
                 .sub-link { display: flex; align-items: center; gap: 0.8rem; padding: 0.6rem 0.8rem; border-radius: 10px; color: #64748b; font-size: 0.9rem; font-weight: 600; transition: all 0.2s; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
                 .sub-link:hover { background: #f1f5f9; color: #1e293b; transform: translateX(4px); }

@@ -830,7 +830,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                         ) : editingSubId === currentSub?.id ? (
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
                                                 <span className="path-segment sub" style={{ opacity: 0.6, display: 'flex', alignItems: 'center', gap: '0' }}>
-                                                    <Hash size={22} style={{ marginRight: '-0.2rem' }} />
+                                                    <Hash size={11} style={{ marginRight: '-0.2rem' }} />
                                                     <span className="slug-label" style={{ marginRight: '0.6rem' }}>{(() => {
                                                         const parts = (currentSub.slug || '').split('-');
                                                         return (parts.length > 1 && parts[0].length === 4) ? parts.slice(1).join('-') : (currentSub.slug || strictSlugify(currentSub.name));
@@ -861,23 +861,25 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                                             <Settings size={14} />
                                                         </button>
                                                     ) : (
-                                                        <Hash size={22} className="hash-icon-breadcrumb" style={{ marginRight: '-0.25rem' }} />
+                                                        <Hash size={11} className="hash-icon-breadcrumb" style={{ marginRight: '-0.25rem' }} />
                                                     )}
                                                     <span className="slug-label" style={{ marginRight: '0.6rem' }}>{(() => {
                                                         const parts = (currentSub.slug || '').split('-');
                                                         return (parts.length > 1 && parts[0].length === 4) ? parts.slice(1).join('-') : (currentSub.slug || strictSlugify(currentSub.name));
                                                     })()}</span>
                                                 </div>
-                                                <span className="name-label-breadcrumb">{currentSub.name}</span>
-                                                {canManage && (
-                                                    <button
-                                                        className="breadcrumb-edit-btn"
-                                                        onClick={() => { setEditingSubId(currentSub.id); setEditSubValue(currentSub.name); }}
-                                                        title={lang === 'es' ? 'Editar nombre' : 'Edit name'}
-                                                    >
-                                                        <Pencil size={12} />
-                                                    </button>
-                                                )}
+                                                <div className="name-row-breadcrumb">
+                                                    <span className="name-label-breadcrumb">{currentSub.name}</span>
+                                                    {canManage && (
+                                                        <button
+                                                            className="breadcrumb-edit-btn"
+                                                            onClick={() => { setEditingSubId(currentSub.id); setEditSubValue(currentSub.name); }}
+                                                            title={lang === 'es' ? 'Editar nombre' : 'Edit name'}
+                                                        >
+                                                            <Pencil size={12} />
+                                                        </button>
+                                                    )}
+                                                </div>
                                             </span>
                                         )}
                                     </div>
@@ -1188,7 +1190,9 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     .path-segment.sub { flex-direction: column !important; align-items: flex-start !important; gap: 0.1rem !important; width: 100% !important; }
                     .slug-container-breadcrumb { display: flex !important; flex-direction: row !important; align-items: center !important; gap: 0.2rem !important; margin-bottom: 0.6rem !important; }
                     .slug-label { margin-bottom: 0 !important; display: inline-block !important; }
-                    .name-label-breadcrumb { display: block !important; font-weight: 800 !important; font-size: 1.2rem !important; margin-top: 0.1rem !important; line-height: 1.2 !important; }
+                    .name-row-breadcrumb { display: flex !important; align-items: center !important; gap: 0.5rem !important; width: 100% !important; }
+                    .name-label-breadcrumb { display: inline-block !important; font-weight: 800 !important; font-size: 1.2rem !important; margin-top: 0 !important; line-height: 1.2 !important; }
+                    .breadcrumb-edit-btn { position: relative !important; top: 1px !important; margin-left: 0 !important; }
                 }
                 
                 .status-badge { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.6rem 1.4rem; border-radius: 14px; border: 1px solid #e2e8f0; font-size: 0.9rem; }
