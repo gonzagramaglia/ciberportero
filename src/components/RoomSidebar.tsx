@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Pencil, Plus, Trash2, Hash, Check, Folder, FolderOpen, History as HistoryIcon, MessageSquare, X, Settings2, GripVertical, CheckCircle2, ShieldCheck, ChevronUp, ChevronDown } from 'lucide-react';
+import { Pencil, Plus, Trash2, Hash, Check, Folder, FolderOpen, History as HistoryIcon, MessageSquare, X, Settings2, GripVertical, CheckCircle2, ShieldCheck, ChevronUp, ChevronDown, Wrench } from 'lucide-react';
 import { createCategory, createSubcategory, updateCategory, deleteCategory, updateSubcategory, deleteSubcategory, moveSubcategory } from '@/lib/salasActions';
 import { toast } from 'react-hot-toast';
 import { translations } from '@/lib/translations';
@@ -139,14 +139,27 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
         const handleOpenManage = (e: any) => {
             setIsManageModalOpen(true);
             const subId = e.detail?.subId;
-            if (subId) {
-                const sub = room.categories.flatMap((c: any) => c.subcategories).find((s: any) => s.id === subId);
-                if (sub) {
-                    setEditingId(sub.id);
-                    // Extract core slug (after first hyphen)
-                    const coreSlug = (sub.slug || '').includes('-') ? (sub.slug || '').split('-').slice(1).join('-') : (sub.slug || strictSlugify(sub.name));
-                    setEditSlugValue(coreSlug.replace(/^#/, ''));
-                    setEditDescValue(sub.description || '');
+            if (subId || e.detail?.catId) {
+                const targetId = subId || e.detail.catId;
+                const isCat = !!e.detail.catId && !subId;
+                
+                let target: any = null;
+                if (isCat) {
+                    target = room.categories.find((c: any) => c.id === targetId);
+                } else {
+                    target = room.categories.flatMap((c: any) => c.subcategories).find((s: any) => s.id === targetId);
+                }
+
+                if (target) {
+                    setEditingId(target.id);
+                    if (!isCat) {
+                        const parts = (target.slug || '').split('-');
+                        const coreSlug = (parts.length > 1 && parts[0].length === 4) ? parts.slice(1).join('-') : (target.slug || strictSlugify(target.name));
+                        setEditSlugValue(coreSlug.replace(/^#/, ''));
+                        setEditDescValue(target.description || '');
+                    } else {
+                        setEditValue(target.name);
+                    }
                 }
             }
         };
@@ -167,9 +180,9 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
         
         // Find current sub to check if we need to update URL
         const oldSub = room.categories.flatMap((c: any) => c.subcategories).find((s: any) => s.id === subId);
-        const prefix = oldSub?.categoryId?.slice(-4) || '';
-        // Logic: if slug is provided, use it. If not, try to keep the old one (stripping prefix). If no old one, slugify name.
-        const currentCoreSlug = oldSub?.slug ? oldSub.slug.split('-').slice(1).join('-') : strictSlugify(name);
+        const parts = (oldSub?.slug || '').split('-');
+        const prefix = (parts.length > 1 && parts[0].length === 4) ? parts[0] : (oldSub?.categoryId?.slice(-4) || '');
+        const currentCoreSlug = (parts.length > 1 && parts[0].length === 4) ? parts.slice(1).join('-') : (oldSub?.slug || strictSlugify(name));
         const coreSlug = slug !== undefined ? slug : currentCoreSlug;
         const finalSlug = prefix ? `${prefix}-${coreSlug}` : coreSlug;
         
@@ -526,6 +539,18 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                     {cat.subcategories.some((s: any) => s.id === currentSubId) ? <FolderOpen size={16} color="var(--accent)" /> : <Folder size={16} color="#94a3b8" />}
                                     {cat.name}
                                 </div>
+                                {canManage && (
+                                    <button 
+                                        className="mini-wrench-btn"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            window.dispatchEvent(new CustomEvent('open-management-modal', { detail: { catId: cat.id } }));
+                                        }}
+                                        title={lang === 'es' ? 'Gestionar categoría' : 'Manage category'}
+                                    >
+                                        <Wrench size={12} />
+                                    </button>
+                                )}
                             </div>
                             <div className="sub-list">
                                 {cat.subcategories.map((sub: any) => (
@@ -655,7 +680,8 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                                                                 <button onClick={() => { 
                                                                     setEditingId(sub.id); 
                                                                     setEditValue(sub.name); 
-                                                                    const coreSlug = (sub.slug || '').includes('-') ? (sub.slug || '').split('-').slice(1).join('-') : (sub.slug || strictSlugify(sub.name));
+                                                                    const parts = (sub.slug || '').split('-');
+                                                                    const coreSlug = (parts.length > 1 && parts[0].length === 4) ? parts.slice(1).join('-') : (sub.slug || strictSlugify(sub.name));
                                                                     setEditSlugValue(coreSlug.replace(/^#/, '')); 
                                                                     setEditDescValue(sub.description || ''); 
                                                                 }} className="btn-action edit"><Pencil size={12} /></button>
@@ -759,7 +785,9 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
                 .category-header:hover { background: #f8fafc; }
                 .cat-name { display: flex; align-items: center; gap: 0.6rem; font-size: 0.95rem; font-weight: 800; color: #1e293b; }
                 .mini-plus-btn { opacity: 0; width: 24px; height: 24px; border-radius: 6px; border: none; background: #e2e8f0; color: #64748b; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-                .category-header:hover .mini-plus-btn { opacity: 1; }
+                .mini-wrench-btn { opacity: 0; width: 24px; height: 24px; border-radius: 6px; border: none; background: #f8fafc; color: #94a3b8; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; margin-left: 0.5rem; }
+                .category-header:hover .mini-plus-btn, .category-header:hover .mini-wrench-btn { opacity: 1; }
+                .mini-wrench-btn:hover { background: var(--accent); color: #fff; }
                 .sub-list { padding-left: 0.5rem; margin-left: 1.2rem; border-left: 2px solid #f1f5f9; margin-top: 0.2rem; display: flex; flex-direction: column; gap: 0.25rem; }
                 .sub-link { display: flex; align-items: center; gap: 0.8rem; padding: 0.6rem 0.8rem; border-radius: 10px; color: #64748b; font-size: 0.9rem; font-weight: 600; transition: all 0.2s; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
                 .sub-link:hover { background: #f1f5f9; color: #1e293b; transform: translateX(4px); }

@@ -809,16 +809,22 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                     <span className="path-separator">•</span>
                                     <span className="path-segment">{lang === 'es' ? 'Conversación Global' : 'Global Conversation'}</span>
                                 </>
-                            ) : currentSub ? (
+                            ) : (loadingMessages || currentSub) ? (
                                 <>
                                     <div className="breadcrumb-item">
-                                        <span className="path-segment active">
-                                            {currentCat?.name || roomsT.chat.chatTitle}
-                                        </span>
+                                        {loadingMessages ? (
+                                            <div className="skeleton skeleton-breadcrumb" style={{ width: '80px' }} />
+                                        ) : (
+                                            <span className="path-segment active">
+                                                {currentCat?.name || roomsT.chat.chatTitle}
+                                            </span>
+                                        )}
                                     </div>
                                     <span className="path-separator"><ChevronRight size={18} /></span>
                                     <div className="breadcrumb-item">
-                                        {editingSubId === currentSub.id ? (
+                                        {loadingMessages ? (
+                                            <div className="skeleton skeleton-breadcrumb" style={{ width: '120px' }} />
+                                        ) : editingSubId === currentSub?.id ? (
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
                                                 <span className="path-segment sub" style={{ opacity: 0.6, display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
                                                     <Hash size={14} />
@@ -884,9 +890,16 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     )}
                 </div>
 
-                {(isGeneral || currentSub) && !isHistory && (
+                {(isGeneral || currentSub || loadingMessages) && !isHistory && (
                     <div className="subcategory-description-row fade-in">
-                        {editingDesc ? (
+                        {loadingMessages ? (
+                            <div className="desc-display-container">
+                                <div className="skeleton-desc-group">
+                                    <div className="skeleton skeleton-desc" style={{ width: '90%' }} />
+                                    <div className="skeleton skeleton-desc" style={{ width: '60%', height: '0.8rem' }} />
+                                </div>
+                            </div>
+                        ) : editingDesc ? (
                             <div className="desc-edit-container">
                                 <textarea
                                     autoFocus
@@ -1412,6 +1425,20 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .slug-label { font-weight: 800; color: #94a3b8; font-family: monospace; margin-right: 0.5rem; font-size: 0.9rem; }
                 .name-label-breadcrumb { font-weight: 800; color: #1e293b; }
                 .hash-icon-breadcrumb { color: #cbd5e1; margin-right: 0.2rem; }
+
+                .skeleton {
+                    background: linear-gradient(90deg, #f8fafc 25%, #f1f5f9 50%, #f8fafc 75%);
+                    background-size: 200% 100%;
+                    animation: skeleton-loading 1.5s infinite linear;
+                    border-radius: 6px;
+                }
+                @keyframes skeleton-loading {
+                    0% { background-position: 200% 0; }
+                    100% { background-position: -200% 0; }
+                }
+                .skeleton-breadcrumb { height: 1.2rem; width: 100px; }
+                .skeleton-desc { height: 1rem; width: 100%; max-width: 400px; margin-top: 0.2rem; }
+                .skeleton-desc-group { display: flex; flex-direction: column; gap: 0.4rem; width: 100%; }
 
                 @media (max-width: 768px) {
                     .pin-controls-group { flex-direction: column; gap: 0.2rem !important; }
