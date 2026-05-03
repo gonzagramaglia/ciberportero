@@ -102,106 +102,76 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
         return `${dayName} ${day} de ${month}${connector}${time}`;
     }
 
-    useEffect(() => {
-        const scrollToBreadcrumb = () => {
-            const el = document.getElementById('chat-top-anchor');
+    const validateAndSetSubId = React.useCallback(async (id: string | null) => {
+        const targetId = id || 'general';
+        
+        if (window.innerWidth < 768) {
+            const el = document.getElementById('room-breadcrumb-focus');
             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        };
+        }
 
-        const validateAndSetSubId = async (id: string | null) => {
-            // Immediately clear messages and show loader if we're switching
-            if (id !== currentSubId) {
+        let activeRoom = room;
+        if (isGuest && !activeRoom) {
+            const gid = roomId || propRoomId || 'test-room';
+            activeRoom = guestStore.getRoom(gid) || guestStore.getRooms()[0];
+            if (activeRoom && activeRoom.id !== room?.id) setRoom(activeRoom as any);
+        }
+
+        if (targetId === 'general' || targetId === 'history') {
+            if (currentSubId !== targetId) {
                 setMessages([]);
-                setLoadingMessages(true);
-                setCurrentSubId(id);
-                // On mobile, scroll to top when changing
-                if (window.innerWidth < 768) {
-                    setTimeout(scrollToBreadcrumb, 100);
+                setCurrentSubId(targetId);
+            }
+            return;
+        }
+
+        let actualId = targetId;
+        let currentRoomData = activeRoom;
+
+        if (isGuest && !currentRoomData && roomId) {
+            currentRoomData = guestStore.getRoom(roomId);
+        }
+
+        if (!currentRoomData?.categories && !isGuest && roomId) {
+            const { getRoomDetails } = await import('@/lib/salasActions');
+            const data = await getRoomDetails(roomId);
+            if (data) {
+                setRoom(data);
+                currentRoomData = data;
+            }
+        }
+
+        if (currentRoomData?.categories) {
+            let foundSub = null;
+            for (const c of currentRoomData.categories) {
+                const s = c.subcategories?.find((s: any) => s.id === targetId || s.slug === targetId);
+                if (s) {
+                    foundSub = s;
+                    actualId = s.id;
+                    break;
+                }
+            }
+
+            if (foundSub) {
+                if (currentSubId !== actualId) {
+                    setMessages([]);
+                    setCurrentSubId(actualId);
                 }
             } else {
-                // If it's the same, ensure we're NOT loading
                 setLoadingMessages(false);
             }
-            let activeRoom = room;
-
-            if (isGuest && !activeRoom) {
-                activeRoom = guestStore.getRoom(roomId!) || guestStore.getRooms()[0];
-                if (activeRoom) setRoom(activeRoom as any);
-            }
-
-            if (!id || id === 'general' || id === 'history') {
-                const targetId = id || 'general';
-                if (targetId !== currentSubId) {
-                    setMessages([]);
-                    setLoadingMessages(true);
-                    setCurrentSubId(targetId);
-                } else {
-                    setLoadingMessages(false);
-                }
-                return;
-            }
-
-            let actualId = id;
-            let currentRoomData = activeRoom;
-
-            // If room is missing categories, try to fetch it first
-            if (!currentRoomData?.categories && !isGuest && roomId) {
-                const { getRoomDetails } = await import('@/lib/salasActions');
-                const data = await getRoomDetails(roomId);
-                if (data) {
-                    setRoom(data);
-                    currentRoomData = data;
-                }
-            }
-
-            if (currentRoomData?.categories) {
-                let foundSub = null;
-                for (const c of currentRoomData.categories) {
-                    const s = c.subcategories?.find((s: any) => s.id === id || s.slug === id);
-                    if (s) {
-                        foundSub = s;
-                        actualId = s.id;
-                        break;
-                    }
-                }
-
-                if (foundSub && currentSubId !== actualId) {
-                    // Only reload if the UUID is actually different from what we have
-                    setMessages([]);
-                    setLoadingMessages(true);
-                    setCurrentSubId(actualId);
-                } else if (!foundSub) {
-                    // If not found, stop loading
-                    setLoadingMessages(false);
-                }
-            }
-
-            if (isGuest) {
-                if (actualId && actualId !== 'general' && actualId !== 'history') {
-                    const sub = guestStore.getSubcategory(actualId);
-                    if (!sub) {
-                        if (!session) {
-                            window.location.href = '/salas';
-                        } else {
-                            window.location.href = '/salas/lista';
-                        }
-                        return;
-                    }
-                }
-            }
+        } else {
             setCurrentSubId(actualId || 'general');
-        };
+        }
+    }, [roomId, isGuest, room, currentSubId]);
 
+    useEffect(() => {
         const updateSubId = () => {
             const hash = window.location.hash.replace('#', '');
-            setMessages([]);
-            setLoadingMessages(true);
             validateAndSetSubId(hash || null);
         };
         const handleCustomChange = (e: any) => {
             if (e.detail !== undefined) {
-                setMessages([]);
-                setLoadingMessages(true);
                 validateAndSetSubId(e.detail);
             }
         };
@@ -212,7 +182,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
             window.removeEventListener('hashchange', updateSubId);
             window.removeEventListener('subcategory-change', handleCustomChange);
         };
-    }, [roomId, isGuest]);
+    }, [validateAndSetSubId]);
 
     const handleLogClick = (msg: any) => {
         const subId = msg.subcategoryId || msg.subcategory?.id || 'general';
@@ -242,7 +212,8 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
             try {
                 let msgs = [];
                 if (isGuest) {
-                    const targetRoom = guestStore.getRoom(roomId!) || guestStore.getRooms()[0];
+                    const gid = roomId || propRoomId || (guestStore.getRooms().length > 0 ? guestStore.getRooms()[0].id : 'test-room');
+                    const targetRoom = guestStore.getRoom(gid);
                     if (sid === 'general') {
                         msgs = [...(targetRoom?.generalMessages || [])].reverse();
                     } else if (sid === 'history') {
@@ -265,8 +236,19 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                             msgs = allMsgs.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
                         }
                     } else {
-                        const sub = guestStore.getSubcategory(sid);
-                        msgs = [...(sub?.messages || [])].reverse();
+                        // Use the already loaded room data as source of truth for messages
+                        let foundSub = null;
+                        const activeRoom = room || targetRoom;
+                        if (activeRoom) {
+                            for (const cat of activeRoom.categories) {
+                                const sub = cat.subcategories.find((s: any) => s.id === sid || s.slug === sid);
+                                if (sub) {
+                                    foundSub = sub;
+                                    break;
+                                }
+                            }
+                        }
+                        msgs = foundSub ? [...(foundSub.messages || [])].reverse() : [];
                     }
                 } else {
                     const { getSubcategoryMessages, getAllRoomMessages, getGeneralMessages } = await import('@/lib/salasActions');
@@ -299,7 +281,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
         };
         loadMessages();
         return () => { ignore = true; };
-    }, [currentSubId, roomId, isGuest, refreshTrigger]);
+    }, [currentSubId, roomId, isGuest, refreshTrigger, room]);
 
     const handleDeleteMessage = async (msgId: string, isReply = false, parentId?: string) => {
         if (confirmDeleteId !== msgId) {
@@ -813,7 +795,6 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
     return (
         <div className="room-chat-wrapper">
             <div className="chat-content-container">
-                <div id="chat-top-anchor" style={{ height: '1px' }} />
                 <div className={`chat-top-row ${isHistory ? 'history-mode' : ''}`}>
                     <div className="chat-top-header" id="room-breadcrumb-focus">
                         <div className="status-badge" style={{ background: isHistory ? 'rgba(0, 112, 243, 0.05)' : '#f8fafc', borderColor: isHistory ? 'rgba(0, 112, 243, 0.1)' : '#e2e8f0' }}>
@@ -848,9 +829,9 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                             <div className="skeleton skeleton-breadcrumb" style={{ width: '120px' }} />
                                         ) : editingSubId === currentSub?.id ? (
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
-                                                <span className="path-segment sub" style={{ opacity: 0.6, display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
-                                                    <Hash size={14} />
-                                                    <span className="slug-label" style={{ marginRight: '0.8rem' }}>{(() => {
+                                                <span className="path-segment sub" style={{ opacity: 0.6, display: 'flex', alignItems: 'center', gap: '0' }}>
+                                                    <Hash size={22} style={{ marginRight: '-0.2rem' }} />
+                                                    <span className="slug-label" style={{ marginRight: '0.6rem' }}>{(() => {
                                                         const parts = (currentSub.slug || '').split('-');
                                                         return (parts.length > 1 && parts[0].length === 4) ? parts.slice(1).join('-') : (currentSub.slug || strictSlugify(currentSub.name));
                                                     })()}</span>
@@ -869,22 +850,24 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                             </div>
                                         ) : (
                                             <span className="path-segment sub" style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
-                                                {canManage ? (
-                                                    <button
-                                                        className="breadcrumb-edit-btn config-trigger"
-                                                        style={{ marginLeft: 0, marginRight: '0.1rem', padding: '2px' }}
-                                                        onClick={() => window.dispatchEvent(new CustomEvent('open-management-modal', { detail: { subId: currentSub.id } }))}
-                                                        title={lang === 'es' ? 'Gestionar subcategoría' : 'Manage subcategory'}
-                                                    >
-                                                        <Settings size={14} />
-                                                    </button>
-                                                ) : (
-                                                    <Hash size={14} className="hash-icon-breadcrumb" />
-                                                )}
-                                                <span className="slug-label" style={{ marginRight: '0.8rem' }}>{(() => {
-                                                    const parts = (currentSub.slug || '').split('-');
-                                                    return (parts.length > 1 && parts[0].length === 4) ? parts.slice(1).join('-') : (currentSub.slug || strictSlugify(currentSub.name));
-                                                })()}</span>
+                                                <div className="slug-container-breadcrumb" style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                                                    {canManage ? (
+                                                        <button
+                                                            className="breadcrumb-edit-btn config-trigger"
+                                                            style={{ marginLeft: 0, marginRight: '0.1rem', padding: '2px' }}
+                                                            onClick={() => window.dispatchEvent(new CustomEvent('open-management-modal', { detail: { subId: currentSub.id } }))}
+                                                            title={lang === 'es' ? 'Gestionar subcategoría' : 'Manage subcategory'}
+                                                        >
+                                                            <Settings size={14} />
+                                                        </button>
+                                                    ) : (
+                                                        <Hash size={22} className="hash-icon-breadcrumb" style={{ marginRight: '-0.25rem' }} />
+                                                    )}
+                                                    <span className="slug-label" style={{ marginRight: '0.6rem' }}>{(() => {
+                                                        const parts = (currentSub.slug || '').split('-');
+                                                        return (parts.length > 1 && parts[0].length === 4) ? parts.slice(1).join('-') : (currentSub.slug || strictSlugify(currentSub.name));
+                                                    })()}</span>
+                                                </div>
                                                 <span className="name-label-breadcrumb">{currentSub.name}</span>
                                                 {canManage && (
                                                     <button
@@ -1189,11 +1172,23 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
             <style jsx global>{`
                 textarea, input, button { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important; }
                 .room-chat-wrapper { display: flex; flex-direction: column; min-height: 100vh; max-width: 850px; margin: 0 auto; position: relative; padding: 0 1rem; }
-                .chat-content-container { display: flex; flex-direction: column; gap: 1.5rem; padding-bottom: 5rem; }
+                .chat-content-container { display: flex; flex-direction: column; gap: 0; padding-bottom: 5rem; }
+                .chat-top-row { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 0; }
+                .chat-messages-container { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1.5rem; }
                 .chat-top-header { margin-top: 0; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+                .status-badge { display: flex; align-items: center; gap: 0.6rem; padding: 0.6rem 1.2rem; border-radius: 20px; border: 1px solid #e2e8f0; background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.03); max-width: 100%; overflow: hidden; }
                 @media (max-width: 768px) {
-                    .chat-top-header { flex-direction: column; align-items: flex-start; gap: 0.4rem; padding: 0.5rem 0; }
-                    .path-separator { display: none; }
+                    .status-badge { flex-direction: column !important; align-items: flex-start !important; gap: 0.4rem !important; padding: 1.2rem !important; border-radius: 20px !important; width: 100% !important; display: flex !important; }
+                    .path-separator { display: none !important; }
+                    .breadcrumb-item { width: 100%; display: block; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.4rem; margin-bottom: 0.2rem; }
+                    .breadcrumb-item:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+                    .breadcrumb-item span { display: block; width: 100%; font-size: 0.85rem; }
+                    
+                    /* Force slug and name on different rows in subcategory view */
+                    .path-segment.sub { flex-direction: column !important; align-items: flex-start !important; gap: 0.1rem !important; width: 100% !important; }
+                    .slug-container-breadcrumb { display: flex !important; flex-direction: row !important; align-items: center !important; gap: 0.2rem !important; margin-bottom: 0.6rem !important; }
+                    .slug-label { margin-bottom: 0 !important; display: inline-block !important; }
+                    .name-label-breadcrumb { display: block !important; font-weight: 800 !important; font-size: 1.2rem !important; margin-top: 0.1rem !important; line-height: 1.2 !important; }
                 }
                 
                 .status-badge { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.6rem 1.4rem; border-radius: 14px; border: 1px solid #e2e8f0; font-size: 0.9rem; }

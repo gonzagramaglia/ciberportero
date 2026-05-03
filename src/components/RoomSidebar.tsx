@@ -787,7 +787,7 @@ export default function RoomSidebar({ room: initialRoom, session }: any) {
             )}
 
             <style jsx>{`
-                .room-sidebar { width: 280px; flex-shrink: 0; padding-right: 1rem; height: 100%; display: flex; flex-direction: column; margin-top: 1rem; }
+                .room-sidebar { width: 280px; flex-shrink: 0; padding-right: 1rem; height: 100%; display: flex; flex-direction: column; margin-top: 14px; }
                 .categories-container { flex: 1; min-width: 0; overflow-y: auto; padding-right: 0.5rem; }
                 .general-chat-link { margin-bottom: 2rem; }
                 .sidebar-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; padding: 0 0.5rem; }

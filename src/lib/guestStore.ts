@@ -286,7 +286,8 @@ export const guestStore = {
     },
 
     getRoom(id: string) {
-        return this.getData().rooms.find(r => r.id === id);
+        const data = this.getData();
+        return data.rooms.find(r => r.id === id || r.name === id);
     },
 
     getAllMessages() {
@@ -568,7 +569,7 @@ export const guestStore = {
         const data = this.getData();
         for (const room of data.rooms) {
             for (const cat of room.categories) {
-                const sub = cat.subcategories.find(s => s.id === subId);
+                const sub = cat.subcategories.find(s => s.id === subId || s.slug === subId);
                 if (sub) return sub;
             }
         }
