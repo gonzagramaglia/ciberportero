@@ -1168,8 +1168,8 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .chat-content-container { display: flex; flex-direction: column; gap: 0; padding-bottom: 5rem; }
                 .chat-top-row { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 0; }
                 .chat-messages-container { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1.5rem; }
-                .chat-top-header { margin-top: 0; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
-                .status-badge { display: flex; align-items: center; gap: 0.6rem; padding: 0.6rem 1.2rem; border-radius: 20px; border: 1px solid #e2e8f0; background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.03); max-width: 100%; overflow: hidden; }
+                .chat-top-header { margin-top: 0.5rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; padding: 4px; }
+                .status-badge { display: flex; align-items: center; gap: 0.6rem; padding: 0.6rem 1.2rem; border-radius: 20px; border: 1px solid #e2e8f0; background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.03); max-width: 100%; transition: all 0.2s; }
                 @media (max-width: 768px) {
                     .status-badge { flex-direction: column !important; align-items: flex-start !important; gap: 0.4rem !important; padding: 1.2rem !important; border-radius: 20px !important; width: 100% !important; display: flex !important; }
                     .path-separator { display: none !important; }
@@ -1201,7 +1201,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .path-segment.sub { color: #1e293b; }
                 .path-separator { opacity: 0.3; margin: 0 0.4rem; color: #94a3b8; display: flex; align-items: center; justify-content: center; height: 100%; }
                 
-                .subcategory-description-row { margin-top: 0.5rem; padding-left: 0.5rem; border-left: 2px solid #f1f5f9; transition: all 0.2s; width: 100%; }
+                .subcategory-description-row { margin-top: 0.5rem; margin-bottom: 1.5rem; padding-left: 0.5rem; border-left: 2px solid #f1f5f9; transition: all 0.2s; width: 100%; }
                 .desc-display-container { display: flex; align-items: flex-start; gap: 0.6rem; padding: 0.6rem 1rem; border-radius: 12px; transition: all 0.2s; width: 100%; background: #fcfdfe; border: 1px solid #f1f5f9; }
                 .desc-display-container.can-edit { cursor: pointer; }
                 .desc-display-container.can-edit:hover { background: rgba(0, 112, 243, 0.03); border-color: rgba(0, 112, 243, 0.1); }
@@ -1412,7 +1412,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .reply-input-area.is-dragging { border-color: var(--accent); background: rgba(0, 112, 243, 0.02); }
                 
                 .pinned-header { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 0.75rem; padding-left: 0.5rem; }
-                .pinned-section-wrapper { margin-bottom: 1.5rem; }
+                .pinned-section-wrapper { margin-top: 2.5rem; margin-bottom: 1.5rem; }
                 .pinned-full-list { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1rem; }
                 .pinned-divider { display: flex; align-items: center; gap: 1.5rem; margin: 2rem 0 1rem 0; }
                 .pinned-divider::before, .pinned-divider::after { content: ''; flex: 1; height: 1px; background: #e2e8f0; }
