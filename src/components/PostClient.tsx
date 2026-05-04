@@ -100,7 +100,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
 
     // FIX: Robustly wrap plain text URLs containing underscores in < > to prevent Markdown italics
     const processedContent = String(postContent)
-        .replace(/(^|\s)(https?:\/\/[^\s<*>]+_[^\s<*>]*)/g, '$1<$2>');
+        .replace(/(^|\s)(https?:\/\/[^\s<*>]*_[^\s<*>]*)/g, '$1<$2>');
 
     const slugify = (text: any) => {
         const str = String(text || '');
@@ -286,7 +286,11 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                             components={{
                                 a: ({ node, ...props }) => {
                                     // Manually fix trailing underscores in URLs caught by the parser
-                                    const href = props.href || '';
+                                    let href = props.href || '';
+                                    const childrenText = String(props.children || '');
+                                    if (childrenText.startsWith('http') && childrenText.endsWith('_') && !href.endsWith('_')) {
+                                        href = childrenText;
+                                    }
                                     return <a {...props} href={href} target="_blank" rel="noopener noreferrer" />;
                                 },
                                 h1: (props) => <Heading level={1} {...props} />,

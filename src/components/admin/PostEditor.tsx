@@ -213,7 +213,23 @@ export default function PostEditor({ post }: PostEditorProps) {
                     />
                   ) : (
                     <div className="markdown-preview" style={{ minHeight: '600px', background: '#f8fafc', padding: '3rem', border: '1px dashed #cbd5e1', borderRadius: '24px' }}>
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{contents[activeLang]}</ReactMarkdown>
+                      <ReactMarkdown 
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          a: ({ node, ...props }) => {
+                            let href = props.href || '';
+                            const childrenText = String(props.children || '');
+                            if (childrenText.startsWith('http') && childrenText.endsWith('_') && !href.endsWith('_')) {
+                              href = childrenText;
+                            }
+                            return <a {...props} href={href} target="_blank" rel="noopener noreferrer" />;
+                          }
+                        }}
+                      >
+                        {String(contents[activeLang])
+                          .replace(/(^|\s)(https?:\/\/[^\s<*>]*_[^\s<*>]*)/g, '$1<$2>')
+                          .trim()}
+                      </ReactMarkdown>
                     </div>
                   )}
                 </div>
