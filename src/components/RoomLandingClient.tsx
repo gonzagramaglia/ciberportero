@@ -74,7 +74,8 @@ export default function RoomLandingClient({ session }: any) {
                         maxWidth: '450px', 
                         margin: 0,
                         lineHeight: '1.4',
-                        letterSpacing: '-0.02em'
+                        letterSpacing: '-0.02em',
+                        whiteSpace: 'pre-wrap'
                     }}>
                         {roomsT.signInPrompt}
                     </p>

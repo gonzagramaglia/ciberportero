@@ -17,9 +17,9 @@ import { votePost } from '../lib/actions';
 import { toast } from 'react-hot-toast';
 
 interface PostClientProps {
-  post: any;
-  slug: string;
-  session: any;
+    post: any;
+    slug: string;
+    session: any;
 }
 
 export default function PostClient({ post: initialPost, slug, session: initialSession }: PostClientProps) {
@@ -62,12 +62,12 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
         const currentVotes = Array.isArray(post.votes) ? post.votes : [];
         const isRemoving = voted === type;
         setVoted(isRemoving ? null : type);
-        
+
         // Build optimistic votes array safely
-        const newVotes = isRemoving 
+        const newVotes = isRemoving
             ? currentVotes.filter((v: any) => v.userId !== session.user.id)
             : [...currentVotes.filter((v: any) => v.userId !== session.user.id), { userId: session.user.id, type }];
-        
+
         setPost({ ...post, votes: newVotes });
 
         startTransition(async () => {
@@ -328,8 +328,8 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
 
                 <div className="copy-container" style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
                     <div className="vote-buttons" style={{ display: 'flex', gap: '0.4rem' }}>
-                        <button 
-                            onClick={() => handleVote('LIKE')} 
+                        <button
+                            onClick={() => handleVote('LIKE')}
                             className={`vote-button like ${voted === 'LIKE' ? 'active' : ''}`}
                             title={lang === 'es' ? 'Me gusta' : 'Like'}
                         >
@@ -362,9 +362,9 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                         { id: '04', slugs: ['ingles-1', 'aprobar-ingles-1'] },
                         { id: '05', slugs: ['sistemas-operativos-1', 'aprobar-sistemas-operativos-1'] }
                     ].map((s) => (
-                        <Link 
-                            key={s.id} 
-                            href={`/${lang === 'es' ? s.slugs[0] : s.slugs[1]}`} 
+                        <Link
+                            key={s.id}
+                            href={`/${lang === 'es' ? s.slugs[0] : s.slugs[1]}`}
                             className={`subject-nav-item ${s.slugs.includes(slug) ? 'active' : ''}`}
                         >
                             {s.id}

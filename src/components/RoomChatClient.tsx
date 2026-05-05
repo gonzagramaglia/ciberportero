@@ -1357,8 +1357,8 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
                 
                 
-                .chat-top-row { display: flex; flex-direction: column; margin-top: 1rem; gap: 1rem; }
-                .chat-top-row.history-mode { flex-direction: row; align-items: center; justify-content: space-between; }
+                .chat-top-row { display: flex; flex-direction: column; margin-top: 1rem; gap: 1rem; margin-bottom: 0.5rem; }
+                .chat-top-row.history-mode { flex-direction: row; align-items: center; justify-content: space-between; margin-bottom: 2.5rem; }
                 .chat-top-header { margin-top: 0; display: flex; align-items: center; }
                 
                 .history-search-container { flex: 1; margin-bottom: 0; max-width: 600px; }
@@ -1370,7 +1370,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .history-search-input::placeholder { color: #cbd5e1; font-weight: 500; }
                 .search-highlight { background: #fef3c7; color: #92400e; padding: 0 2px; border-radius: 2px; font-weight: 800; border-bottom: 2px solid #fbbf24; }
 
-                .log-row-premium { display: flex; align-items: center; gap: 1.2rem; padding: 0.8rem 1.2rem; background: #fff; border-radius: 18px; border: 1px solid #f1f5f9; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; margin-bottom: 0.5rem; }
+                .log-row-premium { display: flex; align-items: center; gap: 1.2rem; padding: 1rem 1.2rem 1.4rem 1.2rem; background: #fff; border-radius: 18px; border: 1px solid #f1f5f9; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; margin-bottom: 0.5rem; }
                 .log-row-premium:hover { border-color: var(--accent); transform: translateX(8px); }
                 .accent-bar { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--accent); opacity: 0; }
                 .log-row-premium:hover .accent-bar { opacity: 1; }
@@ -1382,7 +1382,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .log-msg-icon { color: var(--accent); flex-shrink: 0; }
                 .log-img-count { font-size: 0.8rem; color: #94a3b8; font-weight: 700; }
                 .log-row-content { display: flex; align-items: center; justify-content: space-between; gap: 1rem; width: 100%; }
-                .log-tags { display: flex; align-items: center; gap: 0.4rem; font-size: 0.65rem; font-weight: 900; background: #f8fafc; padding: 0.4rem 0.8rem; border-radius: 10px; color: #94a3b8; border: 1px solid #f1f5f9; text-transform: uppercase; letter-spacing: 0.02em; flex-shrink: 0; }
+                .log-tags { display: flex; align-items: center; gap: 0.4rem; font-size: 0.65rem; font-weight: 900; background: #f8fafc; padding: 0.4rem 0.8rem; border-radius: 10px; color: #94a3b8; border: 1px solid #f1f5f9; text-transform: uppercase; letter-spacing: 0.02em; flex-shrink: 0; margin-top: 0.5rem; }
                 .log-img-indicator { display: flex; align-items: center; gap: 0.2rem; background: rgba(0, 112, 243, 0.05); color: var(--accent); padding: 0.1rem 0.4rem; border-radius: 6px; font-size: 0.7rem; font-weight: 800; }
                 .log-reply-tag { display: inline-flex; align-items: center; gap: 0.2rem; background: rgba(0, 112, 243, 0.08); color: var(--accent); padding: 0.1rem 0.5rem; border-radius: 8px; font-size: 0.65rem; font-weight: 900; margin-left: 0.8rem; text-transform: uppercase; }
                 
