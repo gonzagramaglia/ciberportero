@@ -356,10 +356,14 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
         >
           <span className="day-number">{day}</span>
           {hasEvent && (
-              <div className="day-event-preview">
+            <div className="day-events-container">
+              {dayEvents.map((event, idx) => (
+                <div key={idx} className={`day-event-preview event-${event.type}`}>
                   <span className="preview-dot"></span>
-                  <span className="preview-text">{dayEvents[0].title['es']}</span>
-              </div>
+                  <span className="preview-text">{event.title['es']}</span>
+                </div>
+              ))}
+            </div>
           )}
         </div>
       )
@@ -1589,6 +1593,14 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
             color: #854d0e;
         }
 
+        :global(.day-events-container) {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            margin-top: auto;
+        }
+
         :global(.day-event-preview) {
             width: 100%;
             display: flex;
@@ -1598,7 +1610,6 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
             padding: 3px 6px;
             border-radius: 6px;
             border: 1px solid rgba(0,0,0,0.05);
-            margin-top: auto;
         }
 
         :global(.preview-dot) {
@@ -1609,12 +1620,12 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
             background: #eab308;
         }
 
-        :global(.event-enrollment .preview-dot) { background: #10b981; }
-        :global(.event-classes .preview-dot) { background: #f97316; }
-        :global(.event-holiday .preview-dot) { background: #ef4444; }
-        :global(.event-exam .preview-dot) { background: #2563eb; }
-        :global(.event-quiz_mandatory .preview-dot) { background: #a855f7; }
-        :global(.event-event .preview-dot), :global(.event-admin .preview-dot) { background: #64748b; }
+        :global(.day-event-preview.event-enrollment .preview-dot) { background: #10b981; }
+        :global(.day-event-preview.event-classes .preview-dot) { background: #f97316; }
+        :global(.day-event-preview.event-holiday .preview-dot) { background: #ef4444; }
+        :global(.day-event-preview.event-exam .preview-dot) { background: #2563eb; }
+        :global(.day-event-preview.event-quiz_mandatory .preview-dot) { background: #a855f7; }
+        :global(.day-event-preview.event-event .preview-dot), :global(.day-event-preview.event-admin .preview-dot) { background: #64748b; }
 
         :global(.preview-text) {
             font-size: 0.6rem;
@@ -1917,8 +1928,9 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
           :global(.day-number) { font-size: 0.75rem; }
           .weekday { font-size: 0.65rem; }
           .preview-text { display: none; }
-          .day-event-preview { width: fit-content; background: transparent; border: none; padding: 0; margin: 0; }
-          .preview-dot { width: 8px; height: 8px; }
+          :global(.day-events-container) { flex-direction: row; gap: 3px; margin-top: auto; justify-content: center; width: 100%; }
+          :global(.day-event-preview) { width: fit-content; background: transparent; border: none; padding: 0; margin: 0; }
+          :global(.preview-dot) { width: 8px; height: 8px; }
           .calendar-legend { gap: 1rem; padding-top: 1rem; }
         }
       `}</style>
