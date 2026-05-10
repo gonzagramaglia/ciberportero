@@ -11,6 +11,7 @@ import { useSession } from 'next-auth/react';
 import { SignInButton, SignOutButton } from './AuthButtons';
 import { useMotivation } from '../hooks/useMotivation';
 import LanguageSwitcher from './LanguageSwitcher';
+import FloatingMusicButton from './FloatingMusicButton';
 
 interface HomeClientProps {
     initialPosts: any[];
@@ -101,7 +102,6 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
             <main style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <div className="featured-grid">
                     <Link href="/links" className="post-item featured roadmap-block links-card" style={{ display: 'block', textDecoration: 'none', border: '1px solid var(--success)', background: 'rgba(16, 185, 129, 0.03)' }}>
-                        <span className="featured-tag" style={{ background: 'var(--success)', color: 'white' }}>{t.featured?.tag || 'Destaque'}</span>
                         <span className="post-title" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: 'var(--success)' }}>
                             <LinkIcon size={28} className="bell-animation" color="var(--success)" />
                             {t.featured?.title}
@@ -110,7 +110,6 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                     </Link>
 
                     <Link href="/plan" className="post-item featured roadmap-block plan-card" style={{ display: 'block', textDecoration: 'none', border: '1px solid var(--accent)', background: 'rgba(0,112,243,0.02)' }}>
-                        <span className="featured-tag" style={{ background: 'var(--accent)', color: 'white' }}>{t.featured?.tag || 'Destaque'}</span>
                         <span className="post-title" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: 'var(--accent)' }}>
                             <Zap size={28} className="bell-animation" fill="var(--accent)" />
                             {t.plan?.title}
@@ -119,7 +118,6 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                     </Link>
 
                     <Link href="/calendar" className="post-item featured roadmap-block calendar-card" style={{ display: 'block', textDecoration: 'none', border: '1px solid #eab308', background: 'rgba(234, 179, 8, 0.02)' }}>
-                        <span className="featured-tag" style={{ background: '#eab308', color: 'white' }}>{t.featured?.tag || 'Destaque'}</span>
                         <span className="post-title" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: '#eab308' }}>
                             <Calendar size={28} style={{ color: '#eab308' }} className="bell-animation" />
                             {t.calendar?.title}
@@ -207,6 +205,8 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                 <span>{t.footer}</span>
                 <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Youtube size={22} /></a>
             </footer>
+
+            <FloatingMusicButton />
 
             <style jsx>{`
                 @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
