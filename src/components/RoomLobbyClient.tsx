@@ -166,7 +166,7 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                     </button>
 
                     <button 
-                        onClick={() => canCreate ? setIsCreating(true) : toast.error(lang === 'es' ? 'Opción solo para administradores' : 'Option for admins only')} 
+                        onClick={() => isGuest ? router.push('/salas') : (canCreate ? setIsCreating(true) : toast.error(lang === 'es' ? 'Opción solo para administradores' : 'Option for admins only'))} 
                         className={`action-card create ${!canCreate ? 'blocked' : ''}`}
                     >
                         <div className="card-icon"><Plus size={24} /></div>

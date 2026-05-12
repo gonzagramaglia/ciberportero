@@ -3,11 +3,11 @@
 import { useLanguage } from '@/context/LanguageContext';
 import { guestStore, GuestMember } from '@/lib/guestStore';
 import React, { useEffect, useState } from 'react';
-import { Settings, Check, X, Trash2, Key, History as HistoryIcon, Link as LinkIcon, Shield, UserMinus, User, Users, AlignLeft } from 'lucide-react';
+import { Settings, Check, X, Trash2, Key, History as HistoryIcon, Link as LinkIcon, Shield, UserMinus, User, Users, AlignLeft, LogOut } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { translations } from '@/lib/translations';
-import { updateRoom, deleteRoom, leaveRoom } from '@/lib/salasActions';
+import { updateRoom, deleteRoom, leaveRoom, removeRoomMember, updateMemberRole } from '@/lib/salasActions';
 
 interface RoomHeaderProps {
     roomId: string;
@@ -123,7 +123,7 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
         }
     };
 
-    const handleToggleAdmin = (memberId: string) => {
+    const handleToggleAdmin = async (memberId: string) => {
         if (isGuest) {
             const updated = guestStore.toggleAdmin(roomId, memberId);
             if (updated) {
@@ -131,16 +131,41 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                 if (gRoom) setRoom({ ...gRoom } as any);
                 toast.success(lang === 'es' ? 'Rol actualizado' : 'Role updated');
             }
+        } else {
+            const member = room.members.find(m => m.id === memberId);
+            if (!member) return;
+            const newRole = member.role === 'admin' ? 'member' : 'admin';
+            const res = await updateMemberRole(roomId, memberId, newRole);
+            if (res.success) {
+                setRoom(prev => ({
+                    ...prev,
+                    members: prev.members.map(m => m.id === memberId ? { ...m, role: newRole } : m)
+                }) as any);
+                toast.success(lang === 'es' ? 'Rol actualizado' : 'Role updated');
+            } else {
+                toast.error(res.error || 'Error');
+            }
         }
     };
 
-    const handleKick = (memberId: string) => {
+    const handleKick = async (memberId: string) => {
         if (!confirm(lang === 'es' ? '¿Estás seguro de echar a este miembro?' : 'Are you sure you want to kick this member?')) return;
         if (isGuest) {
             if (guestStore.kickMember(roomId, memberId)) {
                 const gRoom = guestStore.getRoom(roomId);
                 if (gRoom) setRoom({ ...gRoom } as any);
                 toast.success(lang === 'es' ? 'Miembro eliminado' : 'Member removed');
+            }
+        } else {
+            const res = await removeRoomMember(roomId, memberId);
+            if (res.success) {
+                setRoom(prev => ({
+                    ...prev,
+                    members: prev.members.filter(m => m.id !== memberId)
+                }) as any);
+                toast.success(lang === 'es' ? 'Miembro eliminado' : 'Member removed');
+            } else {
+                toast.error(res.error || 'Error');
             }
         }
     };
@@ -258,7 +283,7 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                                     </div>
                                     <div className="members-manage-list">
                                         {room.members?.map((member: any) => {
-                                            const isMe = member.id === 'guest-me';
+                                            const isMe = (isGuest && member.id === 'guest-me') || (!isGuest && member.userId === session?.user?.id);
                                             return (
                                                 <div key={member.id} className="member-manage-row">
                                                     <img
@@ -307,7 +332,7 @@ export default function RoomHeader({ roomId, initialRoom, session }: RoomHeaderP
                                 </button>
                             ) : (
                                 <button onClick={handleLeaveRoom} className="action-btn delete">
-                                    <Trash2 size={18} />
+                                    <LogOut size={18} style={{ transform: 'scaleX(-1)' }} />
                                     <span>Salir de la Sala</span>
                                 </button>
                             )}

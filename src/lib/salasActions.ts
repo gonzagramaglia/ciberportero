@@ -953,3 +953,64 @@ export async function reorderPinnedMessages(subcategoryId: string, messageIds: s
         return { error: "Error al reordenar" };
     }
 }
+
+export async function removeRoomMember(roomId: string, memberId: string) {
+    const session = await auth();
+    if (!session?.user?.id) return { error: "No autenticado" };
+
+    try {
+        const room = await db.room.findUnique({ 
+            where: { id: roomId },
+            include: { members: true }
+        });
+        if (!room) return { error: "Sala no encontrada" };
+
+        const myMember = room.members.find(m => m.userId === session.user.id);
+        const isAdmin = session.user.role === 'admin' || session.user.email === 'ciberportero@gmail.com' || room.creatorId === session.user.id || myMember?.role === 'admin';
+        
+        if (!isAdmin) return { error: "No autorizado" };
+
+        // Cannot kick the creator
+        const memberToKick = room.members.find(m => m.id === memberId);
+        if (memberToKick?.userId === room.creatorId) return { error: "No puedes eliminar al creador de la sala" };
+
+        await db.roomMember.delete({
+            where: { id: memberId }
+        });
+
+        revalidatePath(`/salas/${roomId}`);
+        return { success: true };
+    } catch (error) {
+        console.error(error);
+        return { error: "Error al eliminar miembro" };
+    }
+}
+
+export async function updateMemberRole(roomId: string, memberId: string, newRole: string) {
+    const session = await auth();
+    if (!session?.user?.id) return { error: "No autenticado" };
+
+    try {
+        const room = await db.room.findUnique({ 
+            where: { id: roomId },
+            include: { members: true }
+        });
+        if (!room) return { error: "Sala no encontrada" };
+
+        const myMember = room.members.find(m => m.userId === session.user.id);
+        const isAdmin = session.user.role === 'admin' || session.user.email === 'ciberportero@gmail.com' || room.creatorId === session.user.id || myMember?.role === 'admin';
+        
+        if (!isAdmin) return { error: "No autorizado" };
+
+        await db.roomMember.update({
+            where: { id: memberId },
+            data: { role: newRole } as any
+        });
+
+        revalidatePath(`/salas/${roomId}`);
+        return { success: true };
+    } catch (error) {
+        console.error(error);
+        return { error: "Error al actualizar rol" };
+    }
+}
