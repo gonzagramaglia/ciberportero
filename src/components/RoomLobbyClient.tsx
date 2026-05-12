@@ -157,7 +157,7 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                 )}
 
                 <div className="lobby-actions-grid">
-                    <button onClick={() => setIsJoining(true)} className="action-card join">
+                    <button onClick={() => isGuest ? router.push('/salas') : setIsJoining(true)} className="action-card join">
                         <div className="card-icon"><Hash size={24} /></div>
                         <div className="card-body">
                             <h3>{roomsT.join.title}</h3>
