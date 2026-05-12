@@ -6,6 +6,7 @@ import SuccessToast from "@/components/admin/SuccessToast";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 import { getAdminNote } from "@/lib/actions";
 import AdminSectionNotes from "@/components/admin/AdminSectionNotes";
+import { timeAgo } from "@/lib/utils";
 
 export default async function AdminPostsPage() {
   const [posts, note] = await Promise.all([
@@ -40,9 +41,10 @@ export default async function AdminPostsPage() {
         <table className="admin-table">
           <thead>
             <tr>
-              <th style={{ width: '50%' }}>Contenido</th>
+              <th style={{ width: '40%' }}>Contenido</th>
               <th>Estado</th>
               <th>Fecha</th>
+              <th>Última Actualización</th>
               <th style={{ textAlign: 'right' }}>Acciones</th>
             </tr>
           </thead>
@@ -74,12 +76,6 @@ export default async function AdminPostsPage() {
                         >
                           {titleObj?.es || post.slug}
                         </Link>
-                        {(post.alternativeSlug || post.alternativeSlug2) && (
-                          <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.1rem' }}>
-                            {post.alternativeSlug && <span style={{ fontSize: '10px', color: '#94a3b8', fontStyle: 'italic' }}>Alt 1: {post.alternativeSlug}</span>}
-                            {post.alternativeSlug2 && <span style={{ fontSize: '10px', color: '#94a3b8', fontStyle: 'italic' }}>Alt 2: {post.alternativeSlug2}</span>}
-                          </div>
-                        )}
                       </div>
                     </div>
                   </td>
@@ -96,6 +92,9 @@ export default async function AdminPostsPage() {
                   </td>
                   <td style={{ color: '#64748b', whiteSpace: 'nowrap', fontSize: '0.85rem', fontWeight: 600, verticalAlign: 'top', paddingTop: '1.25rem' }}>
                     {new Date(post.date || post.createdAt).toLocaleDateString()}
+                  </td>
+                  <td style={{ color: '#64748b', whiteSpace: 'nowrap', fontSize: '0.85rem', fontWeight: 600, verticalAlign: 'top', paddingTop: '1.25rem' }}>
+                    {timeAgo(post.updatedAt || post.createdAt)}
                   </td>
                   <td style={{ textAlign: 'right', verticalAlign: 'top', paddingTop: '0.75rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>

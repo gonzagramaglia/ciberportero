@@ -243,7 +243,9 @@ export const translations = {
         comments: {
             title: "Comentarios",
             submit: "Comentar",
-            dateLocale: "es-AR"
+            dateLocale: "es-AR",
+            showMore: "Ver más respuestas",
+            showLess: "Ver menos"
         },
         motivations: [
             "Recordá que la persistencia es la clave del éxito académico.",
@@ -565,7 +567,9 @@ export const translations = {
         comments: {
             title: "Comments",
             submit: "Comment",
-            dateLocale: "en-US"
+            dateLocale: "en-US",
+            showMore: "View more replies",
+            showLess: "Show less"
         },
         motivations: [
             "Remember that persistence is the key to academic success.",
@@ -887,7 +891,9 @@ export const translations = {
         comments: {
             title: "Comentários",
             submit: "Comentar",
-            dateLocale: "pt-BR"
+            dateLocale: "pt-BR",
+            showMore: "Ver mais respostas",
+            showLess: "Ver menos"
         },
         motivations: [
             "Lembre-se que a persistência é a chave do sucesso acadêmico.",

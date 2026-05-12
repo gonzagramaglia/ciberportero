@@ -79,15 +79,26 @@ export default function AdminRoomsList({ initialRooms }: { initialRooms: any[] }
                                     <Link 
                                         href={`/salas/${room.id}`} 
                                         target="_blank"
-                                        className="admin-action-btn"
-                                        style={{ color: 'var(--accent)' }}
+                                        style={{ 
+                                            width: '36px', height: '36px', borderRadius: '50%', background: 'white', 
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                            color: '#94a3b8', border: '1px solid #e2e8f0', transition: 'all 0.2s'
+                                        }}
+                                        className="edit-btn-hover"
+                                        title="Ver sala"
                                     >
                                         <ExternalLink size={16} />
                                     </Link>
                                     <button 
                                         onClick={() => handleDelete(room.id, room.name)}
-                                        className="admin-action-btn"
-                                        style={{ color: '#ef4444' }}
+                                        style={{ 
+                                            width: '36px', height: '36px', borderRadius: '50%', background: 'white', 
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                            color: '#94a3b8', border: '1px solid #e2e8f0', cursor: 'pointer',
+                                            transition: 'all 0.2s'
+                                        }}
+                                        className="delete-btn-hover"
+                                        title="Eliminar"
                                     >
                                         <Trash2 size={16} />
                                     </button>

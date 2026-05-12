@@ -43,6 +43,11 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [draggingPinId, setDraggingPinId] = useState<string | null>(null);
+    const [expandedMessages, setExpandedMessages] = useState<string[]>([]);
+
+    const countAllReplies = (replies: any[] = []): number => {
+        return replies.reduce((acc, r) => acc + 1 + countAllReplies(r.replies || []), 0);
+    };
 
     const t = translations[lang as keyof typeof translations] || translations.es;
     const roomsT = t.rooms;
@@ -563,15 +568,29 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     <div className="msg-actions">
                         {renderInlineReplyBox(msg)}
                         {replyingTo?.id !== msg.id && (
-                            <button onClick={() => setReplyingTo(msg)} className="btn-reply-trigger">
-                                <ReplyIcon size={14} /> <span>{lang === 'es' ? 'Responder' : 'Reply'}</span>
-                            </button>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                                <button onClick={() => setReplyingTo(msg)} className="btn-reply-trigger">
+                                    <ReplyIcon size={14} /> <span>{lang === 'es' ? 'Responder' : 'Reply'}</span>
+                                </button>
+                                {(() => {
+                                    const count = countAllReplies(msg.replies);
+                                    if (count === 0) return null;
+                                    return (
+                                        <span className="reply-count-badge">
+                                            <MessageCircle size={10} />
+                                            {count} {count === 1 ? 
+                                                (lang === 'es' ? 'respuesta' : lang === 'pt' ? 'resposta' : 'reply') : 
+                                                (lang === 'es' ? 'respuestas' : lang === 'pt' ? 'respostas' : 'replies')}
+                                        </span>
+                                    );
+                                })()}
+                            </div>
                         )}
                     </div>
 
                     {msg.replies && msg.replies.length > 0 && (
                         <div className="replies-list">
-                            {msg.replies.map((r: any) => {
+                            {(expandedMessages.includes(msg.id) ? msg.replies : msg.replies.slice(0, 1)).map((r: any) => {
                                 const isReplyMe = r.userId === session?.user?.id || (isGuest && (r.userId === 'guest-me' || r.user.name === 'Invitado'));
                                 return (
                                     <div key={r.id} id={r.id} className="reply-item">
@@ -631,6 +650,25 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                     </div>
                                 );
                             })}
+                            
+                            {msg.replies.length > 1 && (
+                                <button 
+                                    onClick={() => setExpandedMessages(prev => prev.includes(msg.id) ? prev.filter(x => x !== msg.id) : [...prev, msg.id])}
+                                    className="show-more-chat-btn"
+                                >
+                                    {expandedMessages.includes(msg.id) ? (
+                                        <>
+                                            <ChevronUp size={14} />
+                                            {lang === 'es' ? 'Ver menos' : 'Show less'}
+                                        </>
+                                    ) : (
+                                        <>
+                                            <ChevronDown size={14} />
+                                            {lang === 'es' ? 'Ver más respuestas' : 'Show more replies'} ({msg.replies.length - 1})
+                                        </>
+                                    )}
+                                </button>
+                            )}
                         </div>
                     )}
                 </div>
@@ -1344,7 +1382,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .msg-images-grid.reply-images { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.5rem; margin-top: 0.5rem; }
                 .msg-images-grid.mini { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.4rem; }
                 
-                .msg-actions { margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid #f8fafc; }
+                .msg-actions { margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid #f8fafc; }
                 .btn-reply-trigger { background: #f8fafc; border: 1px solid #f1f5f9; padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.85rem; font-weight: 800; color: #64748b; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s; }
                 .btn-reply-trigger:hover { color: var(--accent); background: rgba(0, 112, 243, 0.05); border-color: rgba(0, 112, 243, 0.1); }
 
@@ -1491,6 +1529,55 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     .input-card { padding: 0.75rem; }
                     .reply-meta { flex-direction: column; align-items: flex-start; gap: 0.1rem; }
                     .reply-date-row { flex-direction: row-reverse; justify-content: flex-end; }
+                }
+
+                .reply-count-badge {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.3rem;
+                    background: #f8fafc;
+                    border: 1px solid #e2e8f0;
+                    color: #64748b;
+                    padding: 0.35rem 0.6rem;
+                    border-radius: 8px;
+                    font-size: 0.75rem;
+                    font-weight: 800;
+                    transition: all 0.2s;
+                }
+                .reply-count-badge:hover {
+                    background: #f1f5f9;
+                    color: var(--accent);
+                }
+                .show-more-chat-btn {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 0.5rem;
+                    width: 100%;
+                    padding: 0.75rem;
+                    background: #fff;
+                    border: 1px dashed #e2e8f0;
+                    border-radius: 14px;
+                    color: #64748b;
+                    font-size: 0.8rem;
+                    font-weight: 800;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                    margin-top: 0.2rem;
+                }
+                .show-more-chat-btn:hover {
+                    background: #f8fafc;
+                    border-color: var(--accent);
+                    color: var(--accent);
+                    transform: translateY(-1px);
+                }
+                .replies-list {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.6rem;
+                    margin-top: 0.75rem;
+                    padding-left: 1rem;
+                    border-left: 2px solid #f1f5f9;
                 }
             `}</style>
         </div>

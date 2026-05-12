@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
-import { MessageSquare, Send, Trash2, User as UserIcon, Loader2, Calendar, CornerDownRight, Image as ImageIcon, X, Plus } from "lucide-react"
+import { MessageSquare, Send, Trash2, User as UserIcon, Loader2, Calendar, CornerDownRight, Image as ImageIcon, X, Plus, ChevronUp } from "lucide-react"
 import { addComment, getComments, deleteComment } from "@/lib/actions"
 import { supabase } from "@/lib/supabase"
 import { SignInButton } from "@/components/AuthButtons"
@@ -34,6 +34,10 @@ function Avatar({ src, name, size = 40 }: { src?: string | null; name?: string |
       <UserIcon size={size * 0.5} color="#ccc" />
     </div>
   )
+}
+
+const countAllReplies = (replies: Reply[] = []): number => {
+  return replies.reduce((acc, r) => acc + 1 + countAllReplies(r.replies || []), 0)
 }
 
 
@@ -179,6 +183,7 @@ function CommentCard({ comment, depth, lang, session, postSlug, podcastSlug, onR
   onImageClick: (src: string) => void
 }) {
   const [showReplyForm, setShowReplyForm] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false)
 
   const handleReply = async (content: string, images?: string[]) => {
     const slug = postSlug || podcastSlug!
@@ -259,11 +264,23 @@ function CommentCard({ comment, depth, lang, session, postSlug, podcastSlug, onR
         </div>
 
         {canReply && (
-          <div style={{ marginTop: '0.4rem' }}>
+          <div style={{ marginTop: '0.4rem', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
             <button onClick={() => setShowReplyForm(!showReplyForm)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.75rem', fontWeight: '700', color: showReplyForm ? '#000' : '#999', display: 'flex', alignItems: 'center', gap: '0.3rem', transition: 'color 0.2s' }}>
               <CornerDownRight size={12} />
               {lang === 'es' ? 'Responder' : lang === 'pt' ? 'Responder' : 'Reply'}
             </button>
+            {(() => {
+              const count = countAllReplies((comment as Comment).replies);
+              if (count === 0) return null;
+              return (
+                <span style={{ fontSize: '0.7rem', fontWeight: '700', color: '#cbd5e1', display: 'flex', alignItems: 'center', gap: '0.3rem', background: '#f8fafc', padding: '0.35rem 0.5rem', borderRadius: '6px' }}>
+                  <MessageSquare size={10} />
+                  {count} {count === 1 ? 
+                    (lang === 'es' ? 'respuesta' : lang === 'pt' ? 'resposta' : 'reply') : 
+                    (lang === 'es' ? 'respuestas' : lang === 'pt' ? 'respostas' : 'replies')}
+                </span>
+              );
+            })()}
           </div>
         )}
 
@@ -272,10 +289,44 @@ function CommentCard({ comment, depth, lang, session, postSlug, podcastSlug, onR
         )}
 
         {'replies' in comment && comment.replies && comment.replies.length > 0 && (
-          <div style={{ marginTop: '1rem', paddingLeft: '0.5rem', borderLeft: '2px solid #f0f0f0', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {comment.replies.map((reply: Reply) => (
+          <div style={{ marginTop: '0.75rem', paddingLeft: '0.5rem', borderLeft: '2px solid #f0f0f0', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+            {(isExpanded ? comment.replies : comment.replies.slice(0, 1)).map((reply: Reply) => (
               <CommentCard key={reply.id} comment={reply} depth={depth + 1} lang={lang} session={session} postSlug={postSlug} podcastSlug={podcastSlug} onRefresh={onRefresh} onImageClick={onImageClick} />
             ))}
+            
+            {comment.replies.length > 1 && (
+              <button 
+                onClick={() => setIsExpanded(!isExpanded)} 
+                style={{ 
+                  marginTop: '0.2rem',
+                  background: 'none', 
+                  border: 'none', 
+                  cursor: 'pointer', 
+                  fontSize: '0.75rem', 
+                  fontWeight: '800', 
+                  color: '#3b82f6', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '0.3rem', 
+                  padding: '0.2rem 0',
+                  width: 'fit-content',
+                  transition: 'all 0.2s'
+                }}
+                className="show-more-btn"
+              >
+                {isExpanded ? (
+                  <>
+                    <ChevronUp size={12} />
+                    {(translations[lang as keyof typeof translations] as any).comments.showLess}
+                  </>
+                ) : (
+                  <>
+                    <Plus size={12} />
+                    {(translations[lang as keyof typeof translations] as any).comments.showMore} ({comment.replies.length - 1})
+                  </>
+                )}
+              </button>
+            )}
           </div>
         )}
       </div>
@@ -645,6 +696,11 @@ export default function CommentSection({ postSlug, podcastSlug, lang = 'es' }: {
         @keyframes highlight-comment {
           0% { background-color: rgba(255, 234, 0, 0.5); transform: scale(1.02); }
           100% { background-color: transparent; transform: scale(1); }
+        }
+
+        .show-more-btn:hover {
+          opacity: 0.8;
+          transform: translateX(2px);
         }
       `}</style>
 
