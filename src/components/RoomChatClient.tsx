@@ -36,9 +36,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
     const [uploading, setUploading] = useState(false);
     const [targetMessageId, setTargetMessageId] = useState<string | null>(null);
     const [externalImageUrl, setExternalImageUrl] = useState('');
-    const [externalImageLink, setExternalImageLink] = useState('');
     const [replyExternalImageUrl, setReplyExternalImageUrl] = useState('');
-    const [replyExternalImageLink, setReplyExternalImageLink] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -393,14 +391,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                     className="external-url-input hide-mobile"
                                     style={{ width: '120px' }}
                                 />
-                                <input
-                                    type="text"
-                                    value={replyExternalImageLink}
-                                    onChange={(e) => setReplyExternalImageLink(e.target.value)}
-                                    placeholder={lang === 'es' ? 'Asociar link...' : 'Attach link...'}
-                                    className="external-url-input hide-mobile"
-                                    style={{ width: '100px' }}
-                                />
+
                             </div>
                             <button type="submit" disabled={sending || (!replyText.trim() && replySelectedImages.length === 0 && !replyExternalImageUrl.trim())} className="room-btn-primary mini" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.6rem 1.2rem', width: 'auto' }}>
                                 {sending ? <Loader2 size={18} className="spin" /> : (
@@ -685,8 +676,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
         if (!content.trim() && imagesToUpload.length === 0 && !extUrl.trim()) return;
         setSending(true);
         try {
-            const imageUrls: any[] = [];
-            const targetLink = (isReply ? replyExternalImageLink : externalImageLink)?.trim();
+            const imageUrls: string[] = [];
 
             if (imagesToUpload.length > 0) {
                 setUploading(true);
@@ -701,31 +691,24 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                         const { data: { publicUrl } } = supabase.storage.from('images').getPublicUrl(path);
                         url = publicUrl;
                     }
-
-                    if (!extUrl.trim() && targetLink) {
-                        imageUrls.push({ url, link: targetLink });
-                    } else {
-                        imageUrls.push(url);
-                    }
+                    imageUrls.push(url);
                 }
             }
 
             if (extUrl.trim()) {
-                if (targetLink) imageUrls.push({ url: extUrl.trim(), link: targetLink });
-                else imageUrls.push(extUrl.trim());
+                imageUrls.push(extUrl.trim());
             }
+
             if (isGuest) {
                 guestStore.addMessage(roomId || 'test-room', isGeneral ? 'general' : currentSubId!, content, imageUrls, isReply ? replyingTo?.id : undefined);
                 if (isReply) {
                     setReplyText('');
                     setReplyExternalImageUrl('');
-                    setReplyExternalImageLink('');
                     setReplyingTo(null);
                     setReplySelectedImages([]);
                 } else {
                     setText('');
                     setExternalImageUrl('');
-                    setExternalImageLink('');
                     setSelectedImages([]);
                 }
 
@@ -749,13 +732,11 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     if (isReply) {
                         setReplyText('');
                         setReplyExternalImageUrl('');
-                        setReplyExternalImageLink('');
                         setReplyingTo(null);
                         setReplySelectedImages([]);
                     } else {
                         setText('');
                         setExternalImageUrl('');
-                        setExternalImageLink('');
                         setSelectedImages([]);
                     }
                     const { getSubcategoryMessages, getGeneralMessages } = await import('@/lib/salasActions');
@@ -1072,14 +1053,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                             className="external-url-input hide-mobile"
                                             style={{ width: '130px' }}
                                         />
-                                        <input
-                                            type="text"
-                                            value={externalImageLink}
-                                            onChange={(e) => setExternalImageLink(e.target.value)}
-                                            placeholder={lang === 'es' ? 'Asociar link...' : 'Attach link...'}
-                                            className="external-url-input hide-mobile"
-                                            style={{ width: '110px' }}
-                                        />
+
                                     </div>
                                     <button type="submit" disabled={sending || uploading || (!text.trim() && selectedImages.length === 0 && !externalImageUrl.trim())} className="room-btn-primary">
                                         {sending ? <Loader2 size={22} className="spin" /> : <><span className="hide-mobile">{roomsT.chat.post}</span><Send size={18} /></>}
