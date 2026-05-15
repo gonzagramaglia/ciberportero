@@ -636,14 +636,16 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
             </div>
           </div>
 
-          <div className="calendar-weekdays">
-            {ct.days.map((day : string) => (
-              <div key={day} className="weekday">{day}</div>
-            ))}
-          </div>
+          <div className="calendar-scroller">
+            <div className="calendar-weekdays">
+              {ct.days.map((day : string) => (
+                <div key={day} className="weekday">{day}</div>
+              ))}
+            </div>
 
-          <div className="calendar-grid">
-            {renderCalendar()}
+            <div className="calendar-grid">
+              {renderCalendar()}
+            </div>
           </div>
 
           <div className="calendar-legend" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
@@ -825,7 +827,8 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                   ))
                 ) : (
                   <div className="empty-selection">
-                    <p>{searchTerm || subjectFilter !== 'all' ? (lang === 'es' ? 'No hay eventos que coincidan' : 'No matching events') : ct.events.empty}</p>
+                    <CalendarIcon size={48} strokeWidth={1.5} style={{ opacity: 0.15, marginBottom: '1.2rem' }} />
+                    <p>{searchTerm || subjectFilter !== 'all' ? (lang === 'es' ? 'No hay eventos que coincidan' : 'No matching events') : (lang === 'es' ? 'No hay eventos para este día' : ct.events.empty)}</p>
                   </div>
                 )}
               </div>
@@ -1814,12 +1817,23 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
         }
 
         .empty-selection {
-          text-align: left;
-          padding: 1rem 0 1rem 1.6rem;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 4rem 2rem;
           color: var(--muted);
-          font-size: 1rem;
-          font-weight: 500;
-          opacity: 0.6;
+          font-size: 1.1rem;
+          font-weight: 600;
+          opacity: 0.8;
+          text-align: center;
+          min-height: 250px;
+        }
+
+        .empty-selection p {
+          margin: 0;
+          max-width: 250px;
+          line-height: 1.5;
         }
 
         .upcoming-list {
@@ -1966,46 +1980,60 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
           }
           .calendar-layout { gap: 1rem; }
           .calendar-sidebar { grid-template-columns: 1fr; }
-          .calendar-grid { gap: 0.4rem; }
+          .calendar-scroller {
+            overflow-x: auto;
+            margin: 0 -0.5rem;
+            padding: 0 0.5rem 1rem 0.5rem;
+            -webkit-overflow-scrolling: touch;
+          }
+          .calendar-weekdays, .calendar-grid {
+            min-width: 600px;
+          }
+          .calendar-grid { gap: 0.5rem !important; }
           .cronogramas-section > div { grid-template-columns: 1fr !important; }
           :global(.calendar-day) { 
-            min-height: 85px;
-            padding: 0.5rem; 
-            border-radius: 14px; 
-            justify-content: flex-start;
-            gap: 4px;
+            min-height: 100px !important;
+            aspect-ratio: 1 / 1.2 !important;
+            padding: 0.5rem !important; 
+            border-radius: 14px !important; 
+            justify-content: flex-start !important;
+            gap: 4px !important;
+            background: #fff !important;
+            border: 1px solid #f1f5f9 !important;
           }
           :global(.day-number) { 
-            font-size: 1.1rem; 
-            margin-bottom: 2px;
-            width: 100%;
-            text-align: center;
+            font-size: 1.1rem !important; 
+            margin-bottom: 2px !important;
+            width: 100% !important;
+            text-align: center !important;
+            font-weight: 900 !important;
           }
-          .weekday { font-size: 0.7rem; font-weight: 800; }
-          .preview-text { display: none; }
+          .weekday { font-size: 0.75rem !important; font-weight: 800 !important; }
+          :global(.preview-text) { display: none !important; }
           :global(.day-events-container) { 
-            flex-direction: row; 
-            flex-wrap: wrap;
-            gap: 4px; 
-            margin-top: auto; 
-            justify-content: center; 
-            width: 100%;
-            padding: 4px 2px;
+            flex-direction: row !important; 
+            flex-wrap: wrap !important;
+            gap: 4px !important; 
+            margin-top: auto !important; 
+            justify-content: center !important; 
+            width: 100% !important;
+            padding: 4px 2px !important;
           }
           :global(.day-event-preview) { 
-            width: fit-content; 
-            background: transparent; 
-            border: none; 
-            padding: 0; 
-            margin: 0; 
+            width: fit-content !important; 
+            background: transparent !important; 
+            border: none !important; 
+            padding: 0 !important; 
+            margin: 0 !important; 
           }
           :global(.preview-dot) { 
-            width: 10px; 
-            height: 10px; 
-            border: 1.5px solid white;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            width: 10px !important; 
+            height: 10px !important; 
+            border: 1.5px solid white !important;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
           }
-          .calendar-legend { gap: 1rem; padding-top: 1.2rem; }
+          .calendar-legend { gap: 1rem !important; padding-top: 1.2rem !important; }
+          .empty-selection { min-height: 200px !important; padding: 2rem !important; }
         }
       `}</style>
     </div>
