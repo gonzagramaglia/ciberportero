@@ -134,7 +134,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
   }, [selectedDate]);
 
   useEffect(() => {
-    if (selectedDate && typeof window !== 'undefined' && window.innerWidth < 1024) {
+    if (selectedDate && typeof window !== 'undefined') {
       setTimeout(() => {
         selectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 100);
@@ -1826,7 +1826,8 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
         }
 
         .selection-content {
-          justify-content: center;
+          justify-content: flex-start;
+          gap: 1.2rem;
         }
 
         .calendar-scroller {
