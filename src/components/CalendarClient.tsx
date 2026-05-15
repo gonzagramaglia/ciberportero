@@ -1543,7 +1543,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
 
         .calendar-grid {
           display: grid;
-          grid-template-columns: repeat(7, 1fr);
+          grid-template-columns: repeat(7, minmax(0, 1fr));
           gap: 0.75rem;
         }
 
