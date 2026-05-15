@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useRef } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { translations, Locale } from "@/lib/translations"
@@ -48,6 +48,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
   const [newEvent, setNewEvent] = useState({ title: '', startDate: '', endDate: '', type: 'exam', subjectId: 'all', period: 'all' })
   const [isSaving, setIsSaving] = useState(false)
   const [isExportModalOpen, setIsExportModalOpen] = useState(false)
+  const selectionRef = useRef<HTMLDivElement>(null)
   const [exportConfig, setExportConfig] = useState({
     type: 'all',
     range: 'year',
@@ -129,6 +130,14 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
       if (window.location.pathname !== newPath) {
         window.history.replaceState(null, '', newPath);
       }
+    }
+  }, [selectedDate]);
+
+  useEffect(() => {
+    if (selectedDate && typeof window !== 'undefined' && window.innerWidth < 1024) {
+      setTimeout(() => {
+        selectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
     }
   }, [selectedDate]);
 
@@ -693,7 +702,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
           </div>
         </div>
 
-        <div className="calendar-sidebar">
+        <div className="calendar-sidebar" ref={selectionRef}>
           {selectedDate && (
             <div id="selected-events-card" className={`selection-card ${selectedEvents.some(e => e.userId) ? 'is-personal' : ''}`}>
               <div className="selection-header">
@@ -744,7 +753,8 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                         {(session?.user?.role === 'admin' || session?.user?.email === 'gonzalogramagia@gmail.com' || session?.user?.email === 'ciberportero@gmail.com') && (
                           <a 
                             href={`/admin/calendar/${event.id}`}
-                            style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '0.35rem', color: 'var(--accent)', textDecoration: 'none', fontSize: '0.75rem', fontWeight: 800, padding: '0.4rem 0.8rem', borderRadius: '8px', background: 'rgba(34, 211, 238, 0.08)', border: '1px solid rgba(34, 211, 238, 0.2)', transition: 'all 0.2s' }}
+                            className="edit-event-link"
+                            style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: 'var(--accent)', textDecoration: 'none', fontSize: '0.75rem', fontWeight: 800, padding: '0.4rem 0.8rem', borderRadius: '8px', background: 'rgba(34, 211, 238, 0.08)', border: '1px solid rgba(34, 211, 238, 0.2)', transition: 'all 0.2s' }}
                             onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(34, 211, 238, 0.15)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
                             onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(34, 211, 238, 0.08)'; e.currentTarget.style.transform = 'none'; }}
                             onClick={(e) => e.stopPropagation()}
@@ -874,10 +884,11 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                     </div>
                   );
               }) : (
-                  <div className="empty-upcoming">
-                      <p style={{ opacity: 0.5, fontSize: '0.9rem', textAlign: 'center', padding: '1rem' }}>{lang === 'es' ? 'Sin eventos próximos' : 'No upcoming events'}</p>
+                  <div className="empty-selection">
+                    <Bell size={48} strokeWidth={1.5} style={{ opacity: 0.15, marginBottom: '1.2rem' }} />
+                    <p>{lang === 'es' ? 'Sin eventos próximos' : 'No upcoming events'}</p>
                   </div>
-              )}
+                )}
             </div>
           </div>
         </div>
@@ -1455,7 +1466,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
         .calendar-layout {
           display: flex;
           flex-direction: column;
-          gap: 2rem;
+          gap: 2.5rem;
           margin-bottom: 4rem;
         }
 
@@ -1813,10 +1824,15 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
         }
 
         .selection-content {
-          justify-content: flex-start;
+          justify-content: center;
+        }
+
+        .edit-event-link {
+          margin-left: auto;
         }
 
         .empty-selection {
+          flex: 1;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -1979,7 +1995,10 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
             margin-bottom: 1.5rem;
           }
           .calendar-layout { gap: 1rem; }
-          .calendar-sidebar { grid-template-columns: 1fr; }
+          .calendar-sidebar { 
+            display: grid;
+            grid-template-columns: 1fr; 
+          }
           .calendar-scroller {
             overflow-x: auto;
             margin: 0 -0.5rem;
@@ -2034,6 +2053,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
           }
           .calendar-legend { gap: 1rem !important; padding-top: 1.2rem !important; }
           .empty-selection { min-height: 200px !important; padding: 2rem !important; }
+          .edit-event-link { margin-left: 0 !important; }
         }
       `}</style>
     </div>
