@@ -416,7 +416,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
       }
       
       return { ...e, displayDate };
-  }).sort((a, b) => (a as any).displayDate.localeCompare((b as any).displayDate)).slice(0, 5);
+  }).sort((a, b) => (a as any).displayDate.localeCompare((b as any).displayDate)).slice(0, 6);
 
   const availableSubjects = useMemo(() => {
     // Mapping periods to subject ID ranges
@@ -1533,19 +1533,19 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
         }
 
         :global(.calendar-day) {
-          aspect-ratio: 1.2 / 1;
+          aspect-ratio: 1 / 1;
+          min-height: 150px;
           display: flex;
           flex-direction: column;
           align-items: flex-start;
           justify-content: flex-start;
-          padding: 0.6rem;
-          border-radius: 16px;
+          padding: 0.75rem;
+          border-radius: 18px;
           cursor: pointer;
           transition: all 0.2s;
           position: relative;
           background: #f8fafc;
           border: 1px solid transparent;
-          overflow: hidden;
         }
 
         :global(.calendar-day.dimmed) {
@@ -1583,10 +1583,10 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
         }
 
         :global(.day-number) {
-          font-size: 0.9rem;
-          font-weight: 800;
+          font-size: 1.1rem;
+          font-weight: 900;
           color: var(--muted);
-          margin-bottom: 4px;
+          margin-bottom: 6px;
         }
 
         :global(.calendar-day.selected .day-number) {
@@ -1605,20 +1605,36 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
             width: 100%;
             display: flex;
             align-items: center;
-            gap: 4px;
-            background: white;
-            padding: 3px 6px;
-            border-radius: 6px;
-            border: 1px solid rgba(0,0,0,0.05);
+            gap: 6px;
+            background: #fff;
+            padding: 4px 8px;
+            border-radius: 8px;
+            border: 1px solid rgba(0,0,0,0.08);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+            margin-bottom: 2px;
+            transition: all 0.2s;
+        }
+
+        :global(.day-event-preview:hover) {
+            transform: scale(1.02);
+            filter: brightness(0.98);
         }
 
         :global(.preview-dot) {
-            width: 5px;
-            height: 5px;
+            width: 7px;
+            height: 7px;
             border-radius: 50%;
             flex-shrink: 0;
             background: #eab308;
+            border: 1px solid white;
         }
+
+        :global(.day-event-preview.event-enrollment) { background: #dcfce7; color: #15803d; border-color: #bbf7d0; }
+        :global(.day-event-preview.event-classes) { background: #ffedd5; color: #9a3412; border-color: #fed7aa; }
+        :global(.day-event-preview.event-holiday) { background: #fee2e2; color: #991b1b; border-color: #fecaca; }
+        :global(.day-event-preview.event-exam) { background: #dbeafe; color: #1e40af; border-color: #bfdbfe; }
+        :global(.day-event-preview.event-quiz_mandatory) { background: #f3e8ff; color: #7e22ce; border-color: #e9d5ff; }
+        :global(.day-event-preview.event-event), :global(.day-event-preview.event-admin) { background: #f1f5f9; color: #475569; border-color: #e2e8f0; }
 
         :global(.day-event-preview.event-enrollment .preview-dot) { background: #10b981; }
         :global(.day-event-preview.event-classes .preview-dot) { background: #f97316; }
@@ -1628,13 +1644,41 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
         :global(.day-event-preview.event-event .preview-dot), :global(.day-event-preview.event-admin .preview-dot) { background: #64748b; }
 
         :global(.preview-text) {
-            font-size: 0.6rem;
-            font-weight: 700;
+            font-size: 0.65rem;
+            font-weight: 800;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             color: #1a1a1a;
             letter-spacing: -0.01em;
+        }
+
+        /* Day Event Types Backgrounds */
+        :global(.calendar-day.event-exam) { background: #f0f9ff; border-left: 5px solid #3b82f6 !important; }
+        :global(.calendar-day.event-quiz_mandatory) { background: #f5f3ff; border-left: 5px solid #a855f7 !important; }
+        :global(.calendar-day.event-enrollment) { background: #f0fdf4; border-left: 5px solid #10b981 !important; }
+        :global(.calendar-day.event-classes) { background: #fff7ed; border-left: 5px solid #f97316 !important; }
+        :global(.calendar-day.event-admin) { background: #fef2f2; border-left: 5px solid #ef4444 !important; }
+        :global(.calendar-day.event-event) { background: #f8fafc; border-left: 5px solid #64748b !important; }
+
+        :global(.calendar-day.today) {
+          border: 2px solid #3b82f6 !important;
+        }
+        
+        :global(.calendar-day.today .day-number) {
+          color: #3b82f6;
+          position: relative;
+        }
+
+        :global(.calendar-day.today .day-number::after) {
+          content: '';
+          position: absolute;
+          bottom: -2px;
+          left: 0;
+          width: 100%;
+          height: 2px;
+          background: #3b82f6;
+          border-radius: 2px;
         }
 
         .calendar-legend {
@@ -1924,14 +1968,44 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
           .calendar-sidebar { grid-template-columns: 1fr; }
           .calendar-grid { gap: 0.4rem; }
           .cronogramas-section > div { grid-template-columns: 1fr !important; }
-          :global(.calendar-day) { aspect-ratio: 1; padding: 0.4rem; border-radius: 12px; }
-          :global(.day-number) { font-size: 0.75rem; }
-          .weekday { font-size: 0.65rem; }
+          :global(.calendar-day) { 
+            min-height: 85px;
+            padding: 0.5rem; 
+            border-radius: 14px; 
+            justify-content: flex-start;
+            gap: 4px;
+          }
+          :global(.day-number) { 
+            font-size: 1.1rem; 
+            margin-bottom: 2px;
+            width: 100%;
+            text-align: center;
+          }
+          .weekday { font-size: 0.7rem; font-weight: 800; }
           .preview-text { display: none; }
-          :global(.day-events-container) { flex-direction: row; gap: 3px; margin-top: auto; justify-content: center; width: 100%; }
-          :global(.day-event-preview) { width: fit-content; background: transparent; border: none; padding: 0; margin: 0; }
-          :global(.preview-dot) { width: 8px; height: 8px; }
-          .calendar-legend { gap: 1rem; padding-top: 1rem; }
+          :global(.day-events-container) { 
+            flex-direction: row; 
+            flex-wrap: wrap;
+            gap: 4px; 
+            margin-top: auto; 
+            justify-content: center; 
+            width: 100%;
+            padding: 4px 2px;
+          }
+          :global(.day-event-preview) { 
+            width: fit-content; 
+            background: transparent; 
+            border: none; 
+            padding: 0; 
+            margin: 0; 
+          }
+          :global(.preview-dot) { 
+            width: 10px; 
+            height: 10px; 
+            border: 1.5px solid white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+          }
+          .calendar-legend { gap: 1rem; padding-top: 1.2rem; }
         }
       `}</style>
     </div>
