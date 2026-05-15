@@ -1468,6 +1468,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
           flex-direction: column;
           gap: 2.5rem;
           margin-bottom: 4rem;
+          width: 100%;
         }
 
         .calendar-main-card {
@@ -1548,18 +1549,18 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
 
         :global(.calendar-day) {
           aspect-ratio: 1 / 1;
-          min-height: 150px;
           display: flex;
           flex-direction: column;
-          align-items: flex-start;
+          align-items: center;
           justify-content: flex-start;
-          padding: 0.75rem;
-          border-radius: 18px;
+          padding: 1.25rem;
+          border-radius: 20px;
           cursor: pointer;
           transition: all 0.2s;
           position: relative;
           background: #f8fafc;
           border: 1px solid transparent;
+          gap: 10px;
         }
 
         :global(.calendar-day.dimmed) {
@@ -1601,6 +1602,8 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
           font-weight: 900;
           color: var(--muted);
           margin-bottom: 6px;
+          width: 100%;
+          text-align: center;
         }
 
         :global(.calendar-day.selected .day-number) {
@@ -1612,7 +1615,6 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
             display: flex;
             flex-direction: column;
             gap: 3px;
-            margin-top: auto;
         }
 
         :global(.day-event-preview) {
@@ -1827,6 +1829,10 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
           justify-content: center;
         }
 
+        .calendar-scroller {
+            width: 100%;
+        }
+
         .edit-event-link {
           margin-left: auto;
         }
@@ -2033,7 +2039,6 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
             flex-direction: row !important; 
             flex-wrap: wrap !important;
             gap: 4px !important; 
-            margin-top: auto !important; 
             justify-content: center !important; 
             width: 100% !important;
             padding: 4px 2px !important;
