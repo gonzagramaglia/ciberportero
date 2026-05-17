@@ -39,6 +39,22 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
     const [replyExternalImageUrl, setReplyExternalImageUrl] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const mainTextareaRef = useRef<HTMLTextAreaElement>(null);
+    const replyTextareaRef = useRef<HTMLTextAreaElement>(null);
+
+    useEffect(() => {
+        if (mainTextareaRef.current) {
+            mainTextareaRef.current.style.height = 'auto';
+            mainTextareaRef.current.style.height = `${mainTextareaRef.current.scrollHeight}px`;
+        }
+    }, [text]);
+
+    useEffect(() => {
+        if (replyTextareaRef.current) {
+            replyTextareaRef.current.style.height = 'auto';
+            replyTextareaRef.current.style.height = `${replyTextareaRef.current.scrollHeight}px`;
+        }
+    }, [replyText, replyingTo]);
 
     const [draggingPinId, setDraggingPinId] = useState<string | null>(null);
     const [expandedMessages, setExpandedMessages] = useState<string[]>([]);
@@ -353,7 +369,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     }}
                 >
                     <form onSubmit={(e) => handleSend(e, true)}>
-                        <textarea autoFocus value={replyText} onChange={e => setReplyText(e.target.value)} placeholder={roomsT.chat.whatAreYouThinking} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(e, true); } }} />
+                        <textarea ref={replyTextareaRef} autoFocus rows={1} value={replyText} onChange={e => setReplyText(e.target.value)} placeholder={roomsT.chat.whatAreYouThinking} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(e, true); } }} />
 
                         {replySelectedImages.length > 0 && (
                             <div className="preview-row" style={{ padding: '0 0.5rem 0.5rem 0.5rem' }}>
@@ -1019,10 +1035,11 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                     </div>
                                 ) : (
                                     <textarea
+                                        ref={mainTextareaRef}
                                         value={text}
                                         onChange={e => setText(e.target.value)}
                                         placeholder={isGeneral ? roomsT.chat.mainPlaceholder : roomsT.chat.whatAreYouThinking}
-                                        rows={text.split('\n').length > 2 ? 4 : 1}
+                                        rows={1}
                                         onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(e, false); } }}
                                     />
                                 )}
@@ -1233,7 +1250,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .main-input-sticky { position: sticky; top: 1rem; z-index: 50; }
                 .input-card { background: #fff; border: 2px solid #f1f5f9; border-radius: 24px; padding: 1rem; box-shadow: 0 10px 40px rgba(0,0,0,0.06); transition: all 0.2s; }
                 .input-card.is-dragging { border-color: var(--accent); background: rgba(0, 112, 243, 0.02); transform: scale(1.02); }
-                textarea { width: 100%; border: none; background: none; outline: none; resize: none; font-size: 1.1rem; color: #1e293b; padding: 0.5rem; min-height: 40px; font-weight: 500; }
+                textarea { width: 100%; border: none; background: none; outline: none; resize: none; font-size: 1.1rem; color: #1e293b; padding: 0.5rem; min-height: 44px; max-height: 350px; overflow-y: auto; font-weight: 500; box-sizing: border-box; }
                 textarea::placeholder { color: #94a3b8; font-weight: 500; }
                 .input-footer-row { display: flex; align-items: center; justify-content: space-between; margin-top: 0.5rem; border-top: 1px solid #f8fafc; padding-top: 0.5rem; }
                 .input-actions-left { display: flex; align-items: center; gap: 0.8rem; }
@@ -1457,7 +1474,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .close-reply-btn:hover { background: #fee2e2; color: #ef4444; border-color: #fecaca; transform: scale(1.1); }
                 .reply-input-area { padding: 0.5rem; transition: all 0.2s; border: 2px solid transparent; border-radius: 12px; }
                 .reply-input-area.is-dragging { background: rgba(0, 112, 243, 0.05); border-color: var(--accent); border-style: dashed; }
-                .reply-input-area textarea { min-height: 80px; padding: 0.75rem; font-size: 1.05rem; }
+                .reply-input-area textarea { min-height: 50px; max-height: 300px; padding: 0.75rem; font-size: 1.05rem; box-sizing: border-box; }
                 .reply-footer { display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 1rem; border-top: 1px solid #f8fafc; }
 
                 .spin { animation: spin 1.1s linear infinite; }
@@ -1498,8 +1515,8 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     .log-row-content { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
                     .log-tags { align-self: flex-start; }
                     .hide-mobile { display: none; }
-                    textarea { min-height: 140px; }
-                    .reply-input-area textarea { min-height: 100px; }
+                    textarea { min-height: 60px; max-height: 250px; }
+                    .reply-input-area textarea { min-height: 60px; max-height: 250px; }
                     .input-card { padding: 0.75rem; }
                     .reply-meta { flex-direction: column; align-items: flex-start; gap: 0.1rem; }
                     .reply-date-row { flex-direction: row-reverse; justify-content: flex-end; }
