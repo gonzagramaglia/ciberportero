@@ -112,3 +112,12 @@ export function slugify(text: string): string {
     .replace(/[^\w-]+/g, '') // remove all non-word chars
     .replace(/--+/g, '-'); // replace multiple - with single -
 }
+
+export function formatMarkdown(text: string): string {
+  if (!text || typeof text !== 'string') return '';
+  return text
+      .replace(/\*\*(?!\s)(.*?)(?<!\s)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(?!\s)(.*?)(?<!\s)\*/g, '<strong>$1</strong>')
+      .replace(/_(?!\s)(.*?)(?<!\s)_/g, '<em>$1</em>')
+      .replace(/\n/g, '<br />');
+}

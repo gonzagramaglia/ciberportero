@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { AlertTriangle, Bell, X } from 'lucide-react';
 import { translations } from '../lib/translations';
 import { useLanguage } from '../context/LanguageContext';
+import { formatMarkdown } from '../lib/utils';
 
 export default function NotificationBanners({ limitTo = 'all' }: { limitTo?: 'ivu' | 'mate' | 'none' | 'all' }) {
     const { lang } = useLanguage();
@@ -73,12 +74,12 @@ export default function NotificationBanners({ limitTo = 'all' }: { limitTo?: 'iv
                         <div className="notification-text">
                             <p 
                                 style={{ margin: 0, fontWeight: 800, fontSize: '0.95rem', letterSpacing: '-0.01em' }} 
-                                dangerouslySetInnerHTML={{ __html: message }} 
+                                dangerouslySetInnerHTML={{ __html: formatMarkdown(message) }} 
                             />
                             {description && (
                                 <p 
                                     style={{ margin: '0.1rem 0 0', opacity: 0.9, fontSize: '0.85rem', fontWeight: 500 }} 
-                                    dangerouslySetInnerHTML={{ __html: description }} 
+                                    dangerouslySetInnerHTML={{ __html: formatMarkdown(description) }} 
                                 />
                             )}
                         </div>

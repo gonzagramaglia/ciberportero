@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Clock } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { translations } from '../lib/translations';
+import { formatMarkdown } from '../lib/utils';
 
 interface CountdownData {
     id?: string;
@@ -111,7 +112,6 @@ export default function CountdownWidget({ countdowns: initialCountdowns, isInlin
     const processText = (text: any, ignoreNewlines?: boolean) => {
         if (!text) return null;
         
-        // Handle translation objects if they slip through
         let str = '';
         if (typeof text === 'string') {
             str = text;
@@ -123,24 +123,9 @@ export default function CountdownWidget({ countdowns: initialCountdowns, isInlin
 
         if (!str) return null;
 
-        if (ignoreNewlines) {
-            return str.split(/(\*\*.*?\*\*)/).map((part, j) => {
-                if (part.startsWith('**') && part.endsWith('**')) {
-                    return <strong key={j} style={{ fontWeight: 900 }}>{part.slice(2, -2)}</strong>;
-                }
-                return part;
-            });
-        }
-        return str.split('\n').map((line, i) => (
-            <span key={i} style={{ display: 'block' }}>
-                {line.split(/(\*\*.*?\*\*)/).map((part, j) => {
-                    if (part.startsWith('**') && part.endsWith('**')) {
-                        return <strong key={j} style={{ fontWeight: 900 }}>{part.slice(2, -2)}</strong>;
-                    }
-                    return part;
-                })}
-            </span>
-        ));
+        // Even if ignoreNewlines is passed, the user explicitly requested line breaks to work.
+        // So we will just use formatMarkdown which replaces \n with <br />
+        return <span dangerouslySetInnerHTML={{ __html: formatMarkdown(str) }} />;
     };
 
     if (isLoading) {

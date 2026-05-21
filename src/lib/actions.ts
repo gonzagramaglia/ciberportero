@@ -409,6 +409,28 @@ export async function upsertCountdown(data: any) {
 }
 
 /* --- CALENDAR ACTIONS --- */
+export async function swapCountdowns() {
+  const countdowns = await db.countdown.findMany({ where: { postId: null } });
+  
+  // Set to temp first to avoid unique constraints
+  for (const c of countdowns) {
+    await db.countdown.update({ where: { id: c.id }, data: { slot: `temp-${c.id}` } });
+  }
+  
+  // Now set the actual swapped values
+  for (const c of countdowns) {
+    if (c.slot === 'left') {
+      await db.countdown.update({ where: { id: c.id }, data: { slot: 'right' } });
+    } else if (c.slot === 'right') {
+      await db.countdown.update({ where: { id: c.id }, data: { slot: 'left' } });
+    }
+  }
+
+  await logAction('UPDATE', 'countdown', 'Intercambió posiciones de los contadores');
+  revalidatePath('/admin/countdowns');
+  revalidatePath('/');
+  return { success: true };
+}
 export async function deleteCalendarEvent(id: string) {
   const session = await auth();
   if (!session?.user?.id) return { error: "Not authenticated" };

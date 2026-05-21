@@ -862,7 +862,7 @@ footer a:hover {
   display: flex;
   align-items: flex-start;
   gap: 0.85rem;
-  padding: 1.5rem 1.15rem;
+  padding: 1.5rem 3rem 1.5rem 1.15rem;
 }
 
 .notification-icon {
@@ -892,7 +892,7 @@ footer a:hover {
   letter-spacing: -0.01em;
 }
 
-.notification-text span {
+.notification-text p {
   font-size: 0.82rem;
   opacity: 0.85;
   line-height: 1.4;
@@ -911,7 +911,9 @@ footer a:hover {
   justify-content: center;
   cursor: pointer;
   transition: background 0.2s ease;
-  margin-top: 2px;
+  position: absolute;
+  top: 12px;
+  right: 12px;
 }
 
 .notification-close:hover {

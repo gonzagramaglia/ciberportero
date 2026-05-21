@@ -1,26 +1,45 @@
 'use client';
 
-import { Plus, Clock, Edit, ExternalLink } from "lucide-react";
+import { Plus, Clock, Edit, ArrowLeftRight } from "lucide-react";
 import Link from "next/link";
 import { CountdownToggle } from "@/components/admin/CountdownToggle";
+import { swapCountdowns } from "@/lib/actions";
+import { useState } from "react";
 
 interface Props {
   countdowns: any[];
 }
 
 export default function CountdownsList({ countdowns }: Props) {
+  const [isSwapping, setIsSwapping] = useState(false);
+
   const slots = [
     { id: 'left', label: 'IZQUIERDA' },
     { id: 'right', label: 'DERECHA' }
   ];
 
+  const handleSwap = async () => {
+    setIsSwapping(true);
+    await swapCountdowns();
+    setIsSwapping(false);
+  };
+
   return (
     <div className="space-y-6">
-      <div className="admin-header">
+      <div className="admin-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
           <h2 className="admin-title">Cuentas Regresivas Globales</h2>
           <p className="admin-subtitle">Gestiona los avisos con tiempo restante que aparecen en el cabezal del sitio.</p>
         </div>
+        <button 
+          onClick={handleSwap} 
+          disabled={isSwapping || countdowns.length === 0}
+          className="btn-secondary" 
+          style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', opacity: (isSwapping || countdowns.length === 0) ? 0.5 : 1 }}
+        >
+          <ArrowLeftRight size={18} />
+          <span>{isSwapping ? 'Intercambiando...' : 'Intercambiar Slots'}</span>
+        </button>
       </div>
 
       <div className="admin-countdowns-grid">
