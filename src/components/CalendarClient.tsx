@@ -15,6 +15,7 @@ import SyncedBadge from "@/components/SyncedBadge"
 import { SignInButton, SignOutButton } from "@/components/AuthButtons"
 import CommentSection from "@/components/CommentSection"
 import { Download, Share2 } from "lucide-react"
+import { formatMarkdown } from "@/lib/utils"
 
 interface AcademicEvent {
   id: string;
@@ -768,7 +769,10 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                         {event.title['es']}
                         {event.subjectId && event.subjectId !== 'all' && ` (${(st as any)[event.subjectId]})`}
                       </h4>
-                      <p style={{ whiteSpace: 'pre-wrap' }}>{event.desc['es']}</p>
+                      <div 
+                        style={{ whiteSpace: 'pre-wrap', marginBottom: '1rem' }} 
+                        dangerouslySetInnerHTML={{ __html: formatMarkdown(event.desc['es'] || '') }} 
+                      />
                       
                       {event.url && (
                         <a 
