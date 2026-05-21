@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, X, ExternalLink, Smile, Plus, Trash2 } from 'lucide-react';
+import { Save, X, ExternalLink, Smile, Plus, Trash2, ArrowLeftRight } from 'lucide-react';
 import { upsertPost } from '@/lib/actions';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -259,9 +259,26 @@ export default function PostEditor({ post }: PostEditorProps) {
 
               {/* Cuentas Regresivas Locales */}
               <div style={{ borderTop: '2px dashed #f1f5f9', paddingTop: '3.5rem' }}>
-                <div style={{ marginBottom: '2rem' }}>
-                  <h4 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 900 }}>Cuentas Regresivas Locales</h4>
-                  <p style={{ margin: 0, fontSize: '0.8rem', color: '#64748b', fontWeight: 600 }}>Solo para este post específico.</p>
+                <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <h4 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 900 }}>Cuentas Regresivas Locales</h4>
+                    <p style={{ margin: 0, fontSize: '0.8rem', color: '#64748b', fontWeight: 600 }}>Solo para este post específico.</p>
+                  </div>
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      setCountdowns(prev => prev.map(c => ({
+                        ...c,
+                        slot: c.slot === 'left' ? 'right' : 'left'
+                      })));
+                    }}
+                    disabled={countdowns.length === 0}
+                    className="btn-secondary"
+                    style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', opacity: countdowns.length === 0 ? 0.5 : 1 }}
+                  >
+                    <ArrowLeftRight size={18} />
+                    <span>Intercambiar Slots</span>
+                  </button>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
