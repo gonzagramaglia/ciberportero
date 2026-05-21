@@ -116,10 +116,13 @@ export async function GET(request: Request) {
         if (p.alternativeSlug2) dbSlugs.add(p.alternativeSlug2);
     });
 
-    const mergedPosts = [
+    let mergedPosts = [
         ...dbPosts,
         ...finalFilePosts.filter(p => !dbSlugs.has(p.slug))
     ];
+
+    // Filter out "links" post
+    mergedPosts = mergedPosts.filter(p => p.slug !== 'links' && p.title !== 'links');
 
     // Final sort by date
     mergedPosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
