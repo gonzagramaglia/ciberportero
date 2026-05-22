@@ -252,7 +252,6 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
 
                 <div className="post-body-layout">
                     <article className={`post-content ${isHighlighting ? 'highlight-active' : ''}`}>
-                        <div className="mobile-only-countdown"><CountdownWidget countdowns={post?.countdowns} isInline /></div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
                             <span className="post-date" style={{ margin: 0 }} suppressHydrationWarning>
                                 {new Date(post.date).toLocaleDateString(lang, { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })}
@@ -270,6 +269,8 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                         </div>
 
                         <Heading level={1}>{postTitle}</Heading>
+
+                        <div className="mobile-only-countdown"><CountdownWidget countdowns={post?.countdowns} isInline /></div>
 
                         {toc.length > 2 && (
                             <nav className="post-toc mobile-toc">
