@@ -100,7 +100,7 @@ If everything returns the expected result, you can now upload your code to Codef
 
 I hope this helps you take your first step into competitive programming! 😎
 
-Written with 💛 by [**Gonza**](https://github.com/gonzalogramagia)
+Written with 💛 by [**Gonza**](https://github.com/gonzagramaglia)
 
 ---
 

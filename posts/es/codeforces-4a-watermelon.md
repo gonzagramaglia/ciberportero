@@ -101,7 +101,7 @@ Si todo devuelve lo esperado, ya podés subir tu código a Codeforces. No te fru
 ¡Espero que esto te ayude a dar tu primer paso en la programación competitiva! 😎
 
 
-Escrito con 💛 por [**Gonza**](https://github.com/gonzalogramagia)
+Escrito con 💛 por [**Gonza**](https://github.com/gonzagramaglia)
 
 ---
 

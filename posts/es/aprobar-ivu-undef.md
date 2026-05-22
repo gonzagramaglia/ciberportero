@@ -25,4 +25,4 @@ Una vez completados, no olvides inscribirte:
 
 > 📜 **Recomendación:** Leer bien el [**Reglamento de la UNDEF**](https://drive.google.com/file/d/1ebdZ_zecr452v2XYp6N1pJkgm6h36EEb/view?usp=sharing), ya que varias respuestas estarán ahí.
 
-Escrito con 💛 por [**Gonza**](https://github.com/gonzalogramagia)
+Escrito con 💛 por [**Gonza**](https://github.com/gonzagramaglia)

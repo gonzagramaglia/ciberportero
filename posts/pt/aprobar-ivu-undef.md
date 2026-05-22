@@ -26,4 +26,4 @@ Uma vez completados, não esqueça de se inscrever:
 
 > 📜 **Recomendação:** Leia bem o [**Regulamento da UNDEF**](https://drive.google.com/file/d/1ebdZ_zecr452v2XYp6N1pJkgm6h36EEb/view?usp=sharing), pois várias respostas estarão lá.
 
-Escrito com 💛 por [**Gonza**](https://github.com/gonzalogramagia)
+Escrito com 💛 por [**Gonza**](https://github.com/gonzagramaglia)

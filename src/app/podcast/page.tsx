@@ -28,12 +28,12 @@ export default async function PodcastListPage() {
     return (
         <div className="container fade-in">
             <div className="nav-header-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem', paddingTop: '1rem' }}>
-                <Link href="/" className="back-link" style={{ 
-                    display: 'inline-flex', 
-                    alignItems: 'center', 
-                    gap: '0.6rem', 
-                    color: '#64748b', 
-                    textDecoration: 'none', 
+                <Link href="/" className="back-link" style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.6rem',
+                    color: '#64748b',
+                    textDecoration: 'none',
                     fontWeight: 600,
                     fontSize: '1rem'
                 }}>
@@ -68,9 +68,9 @@ export default async function PodcastListPage() {
             </main>
 
             {/* Floating button for playlist.hoy.today */}
-            <a 
-                href="https://playlist.hoy.today/" 
-                target="_blank" 
+            <a
+                href="https://playlist.hoy.today/"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="playlist-floating-link"
                 title="Ir a Playlist Hoy"
@@ -79,7 +79,7 @@ export default async function PodcastListPage() {
             </a>
 
             <footer className="footer-main" style={{ marginTop: '8rem', borderTop: '1px solid #f1f5f9', paddingTop: '3rem', marginBottom: '2rem' }}>
-                <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+                <a href="https://github.com/gonzagramaglia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
                     <Github size={18} />
                 </a>
                 <span>{t.footer}</span>
@@ -88,7 +88,8 @@ export default async function PodcastListPage() {
                 </a>
             </footer>
 
-            <style dangerouslySetInnerHTML={{ __html: `
+            <style dangerouslySetInnerHTML={{
+                __html: `
                 .podcast-list-grid {
                     display: grid;
                     grid-template-columns: repeat(2, 1fr);

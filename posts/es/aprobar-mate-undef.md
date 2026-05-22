@@ -12,4 +12,4 @@ description: "Guía para aprobar con 80% o más el Curso de Matemática del Ingr
 
 ![En proceso](/in-process.png)
 
-Escrito con 💛 por [**Gonza**](https://github.com/gonzalogramagia)
+Escrito con 💛 por [**Gonza**](https://github.com/gonzagramaglia)

@@ -104,7 +104,7 @@ export default function LinksPage() {
                     <div>
                         <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
                             {t.featured?.title}
-                            <div style={{ 
+                            <div style={{
                                 opacity: status === 'loading' ? 0 : 1,
                                 transition: 'opacity 0.2s',
                                 display: 'flex',
@@ -117,7 +117,7 @@ export default function LinksPage() {
                     </div>
                     {status === 'authenticated' && (
                         (session?.user?.role === 'admin' || session?.user?.email === 'ciberportero@gmail.com') ? (
-                            <Link 
+                            <Link
                                 href="/admin/links"
                                 className="add-link-btn"
                                 style={{
@@ -140,7 +140,7 @@ export default function LinksPage() {
                                 {lang === 'es' ? 'Agregar link' : lang === 'pt' ? 'Adicionar link' : 'Add link'}
                             </Link>
                         ) : (
-                            <button 
+                            <button
                                 onClick={() => setIsAddModalOpen(true)}
                                 className="add-link-btn"
                                 style={{
@@ -236,7 +236,7 @@ export default function LinksPage() {
                                 {isLoading && (
                                     <>
                                         {[1, 2, 3, 4].map((i) => (
-                                            <div key={i} style={{ 
+                                            <div key={i} style={{
                                                 height: '100px', background: 'white', borderRadius: '24px',
                                                 border: '1px solid #f1f5f9', padding: '1.5rem',
                                                 display: 'flex', alignItems: 'center', gap: '1.5rem',
@@ -299,7 +299,7 @@ export default function LinksPage() {
             <CommentSection postSlug="links" lang={lang} />
 
             <footer className="footer-main">
-                <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+                <a href="https://github.com/gonzagramaglia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
                     <Github size={18} />
                 </a>
                 <span>{t.footer}</span>
@@ -332,32 +332,32 @@ export default function LinksPage() {
                                 <CloseIcon size={24} />
                             </button>
                         </div>
-                        
+
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
                             <div>
                                 <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '800', marginBottom: '0.4rem', color: 'var(--muted)' }}>{lang === 'es' ? 'Nombre' : 'Name'}</label>
-                                <input 
-                                    type="text" 
-                                    value={newLink.name} 
-                                    onChange={(e) => setNewLink({...newLink, name: e.target.value})}
+                                <input
+                                    type="text"
+                                    value={newLink.name}
+                                    onChange={(e) => setNewLink({ ...newLink, name: e.target.value })}
                                     placeholder="Ej: Mi Portfolio"
                                     style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
                                 />
                             </div>
-                            
+
                             <div>
                                 <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '800', marginBottom: '0.4rem', color: 'var(--muted)' }}>URL</label>
-                                <input 
-                                    type="url" 
-                                    value={newLink.url} 
-                                    onChange={(e) => setNewLink({...newLink, url: e.target.value})}
+                                <input
+                                    type="url"
+                                    value={newLink.url}
+                                    onChange={(e) => setNewLink({ ...newLink, url: e.target.value })}
                                     placeholder="https://..."
                                     style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
                                 />
                             </div>
-                            
-                            
-                            <button 
+
+
+                            <button
                                 onClick={handleSaveLink}
                                 disabled={isSaving}
                                 style={{

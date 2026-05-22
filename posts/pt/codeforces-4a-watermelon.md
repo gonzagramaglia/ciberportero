@@ -100,7 +100,7 @@ Se tudo retornar o esperado, você já pode enviar seu código para o Codeforces
 
 Espero que isso te ajude a dar o seu primeiro passo na programação competitiva! 😎
 
-Escrito com 💛 por [**Gonza**](https://github.com/gonzalogramagia)
+Escrito com 💛 por [**Gonza**](https://github.com/gonzagramaglia)
 
 ---
 

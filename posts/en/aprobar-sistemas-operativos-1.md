@@ -50,6 +50,6 @@ To successfully advance in this subject, it is essential to stay up to date with
 You can find more resources, contributions from classmates, or previous exams at the following link:
 - [**General Google Drive Folder**](https://drive.google.com/drive/folders/1BnlGi3g2Rfu59RPlYi9RPJc1TqC_v-sE?usp=drive_link)
 
-[![image](https://www.ciberportero.com/in-process.png)](https://github.com/gonzalogramagia)
+[![image](https://www.ciberportero.com/in-process.png)](https://github.com/gonzagramaglia)
 
-Being written with 💛 by [**Gonza**](https://github.com/gonzalogramagia)
+Being written with 💛 by [**Gonza**](https://github.com/gonzagramaglia)

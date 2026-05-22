@@ -26,4 +26,4 @@ Once completed, don't forget to register:
 
 > 📜 **Recommendation:** Read the [**UNDEF Regulations**](https://drive.google.com/file/d/1ebdZ_zecr452v2XYp6N1pJkgm6h36EEb/view?usp=sharing) carefully, as several answers will be there.
 
-Written with 💛 by [**Gonza**](https://github.com/gonzalogramagia)
+Written with 💛 by [**Gonza**](https://github.com/gonzagramaglia)

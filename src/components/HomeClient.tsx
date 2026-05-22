@@ -155,18 +155,18 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                             </li>
                         ))
                     ) : (
-                        <div style={{ 
-                            padding: '3rem 1rem', 
-                            textAlign: 'center', 
-                            background: '#f8fafc', 
-                            borderRadius: '12px', 
+                        <div style={{
+                            padding: '3rem 1rem',
+                            textAlign: 'center',
+                            background: '#f8fafc',
+                            borderRadius: '12px',
                             border: '1px dashed var(--border)',
                             color: 'var(--muted)'
                         }}>
                             <p style={{ margin: 0, fontWeight: '500' }}>
-                                {lang === 'es' ? 'No hay posts publicados en este momento.' : 
-                                 lang === 'pt' ? 'Não há posts publicados no momento.' : 
-                                 'No posts published at this time.'}
+                                {lang === 'es' ? 'No hay posts publicados en este momento.' :
+                                    lang === 'pt' ? 'Não há posts publicados no momento.' :
+                                        'No posts published at this time.'}
                             </p>
                         </div>
                     )}
@@ -201,7 +201,7 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
             </div>
 
             <footer className="footer-main">
-                <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Github size={18} /></a>
+                <a href="https://github.com/gonzagramaglia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Github size={18} /></a>
                 <span>{t.footer}</span>
                 <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Youtube size={22} /></a>
             </footer>

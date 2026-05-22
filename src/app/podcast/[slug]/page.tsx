@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const { slug } = await params;
     const cookieStore = await cookies();
     const lang = (cookieStore.get('lang')?.value as Locale) || 'es';
-    
+
     const podcast = await db.podcast.findUnique({
         where: { slug }
     });
@@ -75,12 +75,12 @@ export default async function PodcastDetailPage({ params }: { params: Promise<{ 
     return (
         <div className="container fade-in">
             <div className="nav-header-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', paddingTop: '1rem' }}>
-                <Link href="/podcast" className="back-link" style={{ 
-                    display: 'inline-flex', 
-                    alignItems: 'center', 
-                    gap: '0.6rem', 
-                    color: '#64748b', 
-                    textDecoration: 'none', 
+                <Link href="/podcast" className="back-link" style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.6rem',
+                    color: '#64748b',
+                    textDecoration: 'none',
                     fontWeight: 600,
                     fontSize: '1rem'
                 }}>
@@ -89,7 +89,7 @@ export default async function PodcastDetailPage({ params }: { params: Promise<{ 
                 </Link>
                 <div style={{ width: '1px' }} />
             </div>
-                
+
             <div className="podcast-main-layout">
                 <div className="info-side">
                     <header style={{ marginBottom: '2.5rem' }}>
@@ -107,12 +107,12 @@ export default async function PodcastDetailPage({ params }: { params: Promise<{ 
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
                                 {podcast.subjectId && (
-                                    <div style={{ 
-                                        fontSize: '0.75rem', 
-                                        fontWeight: 900, 
-                                        background: 'rgba(0, 112, 243, 0.08)', 
-                                        padding: '0.3rem 0.75rem', 
-                                        borderRadius: '8px', 
+                                    <div style={{
+                                        fontSize: '0.75rem',
+                                        fontWeight: 900,
+                                        background: 'rgba(0, 112, 243, 0.08)',
+                                        padding: '0.3rem 0.75rem',
+                                        borderRadius: '8px',
                                         color: 'var(--accent)',
                                         textTransform: 'uppercase',
                                         letterSpacing: '0.05em'
@@ -164,18 +164,18 @@ export default async function PodcastDetailPage({ params }: { params: Promise<{ 
                             </h4>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                 {(podcast.links as any[]).map((link, idx) => (
-                                    <a 
-                                        key={idx} 
-                                        href={link.url} 
-                                        target="_blank" 
+                                    <a
+                                        key={idx}
+                                        href={link.url}
+                                        target="_blank"
                                         rel="noreferrer"
-                                        style={{ 
-                                            display: 'flex', 
-                                            alignItems: 'center', 
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
                                             justifyContent: 'space-between',
-                                            padding: '1.25rem 1.5rem', 
-                                            background: '#fff', 
-                                            borderRadius: '16px', 
+                                            padding: '1.25rem 1.5rem',
+                                            background: '#fff',
+                                            borderRadius: '16px',
                                             border: '1px solid #e2e8f0',
                                             textDecoration: 'none',
                                             color: '#1e293b',
@@ -200,9 +200,9 @@ export default async function PodcastDetailPage({ params }: { params: Promise<{ 
                 </aside>
 
                 <div className="player-section-full">
-                    <PodcastPlayer 
-                        podcast={podcast} 
-                        initialLikes={likes} 
+                    <PodcastPlayer
+                        podcast={podcast}
+                        initialLikes={likes}
                         initialDislikes={dislikes}
                         userVote={userVote as any}
                         forcedLang="es"
@@ -211,9 +211,9 @@ export default async function PodcastDetailPage({ params }: { params: Promise<{ 
             </div>
 
             {/* Floating button for playlist.hoy.today */}
-            <a 
-                href="https://playlist.hoy.today/" 
-                target="_blank" 
+            <a
+                href="https://playlist.hoy.today/"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="playlist-floating-link"
                 title="Ir a Playlist Hoy"
@@ -222,7 +222,7 @@ export default async function PodcastDetailPage({ params }: { params: Promise<{ 
             </a>
 
             <footer className="footer-main" style={{ marginTop: '5rem', borderTop: '1px solid #f1f5f9', paddingTop: '2.5rem', marginBottom: '2rem' }}>
-                <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+                <a href="https://github.com/gonzagramaglia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
                     <Github size={18} />
                 </a>
                 <span>{t.footer}</span>
@@ -231,7 +231,8 @@ export default async function PodcastDetailPage({ params }: { params: Promise<{ 
                 </a>
             </footer>
 
-            <style dangerouslySetInnerHTML={{ __html: `
+            <style dangerouslySetInnerHTML={{
+                __html: `
                 .podcast-main-layout {
                     display: grid;
                     grid-template-columns: 5.5fr 4.5fr;

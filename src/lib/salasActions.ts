@@ -101,7 +101,7 @@ export async function createCategory(roomId: string, name: string) {
 
   try {
     const room = await db.room.findUnique({ where: { id: roomId } });
-    const isAdmin = session.user.email === 'ciberportero@gmail.com' || session.user.email === 'gonzalogramagia@gmail.com' || session.user.role === 'admin';
+    const isAdmin = session.user.email === 'ciberportero@gmail.com' || session.user.email === 'gonzagramaglia@gmail.com' || session.user.role === 'admin';
     if (room?.creatorId !== session.user.id && !isAdmin) return { error: "No autorizado" };
 
     await db.roomCategory.create({
@@ -132,41 +132,41 @@ export async function createSubcategory(categoryId: string, name: string, descri
   if (description && description.length > 150) return { error: "La descripción no puede superar los 150 caracteres" };
 
   try {
-    const category = await db.roomCategory.findUnique({ 
+    const category = await db.roomCategory.findUnique({
       where: { id: categoryId },
       include: { room: true, subcategories: true }
     });
-    
+
     if (!category) return { error: "Categoría no encontrada" };
 
-    const isAdmin = session.user.email === 'ciberportero@gmail.com' || session.user.email === 'gonzalogramagia@gmail.com' || session.user.role === 'admin';
+    const isAdmin = session.user.email === 'ciberportero@gmail.com' || session.user.email === 'gonzagramaglia@gmail.com' || session.user.role === 'admin';
     if (category.room.creatorId !== session.user.id && !isAdmin) return { error: "No autorizado" };
 
     const decodedName = decodeURIComponent(name).trim();
-    
+
     // Check for duplicate names within the same category
     const existing = category.subcategories.find(s => s.name.toLowerCase() === decodedName.toLowerCase());
     if (existing) return { error: "Ya existe una subcategoría con ese nombre en esta categoría." };
-        
+
     // Ensure unique slug within the room
     const catPrefix = categoryId.length >= 4 ? categoryId.slice(-4) : 'sub';
     let finalSlug = `${catPrefix}-${strictSlugify(decodedName)}`;
     const allSubsInRoom = await db.roomSubcategory.findMany({
-        where: { category: { roomId: category.roomId } },
-        select: { slug: true }
+      where: { category: { roomId: category.roomId } },
+      select: { slug: true }
     });
-    
+
     let suffix = 1;
     const originalSlug = finalSlug;
     while (allSubsInRoom.some(s => s.slug === finalSlug)) {
-        finalSlug = `${originalSlug}-${Math.random().toString(36).substring(2, 5)}`;
-        if (suffix++ > 10) break; // Safety break
+      finalSlug = `${originalSlug}-${Math.random().toString(36).substring(2, 5)}`;
+      if (suffix++ > 10) break; // Safety break
     }
 
     const sub = await db.roomSubcategory.create({
-      data: { 
-        categoryId, 
-        name: decodedName, 
+      data: {
+        categoryId,
+        name: decodedName,
         slug: finalSlug,
         description,
         order: category.subcategories.length
@@ -195,7 +195,7 @@ export async function moveSubcategory(subId: string, newCategoryId: string, newO
 
     if (!sub) return { error: "Subcategoría no encontrada" };
 
-    const isAdmin = session.user.email === 'ciberportero@gmail.com' || session.user.email === 'gonzalogramagia@gmail.com' || session.user.role === 'admin';
+    const isAdmin = session.user.email === 'ciberportero@gmail.com' || session.user.email === 'gonzagramaglia@gmail.com' || session.user.role === 'admin';
     if (sub.category.room.creatorId !== session.user.id && !isAdmin) return { error: "No autorizado" };
 
     // Calculate new slug based on new category
@@ -205,21 +205,21 @@ export async function moveSubcategory(subId: string, newCategoryId: string, newO
 
     // Check if this new slug is already taken in the room
     const existing = await db.roomSubcategory.findFirst({
-        where: { 
-            category: { roomId: sub.category.roomId },
-            id: { not: subId },
-            slug: { equals: newSlug, mode: 'insensitive' }
-        }
+      where: {
+        category: { roomId: sub.category.roomId },
+        id: { not: subId },
+        slug: { equals: newSlug, mode: 'insensitive' }
+      }
     });
 
     if (existing) {
-        return { error: "No se puede mover: ya existe una subcategoría con el mismo slug (#) en la categoría de destino." };
+      return { error: "No se puede mover: ya existe una subcategoría con el mismo slug (#) en la categoría de destino." };
     }
 
     // Prepare update data
-    const updateData: any = { 
-        categoryId: newCategoryId,
-        slug: newSlug
+    const updateData: any = {
+      categoryId: newCategoryId,
+      slug: newSlug
     };
     if (newOrder !== undefined) {
       // Reordenamiento complejo
@@ -297,7 +297,7 @@ export async function reorderCategories(roomId: string, categoryIds: string[]) {
     if (room?.creatorId !== session.user.id) return { error: "No autorizado" };
 
     await db.$transaction(
-      categoryIds.map((id, index) => 
+      categoryIds.map((id, index) =>
         db.roomCategory.update({
           where: { id },
           data: { order: index } as any
@@ -318,50 +318,50 @@ export async function updateSubcategory(subId: string, name: string, slug?: stri
   if (!session?.user?.id) return { error: "No autenticado" };
   if (description && description.length > 600) return { error: "La descripción no puede superar los 600 caracteres" };
   try {
-    const sub = await db.roomSubcategory.findUnique({ 
-      where: { id: subId }, 
-      include: { category: { include: { subcategories: true, room: true } } } 
+    const sub = await db.roomSubcategory.findUnique({
+      where: { id: subId },
+      include: { category: { include: { subcategories: true, room: true } } }
     });
-    const isAdmin = session.user.email === 'ciberportero@gmail.com' || session.user.email === 'gonzalogramagia@gmail.com' || session.user.role === 'admin';
+    const isAdmin = session.user.email === 'ciberportero@gmail.com' || session.user.email === 'gonzagramaglia@gmail.com' || session.user.role === 'admin';
     if (!sub || (sub.category.room.creatorId !== session.user.id && !isAdmin)) return { error: "No autorizado" };
-    
+
     // Check for duplicate names within the same category only if name changed
     if (sub.name !== name) {
-        const existing = sub.category.subcategories.find(s => s.name.toLowerCase() === name.toLowerCase() && s.id !== subId);
-        if (existing) return { error: "Ya existe una subcategoría con ese nombre en esta categoría." };
+      const existing = sub.category.subcategories.find(s => s.name.toLowerCase() === name.toLowerCase() && s.id !== subId);
+      if (existing) return { error: "Ya existe una subcategoría con ese nombre en esta categoría." };
     }
-    
+
     const updateData: any = { name };
     if (description !== undefined) updateData.description = description;
-        if (slug) {
-            const catId = sub.category.id;
-            const catPrefix = catId.length >= 4 ? catId.slice(-4) : 'sub';
-            let finalSlug = `${catPrefix}-${strictSlugify(slug)}`;
-            
-            // Ensure unique slug within the room
-            const allSubsInRoom = await db.roomSubcategory.findMany({
-                where: { category: { roomId: sub.category.roomId } },
-                select: { id: true, slug: true }
-            });
-            
-            let suffix = 1;
-            const originalSlug = finalSlug;
-            while (allSubsInRoom.some(s => s.slug === finalSlug && s.id !== subId)) {
-                finalSlug = `${originalSlug}-${Math.random().toString(36).substring(2, 5)}`;
-                if (suffix++ > 10) break;
-            }
-            updateData.slug = finalSlug;
-        }
-    await db.roomSubcategory.update({ 
-        where: { id: subId }, 
-        data: updateData 
+    if (slug) {
+      const catId = sub.category.id;
+      const catPrefix = catId.length >= 4 ? catId.slice(-4) : 'sub';
+      let finalSlug = `${catPrefix}-${strictSlugify(slug)}`;
+
+      // Ensure unique slug within the room
+      const allSubsInRoom = await db.roomSubcategory.findMany({
+        where: { category: { roomId: sub.category.roomId } },
+        select: { id: true, slug: true }
+      });
+
+      let suffix = 1;
+      const originalSlug = finalSlug;
+      while (allSubsInRoom.some(s => s.slug === finalSlug && s.id !== subId)) {
+        finalSlug = `${originalSlug}-${Math.random().toString(36).substring(2, 5)}`;
+        if (suffix++ > 10) break;
+      }
+      updateData.slug = finalSlug;
+    }
+    await db.roomSubcategory.update({
+      where: { id: subId },
+      data: updateData
     });
-    
+
     revalidatePath(`/salas/${sub.category.roomId}`);
     return { success: true };
-  } catch (error) { 
+  } catch (error) {
     console.error(error);
-    return { error: "Error al actualizar" }; 
+    return { error: "Error al actualizar" };
   }
 }
 
@@ -369,19 +369,19 @@ export async function deleteSubcategory(subId: string) {
   const session = await auth();
   if (!session?.user?.id) return { error: "No autenticado" };
   try {
-    const sub = await db.roomSubcategory.findUnique({ 
-      where: { id: subId }, 
-      include: { 
+    const sub = await db.roomSubcategory.findUnique({
+      where: { id: subId },
+      include: {
         category: { include: { room: true } },
         messages: { select: { images: true } }
-      } 
+      }
     });
     if (sub?.category.room.creatorId !== session.user.id) return { error: "No autorizado" };
-    
+
     // Collect all images from all messages in this subcategory
     const allImages = sub.messages.flatMap(m => (m.images || []) as any[]);
     const pathsToDelete = allImages.map(url => getStoragePathFromUrl(url)).filter(Boolean) as string[];
-    
+
     if (pathsToDelete.length > 0) {
       await supabaseAdmin.storage.from('images').remove(pathsToDelete);
     }
@@ -389,9 +389,9 @@ export async function deleteSubcategory(subId: string) {
     await db.roomSubcategory.delete({ where: { id: subId } });
     revalidatePath(`/salas/${sub?.category.roomId}`);
     return { success: true };
-  } catch (error) { 
+  } catch (error) {
     console.error(error);
-    return { error: "Error al eliminar subcategoría" }; 
+    return { error: "Error al eliminar subcategoría" };
   }
 }
 
@@ -495,7 +495,7 @@ export async function getRoomDetails(rawRoomId: string) {
   try {
     const roomId = decodeURIComponent(rawRoomId).trim();
     const session = await auth();
-    
+
     if (!session?.user?.id) {
       return null;
     }
@@ -592,15 +592,15 @@ export async function getGeneralMessages(rawRoomId: string) {
 
     if (!db || !db.roomMessage) return [];
     return await db.roomMessage.findMany({
-      where: { 
-        subcategory: { 
+      where: {
+        subcategory: {
           OR: [
             { name: 'Chat General', category: { roomId } },
             { name: 'General', category: { roomId } },
             { category: { name: 'General', roomId } }
           ]
-        }, 
-        parentId: null 
+        },
+        parentId: null
       },
       include: {
         user: { select: { id: true, name: true, image: true } },
@@ -631,7 +631,7 @@ export async function addGeneralMessage(roomId: string, content: string, images:
 
   try {
     let general = await db.roomSubcategory.findFirst({
-      where: { 
+      where: {
         OR: [
           { name: 'Chat General', category: { roomId } },
           { name: 'General', category: { roomId } },
@@ -728,7 +728,7 @@ export async function updateRoom(roomId: string, name: string, newSlug: string, 
     revalidatePath('/salas/lista');
     revalidatePath(`/salas/${updated.id}`);
     revalidatePath('/admin/rooms');
-    
+
     return { success: true, roomId: updated.id };
   } catch (error) {
     console.error(error);
@@ -768,7 +768,7 @@ export async function getAllRoomMessages(rawRoomId: string) {
     if (!isMember) return [];
 
     return await db.roomMessage.findMany({
-      where: { 
+      where: {
         OR: [
           { subcategory: { category: { roomId } } },
           { subcategory: { name: 'Chat General', category: { roomId } } },
@@ -777,12 +777,12 @@ export async function getAllRoomMessages(rawRoomId: string) {
       },
       include: {
         user: { select: { id: true, name: true, image: true } },
-        subcategory: { 
-          select: { 
+        subcategory: {
+          select: {
             id: true,
             name: true,
             category: { select: { name: true } }
-          } 
+          }
         }
       },
       orderBy: { createdAt: 'desc' }
@@ -799,7 +799,7 @@ export async function deleteMessage(messageId: string) {
   try {
     const message = await db.roomMessage.findUnique({
       where: { id: messageId },
-      include: { 
+      include: {
         subcategory: { include: { category: true } },
         replies: {
           include: {
@@ -841,7 +841,7 @@ export async function deleteMessage(messageId: string) {
     if (message.subcategory) {
       revalidatePath(`/salas/${message.subcategory.category.roomId}`);
     }
-    
+
     return { success: true };
   } catch (error) {
     console.error(error);
@@ -897,7 +897,7 @@ export async function togglePinMessage(messageId: string) {
 
     await db.roomMessage.update({
       where: { id: messageId },
-      data: { 
+      data: {
         isPinned: newPinned,
         pinOrder: pinOrder
       } as any
@@ -912,105 +912,105 @@ export async function togglePinMessage(messageId: string) {
 }
 
 export async function reorderPinnedMessages(subcategoryId: string, messageIds: string[]) {
-    const session = await auth();
-    if (!session?.user?.id) return { error: "No autenticado" };
+  const session = await auth();
+  if (!session?.user?.id) return { error: "No autenticado" };
 
-    try {
-        let sub = await db.roomSubcategory.findUnique({
-            where: { id: subcategoryId },
-            include: { category: { include: { room: true } } }
-        });
+  try {
+    let sub = await db.roomSubcategory.findUnique({
+      where: { id: subcategoryId },
+      include: { category: { include: { room: true } } }
+    });
 
-        if (!sub && subcategoryId.length < 30) {
-            // Probably a name or 'general', try finding by room
-            sub = await db.roomSubcategory.findFirst({
-                where: { 
-                    OR: [
-                        { name: 'Chat General', category: { roomId: subcategoryId } },
-                        { name: 'General', category: { roomId: subcategoryId } }
-                    ]
-                },
-                include: { category: { include: { room: true } } }
-            });
-        }
-
-        if (!sub) return { error: "Subcategoría no encontrada" };
-
-        const isAdmin = session.user.role === 'admin' || session.user.email === 'ciberportero@gmail.com' || sub.category.room.creatorId === session.user.id;
-        if (!isAdmin) return { error: "No autorizado" };
-
-        await Promise.all(messageIds.map((id, idx) => 
-            db.roomMessage.update({
-                where: { id },
-                data: { pinOrder: idx } as any
-            })
-        ));
-
-        revalidatePath(`/salas/${sub.category.roomId}`);
-        return { success: true };
-    } catch (error) {
-        console.error(error);
-        return { error: "Error al reordenar" };
+    if (!sub && subcategoryId.length < 30) {
+      // Probably a name or 'general', try finding by room
+      sub = await db.roomSubcategory.findFirst({
+        where: {
+          OR: [
+            { name: 'Chat General', category: { roomId: subcategoryId } },
+            { name: 'General', category: { roomId: subcategoryId } }
+          ]
+        },
+        include: { category: { include: { room: true } } }
+      });
     }
+
+    if (!sub) return { error: "Subcategoría no encontrada" };
+
+    const isAdmin = session.user.role === 'admin' || session.user.email === 'ciberportero@gmail.com' || sub.category.room.creatorId === session.user.id;
+    if (!isAdmin) return { error: "No autorizado" };
+
+    await Promise.all(messageIds.map((id, idx) =>
+      db.roomMessage.update({
+        where: { id },
+        data: { pinOrder: idx } as any
+      })
+    ));
+
+    revalidatePath(`/salas/${sub.category.roomId}`);
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { error: "Error al reordenar" };
+  }
 }
 
 export async function removeRoomMember(roomId: string, memberId: string) {
-    const session = await auth();
-    if (!session?.user?.id) return { error: "No autenticado" };
+  const session = await auth();
+  if (!session?.user?.id) return { error: "No autenticado" };
 
-    try {
-        const room = await db.room.findUnique({ 
-            where: { id: roomId },
-            include: { members: true }
-        });
-        if (!room) return { error: "Sala no encontrada" };
+  try {
+    const room = await db.room.findUnique({
+      where: { id: roomId },
+      include: { members: true }
+    });
+    if (!room) return { error: "Sala no encontrada" };
 
-        const myMember = room.members.find(m => m.userId === session.user.id);
-        const isAdmin = session.user.role === 'admin' || session.user.email === 'ciberportero@gmail.com' || room.creatorId === session.user.id || myMember?.role === 'admin';
-        
-        if (!isAdmin) return { error: "No autorizado" };
+    const myMember = room.members.find(m => m.userId === session.user.id);
+    const isAdmin = session.user.role === 'admin' || session.user.email === 'ciberportero@gmail.com' || room.creatorId === session.user.id || myMember?.role === 'admin';
 
-        // Cannot kick the creator
-        const memberToKick = room.members.find(m => m.id === memberId);
-        if (memberToKick?.userId === room.creatorId) return { error: "No puedes eliminar al creador de la sala" };
+    if (!isAdmin) return { error: "No autorizado" };
 
-        await db.roomMember.delete({
-            where: { id: memberId }
-        });
+    // Cannot kick the creator
+    const memberToKick = room.members.find(m => m.id === memberId);
+    if (memberToKick?.userId === room.creatorId) return { error: "No puedes eliminar al creador de la sala" };
 
-        revalidatePath(`/salas/${roomId}`);
-        return { success: true };
-    } catch (error) {
-        console.error(error);
-        return { error: "Error al eliminar miembro" };
-    }
+    await db.roomMember.delete({
+      where: { id: memberId }
+    });
+
+    revalidatePath(`/salas/${roomId}`);
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { error: "Error al eliminar miembro" };
+  }
 }
 
 export async function updateMemberRole(roomId: string, memberId: string, newRole: string) {
-    const session = await auth();
-    if (!session?.user?.id) return { error: "No autenticado" };
+  const session = await auth();
+  if (!session?.user?.id) return { error: "No autenticado" };
 
-    try {
-        const room = await db.room.findUnique({ 
-            where: { id: roomId },
-            include: { members: true }
-        });
-        if (!room) return { error: "Sala no encontrada" };
+  try {
+    const room = await db.room.findUnique({
+      where: { id: roomId },
+      include: { members: true }
+    });
+    if (!room) return { error: "Sala no encontrada" };
 
-        const myMember = room.members.find(m => m.userId === session.user.id);
-        const isAdmin = session.user.role === 'admin' || session.user.email === 'ciberportero@gmail.com' || room.creatorId === session.user.id || myMember?.role === 'admin';
-        
-        if (!isAdmin) return { error: "No autorizado" };
+    const myMember = room.members.find(m => m.userId === session.user.id);
+    const isAdmin = session.user.role === 'admin' || session.user.email === 'ciberportero@gmail.com' || room.creatorId === session.user.id || myMember?.role === 'admin';
 
-        await db.roomMember.update({
-            where: { id: memberId },
-            data: { role: newRole } as any
-        });
+    if (!isAdmin) return { error: "No autorizado" };
 
-        revalidatePath(`/salas/${roomId}`);
-        return { success: true };
-    } catch (error) {
-        console.error(error);
-        return { error: "Error al actualizar rol" };
-    }
+    await db.roomMember.update({
+      where: { id: memberId },
+      data: { role: newRole } as any
+    });
+
+    revalidatePath(`/salas/${roomId}`);
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { error: "Error al actualizar rol" };
+  }
 }

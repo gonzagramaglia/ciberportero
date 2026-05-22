@@ -58,14 +58,14 @@ export default function PlanPage() {
 
     // Cloud Sync ONLY for users
     if (session?.user?.id) {
-       getUserProgress().then(data => {
-         if (data) {
-           setCompleted(data.completed)
-           setInProgress(data.inProgress)
-           localStorage.setItem("ciberportero_user_completed_subjects", JSON.stringify(data.completed))
-           localStorage.setItem("ciberportero_user_inprogress_subjects", JSON.stringify(data.inProgress))
-         }
-       })
+      getUserProgress().then(data => {
+        if (data) {
+          setCompleted(data.completed)
+          setInProgress(data.inProgress)
+          localStorage.setItem("ciberportero_user_completed_subjects", JSON.stringify(data.completed))
+          localStorage.setItem("ciberportero_user_inprogress_subjects", JSON.stringify(data.inProgress))
+        }
+      })
     }
 
     setIsLoaded(true)
@@ -85,7 +85,7 @@ export default function PlanPage() {
 
     const isCompleted = completed.includes(id)
     const isInProgress = inProgress.includes(id)
-    
+
     const isGuest = !session;
     const completedKey = isGuest ? "ciberportero_completed_subjects" : "ciberportero_user_completed_subjects";
     const inProgressKey = isGuest ? "ciberportero_inprogress_subjects" : "ciberportero_user_inprogress_subjects";
@@ -122,15 +122,15 @@ export default function PlanPage() {
   }
 
   // Filtering Logic
-  const currentCurriculum = objective === 'intermediate' 
-    ? curriculum.filter(s => s.id <= 23) 
+  const currentCurriculum = objective === 'intermediate'
+    ? curriculum.filter(s => s.id <= 23)
     : curriculum
 
   const searchedCurriculum = currentCurriculum.filter(s => {
     const localizedName = pt.subjectNames[s.id as keyof typeof pt.subjectNames] || s.name
     const searchNorm = normalizeString(search)
     return (
-      normalizeString(s.name).includes(searchNorm) || 
+      normalizeString(s.name).includes(searchNorm) ||
       normalizeString(localizedName).includes(searchNorm) ||
       s.id.toString() === search
     )
@@ -150,11 +150,11 @@ export default function PlanPage() {
 
   const isRelatated = (id: number): { type: "prerequisite" | "unlock", depth: number } | false => {
     if (!hoveredId || hoveredId === id) return false
-    
+
     // Check direct
     const directPrereqs = getPrerequisites(hoveredId)
     if (directPrereqs.includes(id)) return { type: "prerequisite", depth: 1 }
-    
+
     const directUnlocks = getUnlocks(hoveredId)
     if (directUnlocks.includes(id)) return { type: "unlock", depth: 1 }
 
@@ -232,18 +232,18 @@ export default function PlanPage() {
           </Link>
           <LanguageSwitcher />
         </div>
-        
+
         <div style={{ marginTop: '0.5rem', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '1.5rem' }}>
           <div style={{ width: '100%' }}>
             <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
               {pt.title}
-              <div style={{ 
-                  opacity: status === 'loading' ? 0 : 1,
-                  transition: 'opacity 0.2s',
-                  display: 'flex',
-                  alignItems: 'center'
+              <div style={{
+                opacity: status === 'loading' ? 0 : 1,
+                transition: 'opacity 0.2s',
+                display: 'flex',
+                alignItems: 'center'
               }}>
-                  {status !== 'loading' && (session ? <SignOutButton /> : <SignInButton />)}
+                {status !== 'loading' && (session ? <SignOutButton /> : <SignInButton />)}
               </div>
             </h1>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
@@ -262,15 +262,15 @@ export default function PlanPage() {
 
           <div style={{ display: 'flex', flexDirection: 'row', gap: '0.8rem', alignItems: 'center', flexWrap: 'wrap' }}>
             {/* Objective Selector */}
-            <div style={{ 
-              background: '#f1f5f9', 
-              padding: '4px', 
-              borderRadius: '14px', 
+            <div style={{
+              background: '#f1f5f9',
+              padding: '4px',
+              borderRadius: '14px',
               display: 'flex',
               gap: '4px',
               border: '1px solid var(--border)'
             }}>
-              <button 
+              <button
                 onClick={() => changeObjective('intermediate')}
                 style={{
                   padding: '0.6rem 1.2rem',
@@ -287,7 +287,7 @@ export default function PlanPage() {
               >
                 {pt.intermediate}
               </button>
-              <button 
+              <button
                 onClick={() => changeObjective('degree')}
                 style={{
                   padding: '0.6rem 1.2rem',
@@ -307,20 +307,20 @@ export default function PlanPage() {
             </div>
 
             {/* PDF Link — always next to the switch */}
-            <a 
-              href="https://undef.edu.ar/fadena/wp-content/uploads/2025/10/Plan-de-estudios-CIBERDEFENSA.pdf" 
-              target="_blank" 
+            <a
+              href="https://undef.edu.ar/fadena/wp-content/uploads/2025/10/Plan-de-estudios-CIBERDEFENSA.pdf"
+              target="_blank"
               rel="noopener noreferrer"
               className="pdf-link"
-              style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: '0.4rem', 
-                fontSize: '0.85rem', 
-                color: 'var(--accent)', 
-                fontWeight: '700', 
-                padding: '0.4rem 0.8rem', 
-                background: 'rgba(0, 112, 243, 0.05)', 
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                fontSize: '0.85rem',
+                color: 'var(--accent)',
+                fontWeight: '700',
+                padding: '0.4rem 0.8rem',
+                background: 'rgba(0, 112, 243, 0.05)',
                 borderRadius: '10px',
                 textDecoration: 'none',
                 transition: 'all 0.2s',
@@ -334,16 +334,16 @@ export default function PlanPage() {
         </div>
 
         {/* Combined Stats & Search Card */}
-        <div style={{ 
-          marginTop: '2rem', 
-          background: 'white', 
-          borderRadius: '24px', 
+        <div style={{
+          marginTop: '2rem',
+          background: 'white',
+          borderRadius: '24px',
           border: '1px solid var(--border)',
           overflow: 'hidden'
         }}>
           {/* Stats Bar */}
-          <div style={{ 
-            padding: '1.5rem', 
+          <div style={{
+            padding: '1.5rem',
             display: 'flex',
             alignItems: 'center',
             gap: '2rem',
@@ -388,7 +388,7 @@ export default function PlanPage() {
 
           {/* Integrated Search Input */}
           <div style={{ position: 'relative', width: '100%' }}>
-            <input 
+            <input
               type="text"
               placeholder={pt.search}
               value={search}
@@ -406,7 +406,7 @@ export default function PlanPage() {
             />
             <Search size={20} style={{ position: 'absolute', left: '1.5rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--muted)', opacity: 0.6 }} />
             {search && (
-              <button 
+              <button
                 onClick={() => setSearch('')}
                 style={{ position: 'absolute', right: '1.5rem', top: '50%', transform: 'translateY(-50%)', border: 'none', background: 'transparent', cursor: 'pointer', color: 'var(--muted)' }}
               >
@@ -418,10 +418,10 @@ export default function PlanPage() {
 
       </header>
 
-      <main style={{ 
-        display: 'grid', 
-        gridTemplateColumns: `repeat(${filteredYears.length}, 1fr)`, 
-        gap: '2rem', 
+      <main style={{
+        display: 'grid',
+        gridTemplateColumns: `repeat(${filteredYears.length}, 1fr)`,
+        gap: '2rem',
         alignItems: 'start',
         overflowX: 'auto',
         padding: '1rem',
@@ -480,8 +480,8 @@ export default function PlanPage() {
                 }
 
                 return (
-                  <div 
-                    key={subject.id} 
+                  <div
+                    key={subject.id}
                     style={cardStyle}
                     onMouseEnter={() => setHoveredId(subject.id)}
                     onMouseLeave={() => setHoveredId(null)}
@@ -492,27 +492,27 @@ export default function PlanPage() {
                         <span style={{ fontSize: '0.65rem', fontWeight: '900', color: '#000', opacity: 0.9 }}>
                           [{subject.id.toString().padStart(2, '0')}] <span style={{ color: 'var(--muted)', opacity: 0.7 }}>• {getOrdinalLabel(subject.term, 'term')}</span>
                         </span>
-                        <h3 style={{ 
-                          margin: 0, 
-                          fontSize: '0.9rem', 
-                          fontWeight: relation ? '900' : '800', 
-                          lineHeight: 1.2, 
+                        <h3 style={{
+                          margin: 0,
+                          fontSize: '0.9rem',
+                          fontWeight: relation ? '900' : '800',
+                          lineHeight: 1.2,
                           color: relation ? (relation.type === 'prerequisite' ? '#ef4444' : '#0070f3') : (isCompleted ? '#059669' : (isLocked ? 'var(--muted)' : (isInProgress ? '#d97706' : '#000')))
                         }}>
                           {pt.subjectNames[subject.id as keyof typeof pt.subjectNames] || subject.name}
                         </h3>
                         {isInProgress && (
-                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', marginTop: '0.2rem' }}>
-                              <Zap size={10} fill="#fbbf24" style={{ color: '#fbbf24' }} />
-                              <span style={{ fontSize: '0.6rem', fontWeight: '900', color: '#d97706', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{pt.inProgress}</span>
-                           </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', marginTop: '0.2rem' }}>
+                            <Zap size={10} fill="#fbbf24" style={{ color: '#fbbf24' }} />
+                            <span style={{ fontSize: '0.6rem', fontWeight: '900', color: '#d97706', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{pt.inProgress}</span>
+                          </div>
                         )}
                       </div>
-                      <div 
-                        style={{ 
-                          width: '24px', 
-                          height: '24px', 
-                          borderRadius: '50%', 
+                      <div
+                        style={{
+                          width: '24px',
+                          height: '24px',
+                          borderRadius: '50%',
                           border: `1.5px solid ${isCompleted ? '#10b981' : (isInProgress ? '#fbbf24' : (isLocked ? '#e2e8f0' : 'var(--border)'))}`,
                           display: 'flex',
                           alignItems: 'center',
@@ -528,14 +528,14 @@ export default function PlanPage() {
                     </div>
 
                     <div style={{ display: 'flex', gap: '0.3rem', flexDirection: 'column' }}>
-                        {getUnlocks(subject.id).length > 0 && isHovered && (
-                          <div style={{ display: 'flex', gap: '0.2rem', alignItems: 'center', marginTop: '0.2rem' }}>
-                             <Star size={10} style={{ color: 'var(--accent)' }} />
-                             <span style={{ fontSize: '0.6rem', color: 'var(--accent)', fontWeight: '800' }}>
-                               {pt.unlocks}: {getUnlocks(subject.id).map(p => `[${p.toString().padStart(2, '0')}]`).join(', ')}
-                             </span>
-                          </div>
-                        )}
+                      {getUnlocks(subject.id).length > 0 && isHovered && (
+                        <div style={{ display: 'flex', gap: '0.2rem', alignItems: 'center', marginTop: '0.2rem' }}>
+                          <Star size={10} style={{ color: 'var(--accent)' }} />
+                          <span style={{ fontSize: '0.6rem', color: 'var(--accent)', fontWeight: '800' }}>
+                            {pt.unlocks}: {getUnlocks(subject.id).map(p => `[${p.toString().padStart(2, '0')}]`).join(', ')}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )
@@ -553,11 +553,11 @@ export default function PlanPage() {
         </a>
         <span style={{ fontSize: '0.9rem', opacity: 0.6, color: 'var(--muted)' }}>{translations[lang].footer}</span>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
-              <Github size={18} />
+          <a href="https://github.com/gonzagramaglia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
+            <Github size={18} />
           </a>
           <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
-              <Youtube size={20} />
+            <Youtube size={20} />
           </a>
         </div>
       </footer>

@@ -52,6 +52,6 @@ Para avanzar con éxito en esta materia, es fundamental mantenerse al día con l
 Podés encontrar más recursos, aportes de compañeros, o exámenes anteriores en el siguiente link:
 - [**Carpeta general de Google Drive**](https://drive.google.com/drive/folders/1BnlGi3g2Rfu59RPlYi9RPJc1TqC_v-sE?usp=drive_link)
 
-[![image](https://www.ciberportero.com/in-process.png)](https://github.com/gonzalogramagia)
+[![image](https://www.ciberportero.com/in-process.png)](https://github.com/gonzagramaglia)
 
-Siendo escrito con 💛 por [**Gonza**](https://github.com/gonzalogramagia)
+Siendo escrito con 💛 por [**Gonza**](https://github.com/gonzagramaglia)

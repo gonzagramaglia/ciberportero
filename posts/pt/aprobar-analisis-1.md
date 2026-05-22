@@ -53,6 +53,6 @@ Para avançar com sucesso nesta matéria, é fundamental manter-se atualizado co
 Você pode encontrar mais recursos, contribuições de colegas ou exames anteriores no seguinte link:
 - [**Pasta Geral do Google Drive**](https://drive.google.com/drive/folders/1BnlGi3g2Rfu59RPlYi9RPJc1TqC_v-sE?usp=drive_link)
 
-[![image](https://www.ciberportero.com/in-process.png)](https://github.com/gonzalogramagia)
+[![image](https://www.ciberportero.com/in-process.png)](https://github.com/gonzagramaglia)
 
-Escrito com 💛 por [**Gonza**](https://github.com/gonzalogramagia)
+Escrito com 💛 por [**Gonza**](https://github.com/gonzagramaglia)

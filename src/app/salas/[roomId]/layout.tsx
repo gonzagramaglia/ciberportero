@@ -94,18 +94,18 @@ export default async function RoomDetailLayout({ children, params }: any) {
       <RoomTitleUpdater roomId={roomId} fallbackTitle={`Ciberportero | ${room.name}`} />
       <RoomNavbar href="/salas/lista" backTextKey="backToLobby" />
 
-      <RoomHeader 
-        roomId={roomId} 
-        initialRoom={{ 
-          name: room.name, 
-          secretCode: room.secretCode, 
-          creatorId: room.creatorId, 
+      <RoomHeader
+        roomId={roomId}
+        initialRoom={{
+          name: room.name,
+          secretCode: room.secretCode,
+          creatorId: room.creatorId,
           creatorRole: (room as any).creator?.role,
           creatorEmail: (room as any).creator?.email,
-          description: (room as any).description || '', 
+          description: (room as any).description || '',
           members: (room as any).members || []
-        } as any} 
-        session={session} 
+        } as any}
+        session={session}
       />
 
       <div className="room-content-layout" style={{ display: 'flex', gap: '2rem', flex: 1 }}>
@@ -116,7 +116,7 @@ export default async function RoomDetailLayout({ children, params }: any) {
       </div>
 
       <footer className="footer-main" style={{ marginTop: '2rem' }}>
-        <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Github size={18} /></a>
+        <a href="https://github.com/gonzagramaglia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Github size={18} /></a>
         <span>{t.footer}</span>
         <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Youtube size={22} /></a>
       </footer>

@@ -50,7 +50,7 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
     const handleDeleteRoom = async (e: React.MouseEvent, room: any) => {
         e.stopPropagation();
         if (!confirm(lang === 'es' ? '¿Estás seguro de que quieres eliminar esta sala?' : 'Are you sure you want to delete this room?')) return;
-        
+
         if (isGuest) {
             guestStore.deleteRoom(room.id);
             setRooms(guestStore.getRooms());
@@ -126,168 +126,168 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
     return (
         <div style={{ background: '#f8fafc', minHeight: '100vh', width: '100%' }}>
             <div className="container fade-in home-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', maxWidth: '1200px', margin: '0 auto', padding: '0 2rem' }}>
-            <RoomNavbar href={session ? "/" : "/salas"} backTextKey={session ? "back" : "backToRooms"} />
+                <RoomNavbar href={session ? "/" : "/salas"} backTextKey={session ? "back" : "backToRooms"} />
 
-            <header className="lobby-header-premium">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', flexWrap: 'wrap' }}>
-                    <h1 className="lobby-title">
-                        {roomsT.lobbyTitle}
-                    </h1>
-                    {!isGuest && session?.user && (
-                        <div className="user-actions">
-                            <SignOutButton />
-                        </div>
-                    )}
-                </div>
-                <p className="lobby-desc">
-                    {!isGuest && session?.user?.name && (
-                        <span style={{ color: 'var(--accent)', fontWeight: '800' }}>
-                            ¡Hola {session.user.name.split(' ')[0]}!{' '}
-                        </span>
-                    )}
-                    {roomsT.description}
-                </p>
-            </header>
-
-            <main style={{ display: 'flex', flexDirection: 'column', gap: '4rem' }}>
-                {isGuest && (
-                    <div style={{ background: '#fff9db', padding: '1.2rem', borderRadius: '16px', border: '1px solid #fcc419', color: '#856404', fontSize: '0.95rem', fontWeight: '700', marginBottom: '-2rem', textAlign: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-                        ⚠️ {roomsT.guestWarning}
-                    </div>
-                )}
-
-                <div className="lobby-actions-grid">
-                    <button onClick={() => isGuest ? router.push('/salas') : setIsJoining(true)} className="action-card join">
-                        <div className="card-icon"><Hash size={24} /></div>
-                        <div className="card-body">
-                            <h3>{roomsT.join.title}</h3>
-                            <p>{roomsT.join.desc}</p>
-                        </div>
-                    </button>
-
-                    <button 
-                        onClick={() => isGuest ? router.push('/salas') : (canCreate ? setIsCreating(true) : toast.error(lang === 'es' ? 'Opción solo para administradores' : 'Option for admins only'))} 
-                        className={`action-card create ${!canCreate ? 'blocked' : ''}`}
-                    >
-                        <div className="card-icon"><Plus size={24} /></div>
-                        <div className="card-body">
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-                                <h3>{roomsT.create.title}</h3>
-                                {!canCreate && <span className="lock-badge">SOLO ADMINS</span>}
+                <header className="lobby-header-premium">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', flexWrap: 'wrap' }}>
+                        <h1 className="lobby-title">
+                            {roomsT.lobbyTitle}
+                        </h1>
+                        {!isGuest && session?.user && (
+                            <div className="user-actions">
+                                <SignOutButton />
                             </div>
-                            <p>{roomsT.create.desc}</p>
-                        </div>
-                    </button>
-                </div>
-
-                <div style={{ marginTop: '1rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
-                        <div style={{ height: '2px', flex: 1, background: 'linear-gradient(90deg, transparent, #e2e8f0)' }}></div>
-                        <h2 style={{ fontSize: '1.2rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#94a3b8', margin: 0 }}>
-                            {roomsT.myRooms}
-                        </h2>
-                        <div style={{ height: '2px', flex: 1, background: 'linear-gradient(90deg, #e2e8f0, transparent)' }}></div>
+                        )}
                     </div>
-                    
-                    {rooms.length === 0 ? (
-                        <div style={{ textAlign: 'center', padding: '5rem 2rem', background: '#fff', borderRadius: '40px', border: '2px dashed #e2e8f0', color: '#94a3b8', boxShadow: 'inset 0 4px 12px rgba(0,0,0,0.02)' }}>
-                            {session?.user ? (
-                                <div className="empty-state-content">
-                                    <div className="empty-icon-wrapper">
-                                        <Hash size={40} />
-                                    </div>
-                                    <h3 style={{ fontSize: '1.8rem', fontWeight: '900', color: '#1e293b', marginBottom: '0.8rem' }}>
-                                        {lang === 'es' ? `¡Hola, ${session.user.name.split(' ')[0]}!` : `Hi, ${session.user.name.split(' ')[0]}!`}
-                                    </h3>
-                                    <p style={{ fontSize: '1.15rem', fontWeight: '500', color: '#64748b', maxWidth: '400px', margin: '0 auto' }}>
-                                        {lang === 'es' ? 'Parece que todavía no te has unido a ninguna sala. ¡Explora o crea una nueva para empezar!' : "It seems you haven't joined any rooms yet. Explore or create one to get started!"}
-                                    </p>
-                                </div>
-                            ) : (
-                                <p style={{ fontSize: '1.1rem', fontWeight: '600' }}>{roomsT.noRooms}</p>
-                            )}
-                        </div>
-                    ) : (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                            {rooms.map((room: any) => (
-                                <div key={room.id} onClick={() => router.push(`/salas/${room.id}`)} className="room-card" style={{ cursor: 'pointer' }}>
-                                    <div className="room-card-info" style={{ flex: 1 }}>
-                                        <span className="room-name">
-                                            {room.name}
-                                            {isGuest && (
-                                                <span className="demo-badge">{room.id === 'test-room' ? 'MODO DEMO' : 'SALA TEMPORAL (ADMIN)'}</span>
-                                            )}
-                                            {(room.creator?.role === 'admin' || room.creator?.email === 'ciberportero@gmail.com') && !isGuest && (
-                                                <span className="admin-badge-lobby">SALA OFICIAL (ADMIN)</span>
-                                            )}
-                                        </span>
-                                        <div className="room-code-tag">
-                                            <Key size={12} />
-                                            <span>{room.secretCode}</span>
-                                        </div>
-                                        {room.description && (
-                                            <p className="room-desc-lobby">{room.description}</p>
-                                        )}
-                                    </div>
-                                    <div className="room-card-actions">
-                                        <div className="room-members-preview" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-                                            <div style={{ display: 'flex' }}>
-                                                {room.members?.slice(0, 6).map((member: any, i: number) => (
-                                                    <img 
-                                                        key={member.id} 
-                                                        src={member.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent((member.user.name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}&background=random&color=fff`} 
-                                                        alt={member.user.name} 
-                                                        style={{ 
-                                                            width: '32px', 
-                                                            height: '32px', 
-                                                            borderRadius: '50%', 
-                                                            border: '3px solid #fff', 
-                                                            marginLeft: i === 0 ? 0 : '-12px',
-                                                            boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
-                                                            zIndex: 6 - i
-                                                        }} 
-                                                    />
-                                                ))}
-                                                {room.members?.length > 6 && (
-                                                    <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#f1f5f9', border: '3px solid #fff', marginLeft: '-12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: '800', color: '#64748b', boxShadow: '0 4px 10px rgba(0,0,0,0.1)', zIndex: 0 }}>
-                                                        +{room.members.length - 6}
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <span style={{ fontSize: '0.9rem', color: '#94a3b8', fontWeight: '700' }}>
-                                                {room._count?.members ?? (room.members?.length || 0)}{' '}
-                                                {lang === 'es' 
-                                                    ? ((room._count?.members ?? room.members?.length) === 1 ? 'miembro' : 'miembros') 
-                                                    : 'members'}
-                                            </span>
-                                        </div>
+                    <p className="lobby-desc">
+                        {!isGuest && session?.user?.name && (
+                            <span style={{ color: 'var(--accent)', fontWeight: '800' }}>
+                                ¡Hola {session.user.name.split(' ')[0]}!{' '}
+                            </span>
+                        )}
+                        {roomsT.description}
+                    </p>
+                </header>
 
-                                        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-                                            <div className="room-card-arrow"><ArrowRight size={24} /></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
+                <main style={{ display: 'flex', flexDirection: 'column', gap: '4rem' }}>
+                    {isGuest && (
+                        <div style={{ background: '#fff9db', padding: '1.2rem', borderRadius: '16px', border: '1px solid #fcc419', color: '#856404', fontSize: '0.95rem', fontWeight: '700', marginBottom: '-2rem', textAlign: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+                            ⚠️ {roomsT.guestWarning}
                         </div>
                     )}
-                </div>
-            </main>
+
+                    <div className="lobby-actions-grid">
+                        <button onClick={() => isGuest ? router.push('/salas') : setIsJoining(true)} className="action-card join">
+                            <div className="card-icon"><Hash size={24} /></div>
+                            <div className="card-body">
+                                <h3>{roomsT.join.title}</h3>
+                                <p>{roomsT.join.desc}</p>
+                            </div>
+                        </button>
+
+                        <button
+                            onClick={() => isGuest ? router.push('/salas') : (canCreate ? setIsCreating(true) : toast.error(lang === 'es' ? 'Opción solo para administradores' : 'Option for admins only'))}
+                            className={`action-card create ${!canCreate ? 'blocked' : ''}`}
+                        >
+                            <div className="card-icon"><Plus size={24} /></div>
+                            <div className="card-body">
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                                    <h3>{roomsT.create.title}</h3>
+                                    {!canCreate && <span className="lock-badge">SOLO ADMINS</span>}
+                                </div>
+                                <p>{roomsT.create.desc}</p>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div style={{ marginTop: '1rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
+                            <div style={{ height: '2px', flex: 1, background: 'linear-gradient(90deg, transparent, #e2e8f0)' }}></div>
+                            <h2 style={{ fontSize: '1.2rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#94a3b8', margin: 0 }}>
+                                {roomsT.myRooms}
+                            </h2>
+                            <div style={{ height: '2px', flex: 1, background: 'linear-gradient(90deg, #e2e8f0, transparent)' }}></div>
+                        </div>
+
+                        {rooms.length === 0 ? (
+                            <div style={{ textAlign: 'center', padding: '5rem 2rem', background: '#fff', borderRadius: '40px', border: '2px dashed #e2e8f0', color: '#94a3b8', boxShadow: 'inset 0 4px 12px rgba(0,0,0,0.02)' }}>
+                                {session?.user ? (
+                                    <div className="empty-state-content">
+                                        <div className="empty-icon-wrapper">
+                                            <Hash size={40} />
+                                        </div>
+                                        <h3 style={{ fontSize: '1.8rem', fontWeight: '900', color: '#1e293b', marginBottom: '0.8rem' }}>
+                                            {lang === 'es' ? `¡Hola, ${session.user.name.split(' ')[0]}!` : `Hi, ${session.user.name.split(' ')[0]}!`}
+                                        </h3>
+                                        <p style={{ fontSize: '1.15rem', fontWeight: '500', color: '#64748b', maxWidth: '400px', margin: '0 auto' }}>
+                                            {lang === 'es' ? 'Parece que todavía no te has unido a ninguna sala. ¡Explora o crea una nueva para empezar!' : "It seems you haven't joined any rooms yet. Explore or create one to get started!"}
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <p style={{ fontSize: '1.1rem', fontWeight: '600' }}>{roomsT.noRooms}</p>
+                                )}
+                            </div>
+                        ) : (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                                {rooms.map((room: any) => (
+                                    <div key={room.id} onClick={() => router.push(`/salas/${room.id}`)} className="room-card" style={{ cursor: 'pointer' }}>
+                                        <div className="room-card-info" style={{ flex: 1 }}>
+                                            <span className="room-name">
+                                                {room.name}
+                                                {isGuest && (
+                                                    <span className="demo-badge">{room.id === 'test-room' ? 'MODO DEMO' : 'SALA TEMPORAL (ADMIN)'}</span>
+                                                )}
+                                                {(room.creator?.role === 'admin' || room.creator?.email === 'ciberportero@gmail.com') && !isGuest && (
+                                                    <span className="admin-badge-lobby">SALA OFICIAL (ADMIN)</span>
+                                                )}
+                                            </span>
+                                            <div className="room-code-tag">
+                                                <Key size={12} />
+                                                <span>{room.secretCode}</span>
+                                            </div>
+                                            {room.description && (
+                                                <p className="room-desc-lobby">{room.description}</p>
+                                            )}
+                                        </div>
+                                        <div className="room-card-actions">
+                                            <div className="room-members-preview" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                                                <div style={{ display: 'flex' }}>
+                                                    {room.members?.slice(0, 6).map((member: any, i: number) => (
+                                                        <img
+                                                            key={member.id}
+                                                            src={member.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent((member.user.name || 'U').replace(/\s*\([^)]*\)/g, '').trim())}&background=random&color=fff`}
+                                                            alt={member.user.name}
+                                                            style={{
+                                                                width: '32px',
+                                                                height: '32px',
+                                                                borderRadius: '50%',
+                                                                border: '3px solid #fff',
+                                                                marginLeft: i === 0 ? 0 : '-12px',
+                                                                boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+                                                                zIndex: 6 - i
+                                                            }}
+                                                        />
+                                                    ))}
+                                                    {room.members?.length > 6 && (
+                                                        <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#f1f5f9', border: '3px solid #fff', marginLeft: '-12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: '800', color: '#64748b', boxShadow: '0 4px 10px rgba(0,0,0,0.1)', zIndex: 0 }}>
+                                                            +{room.members.length - 6}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <span style={{ fontSize: '0.9rem', color: '#94a3b8', fontWeight: '700' }}>
+                                                    {room._count?.members ?? (room.members?.length || 0)}{' '}
+                                                    {lang === 'es'
+                                                        ? ((room._count?.members ?? room.members?.length) === 1 ? 'miembro' : 'miembros')
+                                                        : 'members'}
+                                                </span>
+                                            </div>
+
+                                            <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                                                <div className="room-card-arrow"><ArrowRight size={24} /></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </main>
             </div>
             {(isCreating || isJoining) && (
-                <div 
-                    className="lightbox-overlay" 
+                <div
+                    className="lightbox-overlay"
                     onClick={() => { setIsCreating(false); setIsJoining(false); }}
                     style={{ zIndex: 5000, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(12px)', position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', cursor: 'pointer' }}
                 >
-                    <div 
-                        className="lightbox-content fade-in-up rooms-modal-content" 
+                    <div
+                        className="lightbox-content fade-in-up rooms-modal-content"
                         onClick={(e) => e.stopPropagation()}
-                        style={{ 
-                            background: '#fff', 
-                            padding: '0', 
-                            borderRadius: '40px', 
-                            maxWidth: '850px', 
-                            width: '95%', 
+                        style={{
+                            background: '#fff',
+                            padding: '0',
+                            borderRadius: '40px',
+                            maxWidth: '850px',
+                            width: '95%',
                             boxShadow: '0 50px 100px rgba(0,0,0,0.3)',
                             position: 'relative',
                             overflow: 'hidden',
@@ -296,19 +296,19 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                             cursor: 'default'
                         }}
                     >
-                        <button 
-                            className="lightbox-close modal-close-btn" 
-                            onClick={() => { setIsCreating(false); setIsJoining(false); }} 
+                        <button
+                            className="lightbox-close modal-close-btn"
+                            onClick={() => { setIsCreating(false); setIsJoining(false); }}
                         >
                             <X size={20} strokeWidth={3} />
                         </button>
 
                         {/* Left Side: Info */}
-                        <div style={{ 
-                            flex: '1', 
-                            padding: '4rem 3rem', 
-                            background: isCreating 
-                                ? 'linear-gradient(135deg, #059669 0%, #10b981 100%)' 
+                        <div style={{
+                            flex: '1',
+                            padding: '4rem 3rem',
+                            background: isCreating
+                                ? 'linear-gradient(135deg, #059669 0%, #10b981 100%)'
                                 : 'linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%)',
                             display: 'flex',
                             flexDirection: 'column',
@@ -319,15 +319,15 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                             alignSelf: 'stretch',
                             color: '#fff'
                         }}>
-                            <div style={{ 
-                                background: 'rgba(255, 255, 255, 0.2)', 
+                            <div style={{
+                                background: 'rgba(255, 255, 255, 0.2)',
                                 backdropFilter: 'blur(10px)',
-                                width: '110px', 
-                                height: '110px', 
-                                borderRadius: '32px', 
-                                display: 'flex', 
-                                alignItems: 'center', 
-                                justifyContent: 'center', 
+                                width: '110px',
+                                height: '110px',
+                                borderRadius: '32px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
                                 color: '#fff',
                                 boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
                                 border: '1px solid rgba(255,255,255,0.3)'
@@ -351,27 +351,27 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                                     <>
                                         <div className="form-group">
                                             <label style={{ fontSize: '0.95rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{roomsT.modal.nameLabel}</label>
-                                            <input 
-                                                style={{ height: '64px', fontSize: '1.15rem' }} 
-                                                value={newRoomName} 
+                                            <input
+                                                style={{ height: '64px', fontSize: '1.15rem' }}
+                                                value={newRoomName}
                                                 onChange={e => {
                                                     setNewRoomName(e.target.value);
                                                     setNewRoomSlug(slugify(e.target.value));
-                                                }} 
-                                                required 
-                                                placeholder={roomsT.modal.namePlaceholder} 
+                                                }}
+                                                required
+                                                placeholder={roomsT.modal.namePlaceholder}
                                             />
                                         </div>
                                         <div className="form-group">
                                             <label style={{ fontSize: '0.95rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Identificador (URL Slug)</label>
                                             <div className="input-with-icon">
                                                 <div style={{ position: 'absolute', left: '1.6rem', color: '#94a3b8', fontSize: '0.9rem', fontWeight: '800' }}>/salas/</div>
-                                                <input 
-                                                    style={{ paddingLeft: '5.5rem', height: '64px', fontSize: '1.15rem', background: '#f1f5f9' }} 
-                                                    value={newRoomSlug} 
-                                                    onChange={e => setNewRoomSlug(slugify(e.target.value))} 
-                                                    required 
-                                                    placeholder="ej-analisis-matematico-i" 
+                                                <input
+                                                    style={{ paddingLeft: '5.5rem', height: '64px', fontSize: '1.15rem', background: '#f1f5f9' }}
+                                                    value={newRoomSlug}
+                                                    onChange={e => setNewRoomSlug(slugify(e.target.value))}
+                                                    required
+                                                    placeholder="ej-analisis-matematico-i"
                                                 />
                                             </div>
                                         </div>
@@ -381,26 +381,26 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                                     <label style={{ fontSize: '0.95rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{roomsT.modal.codeLabel}</label>
                                     <div className="input-with-icon">
                                         <Key size={22} className="input-icon" style={{ position: 'absolute', left: '1.6rem', color: '#94a3b8' }} />
-                                        <input 
-                                            style={{ paddingLeft: '4rem', height: '64px', fontSize: '1.15rem' }} 
-                                            value={isCreating ? newRoomCode : joinCode} 
-                                            onChange={e => isCreating ? setNewRoomCode(e.target.value) : setJoinCode(e.target.value)} 
-                                            required 
-                                            placeholder={roomsT.modal.codePlaceholder} 
+                                        <input
+                                            style={{ paddingLeft: '4rem', height: '64px', fontSize: '1.15rem' }}
+                                            value={isCreating ? newRoomCode : joinCode}
+                                            onChange={e => isCreating ? setNewRoomCode(e.target.value) : setJoinCode(e.target.value)}
+                                            required
+                                            placeholder={roomsT.modal.codePlaceholder}
                                         />
                                     </div>
                                 </div>
-                                <button 
-                                    type="submit" 
-                                    disabled={loading} 
-                                    className="form-submit-button" 
-                                    style={{ 
-                                        width: '100%', 
-                                        marginTop: '1.2rem', 
-                                        height: '72px', 
-                                        fontSize: '1.3rem', 
-                                        fontWeight: '900', 
-                                        borderRadius: '22px', 
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="form-submit-button"
+                                    style={{
+                                        width: '100%',
+                                        marginTop: '1.2rem',
+                                        height: '72px',
+                                        fontSize: '1.3rem',
+                                        fontWeight: '900',
+                                        borderRadius: '22px',
                                         background: isCreating ? '#10b981' : 'var(--accent)',
                                         boxShadow: isCreating ? '0 15px 35px rgba(16, 185, 129, 0.3)' : '0 15px 35px rgba(0, 112, 243, 0.3)'
                                     }}
@@ -415,7 +415,7 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
 
             <div style={{ maxWidth: '1100px', margin: '0 auto', width: '100%' }}>
                 <footer className="footer-main" style={{ marginTop: '2.5rem' }}>
-                    <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Github size={18} /></a>
+                    <a href="https://github.com/gonzagramaglia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Github size={18} /></a>
                     <span>{t.footer}</span>
                     <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Youtube size={22} /></a>
                 </footer>

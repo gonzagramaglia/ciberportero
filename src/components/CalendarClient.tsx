@@ -43,7 +43,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
   const t = translations[lang]
   const ct = t.calendar
   const st = t.plan.subjectNames
-  
+
   const [allEvents, setAllEvents] = useState(initialEvents)
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [newEvent, setNewEvent] = useState({ title: '', startDate: '', endDate: '', type: 'exam', subjectId: 'all', period: 'all' })
@@ -68,7 +68,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
     };
     return styles[type] || styles.default;
   };
-  
+
 
   useEffect(() => {
     setAllEvents(initialEvents)
@@ -87,7 +87,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
   const [typeFilter, setTypeFilter] = useState('all')
   const [periodFilter, setPeriodFilter] = useState('all')
   const [emailCopied, setEmailCopied] = useState(false)
-  
+
   // Set initial date from props
   useEffect(() => {
     if (initialDate) {
@@ -96,7 +96,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
       if (!isNaN(d.getTime())) {
         setCurrentDate(d);
         setSelectedDate(d);
-        
+
         // Scroll to the day after a short delay to ensure rendering
         setTimeout(() => {
           const card = document.getElementById('selected-events-card');
@@ -123,11 +123,11 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
       const month = (selectedDate.getMonth() + 1).toString().padStart(2, '0');
       const year = selectedDate.getFullYear().toString();
       const currentYear = new Date().getFullYear().toString();
-      
-      const newPath = year === currentYear 
-        ? `/calendar/${day}/${month}` 
+
+      const newPath = year === currentYear
+        ? `/calendar/${day}/${month}`
         : `/calendar/${day}/${month}/${year}`;
-      
+
       if (window.location.pathname !== newPath) {
         window.history.replaceState(null, '', newPath);
       }
@@ -160,18 +160,18 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
   };
 
   const handleCopyEmail = () => {
-      const email = "ciberportero@gmail.com";
-      navigator.clipboard.writeText(email);
-      setEmailCopied(true);
-      setTimeout(() => setEmailCopied(false), 2000);
+    const email = "ciberportero@gmail.com";
+    navigator.clipboard.writeText(email);
+    setEmailCopied(true);
+    setTimeout(() => setEmailCopied(false), 2000);
   };
 
   const filteredEvents = useMemo(() => {
     return allEvents.filter(event => {
       const title = event.title['es'] || '';
       const desc = event.desc['es'] || '';
-      const matchesSearch = title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                            desc.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSearch = title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        desc.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesSubject = subjectFilter === 'all' || event.subjectId === subjectFilter;
       const matchesType = typeFilter === 'all' || event.type === typeFilter;
       const matchesPeriod = periodFilter === 'all' || event.period === periodFilter;
@@ -197,11 +197,11 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
     }
     const title = encodeURIComponent(titleText);
     const details = encodeURIComponent(event.desc['es'] || '');
-    
+
     // Format: YYYYMMDD
     const start = event.startDate.replace(/-/g, '');
     let end = start;
-    
+
     if (event.endDate) {
       const d = new Date(event.endDate + 'T00:00:00');
       d.setDate(d.getDate() + 1);
@@ -211,7 +211,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
       d.setDate(d.getDate() + 1);
       end = d.toISOString().split('T')[0].replace(/-/g, '');
     }
-    
+
     return `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&dates=${start}/${end}`;
   }
 
@@ -269,7 +269,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
 
     // Generate ICS
     let icsContent = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Ciberportero//Academic Calendar//ES\nCALSCALE:GREGORIAN\nMETHOD:PUBLISH\n";
-    
+
     toExport.forEach(event => {
       const start = event.startDate.replace(/-/g, '');
       let end = start;
@@ -282,14 +282,14 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
         d.setDate(d.getDate() + 1);
         end = d.toISOString().split('T')[0].replace(/-/g, '');
       }
-      
+
       let titleText = event.title['es'] || '';
       if (event.subjectId && event.subjectId !== 'all') {
         titleText += ` (${(st as any)[event.subjectId]})`;
       }
       const title = titleText;
       const description = (event.desc['es'] || '').replace(/\n/g, '\\n');
-      
+
       icsContent += "BEGIN:VEVENT\n";
       icsContent += `SUMMARY:${title}\n`;
       icsContent += `DESCRIPTION:${description}\n`;
@@ -299,9 +299,9 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
       icsContent += `UID:${event.id}@ciberportero.com\n`;
       icsContent += "END:VEVENT\n";
     });
-    
+
     icsContent += "END:VCALENDAR";
-    
+
     const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -311,7 +311,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
     link.click();
     document.body.removeChild(link);
     window.URL.revokeObjectURL(url);
-    
+
     setIsExportModalOpen(false);
   }
 
@@ -336,13 +336,13 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
     const month = currentDate.getMonth()
     const daysInMonth = getDaysInMonth(year, month)
     const firstDay = getFirstDayOfMonth(year, month)
-    
+
     const days = []
-    
+
     for (let i = 0; i < firstDay; i++) {
       days.push(<div key={`empty-${i}`} className="calendar-day-empty"></div>)
     }
-    
+
     for (let day = 1; day <= daysInMonth; day++) {
       const dateStr = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
       const dayEvents = filteredEvents.filter(e => {
@@ -358,8 +358,8 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
       const isToday = new Date().getFullYear() === year && new Date().getMonth() === month && new Date().getDate() === day
 
       days.push(
-        <div 
-          key={day} 
+        <div
+          key={day}
           id={`day-${dateStr}`}
           className={`calendar-day ${hasEvent ? `event-${dayEvents[0].type}` : ''} ${hasPersonalEvent ? 'has-personal' : ''} ${isSelected ? 'selected' : ''} ${isSelected && hasEvent ? `selected-${dayEvents[0].type}` : ''} ${isToday ? 'today' : ''} ${!hasEvent && (searchTerm || subjectFilter !== 'all') ? 'dimmed' : ''}`}
           onClick={() => setSelectedDate(new Date(year, month, day))}
@@ -378,14 +378,14 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
         </div>
       )
     }
-    
+
     return days
   }
 
   const selectedEvents = filteredEvents.filter(e => {
     if (!selectedDate) return false
     const dateStr = `${selectedDate.getFullYear()}-${(selectedDate.getMonth() + 1).toString().padStart(2, '0')}-${selectedDate.getDate().toString().padStart(2, '0')}`
-    
+
     if (e.startDate === dateStr) return true;
     if (e.endDate) {
       return dateStr >= e.startDate && dateStr <= e.endDate;
@@ -394,38 +394,38 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
   })
 
   const upcomingEvents = filteredEvents.filter(e => {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const tomorrow = new Date(today);
-      tomorrow.setDate(today.getDate() + 1);
-      
-      const start = new Date(e.startDate + 'T00:00:00');
-      
-      // Caso 1: El evento empieza mañana o después
-      if (start >= tomorrow) return true;
-      
-      // Caso 2: El evento empezó antes pero sigue mañana (en curso)
-      if (e.endDate) {
-          const end = new Date(e.endDate + 'T23:59:59');
-          return end >= tomorrow && start <= today;
-      }
-      
-      return false;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    const start = new Date(e.startDate + 'T00:00:00');
+
+    // Caso 1: El evento empieza mañana o después
+    if (start >= tomorrow) return true;
+
+    // Caso 2: El evento empezó antes pero sigue mañana (en curso)
+    if (e.endDate) {
+      const end = new Date(e.endDate + 'T23:59:59');
+      return end >= tomorrow && start <= today;
+    }
+
+    return false;
   }).map(e => {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const tomorrow = new Date(today);
-      tomorrow.setDate(today.getDate() + 1);
-      
-      const start = new Date(e.startDate + 'T00:00:00');
-      
-      // Si el evento ya empezó, para "Próximos" lo mostramos como que sigue mañana
-      let displayDate = e.startDate;
-      if (start < tomorrow) {
-          displayDate = tomorrow.toISOString().split('T')[0];
-      }
-      
-      return { ...e, displayDate };
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    const start = new Date(e.startDate + 'T00:00:00');
+
+    // Si el evento ya empezó, para "Próximos" lo mostramos como que sigue mañana
+    let displayDate = e.startDate;
+    if (start < tomorrow) {
+      displayDate = tomorrow.toISOString().split('T')[0];
+    }
+
+    return { ...e, displayDate };
   }).sort((a, b) => (a as any).displayDate.localeCompare((b as any).displayDate)).slice(0, 6);
 
   const availableSubjects = useMemo(() => {
@@ -439,29 +439,29 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
     };
 
     const getSubjectsForPeriod = (p: string) => {
-        let rangeKey = 'all';
-        if (p === ct.firstPeriod) rangeKey = '1.1';
-        else if (p === ct.secondPeriod) rangeKey = '1.2';
-        else if (p === ct.thirdPeriod) rangeKey = '2.1';
-        else if (p === ct.fourthPeriod) rangeKey = '2.2';
-        else if (p === 'all') rangeKey = 'all';
+      let rangeKey = 'all';
+      if (p === ct.firstPeriod) rangeKey = '1.1';
+      else if (p === ct.secondPeriod) rangeKey = '1.2';
+      else if (p === ct.thirdPeriod) rangeKey = '2.1';
+      else if (p === ct.fourthPeriod) rangeKey = '2.2';
+      else if (p === 'all') rangeKey = 'all';
 
-        const { start, end } = rangeMap[rangeKey] || rangeMap['all'];
+      const { start, end } = rangeMap[rangeKey] || rangeMap['all'];
 
-        return Object.entries(st)
-          .filter(([id]) => {
-            const numId = parseInt(id);
-            return numId >= start && numId <= end;
-          })
-          .map(([id, name]) => ({ 
-            id, 
-            name: `[${id.padStart(2, '0')}] ${name}` 
-          }));
+      return Object.entries(st)
+        .filter(([id]) => {
+          const numId = parseInt(id);
+          return numId >= start && numId <= end;
+        })
+        .map(([id, name]) => ({
+          id,
+          name: `[${id.padStart(2, '0')}] ${name}`
+        }));
     };
 
     return {
-        main: getSubjectsForPeriod(periodFilter),
-        modal: getSubjectsForPeriod(newEvent.period)
+      main: getSubjectsForPeriod(periodFilter),
+      modal: getSubjectsForPeriod(newEvent.period)
     };
   }, [st, periodFilter, ct, newEvent.period]);
 
@@ -478,18 +478,18 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
           </Link>
           <LanguageSwitcher />
         </div>
-        
+
         <div style={{ marginTop: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
             <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
               {ct.title}
-              <div style={{ 
-                  opacity: status === 'loading' ? 0 : 1,
-                  transition: 'opacity 0.2s',
-                  display: 'flex',
-                  alignItems: 'center'
+              <div style={{
+                opacity: status === 'loading' ? 0 : 1,
+                transition: 'opacity 0.2s',
+                display: 'flex',
+                alignItems: 'center'
               }}>
-                  {status !== 'loading' && (session ? <SignOutButton /> : <SignInButton />)}
+                {status !== 'loading' && (session ? <SignOutButton /> : <SignInButton />)}
               </div>
             </h1>
             <p style={{ color: 'var(--muted)', fontSize: '1.2rem', marginTop: '0.5rem', fontWeight: '500' }}>
@@ -528,7 +528,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                 {lang === 'es' ? 'Agregar evento' : lang === 'pt' ? 'Adicionar evento' : 'Add event'}
               </Link>
             ) : (
-              <button 
+              <button
                 onClick={() => setIsAddModalOpen(true)}
                 className="add-event-btn"
                 style={{
@@ -555,82 +555,82 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
       </header>
 
       <div className="calendar-notice">
-          <Info size={18} color="#eab308" />
-          <p>
-            {session?.user ? (
-              <>
-                <span style={{ fontWeight: 700 }}>{session.user.name?.split(' ')[0] || 'Estudiante'},</span> {ct.notice}
-              </>
-            ) : ct.notice.charAt(0).toUpperCase() + ct.notice.slice(1)}
-          </p>
+        <Info size={18} color="#eab308" />
+        <p>
+          {session?.user ? (
+            <>
+              <span style={{ fontWeight: 700 }}>{session.user.name?.split(' ')[0] || 'Estudiante'},</span> {ct.notice}
+            </>
+          ) : ct.notice.charAt(0).toUpperCase() + ct.notice.slice(1)}
+        </p>
       </div>
 
       <div className="calendar-controls">
-          <div className="calendar-search-row">
-              <div className="search-box">
-                  <Search size={18} />
-                  <input 
-                    type="text" 
-                    placeholder={lang === 'es' ? 'Buscar por título o materia...' : lang === 'pt' ? 'Procurar por título ou matéria...' : 'Search by title or subject...'} 
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-              </div>
+        <div className="calendar-search-row">
+          <div className="search-box">
+            <Search size={18} />
+            <input
+              type="text"
+              placeholder={lang === 'es' ? 'Buscar por título o materia...' : lang === 'pt' ? 'Procurar por título ou matéria...' : 'Search by title or subject...'}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
-          <div className="calendar-filters-row">
-              <div className="filter-box" title={ct.periodMessage}>
-                  <Lock size={16} color="#64748b" />
-                  <select 
-                    value={periodFilter} 
-                    onChange={(e) => {
-                      setPeriodFilter(e.target.value);
-                      setSubjectFilter('all'); // Reset subject filter when period changes
-                    }}
-                    style={{ 
-                      fontWeight: periodFilter === 'all' ? '800' : '500',
-                      background: 'transparent',
-                      border: 'none',
-                      outline: 'none',
-                      width: '100%',
-                      color: '#1e293b'
-                    }}
-                  >
-                    <option value="all">{ct.allPeriods}</option>
-                    <option value={ct.firstPeriod}>{ct.firstPeriod}</option>
-                    <option value={ct.secondPeriod}>{ct.secondPeriod}</option>
-                    <option value={ct.thirdPeriod}>{ct.thirdPeriod}</option>
-                    <option value={ct.fourthPeriod}>{ct.fourthPeriod}</option>
-                  </select>
-              </div>
-              <div className="filter-box">
-                  <Filter size={18} />
-                  <select 
-                value={subjectFilter} 
-                onChange={(e) => setSubjectFilter(e.target.value)}
-                style={{ fontWeight: subjectFilter === 'all' ? '800' : '500' }}
-              >
-                    <option value="all">{periodFilter === 'all' ? ct.allSubjects : ct.allSubjectsOfPeriod}</option>
-                    {availableSubjects.main.map(sub => (
-                        <option key={sub.id} value={sub.id}>{sub.name as string}</option>
-                    ))}
-                  </select>
-              </div>
-              <div className="filter-box">
-                  <Tag size={18} />
-                  <select 
-                    value={typeFilter} 
-                    onChange={(e) => setTypeFilter(e.target.value)}
-                    style={{ fontWeight: typeFilter === 'all' ? '800' : '500' }}
-                  >
-                    <option value="all">{ct.allTypes}</option>
-                    <option value="exam">{ct.events.exam}</option>
-                    <option value="quiz_mandatory">{ct.events.quiz_mandatory}</option>
-                    <option value="enrollment">{ct.events.enrollment}</option>
-                    <option value="classes">{ct.events.classes}</option>
-                    <option value="event">{ct.events.event}</option>
-                  </select>
-              </div>
+        </div>
+        <div className="calendar-filters-row">
+          <div className="filter-box" title={ct.periodMessage}>
+            <Lock size={16} color="#64748b" />
+            <select
+              value={periodFilter}
+              onChange={(e) => {
+                setPeriodFilter(e.target.value);
+                setSubjectFilter('all'); // Reset subject filter when period changes
+              }}
+              style={{
+                fontWeight: periodFilter === 'all' ? '800' : '500',
+                background: 'transparent',
+                border: 'none',
+                outline: 'none',
+                width: '100%',
+                color: '#1e293b'
+              }}
+            >
+              <option value="all">{ct.allPeriods}</option>
+              <option value={ct.firstPeriod}>{ct.firstPeriod}</option>
+              <option value={ct.secondPeriod}>{ct.secondPeriod}</option>
+              <option value={ct.thirdPeriod}>{ct.thirdPeriod}</option>
+              <option value={ct.fourthPeriod}>{ct.fourthPeriod}</option>
+            </select>
           </div>
+          <div className="filter-box">
+            <Filter size={18} />
+            <select
+              value={subjectFilter}
+              onChange={(e) => setSubjectFilter(e.target.value)}
+              style={{ fontWeight: subjectFilter === 'all' ? '800' : '500' }}
+            >
+              <option value="all">{periodFilter === 'all' ? ct.allSubjects : ct.allSubjectsOfPeriod}</option>
+              {availableSubjects.main.map(sub => (
+                <option key={sub.id} value={sub.id}>{sub.name as string}</option>
+              ))}
+            </select>
+          </div>
+          <div className="filter-box">
+            <Tag size={18} />
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              style={{ fontWeight: typeFilter === 'all' ? '800' : '500' }}
+            >
+              <option value="all">{ct.allTypes}</option>
+              <option value="exam">{ct.events.exam}</option>
+              <option value="quiz_mandatory">{ct.events.quiz_mandatory}</option>
+              <option value="enrollment">{ct.events.enrollment}</option>
+              <option value="classes">{ct.events.classes}</option>
+              <option value="event">{ct.events.event}</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       <main className="calendar-layout">
@@ -648,7 +648,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
 
           <div className="calendar-scroller">
             <div className="calendar-weekdays">
-              {ct.days.map((day : string) => (
+              {ct.days.map((day: string) => (
                 <div key={day} className="weekday">{day}</div>
               ))}
             </div>
@@ -659,47 +659,47 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
           </div>
 
           <div className="calendar-legend" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-              <div style={{ display: 'flex', gap: '1.2rem', flexWrap: 'wrap' }}>
-                <div className="legend-item"><div className="legend-dot exam"></div> <span>{ct.events.exam}</span></div>
-                <div className="legend-item"><div className="legend-dot quiz_mandatory"></div> <span>{ct.events.quiz_mandatory}</span></div>
-                <div className="legend-item"><div className="legend-dot enrollment"></div> <span>{ct.events.enrollment}</span></div>
-                <div className="legend-item"><div className="legend-dot classes"></div> <span>{ct.events.classes}</span></div>
-                <div className="legend-item"><div className="legend-dot event"></div> <span>{ct.events.event}</span></div>
-              </div>
+            <div style={{ display: 'flex', gap: '1.2rem', flexWrap: 'wrap' }}>
+              <div className="legend-item"><div className="legend-dot exam"></div> <span>{ct.events.exam}</span></div>
+              <div className="legend-item"><div className="legend-dot quiz_mandatory"></div> <span>{ct.events.quiz_mandatory}</span></div>
+              <div className="legend-item"><div className="legend-dot enrollment"></div> <span>{ct.events.enrollment}</span></div>
+              <div className="legend-item"><div className="legend-dot classes"></div> <span>{ct.events.classes}</span></div>
+              <div className="legend-item"><div className="legend-dot event"></div> <span>{ct.events.event}</span></div>
+            </div>
 
-              <button 
-                onClick={() => setIsExportModalOpen(true)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.6rem',
-                  padding: '0.8rem 1.2rem',
-                  borderRadius: '12px',
-                  background: '#fffcf0',
-                  color: '#854d0e',
-                  fontSize: '0.85rem',
-                  fontWeight: '800',
-                  border: '1px solid #eab308',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  width: 'fit-content'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = '#fef9c3';
-                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(234, 179, 8, 0.15)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = '#fffcf0';
-                  e.currentTarget.style.boxShadow = 'none';
-                }}
-              >
-                <img 
-                  src="/google-calendar-logo.png" 
-                  alt="Google Calendar"
-                  style={{ width: '18px', height: '18px', objectFit: 'contain' }}
-                />
-                {(ct as any).batchExport.button}
-              </button>
+            <button
+              onClick={() => setIsExportModalOpen(true)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.6rem',
+                padding: '0.8rem 1.2rem',
+                borderRadius: '12px',
+                background: '#fffcf0',
+                color: '#854d0e',
+                fontSize: '0.85rem',
+                fontWeight: '800',
+                border: '1px solid #eab308',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                width: 'fit-content'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#fef9c3';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(234, 179, 8, 0.15)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = '#fffcf0';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
+            >
+              <img
+                src="/google-calendar-logo.png"
+                alt="Google Calendar"
+                style={{ width: '18px', height: '18px', objectFit: 'contain' }}
+              />
+              {(ct as any).batchExport.button}
+            </button>
           </div>
         </div>
 
@@ -718,7 +718,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                   )}
                 </h3>
               </div>
-              
+
               <div className="selection-content">
                 {selectedEvents.length > 0 ? (
                   selectedEvents.map((event, idx) => (
@@ -726,33 +726,33 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
                         <span style={{ fontSize: '0.85rem', fontWeight: 800, opacity: 0.7 }}>
                           {lang === 'es' ? (
-                            event.endDate 
+                            event.endDate
                               ? `Del ${formatEventDate(event.startDate)} al ${formatEventDate(event.endDate)}:`
                               : `El ${formatEventDate(event.startDate)}:`
                           ) : lang === 'pt' ? (
-                            event.endDate 
+                            event.endDate
                               ? `De ${formatEventDate(event.startDate)} a ${formatEventDate(event.endDate)}:`
                               : `Em ${formatEventDate(event.startDate)}:`
                           ) : (
-                            event.endDate 
+                            event.endDate
                               ? `From ${formatEventDate(event.startDate)} to ${formatEventDate(event.endDate)}:`
                               : `On ${formatEventDate(event.startDate)}:`
                           )}
                         </span>
                         <div className={`upcoming-tag tag-${event.type}`} style={{ margin: 0, padding: '0.1rem 0.4rem' }}>
-                            {(ct.events[event.type as keyof typeof ct.events] || event.type)}
-                            {event.userId && ` (${lang === 'es' ? 'personal' : lang === 'pt' ? 'pessoal' : 'personal'})`}
+                          {(ct.events[event.type as keyof typeof ct.events] || event.type)}
+                          {event.userId && ` (${lang === 'es' ? 'personal' : lang === 'pt' ? 'pessoal' : 'personal'})`}
                         </div>
                         {(session?.user?.id === event.userId || session?.user?.email === 'ciberportero@gmail.com') && (
-                          <button 
+                          <button
                             onClick={() => handleDeleteEvent(event.id)}
                             style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: '#ef4444', opacity: 0.6, padding: '4px', marginLeft: '0.5rem' }}
                           >
                             <Trash2 size={16} />
                           </button>
                         )}
-                        {(session?.user?.role === 'admin' || session?.user?.email === 'gonzalogramagia@gmail.com' || session?.user?.email === 'ciberportero@gmail.com') && (
-                          <a 
+                        {(session?.user?.role === 'admin' || session?.user?.email === 'gonzagramaglia@gmail.com' || session?.user?.email === 'ciberportero@gmail.com') && (
+                          <a
                             href={`/admin/calendar/${event.id}`}
                             className="edit-event-link"
                             style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: 'var(--accent)', textDecoration: 'none', fontSize: '0.75rem', fontWeight: 800, padding: '0.4rem 0.8rem', borderRadius: '8px', background: 'rgba(34, 211, 238, 0.08)', border: '1px solid rgba(34, 211, 238, 0.2)', transition: 'all 0.2s' }}
@@ -769,15 +769,15 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                         {event.title['es']}
                         {event.subjectId && event.subjectId !== 'all' && ` (${(st as any)[event.subjectId]})`}
                       </h4>
-                      <div 
-                        style={{ whiteSpace: 'pre-wrap', marginBottom: '1rem' }} 
-                        dangerouslySetInnerHTML={{ __html: formatMarkdown(event.desc['es'] || '') }} 
+                      <div
+                        style={{ whiteSpace: 'pre-wrap', marginBottom: '1rem' }}
+                        dangerouslySetInnerHTML={{ __html: formatMarkdown(event.desc['es'] || '') }}
                       />
-                      
+
                       {event.url && (
-                        <a 
-                          href={event.url.startsWith('http') ? event.url : `https://${event.url}`} 
-                          target="_blank" 
+                        <a
+                          href={event.url.startsWith('http') ? event.url : `https://${event.url}`}
+                          target="_blank"
                           rel="noopener noreferrer"
                           style={{
                             display: 'flex',
@@ -794,49 +794,49 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                           {lang === 'es' ? 'Ir al enlace del evento' : lang === 'pt' ? 'Ir para o link do evento' : 'Go to event link'}
                         </a>
                       )}
-                      
-                        {(() => {
-                          const style = getTypeStyle(event.type);
-                          return (
-                            <a 
-                              href={getGoogleCalendarUrl(event)} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '0.6rem',
-                                marginTop: '1.2rem',
-                                padding: '0.8rem 1.2rem',
-                                borderRadius: '12px',
-                                background: style.bg,
-                                color: style.text,
-                                fontSize: '0.85rem',
-                                fontWeight: '800',
-                                textDecoration: 'none',
-                                transition: 'all 0.2s',
-                                border: `1px solid ${style.border}`,
-                                width: 'fit-content'
-                              }}
-                              onMouseEnter={(e) => {
-                                e.currentTarget.style.background = style.hover;
-                                e.currentTarget.style.boxShadow = `0 4px 12px ${style.border}44`;
-                              }}
-                              onMouseLeave={(e) => {
-                                e.currentTarget.style.background = style.bg;
-                                e.currentTarget.style.boxShadow = 'none';
-                              }}
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <img 
-                                src="/google-calendar-logo.png" 
-                                alt="Google Calendar"
-                                style={{ width: '18px', height: '18px', objectFit: 'contain' }}
-                              />
-                              {(ct as any).exportToGoogleCalendar}
-                            </a>
-                          );
-                        })()}
+
+                      {(() => {
+                        const style = getTypeStyle(event.type);
+                        return (
+                          <a
+                            href={getGoogleCalendarUrl(event)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '0.6rem',
+                              marginTop: '1.2rem',
+                              padding: '0.8rem 1.2rem',
+                              borderRadius: '12px',
+                              background: style.bg,
+                              color: style.text,
+                              fontSize: '0.85rem',
+                              fontWeight: '800',
+                              textDecoration: 'none',
+                              transition: 'all 0.2s',
+                              border: `1px solid ${style.border}`,
+                              width: 'fit-content'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.background = style.hover;
+                              e.currentTarget.style.boxShadow = `0 4px 12px ${style.border}44`;
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.background = style.bg;
+                              e.currentTarget.style.boxShadow = 'none';
+                            }}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <img
+                              src="/google-calendar-logo.png"
+                              alt="Google Calendar"
+                              style={{ width: '18px', height: '18px', objectFit: 'contain' }}
+                            />
+                            {(ct as any).exportToGoogleCalendar}
+                          </a>
+                        );
+                      })()}
                     </div>
                   ))
                 ) : (
@@ -856,134 +856,134 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
             </div>
             <div className="upcoming-list">
               {upcomingEvents.length > 0 ? upcomingEvents.map((event, idx) => {
-                  const d = new Date(((event as any).displayDate || event.startDate) + 'T12:00:00');
-                  return (
-                    <div key={idx} className="upcoming-item" onClick={() => {
-                        setCurrentDate(new Date(d.getFullYear(), d.getMonth(), 1));
-                        setSelectedDate(d);
-                    }}>
-                        <div className="upcoming-date">
-                            <span className="upcoming-day">{d.getDate()}</span>
-                            <span className="upcoming-month">{ct.months[d.getMonth()].slice(0, 3)}</span>
-                        </div>
-                        <div className="upcoming-info">
-                            <h4>
-                              {event.title['es']}
-                              {event.subjectId && event.subjectId !== 'all' && ` (${(st as any)[event.subjectId]})`}
-                            </h4>
-                            {event.endDate && event.endDate !== event.startDate && (
-                                <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.2rem', fontWeight: 500 }}>
-                                    {lang === 'es' ? 'Hasta el ' : lang === 'pt' ? 'Até ' : 'Until '}
-                                    {(() => {
-                                        const ed = new Date(event.endDate + 'T12:00:00');
-                                        return `${ed.getDate()} de ${ct.months[ed.getMonth()]}`;
-                                    })()}
-                                </div>
-                            )}
-                            <span className={`upcoming-tag tag-${event.type}`}>
-                                {ct.events[event.type as keyof typeof ct.events] || event.type}
-                                {event.userId && ` (${lang === 'es' ? 'personal' : lang === 'pt' ? 'pessoal' : 'personal'})`}
-                            </span>
-                        </div>
+                const d = new Date(((event as any).displayDate || event.startDate) + 'T12:00:00');
+                return (
+                  <div key={idx} className="upcoming-item" onClick={() => {
+                    setCurrentDate(new Date(d.getFullYear(), d.getMonth(), 1));
+                    setSelectedDate(d);
+                  }}>
+                    <div className="upcoming-date">
+                      <span className="upcoming-day">{d.getDate()}</span>
+                      <span className="upcoming-month">{ct.months[d.getMonth()].slice(0, 3)}</span>
                     </div>
-                  );
-              }) : (
-                  <div className="empty-selection">
-                    <Bell size={48} strokeWidth={1.5} style={{ opacity: 0.15, marginBottom: '1.2rem' }} />
-                    <p>{lang === 'es' ? 'Sin eventos próximos' : 'No upcoming events'}</p>
+                    <div className="upcoming-info">
+                      <h4>
+                        {event.title['es']}
+                        {event.subjectId && event.subjectId !== 'all' && ` (${(st as any)[event.subjectId]})`}
+                      </h4>
+                      {event.endDate && event.endDate !== event.startDate && (
+                        <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.2rem', fontWeight: 500 }}>
+                          {lang === 'es' ? 'Hasta el ' : lang === 'pt' ? 'Até ' : 'Until '}
+                          {(() => {
+                            const ed = new Date(event.endDate + 'T12:00:00');
+                            return `${ed.getDate()} de ${ct.months[ed.getMonth()]}`;
+                          })()}
+                        </div>
+                      )}
+                      <span className={`upcoming-tag tag-${event.type}`}>
+                        {ct.events[event.type as keyof typeof ct.events] || event.type}
+                        {event.userId && ` (${lang === 'es' ? 'personal' : lang === 'pt' ? 'pessoal' : 'personal'})`}
+                      </span>
+                    </div>
                   </div>
-                )}
+                );
+              }) : (
+                <div className="empty-selection">
+                  <Bell size={48} strokeWidth={1.5} style={{ opacity: 0.15, marginBottom: '1.2rem' }} />
+                  <p>{lang === 'es' ? 'Sin eventos próximos' : 'No upcoming events'}</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </main>
 
-      <div className="cronogramas-section" style={{ 
-          margin: '2rem 0 3rem 0', 
-          width: '100%'
+      <div className="cronogramas-section" style={{
+        margin: '2rem 0 3rem 0',
+        width: '100%'
       }}>
-          <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(2, 1fr)', 
-              gap: '1rem',
-              background: 'rgba(0,0,0,0.02)',
-              padding: '1.5rem',
-              borderRadius: '24px',
-              border: '1px dashed var(--border)'
-          }}>
-              <a href="https://drive.google.com/file/d/1u18VHM9XDm9j-SedtkJkHy2vi_fv_rsK/view?usp=sharing" target="_blank" className="cronograma-link">
-                  <FileText size={18} />
-                  <span>
-                    {(() => {
-                      const [prefix, subject] = ct.schedules.math1.split(/(?=\[)/);
-                      return (
-                        <>
-                          <span className="cronograma-prefix">{prefix.trim()} </span>
-                          <span className="cronograma-subject">{subject}</span>
-                        </>
-                      );
-                    })()}
-                  </span>
-                  <ExternalLink size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
-              </a>
-              <a href="https://drive.google.com/file/d/1uW0lIVUwM6ElxiWtH3MR6xPxJY9AeQZg/view?usp=sharing" target="_blank" className="cronograma-link">
-                  <FileText size={18} />
-                  <span>
-                    {(() => {
-                      const [prefix, subject] = ct.schedules.algebra1.split(/(?=\[)/);
-                      return (
-                        <>
-                          <span className="cronograma-prefix">{prefix.trim()} </span>
-                          <span className="cronograma-subject">{subject}</span>
-                        </>
-                      );
-                    })()}
-                  </span>
-                  <ExternalLink size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
-              </a>
-              <a href="https://drive.google.com/file/d/195obq3YIJTYLhF__E_tscoEhzU-rNZ_j/view?usp=sharing" target="_blank" className="cronograma-link">
-                  <FileText size={18} />
-                  <span>
-                    {(() => {
-                      const [prefix, subject] = ct.schedules.management1.split(/(?=\[)/);
-                      return (
-                        <>
-                          <span className="cronograma-prefix">{prefix.trim()} </span>
-                          <span className="cronograma-subject">{subject}</span>
-                        </>
-                      );
-                    })()}
-                  </span>
-                  <ExternalLink size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
-              </a>
-              <a href="https://drive.google.com/file/d/1jUHLjjbVx1_D5UMWaCZszFIc25-00JSk/view?usp=sharing" target="_blank" className="cronograma-link">
-                  <FileText size={18} />
-                  <span>
-                    {(() => {
-                      const [prefix, subject] = ct.schedules.os1.split(/(?=\[)/);
-                      return (
-                        <>
-                          <span className="cronograma-prefix">{prefix.trim()} </span>
-                          <span className="cronograma-subject">{subject}</span>
-                        </>
-                      );
-                    })()}
-                  </span>
-                  <ExternalLink size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
-              </a>
-          </div>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gap: '1rem',
+          background: 'rgba(0,0,0,0.02)',
+          padding: '1.5rem',
+          borderRadius: '24px',
+          border: '1px dashed var(--border)'
+        }}>
+          <a href="https://drive.google.com/file/d/1u18VHM9XDm9j-SedtkJkHy2vi_fv_rsK/view?usp=sharing" target="_blank" className="cronograma-link">
+            <FileText size={18} />
+            <span>
+              {(() => {
+                const [prefix, subject] = ct.schedules.math1.split(/(?=\[)/);
+                return (
+                  <>
+                    <span className="cronograma-prefix">{prefix.trim()} </span>
+                    <span className="cronograma-subject">{subject}</span>
+                  </>
+                );
+              })()}
+            </span>
+            <ExternalLink size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
+          </a>
+          <a href="https://drive.google.com/file/d/1uW0lIVUwM6ElxiWtH3MR6xPxJY9AeQZg/view?usp=sharing" target="_blank" className="cronograma-link">
+            <FileText size={18} />
+            <span>
+              {(() => {
+                const [prefix, subject] = ct.schedules.algebra1.split(/(?=\[)/);
+                return (
+                  <>
+                    <span className="cronograma-prefix">{prefix.trim()} </span>
+                    <span className="cronograma-subject">{subject}</span>
+                  </>
+                );
+              })()}
+            </span>
+            <ExternalLink size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
+          </a>
+          <a href="https://drive.google.com/file/d/195obq3YIJTYLhF__E_tscoEhzU-rNZ_j/view?usp=sharing" target="_blank" className="cronograma-link">
+            <FileText size={18} />
+            <span>
+              {(() => {
+                const [prefix, subject] = ct.schedules.management1.split(/(?=\[)/);
+                return (
+                  <>
+                    <span className="cronograma-prefix">{prefix.trim()} </span>
+                    <span className="cronograma-subject">{subject}</span>
+                  </>
+                );
+              })()}
+            </span>
+            <ExternalLink size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
+          </a>
+          <a href="https://drive.google.com/file/d/1jUHLjjbVx1_D5UMWaCZszFIc25-00JSk/view?usp=sharing" target="_blank" className="cronograma-link">
+            <FileText size={18} />
+            <span>
+              {(() => {
+                const [prefix, subject] = ct.schedules.os1.split(/(?=\[)/);
+                return (
+                  <>
+                    <span className="cronograma-prefix">{prefix.trim()} </span>
+                    <span className="cronograma-subject">{subject}</span>
+                  </>
+                );
+              })()}
+            </span>
+            <ExternalLink size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
+          </a>
+        </div>
       </div>
 
       <CommentSection postSlug="calendar" lang={lang} />
 
       <footer className="footer-main" style={{ marginTop: '3rem' }}>
-          <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
-              <Github size={18} />
-          </a>
-          <span>{t.footer}</span>
-          <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
-              <Youtube size={22} />
-          </a>
+        <a href="https://github.com/gonzagramaglia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+          <Github size={18} />
+        </a>
+        <span>{t.footer}</span>
+        <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+          <Youtube size={22} />
+        </a>
       </footer>
 
       {/* Batch Export Modal */}
@@ -1016,8 +1016,8 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                   <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 900 }}>{(ct as any).batchExport.title}</h2>
                 </div>
               </div>
-              <button 
-                onClick={() => setIsExportModalOpen(false)} 
+              <button
+                onClick={() => setIsExportModalOpen(false)}
                 style={{ border: 'none', background: '#f1f5f9', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s' }}
                 onMouseEnter={(e) => e.currentTarget.style.background = '#e2e8f0'}
                 onMouseLeave={(e) => e.currentTarget.style.background = '#f1f5f9'}
@@ -1035,24 +1035,24 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                 </div>
                 <div style={{ display: 'grid', gap: '0.75rem' }}>
                   <label className="export-option">
-                    <input type="radio" name="exportType" checked={exportConfig.type === 'all'} onChange={() => setExportConfig({...exportConfig, type: 'all'})} />
+                    <input type="radio" name="exportType" checked={exportConfig.type === 'all'} onChange={() => setExportConfig({ ...exportConfig, type: 'all' })} />
                     <div className="option-ui">
                       <span className="radio-dot"></span>
                       <span>{(ct as any).batchExport.allEvents}</span>
                     </div>
                   </label>
-                  
+
                   <label className="export-option">
-                    <input type="radio" name="exportType" checked={exportConfig.type === 'custom'} onChange={() => setExportConfig({...exportConfig, type: 'custom'})} />
+                    <input type="radio" name="exportType" checked={exportConfig.type === 'custom'} onChange={() => setExportConfig({ ...exportConfig, type: 'custom' })} />
                     <div className="option-ui">
                       <span className="radio-dot"></span>
                       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
                         <span style={{ fontWeight: 800 }}>{lang === 'es' ? 'Selección personalizada' : lang === 'pt' ? 'Seleção personalizada' : 'Custom selection'}</span>
                         {exportConfig.type === 'custom' && (
                           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                            <select 
-                              value={exportConfig.eventType} 
-                              onChange={(e) => setExportConfig({...exportConfig, eventType: e.target.value})}
+                            <select
+                              value={exportConfig.eventType}
+                              onChange={(e) => setExportConfig({ ...exportConfig, eventType: e.target.value })}
                               style={{ flex: 1, minWidth: '120px', background: '#f8fafc', border: '1px solid #e2e8f0', padding: '0.4rem 0.6rem', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 700 }}
                             >
                               <option value="all">{ct.allTypes}</option>
@@ -1061,9 +1061,9 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                               <option value="enrollment">{ct.events.enrollment}</option>
                               <option value="classes">{ct.events.classes}</option>
                             </select>
-                            <select 
-                              value={exportConfig.subjectId} 
-                              onChange={(e) => setExportConfig({...exportConfig, subjectId: e.target.value})}
+                            <select
+                              value={exportConfig.subjectId}
+                              onChange={(e) => setExportConfig({ ...exportConfig, subjectId: e.target.value })}
                               style={{ flex: 2, minWidth: '180px', background: '#f8fafc', border: '1px solid #e2e8f0', padding: '0.4rem 0.6rem', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 700 }}
                             >
                               <option value="all">{ct.allSubjects}</option>
@@ -1079,7 +1079,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
 
                   {session && (
                     <label className="export-option">
-                      <input type="radio" name="exportType" checked={exportConfig.type === 'personal'} onChange={() => setExportConfig({...exportConfig, type: 'personal'})} />
+                      <input type="radio" name="exportType" checked={exportConfig.type === 'personal'} onChange={() => setExportConfig({ ...exportConfig, type: 'personal' })} />
                       <div className="option-ui">
                         <span className="radio-dot"></span>
                         <span>{(ct as any).batchExport.personalEvents}</span>
@@ -1097,28 +1097,28 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem' }}>
                   <label className="export-option">
-                    <input type="radio" name="exportRange" checked={exportConfig.range === 'week'} onChange={() => setExportConfig({...exportConfig, range: 'week'})} />
+                    <input type="radio" name="exportRange" checked={exportConfig.range === 'week'} onChange={() => setExportConfig({ ...exportConfig, range: 'week' })} />
                     <div className="option-ui">
                       <span className="radio-dot"></span>
                       <span>{(ct as any).batchExport.thisWeek}</span>
                     </div>
                   </label>
                   <label className="export-option">
-                    <input type="radio" name="exportRange" checked={exportConfig.range === 'month'} onChange={() => setExportConfig({...exportConfig, range: 'month'})} />
+                    <input type="radio" name="exportRange" checked={exportConfig.range === 'month'} onChange={() => setExportConfig({ ...exportConfig, range: 'month' })} />
                     <div className="option-ui">
                       <span className="radio-dot"></span>
                       <span>{(ct as any).batchExport.thisMonth}</span>
                     </div>
                   </label>
                   <label className="export-option">
-                    <input type="radio" name="exportRange" checked={exportConfig.range === 'sixty'} onChange={() => setExportConfig({...exportConfig, range: 'sixty'})} />
+                    <input type="radio" name="exportRange" checked={exportConfig.range === 'sixty'} onChange={() => setExportConfig({ ...exportConfig, range: 'sixty' })} />
                     <div className="option-ui">
                       <span className="radio-dot"></span>
                       <span>{(ct as any).batchExport.sixtyDays}</span>
                     </div>
                   </label>
                   <label className="export-option">
-                    <input type="radio" name="exportRange" checked={exportConfig.range === 'year'} onChange={() => setExportConfig({...exportConfig, range: 'year'})} />
+                    <input type="radio" name="exportRange" checked={exportConfig.range === 'year'} onChange={() => setExportConfig({ ...exportConfig, range: 'year' })} />
                     <div className="option-ui">
                       <span className="radio-dot"></span>
                       <span>{(ct as any).batchExport.customRange}</span>
@@ -1132,9 +1132,9 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                 <p style={{ margin: '0 0 1.2rem 0', fontSize: '0.8rem', color: '#64748b', lineHeight: 1.6, fontWeight: 500 }}>
                   {(ct as any).batchExport.instructions}
                   {' '}
-                  <a 
-                    href="https://calendar.google.com/calendar/u/0/r/settings/export" 
-                    target="_blank" 
+                  <a
+                    href="https://calendar.google.com/calendar/u/0/r/settings/export"
+                    target="_blank"
                     rel="noopener noreferrer"
                     style={{
                       display: 'inline-flex',
@@ -1153,7 +1153,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                     {lang === 'es' ? 'Abrir Configuración de Google Calendar' : lang === 'pt' ? 'Abrir Configurações do Google Agenda' : 'Open Google Calendar Settings'}
                   </a>
                 </p>
-                <button 
+                <button
                   onClick={handleExport}
                   style={{
                     width: '100%',
@@ -1285,108 +1285,108 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                 <CloseIcon size={24} />
               </button>
             </div>
-            
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+              <div className="form-group">
+                <label>{lang === 'es' ? 'Título' : lang === 'pt' ? 'Título' : 'Title'}</label>
+                <input
+                  type="text"
+                  value={newEvent.title}
+                  onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
+                  placeholder={lang === 'es' ? 'Ej: Entrega de TP' : lang === 'pt' ? 'Ex: Entrega de TP' : 'e.g. Project Delivery'}
+                  style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
+                />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div className="form-group">
-                  <label>{lang === 'es' ? 'Título' : lang === 'pt' ? 'Título' : 'Title'}</label>
-                  <input 
-                    type="text" 
-                    value={newEvent.title} 
-                    onChange={(e) => setNewEvent({...newEvent, title: e.target.value})}
-                    placeholder={lang === 'es' ? 'Ej: Entrega de TP' : lang === 'pt' ? 'Ex: Entrega de TP' : 'e.g. Project Delivery'}
+                  <label>{lang === 'es' ? 'Desde' : lang === 'pt' ? 'Início' : 'From'}</label>
+                  <input
+                    type="date"
+                    value={newEvent.startDate}
+                    onChange={(e) => setNewEvent({ ...newEvent, startDate: e.target.value })}
                     style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
                   />
                 </div>
-                
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                  <div className="form-group">
-                    <label>{lang === 'es' ? 'Desde' : lang === 'pt' ? 'Início' : 'From'}</label>
-                    <input 
-                      type="date" 
-                      value={newEvent.startDate} 
-                      onChange={(e) => setNewEvent({...newEvent, startDate: e.target.value})}
-                      style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>{lang === 'es' ? 'Hasta (Opcional)' : lang === 'pt' ? 'Fim (Opcional)' : 'To (Optional)'}</label>
-                    <input 
-                      type="date" 
-                      value={newEvent.endDate} 
-                      onChange={(e) => setNewEvent({...newEvent, endDate: e.target.value})}
-                      min={newEvent.startDate}
-                      style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
-                    />
-                  </div>
-                </div>
-                
-                <div className="form-group" style={{ marginTop: '1rem' }}>
-                  <label>{lang === 'es' ? 'Tipo' : lang === 'pt' ? 'Tipo' : 'Type'}</label>
-                  <select 
-                    value={newEvent.type} 
-                    onChange={(e) => setNewEvent({...newEvent, type: e.target.value})}
+                <div className="form-group">
+                  <label>{lang === 'es' ? 'Hasta (Opcional)' : lang === 'pt' ? 'Fim (Opcional)' : 'To (Optional)'}</label>
+                  <input
+                    type="date"
+                    value={newEvent.endDate}
+                    onChange={(e) => setNewEvent({ ...newEvent, endDate: e.target.value })}
+                    min={newEvent.startDate}
                     style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
-                  >
-                    <option value="exam">{ct.events.exam}</option>
-                    <option value="quiz_mandatory">{ct.events.quiz_mandatory}</option>
-                    <option value="enrollment">{ct.events.enrollment}</option>
-                    <option value="classes">{ct.events.classes}</option>
-                    <option value="event">{ct.events.event}</option>
-                  </select>
+                  />
                 </div>
-                
-                <div className="form-group" style={{ marginTop: '1rem' }}>
-                  <label>{ct.periodFilter || 'Cuatrimestre'}</label>
-                  <select 
-                    value={newEvent.period} 
-                    onChange={(e) => setNewEvent({...newEvent, period: e.target.value, subjectId: 'all'})}
-                    style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
-                  >
-                    <option value="all">{ct.allPeriods}</option>
-                    <option value={ct.firstPeriod}>{ct.firstPeriod}</option>
-                    <option value={ct.secondPeriod}>{ct.secondPeriod}</option>
-                    <option value={ct.thirdPeriod}>{ct.thirdPeriod}</option>
-                    <option value={ct.fourthPeriod}>{ct.fourthPeriod}</option>
-                  </select>
-                </div>
-                
-                <div className="form-group" style={{ marginTop: '1rem' }}>
-                  <label>{lang === 'es' ? 'Materia (opcional)' : lang === 'pt' ? 'Matéria (opcional)' : 'Subject (optional)'}</label>
-                  <select 
-                    value={newEvent.subjectId} 
-                    onChange={(e) => setNewEvent({...newEvent, subjectId: e.target.value})}
-                    style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
-                  >
-                    <option value="all">{newEvent.period === 'all' ? ct.allSubjects : ct.allSubjectsOfPeriod}</option>
-                    {availableSubjects.modal.map(sub => (
-                      <option key={sub.id} value={sub.id}>{sub.name as string}</option>
-                    ))}
-                  </select>
-                </div>
-                
-                <button 
-                  onClick={handleSaveEvent}
-                  disabled={isSaving}
-                  style={{
-                    width: '100%',
-                    background: '#000',
-                    color: '#fff',
-                    padding: '1rem',
-                    borderRadius: '14px',
-                    border: 'none',
-                    fontWeight: '800',
-                    marginTop: '1.5rem',
-                    cursor: 'pointer',
-                    opacity: isSaving ? 0.7 : 1,
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                  }}
-                >
-                  {isSaving ? (lang === 'es' ? 'Guardando...' : lang === 'pt' ? 'Salvando...' : 'Saving...') : (lang === 'es' ? 'Guardar' : lang === 'pt' ? 'Salvar' : 'Save')}
-                </button>
               </div>
+
+              <div className="form-group" style={{ marginTop: '1rem' }}>
+                <label>{lang === 'es' ? 'Tipo' : lang === 'pt' ? 'Tipo' : 'Type'}</label>
+                <select
+                  value={newEvent.type}
+                  onChange={(e) => setNewEvent({ ...newEvent, type: e.target.value })}
+                  style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
+                >
+                  <option value="exam">{ct.events.exam}</option>
+                  <option value="quiz_mandatory">{ct.events.quiz_mandatory}</option>
+                  <option value="enrollment">{ct.events.enrollment}</option>
+                  <option value="classes">{ct.events.classes}</option>
+                  <option value="event">{ct.events.event}</option>
+                </select>
+              </div>
+
+              <div className="form-group" style={{ marginTop: '1rem' }}>
+                <label>{ct.periodFilter || 'Cuatrimestre'}</label>
+                <select
+                  value={newEvent.period}
+                  onChange={(e) => setNewEvent({ ...newEvent, period: e.target.value, subjectId: 'all' })}
+                  style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
+                >
+                  <option value="all">{ct.allPeriods}</option>
+                  <option value={ct.firstPeriod}>{ct.firstPeriod}</option>
+                  <option value={ct.secondPeriod}>{ct.secondPeriod}</option>
+                  <option value={ct.thirdPeriod}>{ct.thirdPeriod}</option>
+                  <option value={ct.fourthPeriod}>{ct.fourthPeriod}</option>
+                </select>
+              </div>
+
+              <div className="form-group" style={{ marginTop: '1rem' }}>
+                <label>{lang === 'es' ? 'Materia (opcional)' : lang === 'pt' ? 'Matéria (opcional)' : 'Subject (optional)'}</label>
+                <select
+                  value={newEvent.subjectId}
+                  onChange={(e) => setNewEvent({ ...newEvent, subjectId: e.target.value })}
+                  style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
+                >
+                  <option value="all">{newEvent.period === 'all' ? ct.allSubjects : ct.allSubjectsOfPeriod}</option>
+                  {availableSubjects.modal.map(sub => (
+                    <option key={sub.id} value={sub.id}>{sub.name as string}</option>
+                  ))}
+                </select>
+              </div>
+
+              <button
+                onClick={handleSaveEvent}
+                disabled={isSaving}
+                style={{
+                  width: '100%',
+                  background: '#000',
+                  color: '#fff',
+                  padding: '1rem',
+                  borderRadius: '14px',
+                  border: 'none',
+                  fontWeight: '800',
+                  marginTop: '1.5rem',
+                  cursor: 'pointer',
+                  opacity: isSaving ? 0.7 : 1,
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                }}
+              >
+                {isSaving ? (lang === 'es' ? 'Guardando...' : lang === 'pt' ? 'Salvando...' : 'Saving...') : (lang === 'es' ? 'Guardar' : lang === 'pt' ? 'Salvar' : 'Save')}
+              </button>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
       <style jsx>{`
         .calendar-controls {

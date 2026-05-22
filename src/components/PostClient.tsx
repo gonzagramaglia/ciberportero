@@ -347,7 +347,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                 <CommentSection postSlug={slug} lang={lang} />
 
                 <footer className="footer-main">
-                    <a href="https://github.com/gonzalogramagia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Github size={18} /></a>
+                    <a href="https://github.com/gonzagramaglia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Github size={18} /></a>
                     <span>{t.footer}</span>
                     <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Youtube size={22} /></a>
                 </footer>
