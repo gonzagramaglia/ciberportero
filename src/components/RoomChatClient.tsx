@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { MessageSquare, Send, Loader2, History as HistoryIcon, Image as ImageIcon, X, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, Hash, Paperclip, MessageCircle, Reply as ReplyIcon, Trash2, Pencil, Check, Smile, ClipboardClock, Pin, PinOff, GripVertical, ShieldCheck, Search, Youtube, Settings } from 'lucide-react';
+import { MessageSquare, Send, Loader2, History as HistoryIcon, Image as ImageIcon, X, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, Hash, Paperclip, MessageCircle, Reply as ReplyIcon, Trash2, Pencil, Check, Smile, Pin, PinOff, GripVertical, ShieldCheck, Search, Youtube, Settings } from 'lucide-react';
+import FloatingMusicButton from './FloatingMusicButton';
 import { addRoomMessage, deleteMessage, addGeneralMessage, updateCategory, updateSubcategory, togglePinMessage, reorderPinnedMessages } from '@/lib/salasActions';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'react-hot-toast';
@@ -1091,15 +1092,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     <Youtube size={32} />
                 </a>
 
-                <a
-                    href={lang === 'en' ? 'https://hoy.today/en' : 'https://hoy.today'}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="floating-hoy-btn"
-                    title="Hoy.Today"
-                >
-                    <ClipboardClock size={32} />
-                </a>
+                <FloatingMusicButton />
 
                 <div className="messages-scroller">
                     {pinnedMessagesList.length > 0 && !isHistory && (
@@ -1286,32 +1279,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 .icon-btn { background: #f8fafc; border: none; color: #94a3b8; padding: 0.6rem; border-radius: 12px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; text-decoration: none; }
                 .icon-btn:hover { color: var(--accent); background: #f1f5f9; transform: scale(1.05); }
 
-                .floating-hoy-btn {
-                    position: fixed;
-                    bottom: 4rem;
-                    right: 4.5rem;
-                    width: 64px;
-                    height: 64px;
-                    background: rgba(255,255,255,0.1);
-                    backdrop-filter: blur(12px);
-                    color: var(--accent);
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    z-index: 999;
-                    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                    text-decoration: none;
-                    border: 2px solid rgba(0, 112, 243, 0.1);
-                    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-                }
-                .floating-hoy-btn:hover { 
-                    transform: scale(1.1) rotate(-5deg);
-                    background: #facc15;
-                    color: #000;
-                    border-color: #facc15;
-                    box-shadow: 0 15px 45px rgba(250, 204, 21, 0.45);
-                }
+
 
                 .floating-youtube-btn {
                     position: fixed;
@@ -1341,7 +1309,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                 }
 
                 @media (max-width: 768px) { 
-                    .floating-hoy-btn, .floating-youtube-btn { display: none; } 
+                    .floating-youtube-btn { display: none; } 
                 }
 
                 .room-btn-primary { 

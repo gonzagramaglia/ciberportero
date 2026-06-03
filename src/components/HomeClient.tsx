@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '../context/LanguageContext';
 import { translations } from '../lib/translations';
-import { Github, Youtube, BookOpen, Calendar, Info, Link as LinkIcon, X, Zap, ClipboardClock } from 'lucide-react';
+import { Github, Youtube, BookOpen, Calendar, Info, Link as LinkIcon, X, Zap } from 'lucide-react';
 import NotificationBanners from './NotificationBanners';
 import CountdownWidget from './CountdownWidget';
 import { useSession } from 'next-auth/react';
