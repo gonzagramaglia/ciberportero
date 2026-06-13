@@ -196,6 +196,7 @@ export async function upsertPost(data: any) {
     alternativeSlug2: data.alternativeSlug2 || null,
     description: data.description,
     published: data.published,
+    unlisted: data.unlisted !== undefined ? data.unlisted : false,
   };
 
   if (isUpdate) {

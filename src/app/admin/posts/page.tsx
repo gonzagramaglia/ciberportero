@@ -82,9 +82,16 @@ export default async function AdminPostsPage() {
                   <td style={{ verticalAlign: 'top' }}>
                     <div style={{ marginTop: '0.5rem' }}>
                       {post.published ? (
-                        <span style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', padding: '0.3rem 0.6rem', background: '#dcfce7', color: '#166534', borderRadius: '8px', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
-                          <CheckCircle2 size={12} /> Publicado
-                        </span>
+                        <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
+                          <span style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', padding: '0.3rem 0.6rem', background: '#dcfce7', color: '#166534', borderRadius: '8px', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                            <CheckCircle2 size={12} /> Publicado
+                          </span>
+                          {post.unlisted && (
+                            <span style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', padding: '0.3rem 0.6rem', background: '#fef3c7', color: '#b45309', borderRadius: '8px', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                              Oculto
+                            </span>
+                          )}
+                        </div>
                       ) : (
                         <span style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', padding: '0.3rem 0.6rem', background: '#fef3c7', color: '#92400e', borderRadius: '8px' }}>Borrador</span>
                       )}

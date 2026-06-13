@@ -29,6 +29,7 @@ export default function PostEditor({ post }: PostEditorProps) {
   const [alternativeSlug, setAlternativeSlug] = useState(post?.alternativeSlug || '');
   const [alternativeSlug2, setAlternativeSlug2] = useState(post?.alternativeSlug2 || '');
   const [published, setPublished] = useState(post?.published ?? true);
+  const [unlisted, setUnlisted] = useState(post?.unlisted ?? false);
   const [countdowns, setCountdowns] = useState<any[]>(post?.countdowns || []);
 
   const isDirty = useMemo(() => {
@@ -46,6 +47,7 @@ export default function PostEditor({ post }: PostEditorProps) {
            alternativeSlug !== (post?.alternativeSlug || '') ||
            alternativeSlug2 !== (post?.alternativeSlug2 || '') ||
            published !== initialPublished ||
+           unlisted !== (post?.unlisted ?? false) ||
            JSON.stringify(countdowns) !== JSON.stringify(initialCountdowns);
   }, [titles, contents, descriptions, slug, alternativeSlug, published, countdowns, post]);
 
@@ -92,6 +94,7 @@ export default function PostEditor({ post }: PostEditorProps) {
         content: contents,
         description: descriptions,
         published,
+        unlisted,
         countdowns
       });
       router.push(`/admin/posts?success=${encodeURIComponent(titles.es)}&slug=${slug}`);
@@ -251,8 +254,13 @@ export default function PostEditor({ post }: PostEditorProps) {
                     <label className="admin-label">Slug Opcional 2</label>
                     <input className="admin-input" value={alternativeSlug2} onChange={e => setAlternativeSlug2(e.target.value)} />
                   </div>
-                  <div onClick={() => setPublished(!published)} style={{ cursor: 'pointer', padding: '0.5rem', borderRadius: '16px', background: published ? '#f0fdf4' : '#fff1f2', border: `2px solid ${published ? '#22c55e' : '#fecdd3'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
-                    <span style={{ fontWeight: 900, color: published ? '#166534' : '#9f1239', fontSize: '0.85rem' }}>{published ? 'PUBLICADO' : 'BORRADOR'}</span>
+                  <div style={{ display: 'flex', gap: '0.5rem', flexDirection: 'column' }}>
+                    <div onClick={() => setPublished(!published)} style={{ cursor: 'pointer', padding: '0.5rem', borderRadius: '16px', background: published ? '#f0fdf4' : '#fff1f2', border: `2px solid ${published ? '#22c55e' : '#fecdd3'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
+                      <span style={{ fontWeight: 900, color: published ? '#166534' : '#9f1239', fontSize: '0.85rem' }}>{published ? 'PUBLICADO' : 'BORRADOR'}</span>
+                    </div>
+                    <div onClick={() => setUnlisted(!unlisted)} style={{ cursor: 'pointer', padding: '0.5rem', borderRadius: '16px', background: unlisted ? '#fef3c7' : '#f8fafc', border: `2px solid ${unlisted ? '#f59e0b' : '#e2e8f0'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
+                      <span style={{ fontWeight: 900, color: unlisted ? '#b45309' : '#64748b', fontSize: '0.85rem' }}>{unlisted ? 'UNLISTED (OCULTO DEL FEED)' : 'LISTADO'}</span>
+                    </div>
                   </div>
                 </div>
               </div>

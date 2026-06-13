@@ -28,7 +28,7 @@ async function getInitialPosts(lang: Locale) {
     // Robust check for db client to prevent initialization crashes from taking down the page
     if (db && db.post) {
       const posts = await db.post.findMany({
-        where: { published: true },
+        where: { published: true, unlisted: false },
         orderBy: { date: 'desc' }
       });
       
