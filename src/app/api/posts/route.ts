@@ -70,7 +70,7 @@ export async function GET(request: Request) {
     try {
         if (db && db.post) {
             const posts = await db.post.findMany({ 
-                where: { published: true }, 
+                where: { published: true, unlisted: false }, 
                 orderBy: { date: 'desc' } 
             });
             dbPosts = posts
@@ -109,12 +109,19 @@ export async function GET(request: Request) {
         ? filePosts.filter(p => !p.slug.startsWith('aprobar-') && !p.slug.includes('codeforces')) 
         : filePosts;
 
-    const dbSlugs = new Set();
-    dbPosts.forEach((p: any) => {
-        dbSlugs.add(p.slug);
-        if (p.alternativeSlug) dbSlugs.add(p.alternativeSlug);
-        if (p.alternativeSlug2) dbSlugs.add(p.alternativeSlug2);
-    });
+    let dbSlugs = new Set();
+    try {
+        if (db && db.post) {
+            const allSlugsQuery = await db.post.findMany({
+                select: { slug: true, alternativeSlug: true, alternativeSlug2: true }
+            });
+            allSlugsQuery.forEach(p => {
+                dbSlugs.add(p.slug);
+                if (p.alternativeSlug) dbSlugs.add(p.alternativeSlug);
+                if (p.alternativeSlug2) dbSlugs.add(p.alternativeSlug2);
+            });
+        }
+    } catch (err) {}
 
     let mergedPosts = [
         ...dbPosts,
