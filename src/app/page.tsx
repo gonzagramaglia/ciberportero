@@ -66,12 +66,19 @@ async function getInitialPosts(lang: Locale) {
     ? filePosts.filter(p => !p.slug.startsWith('aprobar-') && !p.slug.includes('codeforces')) 
     : filePosts;
 
-  const dbSlugs = new Set();
-  dbPosts.forEach(p => {
-    dbSlugs.add(p.slug);
-    if (p.alternativeSlug) dbSlugs.add(p.alternativeSlug);
-    if (p.alternativeSlug2) dbSlugs.add(p.alternativeSlug2);
-  });
+  let dbSlugs = new Set();
+  try {
+    if (db && db.post) {
+      const allSlugsQuery = await db.post.findMany({
+        select: { slug: true, alternativeSlug: true, alternativeSlug2: true }
+      });
+      allSlugsQuery.forEach(p => {
+        dbSlugs.add(p.slug);
+        if (p.alternativeSlug) dbSlugs.add(p.alternativeSlug);
+        if (p.alternativeSlug2) dbSlugs.add(p.alternativeSlug2);
+      });
+    }
+  } catch (err) {}
 
   const merged = [...dbPosts, ...finalFilePosts.filter(p => !dbSlugs.has(p.slug))];
   merged.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
