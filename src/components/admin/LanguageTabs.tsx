@@ -8,6 +8,8 @@ interface Props {
 export default function LanguageTabs({ active, onChange }: Props) {
   const languages = [
     { id: 'es', label: 'Español', flag: '🇦🇷' },
+    { id: 'en', label: 'English', flag: '🇬🇧' },
+    { id: 'pt', label: 'Português', flag: '🇧🇷' },
   ];
 
   return (
