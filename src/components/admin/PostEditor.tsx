@@ -11,11 +11,12 @@ import { toLocalISOString } from '@/lib/utils';
 
 interface PostEditorProps {
   post?: any;
+  isEditorPortal?: boolean;
 }
 
 type Lang = 'es' | 'en' | 'pt';
 
-export default function PostEditor({ post }: PostEditorProps) {
+export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
   const router = useRouter();
   const [isPending, setIsPending] = useState(false);
   const [previewMode, setPreviewMode] = useState(false);
@@ -29,7 +30,7 @@ export default function PostEditor({ post }: PostEditorProps) {
   const [alternativeSlug, setAlternativeSlug] = useState(post?.alternativeSlug || '');
   const [alternativeSlug2, setAlternativeSlug2] = useState(post?.alternativeSlug2 || '');
   const [published, setPublished] = useState(post?.published ?? true);
-  const [unlisted, setUnlisted] = useState(post?.unlisted ?? false);
+  const [unlisted, setUnlisted] = useState(isEditorPortal ? true : (post?.unlisted ?? false));
   const [countdowns, setCountdowns] = useState<any[]>(post?.countdowns || []);
 
   const isDirty = useMemo(() => {
@@ -65,10 +66,10 @@ export default function PostEditor({ post }: PostEditorProps) {
   const handleBack = () => {
     if (isDirty) {
       if (window.confirm('Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?')) {
-        router.push('/admin/posts');
+        router.push(isEditorPortal ? '/editor' : '/admin/posts');
       }
     } else {
-      router.push('/admin/posts');
+      router.push(isEditorPortal ? '/editor' : '/admin/posts');
     }
   };
 
@@ -94,10 +95,10 @@ export default function PostEditor({ post }: PostEditorProps) {
         content: contents,
         description: descriptions,
         published,
-        unlisted,
+        unlisted: isEditorPortal ? true : unlisted,
         countdowns
       });
-      router.push(`/admin/posts?success=${encodeURIComponent(titles.es)}&slug=${slug}`);
+      router.push(`${isEditorPortal ? '/editor' : '/admin/posts'}?success=${encodeURIComponent(titles.es)}&slug=${slug}`);
       router.refresh();
     } catch (error) {
       console.error(error);
@@ -258,9 +259,16 @@ export default function PostEditor({ post }: PostEditorProps) {
                     <div onClick={() => setPublished(!published)} style={{ cursor: 'pointer', padding: '0.5rem', borderRadius: '16px', background: published ? '#f0fdf4' : '#fff1f2', border: `2px solid ${published ? '#22c55e' : '#fecdd3'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
                       <span style={{ fontWeight: 900, color: published ? '#166534' : '#9f1239', fontSize: '0.85rem' }}>{published ? 'PUBLICADO' : 'BORRADOR'}</span>
                     </div>
-                    <div onClick={() => setUnlisted(!unlisted)} style={{ cursor: 'pointer', padding: '0.5rem', borderRadius: '16px', background: unlisted ? '#fef3c7' : '#f8fafc', border: `2px solid ${unlisted ? '#f59e0b' : '#e2e8f0'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
-                      <span style={{ fontWeight: 900, color: unlisted ? '#b45309' : '#64748b', fontSize: '0.85rem' }}>{unlisted ? 'UNLISTED (OCULTO DEL FEED)' : 'LISTADO'}</span>
-                    </div>
+                    {!isEditorPortal && (
+                      <div onClick={() => setUnlisted(!unlisted)} style={{ cursor: 'pointer', padding: '0.5rem', borderRadius: '16px', background: unlisted ? '#fef3c7' : '#f8fafc', border: `2px solid ${unlisted ? '#f59e0b' : '#e2e8f0'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
+                        <span style={{ fontWeight: 900, color: unlisted ? '#b45309' : '#64748b', fontSize: '0.85rem' }}>{unlisted ? 'UNLISTED (OCULTO DEL FEED)' : 'LISTADO'}</span>
+                      </div>
+                    )}
+                    {isEditorPortal && (
+                      <div style={{ padding: '0.5rem', borderRadius: '16px', background: '#fef3c7', border: `2px solid #f59e0b`, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.8 }}>
+                        <span style={{ fontWeight: 900, color: '#b45309', fontSize: '0.85rem' }}>UNLISTED (OBLIGATORIO)</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

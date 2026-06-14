@@ -3,16 +3,18 @@ import { Plus, FileText, CheckCircle2, Edit, Smile } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import SuccessToast from "@/components/admin/SuccessToast";
-import { DeleteButton } from "@/components/admin/DeleteButton";
+import AdminPostsList from "@/components/admin/AdminPostsList";
 import { getAdminNote } from "@/lib/actions";
 import AdminSectionNotes from "@/components/admin/AdminSectionNotes";
 import { timeAgo } from "@/lib/utils";
 
 export default async function AdminPostsPage() {
-  const [posts, note] = await Promise.all([
+  const [allPosts, note] = await Promise.all([
     db.post.findMany({ orderBy: { date: 'desc' } }),
     getAdminNote('posts')
   ]);
+
+  const posts = allPosts.filter(p => p.slug !== 'links' && p.title !== 'links');
 
   return (
     <div className="space-y-6 fade-in">
@@ -37,93 +39,7 @@ export default async function AdminPostsPage() {
         </Link>
       </div>
 
-      <div className="admin-card table-container" style={{ borderRadius: '20px' }}>
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th style={{ width: '40%' }}>Contenido</th>
-              <th>Estado</th>
-              <th>Fecha</th>
-              <th>Última Actualización</th>
-              <th style={{ textAlign: 'right' }}>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {posts.map((post) => {
-              const titleObj = post.title as any;
-              const hasEs = !!titleObj?.es;
-              const hasEn = !!titleObj?.en;
-              const hasPt = !!titleObj?.pt;
-
-              return (
-                <tr key={post.id}>
-                  <td style={{ verticalAlign: 'top' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                      <div className="admin-flex-center">
-                        <div style={{ 
-                          width: '32px', height: '32px', borderRadius: '8px', 
-                          background: '#f8fafc', display: 'flex', alignItems: 'center', 
-                          justifyContent: 'center', color: '#64748b', border: '1px solid #e2e8f0',
-                          flexShrink: 0
-                        }}>
-                          <FileText size={16} />
-                        </div>
-                        <Link 
-                          href={`/${post.slug}`} 
-                          target="_blank" 
-                          style={{ fontWeight: 800, color: '#0f172a', textDecoration: 'none', lineHeight: 1.2 }}
-                          className="post-title-link"
-                        >
-                          {titleObj?.es || post.slug}
-                        </Link>
-                      </div>
-                    </div>
-                  </td>
-                  <td style={{ verticalAlign: 'top' }}>
-                    <div style={{ marginTop: '0.5rem' }}>
-                      {post.published ? (
-                        <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
-                          <span style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', padding: '0.3rem 0.6rem', background: '#dcfce7', color: '#166534', borderRadius: '8px', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
-                            <CheckCircle2 size={12} /> Publicado
-                          </span>
-                          {post.unlisted && (
-                            <span style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', padding: '0.3rem 0.6rem', background: '#fef3c7', color: '#b45309', borderRadius: '8px', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
-                              Oculto
-                            </span>
-                          )}
-                        </div>
-                      ) : (
-                        <span style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', padding: '0.3rem 0.6rem', background: '#fef3c7', color: '#92400e', borderRadius: '8px' }}>Borrador</span>
-                      )}
-                    </div>
-                  </td>
-                  <td style={{ color: '#64748b', whiteSpace: 'nowrap', fontSize: '0.85rem', fontWeight: 600, verticalAlign: 'top', paddingTop: '1.25rem' }}>
-                    {new Date(post.date || post.createdAt).toLocaleDateString()}
-                  </td>
-                  <td style={{ color: '#64748b', whiteSpace: 'nowrap', fontSize: '0.85rem', fontWeight: 600, verticalAlign: 'top', paddingTop: '1.25rem' }}>
-                    {timeAgo(post.updatedAt || post.createdAt)}
-                  </td>
-                  <td style={{ textAlign: 'right', verticalAlign: 'top', paddingTop: '0.75rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
-                      <Link 
-                        href={`/admin/posts/${post.id}`} 
-                        style={{ 
-                          width: '36px', height: '36px', borderRadius: '50%', background: 'white', 
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          color: '#94a3b8', border: '1px solid #e2e8f0', transition: 'all 0.2s'
-                        }}
-                      >
-                        <Edit size={16} />
-                      </Link>
-                      <DeleteButton id={post.id} type="post" />
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+      <AdminPostsList posts={posts} />
       <a 
         href="https://emojis.hoy.today" 
         target="_blank" 

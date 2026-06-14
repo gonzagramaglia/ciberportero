@@ -11,7 +11,7 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-async function getPost(slug: string) {
+async function getPost(slug: string, session?: any) {
   // 1. Try DB
   try {
     if (db && db.post) {
@@ -28,7 +28,13 @@ async function getPost(slug: string) {
           votes: true 
         }
       });
-      if (dbPost && dbPost.published && !dbPost.unlisted) return dbPost;
+      if (dbPost && dbPost.published) {
+        if (!dbPost.unlisted) return dbPost;
+        
+        // If unlisted, only allow admin or editor to view
+        const role = (session?.user as any)?.role;
+        if (role === "admin" || role === "editor") return dbPost;
+      }
     }
   } catch (err) {
     console.warn("Individual Post DB Fetch skipped:", err);
@@ -48,7 +54,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const cookieStore = await cookies();
   const lang = (cookieStore.get('lang')?.value as Locale) || 'es';
   
-  const post = await getPost(slug);
+  const session = await auth();
+  const post = await getPost(slug, session);
   if (!post) return { title: 'Post no encontrado' };
 
   const titleObj = post.title as any;
@@ -71,7 +78,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function PostPage({ params }: PageProps) {
   const session = await auth();
   const { slug } = await params;
-  const post = await getPost(slug);
+  const post = await getPost(slug, session);
 
   if (!post) notFound();
 
