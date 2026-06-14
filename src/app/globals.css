@@ -90,12 +90,19 @@ a:hover {
   padding: 4rem 1.5rem;
 }
 
-.home-container, .page-container, .post-container {
+.home-container, .post-container {
   padding-top: 6rem !important;
 }
 
+.page-container {
+  padding-top: 2.5rem !important;
+}
+
 @media (max-width: 768px) {
-  .home-container, .page-container {
+  .home-container {
+    padding-top: 4rem !important;
+  }
+  .page-container {
     padding-top: 1.5rem !important;
   }
   .post-container {
