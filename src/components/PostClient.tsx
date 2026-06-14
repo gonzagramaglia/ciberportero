@@ -252,25 +252,29 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                     ) : (
                         <Link href={lang === 'en' ? "/en" : lang === 'pt' ? "/pt" : "/"} className="back-link"><ChevronLeft size={16} />{t.back}</Link>
                     )}
-                    <LanguageSwitcher availableLangs={Object.keys(post.title as any).filter(l => (post.title as any)[l] && (post.content as any)[l])} />
+                    <div className="mobile-only">
+                        <LanguageSwitcher availableLangs={Object.keys(post.title as any).filter(l => (post.title as any)[l] && (post.content as any)[l])} />
+                    </div>
                 </div>
 
                 <div className="post-body-layout">
                     <article className={`post-content ${isHighlighting ? 'highlight-active' : ''}`}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
-                            <span className="post-date" style={{ margin: 0 }} suppressHydrationWarning>
-                                {new Date(post.date).toLocaleDateString(lang, { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })}
-                                {post.updatedAt && (
-                                    <span className="last-updated" style={{ fontSize: '0.85rem', opacity: 0.7, fontWeight: 500, marginLeft: '0.5rem' }} suppressHydrationWarning>
-                                        ({lang === 'es' ? 'Última actualización' : lang === 'pt' ? 'Última actualización' : 'Last update'}: {timeAgo(post.updatedAt, lang)})
+                        <div className="post-date-container" style={{ justifyContent: 'space-between', width: '100%' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+                                <span className="post-date" style={{ margin: 0 }} suppressHydrationWarning>
+                                    <span className="last-updated" style={{ fontSize: '0.85rem', opacity: 0.7, fontWeight: 500 }} suppressHydrationWarning>
+                                        {lang === 'es' ? 'Última actualización' : lang === 'pt' ? 'Última atualização' : 'Last update'}: {timeAgo(post.updatedAt || post.date, lang)}
                                     </span>
+                                </span>
+                                {session?.user?.role === 'admin' && post.id && (
+                                    <Link href={`/admin/posts/${post.id}`} target="_blank" rel="noreferrer" className="admin-edit-badge" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', background: '#f8fafc', color: '#64748b', padding: '0.2rem 0.6rem', borderRadius: '6px', border: '1px solid #e2e8f0', textDecoration: 'none' }}>
+                                        <Edit size={12} /><span>Editar</span>
+                                    </Link>
                                 )}
-                            </span>
-                            {session?.user?.role === 'admin' && post.id && (
-                                <Link href={`/admin/posts/${post.id}`} target="_blank" rel="noreferrer" className="admin-edit-badge" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', background: '#f8fafc', color: '#64748b', padding: '0.2rem 0.6rem', borderRadius: '6px', border: '1px solid #e2e8f0', textDecoration: 'none' }}>
-                                    <Edit size={12} /><span>Editar</span>
-                                </Link>
-                            )}
+                            </div>
+                            <div className="mobile-hide">
+                                <LanguageSwitcher availableLangs={Object.keys(post.title as any).filter(l => (post.title as any)[l] && (post.content as any)[l])} />
+                            </div>
                         </div>
 
                         <Heading level={1}>{postTitle}</Heading>

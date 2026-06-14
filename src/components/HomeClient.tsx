@@ -12,6 +12,7 @@ import { SignInButton, SignOutButton } from './AuthButtons';
 import { useMotivation } from '../hooks/useMotivation';
 import LanguageSwitcher from './LanguageSwitcher';
 import FloatingMusicButton from './FloatingMusicButton';
+import { timeAgo } from '../lib/utils';
 
 interface HomeClientProps {
     initialPosts: any[];
@@ -148,7 +149,9 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                         posts.map((post: any) => (
                             <li key={post.slug} className="post-item">
                                 <Link href={`/${post.slug}`}>
-                                    <span className="post-date">{new Date(post.date).toLocaleDateString(lang, { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })}</span>
+                                    <span className="post-date" suppressHydrationWarning>
+                                        {lang === 'es' ? 'Última actualización' : lang === 'pt' ? 'Última atualização' : 'Last update'}: {timeAgo(post.updatedAt || post.date, lang)}
+                                    </span>
                                     <span className="post-title">{post.title}</span>
                                     <p className="post-description">{post.description}</p>
                                 </Link>

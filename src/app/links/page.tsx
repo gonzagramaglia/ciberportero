@@ -96,73 +96,82 @@ export default function LinksPage() {
                     <ChevronLeft size={18} />
                     {t.back}
                 </Link>
-                <LanguageSwitcher />
+                <div className="mobile-only">
+                    <LanguageSwitcher />
+                </div>
             </div>
 
             <header style={{ marginTop: '0.25rem', marginBottom: '3rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1rem' }}>
-                    <div>
-                        <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-                            {t.featured?.title}
-                            <div style={{
-                                opacity: status === 'loading' ? 0 : 1,
-                                transition: 'opacity 0.2s',
-                                display: 'flex',
-                                alignItems: 'center'
-                            }}>
-                                {status !== 'loading' && (session ? <SignOutButton /> : <SignInButton />)}
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '1.5rem' }}>
+                    <div style={{ width: '100%' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1.2rem' }}>
+                            <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+                                {t.featured?.title}
+                                <div style={{
+                                    opacity: status === 'loading' ? 0 : 1,
+                                    transition: 'opacity 0.2s',
+                                    display: 'flex',
+                                    alignItems: 'center'
+                                }}>
+                                    {status !== 'loading' && (session ? <SignOutButton /> : <SignInButton />)}
+                                </div>
+                            </h1>
+                            <div className="mobile-hide">
+                                <LanguageSwitcher />
                             </div>
-                        </h1>
-                        <p style={{ color: 'var(--muted)', fontSize: '1.2rem', marginTop: '0.5rem', fontWeight: '500' }} dangerouslySetInnerHTML={{ __html: t.featured?.description || '' }} />
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1rem', marginTop: '0.5rem' }}>
+                            <p style={{ color: 'var(--muted)', fontSize: '1.2rem', margin: 0, fontWeight: '500' }} dangerouslySetInnerHTML={{ __html: t.featured?.description || '' }} />
+                            {status === 'authenticated' && (
+                            (session?.user?.role === 'admin' || session?.user?.email === 'ciberportero@gmail.com') ? (
+                                <Link
+                                    href="/admin/links"
+                                    className="add-link-btn"
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '0.5rem',
+                                        background: '#000',
+                                        color: '#fff',
+                                        padding: '0.8rem 1.5rem',
+                                        borderRadius: '14px',
+                                        border: 'none',
+                                        fontWeight: '700',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.2s',
+                                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                                        textDecoration: 'none'
+                                    }}
+                                >
+                                    <Plus size={20} />
+                                    {lang === 'es' ? 'Agregar link' : lang === 'pt' ? 'Adicionar link' : 'Add link'}
+                                </Link>
+                            ) : (
+                                <button
+                                    onClick={() => setIsAddModalOpen(true)}
+                                    className="add-link-btn"
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '0.5rem',
+                                        background: '#000',
+                                        color: '#fff',
+                                        padding: '0.8rem 1.5rem',
+                                        borderRadius: '14px',
+                                        border: 'none',
+                                        fontWeight: '700',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.2s',
+                                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                                    }}
+                                >
+                                    <Plus size={20} />
+                                    {(translations[lang] as any).addPersonalized}
+                                </button>
+                            )
+                        )}
+                        </div>
                     </div>
-                    {status === 'authenticated' && (
-                        (session?.user?.role === 'admin' || session?.user?.email === 'ciberportero@gmail.com') ? (
-                            <Link
-                                href="/admin/links"
-                                className="add-link-btn"
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.5rem',
-                                    background: '#000',
-                                    color: '#fff',
-                                    padding: '0.8rem 1.5rem',
-                                    borderRadius: '14px',
-                                    border: 'none',
-                                    fontWeight: '700',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.2s',
-                                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                                    textDecoration: 'none'
-                                }}
-                            >
-                                <Plus size={20} />
-                                {lang === 'es' ? 'Agregar link' : lang === 'pt' ? 'Adicionar link' : 'Add link'}
-                            </Link>
-                        ) : (
-                            <button
-                                onClick={() => setIsAddModalOpen(true)}
-                                className="add-link-btn"
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.5rem',
-                                    background: '#000',
-                                    color: '#fff',
-                                    padding: '0.8rem 1.5rem',
-                                    borderRadius: '14px',
-                                    border: 'none',
-                                    fontWeight: '700',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.2s',
-                                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                                }}
-                            >
-                                <Plus size={20} />
-                                {(translations[lang] as any).addPersonalized}
-                            </button>
-                        )
-                    )}
                 </div>
             </header>
 

@@ -90,12 +90,16 @@ a:hover {
   padding: 4rem 1.5rem;
 }
 
-.home-container, .post-container {
+.home-container {
   padding-top: 6rem !important;
 }
 
 .page-container {
   padding-top: 2.5rem !important;
+}
+
+.post-container {
+  padding-top: 2rem !important;
 }
 
 @media (max-width: 768px) {
@@ -1017,7 +1021,7 @@ footer a:hover {
 .sidebar-widget.post-specific {
   background: linear-gradient(135deg, #22c55e 0%, #10b981 100%);
   box-shadow: 0 8px 24px rgba(16, 185, 129, 0.25);
-  top: 15.5rem;
+  top: 9rem !important;
 }
 
 .sidebar-widget-left {
@@ -1784,11 +1788,21 @@ html {
   min-width: 0; /* Prevents flex items from overflowing */
 }
 
+.post-date-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.25rem;
+  margin-top: -1.5rem;
+}
+
 .post-sidebar {
   width: 250px;
   position: sticky;
-  top: 6rem;
+  top: 7rem;
   flex-shrink: 0;
+  margin-top: -1.5rem;
 }
 
 @media (max-width: 1100px) {
@@ -1801,6 +1815,11 @@ html {
     position: static;
     order: -1; /* Place it before content on mobile */
     margin-bottom: 2rem;
+    margin-top: 0;
+  }
+  .post-date-container {
+    margin-top: -1.5rem;
+    margin-bottom: 0.75rem;
   }
 }
 

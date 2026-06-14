@@ -230,22 +230,29 @@ export default function PlanPage() {
           <Link href="/" className="back-link">
             <ChevronLeft size={18} /> {translations[lang].back}
           </Link>
-          <LanguageSwitcher />
+          <div className="mobile-only">
+            <LanguageSwitcher />
+          </div>
         </div>
 
         <div style={{ marginTop: '0.5rem', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '1.5rem' }}>
           <div style={{ width: '100%' }}>
-            <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-              {pt.title}
-              <div style={{
-                opacity: status === 'loading' ? 0 : 1,
-                transition: 'opacity 0.2s',
-                display: 'flex',
-                alignItems: 'center'
-              }}>
-                {status !== 'loading' && (session ? <SignOutButton /> : <SignInButton />)}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1.2rem' }}>
+              <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+                {pt.title}
+                <div style={{
+                  opacity: status === 'loading' ? 0 : 1,
+                  transition: 'opacity 0.2s',
+                  display: 'flex',
+                  alignItems: 'center'
+                }}>
+                  {status !== 'loading' && (session ? <SignOutButton /> : <SignInButton />)}
+                </div>
+              </h1>
+              <div className="mobile-hide">
+                  <LanguageSwitcher />
               </div>
-            </h1>
+            </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
               <p style={{ color: 'var(--muted)', fontSize: '1.2rem', margin: 0, fontWeight: '500' }}>
                 {session?.user ? (

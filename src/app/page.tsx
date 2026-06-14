@@ -47,6 +47,7 @@ async function getInitialPosts(lang: Locale) {
               date: p.date,
               title: titleObj[lang] || titleObj['es'] || '',
               description: descObj?.[lang] || descObj?.['es'] || '',
+              updatedAt: p.updatedAt,
               alternativeSlug: p.alternativeSlug,
               alternativeSlug2: p.alternativeSlug2
             };

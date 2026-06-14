@@ -476,81 +476,90 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
           <Link href="/" className="back-link">
             <ChevronLeft size={18} /> {t.back}
           </Link>
-          <LanguageSwitcher />
+          <div className="mobile-only">
+            <LanguageSwitcher />
+          </div>
         </div>
 
-        <div style={{ marginTop: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1rem' }}>
-          <div>
-            <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-              {ct.title}
-              <div style={{
-                opacity: status === 'loading' ? 0 : 1,
-                transition: 'opacity 0.2s',
-                display: 'flex',
-                alignItems: 'center'
-              }}>
-                {status !== 'loading' && (session ? <SignOutButton /> : <SignInButton />)}
+        <div style={{ marginTop: '0.5rem', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '1.5rem' }}>
+          <div style={{ width: '100%' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1.2rem' }}>
+              <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+                {ct.title}
+                <div style={{
+                  opacity: status === 'loading' ? 0 : 1,
+                  transition: 'opacity 0.2s',
+                  display: 'flex',
+                  alignItems: 'center'
+                }}>
+                  {status !== 'loading' && (session ? <SignOutButton /> : <SignInButton />)}
+                </div>
+              </h1>
+              <div className="mobile-hide">
+                <LanguageSwitcher />
               </div>
-            </h1>
-            <p style={{ color: 'var(--muted)', fontSize: '1.2rem', marginTop: '0.5rem', fontWeight: '500' }}>
-              {session?.user ? (
-                <>
-                  <span style={{ color: 'var(--accent)', fontWeight: '700' }}>{t.dashboard.welcome}, {session.user.name?.split(' ')[0] || 'Estudiante'}!</span>{' '}
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1rem', marginTop: '0.5rem' }}>
+              <p style={{ color: 'var(--muted)', fontSize: '1.2rem', margin: 0, fontWeight: '500' }}>
+                {session?.user ? (
+                  <>
+                    <span style={{ color: 'var(--accent)', fontWeight: '700' }}>{t.dashboard.welcome}, {session.user.name?.split(' ')[0] || 'Estudiante'}!</span>{' '}
+                    <span dangerouslySetInnerHTML={{ __html: ct.description }} />
+                  </>
+                ) : (
                   <span dangerouslySetInnerHTML={{ __html: ct.description }} />
-                </>
-              ) : (
-                <span dangerouslySetInnerHTML={{ __html: ct.description }} />
+                )}
+              </p>
+              {status === 'authenticated' && (
+                (session?.user?.role === 'admin' || session?.user?.email === 'ciberportero@gmail.com') ? (
+                  <Link
+                    href="/admin/calendar/new"
+                    className="add-event-btn"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      background: '#000',
+                      color: '#fff',
+                      padding: '0.8rem 1.5rem',
+                      borderRadius: '14px',
+                      border: 'none',
+                      fontWeight: '700',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                      textDecoration: 'none'
+                    }}
+                  >
+                    <Plus size={20} />
+                    {lang === 'es' ? 'Agregar evento' : lang === 'pt' ? 'Adicionar evento' : 'Add event'}
+                  </Link>
+                ) : (
+                  <button
+                    onClick={() => setIsAddModalOpen(true)}
+                    className="add-event-btn"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      background: '#000',
+                      color: '#fff',
+                      padding: '0.8rem 1.5rem',
+                      borderRadius: '14px',
+                      border: 'none',
+                      fontWeight: '700',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                    }}
+                  >
+                    <Plus size={20} />
+                    {(translations[lang] as any).calendar.addPersonalized}
+                  </button>
+                )
               )}
-            </p>
+            </div>
           </div>
-          {status === 'authenticated' && (
-            (session?.user?.role === 'admin' || session?.user?.email === 'ciberportero@gmail.com') ? (
-              <Link
-                href="/admin/calendar/new"
-                className="add-event-btn"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  background: '#000',
-                  color: '#fff',
-                  padding: '0.8rem 1.5rem',
-                  borderRadius: '14px',
-                  border: 'none',
-                  fontWeight: '700',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                  textDecoration: 'none'
-                }}
-              >
-                <Plus size={20} />
-                {lang === 'es' ? 'Agregar evento' : lang === 'pt' ? 'Adicionar evento' : 'Add event'}
-              </Link>
-            ) : (
-              <button
-                onClick={() => setIsAddModalOpen(true)}
-                className="add-event-btn"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  background: '#000',
-                  color: '#fff',
-                  padding: '0.8rem 1.5rem',
-                  borderRadius: '14px',
-                  border: 'none',
-                  fontWeight: '700',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                }}
-              >
-                <Plus size={20} />
-                {(translations[lang] as any).calendar.addPersonalized}
-              </button>
-            )
-          )}
         </div>
       </header>
 
