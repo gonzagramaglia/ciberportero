@@ -165,7 +165,7 @@ export const translations = {
                 progress: "Progreso Total"
             },
             objective: "Objetivo Académico",
-            intermediate: "Título Intermedio (Analista)",
+            intermediate: "Título Intermedio",
             full: "Licenciatura Completa",
             search: "Buscar materia o ID...",
             storageNotice: "Tus progresos se guardan localmente en este navegador.",
@@ -491,7 +491,7 @@ export const translations = {
                 progress: "Total Progress"
             },
             objective: "Academic Objective",
-            intermediate: "Intermediate Degree (Analista)",
+            intermediate: "Intermediate Degree",
             full: "Full Degree (Licenciatura)",
             search: "Search subject or ID...",
             storageNotice: "Your progress is saved locally in this browser.",
@@ -817,7 +817,7 @@ export const translations = {
                 progress: "Progresso Total"
             },
             objective: "Objetivo Acadêmico",
-            intermediate: "Título Intermediário (Analista)",
+            intermediate: "Título Intermediário",
             full: "Licenciatura Completa",
             search: "Buscar matéria o ID...",
             storageNotice: "Seu progresso é salvo localmente neste navegador.",

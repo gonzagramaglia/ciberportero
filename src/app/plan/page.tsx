@@ -271,23 +271,6 @@ export default function PlanPage() {
               border: '1px solid var(--border)'
             }}>
               <button
-                onClick={() => changeObjective('intermediate')}
-                style={{
-                  padding: '0.6rem 1.2rem',
-                  borderRadius: '10px',
-                  border: 'none',
-                  background: objective === 'intermediate' ? 'white' : 'transparent',
-                  color: objective === 'intermediate' ? '#000' : 'var(--muted)',
-                  fontWeight: '700',
-                  fontSize: '0.85rem',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  boxShadow: objective === 'intermediate' ? '0 4px 12px rgba(0,0,0,0.05)' : 'none'
-                }}
-              >
-                {pt.intermediate}
-              </button>
-              <button
                 onClick={() => changeObjective('degree')}
                 style={{
                   padding: '0.6rem 1.2rem',
@@ -303,6 +286,23 @@ export default function PlanPage() {
                 }}
               >
                 {pt.full}
+              </button>
+              <button
+                onClick={() => changeObjective('intermediate')}
+                style={{
+                  padding: '0.6rem 1.2rem',
+                  borderRadius: '10px',
+                  border: 'none',
+                  background: objective === 'intermediate' ? 'white' : 'transparent',
+                  color: objective === 'intermediate' ? '#000' : 'var(--muted)',
+                  fontWeight: '700',
+                  fontSize: '0.85rem',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  boxShadow: objective === 'intermediate' ? '0 4px 12px rgba(0,0,0,0.05)' : 'none'
+                }}
+              >
+                {pt.intermediate}
               </button>
             </div>
 
@@ -417,6 +417,16 @@ export default function PlanPage() {
         </div>
 
       </header>
+
+      <div style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+        <h2 style={{ fontSize: '1.4rem', fontWeight: '800', margin: 0, display: 'flex', alignItems: 'center', gap: '0.6rem', color: '#000' }}>
+          <Layers size={22} style={{ color: 'var(--accent)', flexShrink: 0 }} />
+          {objective === 'intermediate' 
+            ? (lang === 'en' ? 'University Analyst in Cyber Risk Management' : lang === 'pt' ? 'Analista Universitário em Gestão de Riscos Cibernéticos' : 'Analista Universitario en Gestión de Riesgos Cibernéticos')
+            : (lang === 'en' ? 'Bachelor in Cyberdefense' : lang === 'pt' ? 'Licenciatura em Ciberdefesa' : 'Licenciatura en Ciberdefensa')
+          }
+        </h2>
+      </div>
 
       <main style={{
         display: 'grid',
@@ -552,7 +562,7 @@ export default function PlanPage() {
           {translations[lang].credits}
         </a>
         <span style={{ fontSize: '0.9rem', opacity: 0.6, color: 'var(--muted)' }}>{translations[lang].footer}</span>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '2.5rem', alignItems: 'center' }}>
           <a href="https://github.com/gonzagramaglia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
             <Github size={18} />
           </a>
