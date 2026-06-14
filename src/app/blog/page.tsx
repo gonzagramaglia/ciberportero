@@ -10,8 +10,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const t = translations[lang];
 
   return {
-    title: "Blog Unlisted - Ciberportero",
-    description: "Unlisted posts",
+    title: "Blog",
+    description: lang === 'es' ? 'Artículos, glosarios y notas sobre ciberseguridad, programación y más.' : 'Articles, glossaries, and notes on cybersecurity, programming, and more.',
   };
 }
 

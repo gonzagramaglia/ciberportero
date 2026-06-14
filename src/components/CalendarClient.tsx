@@ -499,7 +499,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                 <LanguageSwitcher />
               </div>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1rem', marginTop: '0.5rem' }}>
+            <div className="calendar-desc-row">
               <p style={{ color: 'var(--muted)', fontSize: '1.2rem', margin: 0, fontWeight: '500' }}>
                 {session?.user ? (
                   <>
@@ -563,156 +563,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
         </div>
       </header>
 
-      <div className="calendar-notice">
-        <Info size={18} color="#eab308" />
-        <p>
-          {session?.user ? (
-            <>
-              <span style={{ fontWeight: 700 }}>{session.user.name?.split(' ')[0] || 'Estudiante'},</span> {ct.notice}
-            </>
-          ) : ct.notice.charAt(0).toUpperCase() + ct.notice.slice(1)}
-        </p>
-      </div>
-
-      <div className="calendar-controls">
-        <div className="calendar-search-row">
-          <div className="search-box">
-            <Search size={18} />
-            <input
-              type="text"
-              placeholder={lang === 'es' ? 'Buscar por título o materia...' : lang === 'pt' ? 'Procurar por título ou matéria...' : 'Search by title or subject...'}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-        </div>
-        <div className="calendar-filters-row">
-          <div className="filter-box" title={ct.periodMessage}>
-            <Lock size={16} color="#64748b" />
-            <select
-              value={periodFilter}
-              onChange={(e) => {
-                setPeriodFilter(e.target.value);
-                setSubjectFilter('all'); // Reset subject filter when period changes
-              }}
-              style={{
-                fontWeight: periodFilter === 'all' ? '800' : '500',
-                background: 'transparent',
-                border: 'none',
-                outline: 'none',
-                width: '100%',
-                color: '#1e293b'
-              }}
-            >
-              <option value="all">{ct.allPeriods}</option>
-              <option value={ct.firstPeriod}>{ct.firstPeriod}</option>
-              <option value={ct.secondPeriod}>{ct.secondPeriod}</option>
-              <option value={ct.thirdPeriod}>{ct.thirdPeriod}</option>
-              <option value={ct.fourthPeriod}>{ct.fourthPeriod}</option>
-            </select>
-          </div>
-          <div className="filter-box">
-            <Filter size={18} />
-            <select
-              value={subjectFilter}
-              onChange={(e) => setSubjectFilter(e.target.value)}
-              style={{ fontWeight: subjectFilter === 'all' ? '800' : '500' }}
-            >
-              <option value="all">{periodFilter === 'all' ? ct.allSubjects : ct.allSubjectsOfPeriod}</option>
-              {availableSubjects.main.map(sub => (
-                <option key={sub.id} value={sub.id}>{sub.name as string}</option>
-              ))}
-            </select>
-          </div>
-          <div className="filter-box">
-            <Tag size={18} />
-            <select
-              value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value)}
-              style={{ fontWeight: typeFilter === 'all' ? '800' : '500' }}
-            >
-              <option value="all">{ct.allTypes}</option>
-              <option value="exam">{ct.events.exam}</option>
-              <option value="quiz_mandatory">{ct.events.quiz_mandatory}</option>
-              <option value="enrollment">{ct.events.enrollment}</option>
-              <option value="classes">{ct.events.classes}</option>
-              <option value="event">{ct.events.event}</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <main className="calendar-layout">
-        <div className="calendar-main-card">
-          <div className="calendar-header">
-            <div className="calendar-current-month">
-              <CalendarIcon size={20} style={{ color: '#eab308' }} />
-              <h2>{ct.months[currentDate.getMonth()]} {currentDate.getFullYear()}</h2>
-            </div>
-            <div className="calendar-nav-buttons">
-              <button onClick={prevMonth} aria-label="Previous Month"><ChevronLeft size={20} /></button>
-              <button onClick={nextMonth} aria-label="Next Month"><ChevronRight size={20} /></button>
-            </div>
-          </div>
-
-          <div className="calendar-scroller">
-            <div className="calendar-weekdays">
-              {ct.days.map((day: string) => (
-                <div key={day} className="weekday">{day}</div>
-              ))}
-            </div>
-
-            <div className="calendar-grid">
-              {renderCalendar()}
-            </div>
-          </div>
-
-          <div className="calendar-legend" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-            <div style={{ display: 'flex', gap: '1.2rem', flexWrap: 'wrap' }}>
-              <div className="legend-item"><div className="legend-dot exam"></div> <span>{ct.events.exam}</span></div>
-              <div className="legend-item"><div className="legend-dot quiz_mandatory"></div> <span>{ct.events.quiz_mandatory}</span></div>
-              <div className="legend-item"><div className="legend-dot enrollment"></div> <span>{ct.events.enrollment}</span></div>
-              <div className="legend-item"><div className="legend-dot classes"></div> <span>{ct.events.classes}</span></div>
-              <div className="legend-item"><div className="legend-dot event"></div> <span>{ct.events.event}</span></div>
-            </div>
-
-            <button
-              onClick={() => setIsExportModalOpen(true)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.6rem',
-                padding: '0.8rem 1.2rem',
-                borderRadius: '12px',
-                background: '#fffcf0',
-                color: '#854d0e',
-                fontSize: '0.85rem',
-                fontWeight: '800',
-                border: '1px solid #eab308',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                width: 'fit-content'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = '#fef9c3';
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(234, 179, 8, 0.15)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = '#fffcf0';
-                e.currentTarget.style.boxShadow = 'none';
-              }}
-            >
-              <img
-                src="/google-calendar-logo.png"
-                alt="Google Calendar"
-                style={{ width: '18px', height: '18px', objectFit: 'contain' }}
-              />
-              {(ct as any).batchExport.button}
-            </button>
-          </div>
-        </div>
-
-        <div className="calendar-sidebar" ref={selectionRef}>
+      <div className="calendar-sidebar" ref={selectionRef} style={{ marginBottom: '2rem', marginTop: '-1.5rem' }}>
           {selectedDate && (
             <div id="selected-events-card" className={`selection-card ${selectedEvents.some(e => e.userId) ? 'is-personal' : ''}`}>
               <div className="selection-header">
@@ -905,7 +756,157 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
             </div>
           </div>
         </div>
-      </main>
+
+      <div className="calendar-notice">
+        <Info size={18} color="#eab308" />
+        <p>
+          {session?.user ? (
+            <>
+              <span style={{ fontWeight: 700 }}>{session.user.name?.split(' ')[0] || 'Estudiante'},</span> {ct.notice}
+            </>
+          ) : ct.notice.charAt(0).toUpperCase() + ct.notice.slice(1)}
+        </p>
+      </div>
+
+      <div className="calendar-controls">
+        <div className="calendar-search-row">
+          <div className="search-box">
+            <Search size={18} />
+            <input
+              type="text"
+              placeholder={lang === 'es' ? 'Buscar por título o materia...' : lang === 'pt' ? 'Procurar por título ou matéria...' : 'Search by title or subject...'}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="calendar-filters-row">
+          <div className="filter-box" title={ct.periodMessage}>
+            <Lock size={16} color="#64748b" />
+            <select
+              value={periodFilter}
+              onChange={(e) => {
+                setPeriodFilter(e.target.value);
+                setSubjectFilter('all'); // Reset subject filter when period changes
+              }}
+              style={{
+                fontWeight: periodFilter === 'all' ? '800' : '500',
+                background: 'transparent',
+                border: 'none',
+                outline: 'none',
+                width: '100%',
+                color: '#1e293b'
+              }}
+            >
+              <option value="all">{ct.allPeriods}</option>
+              <option value={ct.firstPeriod}>{ct.firstPeriod}</option>
+              <option value={ct.secondPeriod}>{ct.secondPeriod}</option>
+              <option value={ct.thirdPeriod}>{ct.thirdPeriod}</option>
+              <option value={ct.fourthPeriod}>{ct.fourthPeriod}</option>
+            </select>
+          </div>
+          <div className="filter-box">
+            <Filter size={18} />
+            <select
+              value={subjectFilter}
+              onChange={(e) => setSubjectFilter(e.target.value)}
+              style={{ fontWeight: subjectFilter === 'all' ? '800' : '500' }}
+            >
+              <option value="all">{periodFilter === 'all' ? ct.allSubjects : ct.allSubjectsOfPeriod}</option>
+              {availableSubjects.main.map(sub => (
+                <option key={sub.id} value={sub.id}>{sub.name as string}</option>
+              ))}
+            </select>
+          </div>
+          <div className="filter-box">
+            <Tag size={18} />
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              style={{ fontWeight: typeFilter === 'all' ? '800' : '500' }}
+            >
+              <option value="all">{ct.allTypes}</option>
+              <option value="exam">{ct.events.exam}</option>
+              <option value="quiz_mandatory">{ct.events.quiz_mandatory}</option>
+              <option value="enrollment">{ct.events.enrollment}</option>
+              <option value="classes">{ct.events.classes}</option>
+              <option value="event">{ct.events.event}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <main className="calendar-layout">
+        <div className="calendar-main-card">
+          <div className="calendar-header">
+            <div className="calendar-current-month">
+              <CalendarIcon size={20} style={{ color: '#eab308' }} />
+              <h2>{ct.months[currentDate.getMonth()]} {currentDate.getFullYear()}</h2>
+            </div>
+            <div className="calendar-nav-buttons">
+              <button onClick={prevMonth} aria-label="Previous Month"><ChevronLeft size={20} /></button>
+              <button onClick={nextMonth} aria-label="Next Month"><ChevronRight size={20} /></button>
+            </div>
+          </div>
+
+          <div className="calendar-scroller">
+            <div className="calendar-weekdays">
+              {ct.days.map((day: string) => (
+                <div key={day} className="weekday">{day}</div>
+              ))}
+            </div>
+
+            <div className="calendar-grid">
+              {renderCalendar()}
+            </div>
+          </div>
+
+          <div className="calendar-legend" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+            <div style={{ display: 'flex', gap: '1.2rem', flexWrap: 'wrap' }}>
+              <div className="legend-item"><div className="legend-dot exam"></div> <span>{ct.events.exam}</span></div>
+              <div className="legend-item"><div className="legend-dot quiz_mandatory"></div> <span>{ct.events.quiz_mandatory}</span></div>
+              <div className="legend-item"><div className="legend-dot enrollment"></div> <span>{ct.events.enrollment}</span></div>
+              <div className="legend-item"><div className="legend-dot classes"></div> <span>{ct.events.classes}</span></div>
+              <div className="legend-item"><div className="legend-dot event"></div> <span>{ct.events.event}</span></div>
+            </div>
+
+            <button
+              onClick={() => setIsExportModalOpen(true)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.6rem',
+                padding: '0.8rem 1.2rem',
+                borderRadius: '12px',
+                background: '#fffcf0',
+                color: '#854d0e',
+                fontSize: '0.85rem',
+                fontWeight: '800',
+                border: '1px solid #eab308',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                width: 'fit-content'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#fef9c3';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(234, 179, 8, 0.15)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = '#fffcf0';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
+            >
+              <img
+                src="/google-calendar-logo.png"
+                alt="Google Calendar"
+                style={{ width: '18px', height: '18px', objectFit: 'contain' }}
+              />
+              {(ct as any).batchExport.button}
+            </button>
+          </div>
+        </div>
+
+        </main>
 
       <div className="cronogramas-section" style={{
         margin: '2rem 0 3rem 0',
@@ -1990,7 +1991,20 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
           }
         }
 
+        .calendar-desc-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: -0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
         @media (max-width: 900px) {
+          .calendar-desc-row {
+              margin-top: 0.5rem;
+          }
           .synced-badge { display: none !important; }
           .calendar-controls { 
               padding: 1rem;

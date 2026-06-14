@@ -120,7 +120,7 @@ export default function LinksPage() {
                                 <LanguageSwitcher />
                             </div>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1rem', marginTop: '0.5rem' }}>
+                        <div className="page-desc-row">
                             <p style={{ color: 'var(--muted)', fontSize: '1.2rem', margin: 0, fontWeight: '500' }} dangerouslySetInnerHTML={{ __html: t.featured?.description || '' }} />
                             {status === 'authenticated' && (
                             (session?.user?.role === 'admin' || session?.user?.email === 'ciberportero@gmail.com') ? (
@@ -389,6 +389,20 @@ export default function LinksPage() {
             )}
 
             <style jsx>{`
+                .page-desc-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-end;
+                    flex-wrap: wrap;
+                    gap: 1rem;
+                    margin-top: -0.5rem;
+                    margin-bottom: 0.5rem;
+                }
+                @media (max-width: 900px) {
+                    .page-desc-row {
+                        margin-top: 0.5rem;
+                    }
+                }
                 :global(.post-item.is-personal) {
                     border-color: rgba(139, 92, 246, 0.4);
                     background: rgba(139, 92, 246, 0.02);

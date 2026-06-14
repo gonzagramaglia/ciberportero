@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const description = descObj?.[lang] || descObj?.['es'] || descObj?.['en'] || '';
 
   return {
-    title: title,
+    title: { absolute: title },
     description,
     openGraph: {
       title,
