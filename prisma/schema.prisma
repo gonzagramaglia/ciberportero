@@ -30,6 +30,7 @@ model User {
   comments       Comment[]
   links          Link[]
   auditLogs      AuditLog[]
+  images         Image[]
   podcastVotes   PodcastVote[]
   postVotes      PostVote[]
 
@@ -206,6 +207,8 @@ model Image {
   height    Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@map("images")
 }

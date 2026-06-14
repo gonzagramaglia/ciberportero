@@ -66,10 +66,10 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
   const handleBack = () => {
     if (isDirty) {
       if (window.confirm('Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?')) {
-        router.push(isEditorPortal ? '/editor' : '/admin/posts');
+        router.push(isEditorPortal ? '/editor/posts' : '/admin/posts');
       }
     } else {
-      router.push(isEditorPortal ? '/editor' : '/admin/posts');
+      router.push(isEditorPortal ? '/editor/posts' : '/admin/posts');
     }
   };
 
@@ -98,7 +98,7 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
         unlisted: isEditorPortal ? true : unlisted,
         countdowns
       });
-      router.push(`${isEditorPortal ? '/editor' : '/admin/posts'}?success=${encodeURIComponent(titles.es)}&slug=${slug}`);
+      router.push(`${isEditorPortal ? '/editor/posts' : '/admin/posts'}?success=${encodeURIComponent(titles.es)}&slug=${slug}`);
       router.refresh();
     } catch (error) {
       console.error(error);

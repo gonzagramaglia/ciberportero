@@ -11,8 +11,11 @@ import {
   Lock as LockIcon
 } from 'lucide-react';
 import './images.css';
+interface ImageManagerProps {
+  filterByUploader?: boolean;
+}
 
-export default function ImageManager() {
+export default function ImageManager({ filterByUploader = false }: ImageManagerProps) {
   const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
   const [slug, setSlug] = useState('');
@@ -33,7 +36,7 @@ export default function ImageManager() {
   const fetchImages = async () => {
     setIsLoading(true);
     try {
-      const data = await getImages();
+      const data = await getImages(filterByUploader);
       setImages(data);
     } catch (e) {
       console.error(e);

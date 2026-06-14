@@ -689,7 +689,7 @@ export async function deleteComment(commentId: string) {
 export async function uploadImage(formData: FormData) {
   const session = await auth();
   const user = await db.user.findUnique({ where: { id: session?.user?.id } });
-  if ((user as any)?.role !== 'admin') return { error: "Unauthorized" };
+  if ((user as any)?.role !== 'admin' && (user as any)?.role !== 'editor') return { error: "Unauthorized" };
 
   const file = formData.get('file') as File;
   const slug = formData.get('slug') as string;
@@ -726,6 +726,7 @@ export async function uploadImage(formData: FormData) {
         filename: file.name,
         mimeType: file.type,
         size: file.size,
+        userId: user?.id || null,
       }
     });
 
@@ -738,23 +739,41 @@ export async function uploadImage(formData: FormData) {
   }
 }
 
-export async function getImages() {
+export async function getImages(filterByUploader: boolean = false) {
   const session = await auth();
   const user = await db.user.findUnique({ where: { id: session?.user?.id } });
-  if ((user as any)?.role !== 'admin') return [];
-
-  return db.image.findMany({
-    orderBy: { createdAt: 'desc' }
-  });
+  
+  if ((user as any)?.role === 'admin') {
+    if (filterByUploader) {
+      return db.image.findMany({
+        where: { userId: user?.id },
+        orderBy: { createdAt: 'desc' }
+      });
+    }
+    return db.image.findMany({ orderBy: { createdAt: 'desc' } });
+  }
+  
+  if ((user as any)?.role === 'editor') {
+    return db.image.findMany({
+      where: { userId: user?.id },
+      orderBy: { createdAt: 'desc' }
+    });
+  }
+  
+  return [];
 }
 
 export async function deleteImage(id: string) {
   const session = await auth();
   const user = await db.user.findUnique({ where: { id: session?.user?.id } });
-  if ((user as any)?.role !== 'admin') return { error: "Unauthorized" };
+  if ((user as any)?.role !== 'admin' && (user as any)?.role !== 'editor') return { error: "Unauthorized" };
 
   const image = await db.image.findUnique({ where: { id } });
   if (!image) return { error: "Not found" };
+
+  if ((user as any)?.role === 'editor' && image.userId !== user?.id) {
+    return { error: "Unauthorized: Solo puedes eliminar tus propias imágenes" };
+  }
 
   const { supabaseAdmin } = await import('@/lib/supabase');
   const path = image.url.split('/').pop();

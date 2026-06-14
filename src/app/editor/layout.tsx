@@ -1,8 +1,9 @@
 import "../admin/admin.css";
 import Link from "next/link";
-import { ArrowLeft, LogOut, FileText } from "lucide-react";
+import { ArrowLeft, LogOut, FileText, Image as ImageIcon, LayoutDashboard } from "lucide-react";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import EditorNavLink from "@/components/admin/EditorNavLink";
 
 export const metadata = {
   title: "Editor Panel",
@@ -36,10 +37,10 @@ export default async function EditorLayout({ children }: { children: React.React
           <p style={{ fontSize: '0.8rem', color: '#64748b', margin: 0, wordBreak: 'break-all' }}>{session.user?.email}</p>
         </div>
 
-        <nav className="nav-list" style={{ flex: 1 }}>
-          <Link href="/editor" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem', borderRadius: '12px', background: '#f8fafc', color: '#0f172a', fontWeight: 700, textDecoration: 'none' }}>
-            <FileText size={20} /> Posts del Blog
-          </Link>
+        <nav className="nav-list" style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <EditorNavLink href="/editor" icon={<LayoutDashboard size={20} />} label="Dashboard" />
+          <EditorNavLink href="/editor/posts" icon={<FileText size={20} />} label="Posts del Blog" />
+          <EditorNavLink href="/editor/images" icon={<ImageIcon size={20} />} label="Imágenes" />
         </nav>
 
         <div className="sidebar-footer" style={{ marginTop: 'auto', borderTop: '1px solid #f1f5f9', paddingTop: '1rem' }}>
