@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Plus, Hash, Key, ArrowRight, X, ChevronLeft, Github, Youtube, Loader2, Trash2 } from 'lucide-react';
+import { Plus, Hash, Key, ArrowRight, X, ChevronLeft, Github, Youtube, Loader2, Trash2 , Coffee } from 'lucide-react';
 import { createRoom, joinRoom, deleteRoom } from '@/lib/salasActions';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
@@ -415,7 +415,7 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
 
             <div style={{ maxWidth: '1100px', margin: '0 auto', width: '100%' }}>
                 <footer className="footer-main" style={{ marginTop: '2.5rem' }}>
-                    <a href="https://github.com/gonzagramaglia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Github size={18} /></a>
+                    <a href="https://cafecito.app/gonzagramaglia" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Coffee size={18} /></a>
                     <span>{t.footer}</span>
                     <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Youtube size={22} /></a>
                 </footer>

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ChevronLeft, LogIn, Github, Youtube } from 'lucide-react';
+import { ChevronLeft, LogIn, Github, Youtube , Coffee } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useLanguage } from '@/context/LanguageContext';
@@ -161,7 +161,7 @@ export default function RoomLandingClient({ session }: any) {
                 </div>
 
                 <footer className="footer-main" style={{ marginTop: '6rem' }}>
-                    <a href="https://github.com/gonzagramaglia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Github size={18} /></a>
+                    <a href="https://cafecito.app/gonzagramaglia" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Coffee size={18} /></a>
                     <span>{t.footer}</span>
                     <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Youtube size={22} /></a>
                 </footer>

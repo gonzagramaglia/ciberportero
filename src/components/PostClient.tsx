@@ -4,7 +4,7 @@ import React, { useState, useEffect, useLayoutEffect } from 'react';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { ChevronLeft, Github, Youtube, ArrowUp, ArrowDown, X, Link2, Check, Edit, ThumbsUp } from 'lucide-react';
+import { ChevronLeft, Github, Youtube, ArrowUp, ArrowDown, X, Link2, Check, Edit, ThumbsUp, Coffee } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { translations } from '../lib/translations';
 import { useSession } from 'next-auth/react';
@@ -358,7 +358,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                 {!post.unlisted && <CommentSection postSlug={slug} lang={lang} />}
 
                 <footer className="footer-main">
-                    <a href="https://github.com/gonzagramaglia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Github size={18} /></a>
+                    <a href="https://cafecito.app/gonzagramaglia" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Coffee size={18} /></a>
                     <span>{t.footer}</span>
                     <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Youtube size={22} /></a>
                 </footer>

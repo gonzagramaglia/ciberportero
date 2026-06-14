@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     default: "Ciberportero",
     template: "Ciberportero | %s",
   },
-  description: "Ciberdefensa y seguridad digital desde la primera línea.",
+  description: "Recursos y apuntes independientes para estudiantes de Ciberdefensa (UNDEF).",
   icons: {
     icon: [
       { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '../context/LanguageContext';
 import { translations } from '../lib/translations';
-import { Github, Youtube, BookOpen, Calendar, Info, Link as LinkIcon, X, Zap } from 'lucide-react';
+import { Github, Youtube, BookOpen, Calendar, Info, Link as LinkIcon, X, Zap , Coffee } from 'lucide-react';
 import NotificationBanners from './NotificationBanners';
 import CountdownWidget from './CountdownWidget';
 import { useSession } from 'next-auth/react';
@@ -202,7 +202,7 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
             </div>
 
             <footer className="footer-main">
-                <a href="https://github.com/gonzagramaglia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Github size={18} /></a>
+                <a href="https://cafecito.app/gonzagramaglia" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Coffee size={18} /></a>
                 <span>{t.footer}</span>
                 <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Youtube size={22} /></a>
             </footer>

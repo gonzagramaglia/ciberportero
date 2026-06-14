@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { translations, Locale } from "@/lib/translations";
 import { cookies } from "next/headers";
 import Link from "next/link";
-import { ChevronLeft, Calendar, User, Edit, Github, Youtube, ExternalLink, Disc3 } from "lucide-react";
+import { ChevronLeft, Calendar, User, Edit, Github, Youtube, ExternalLink, Disc3, Coffee } from "lucide-react";
 import { notFound } from "next/navigation";
 import PodcastPlayer from "@/components/PodcastPlayer";
 import CommentSection from "@/components/CommentSection";
@@ -222,8 +222,8 @@ export default async function PodcastDetailPage({ params }: { params: Promise<{ 
             </a>
 
             <footer className="footer-main" style={{ marginTop: '5rem', borderTop: '1px solid #f1f5f9', paddingTop: '2.5rem', marginBottom: '2rem' }}>
-                <a href="https://github.com/gonzagramaglia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
-                    <Github size={18} />
+                <a href="https://cafecito.app/gonzagramaglia" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+                    <Coffee size={18} />
                 </a>
                 <span>{t.footer}</span>
                 <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '../context/LanguageContext';
 import { translations } from '../lib/translations';
-import { Github, Youtube, Home } from 'lucide-react';
+import { Github, Youtube, Home, ChevronLeft, Coffee } from 'lucide-react';
 import LanguageSwitcher from './LanguageSwitcher';
 
 interface BlogClientProps {
@@ -32,7 +32,14 @@ export default function BlogClient({ initialPosts }: BlogClientProps) {
     }, [lang]);
 
     return (
-        <div className="container fade-in home-container">
+        <div className="container fade-in page-container">
+            <div className="nav-header-row" style={{ marginTop: '-0.5rem', marginBottom: '2.5rem' }}>
+                <Link href={lang === 'en' ? "/en" : lang === 'pt' ? "/pt" : "/"} className="back-link"><ChevronLeft size={16} />Volver al inicio</Link>
+                <div className="mobile-only">
+                    <LanguageSwitcher />
+                </div>
+            </div>
+
             <header style={{ marginBottom: '3rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1.2rem', marginBottom: '0.5rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '1.2rem' }}>
@@ -40,7 +47,7 @@ export default function BlogClient({ initialPosts }: BlogClientProps) {
                             Blog
                         </h1>
                     </div>
-                    <div className="home-lang-container" style={{ marginBottom: 0, marginTop: '0.6rem' }}>
+                    <div className="home-lang-container mobile-hide" style={{ marginBottom: 0, marginTop: '0.6rem' }}>
                         <LanguageSwitcher />
                     </div>
                 </div>
@@ -94,7 +101,7 @@ export default function BlogClient({ initialPosts }: BlogClientProps) {
             </main>
 
             <footer className="footer-main">
-                <Link href={lang === 'en' ? '/en' : lang === 'pt' ? '/pt' : '/'} style={{ display: 'flex', color: 'inherit' }}><Home size={18} /></Link>
+                <a href="https://cafecito.app/gonzagramaglia" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'inherit' }}><Coffee size={18} /></a>
                 <span>{t.footer}</span>
                 <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Youtube size={22} /></a>
             </footer>

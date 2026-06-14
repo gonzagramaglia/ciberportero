@@ -11,7 +11,7 @@ export default async function EditorDashboardPage() {
     db.post.count({ where: { unlisted: true, slug: { not: 'links' } } }),
     db.image.count({ where: { userId } }),
     db.auditLog.findMany({
-      where: { target: 'post' },
+      where: { target: 'blog_post' },
       take: 10,
       orderBy: { createdAt: 'desc' },
       include: { user: true }

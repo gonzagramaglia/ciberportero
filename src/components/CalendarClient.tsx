@@ -8,7 +8,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher"
 import { useLanguage } from "@/context/LanguageContext"
 import { useSession } from "next-auth/react"
 import { createPersonalEvent, deleteCalendarEvent } from "@/lib/actions"
-import { ArrowLeft, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, Bell, Github, Youtube, Search, Filter, Copy, Check, Info, Lock, Plus, Trash2, X as CloseIcon, GraduationCap, Zap, Tag, ExternalLink, FileText, Edit2 } from "lucide-react"
+import { ArrowLeft, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, Bell, Coffee, Youtube, Search, Filter, Copy, Check, Info, Lock, Plus, Trash2, X as CloseIcon, GraduationCap, Zap, Tag, ExternalLink, FileText, Edit2 } from "lucide-react"
 import NotificationBanners from "@/components/NotificationBanners"
 import CountdownWidget from "@/components/CountdownWidget"
 import SyncedBadge from "@/components/SyncedBadge"
@@ -986,8 +986,8 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
       <CommentSection postSlug="calendar" lang={lang} />
 
       <footer className="footer-main" style={{ marginTop: '3rem' }}>
-        <a href="https://github.com/gonzagramaglia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
-          <Github size={18} />
+        <a href="https://cafecito.app/gonzagramaglia" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+          <Coffee size={18} />
         </a>
         <span>{t.footer}</span>
         <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>

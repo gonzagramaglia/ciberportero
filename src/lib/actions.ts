@@ -177,7 +177,9 @@ export async function deletePost(id: string) {
   const title = (post?.title as any)?.es || 'Sin título';
   
   await db.post.delete({ where: { id } });
-  await logAction('DELETE', 'post', `Eliminó el post: ${title}`);
+  
+  const target = post?.unlisted && post?.slug !== 'links' ? 'blog_post' : 'post';
+  await logAction('DELETE', target, `Eliminó el post: ${title}`);
   
   revalidatePath('/admin/posts');
   revalidatePath('/');
@@ -218,7 +220,9 @@ export async function upsertPost(data: any) {
         }
       }
     });
-    await logAction('UPDATE', 'post', `Actualizó el post: ${title}`);
+    
+    const target = postData.unlisted && postData.slug !== 'links' ? 'blog_post' : 'post';
+    await logAction('UPDATE', target, `Actualizó el post: ${title}`);
   } else {
     await db.post.create({
       data: {
@@ -236,7 +240,9 @@ export async function upsertPost(data: any) {
         }
       }
     });
-    await logAction('CREATE', 'post', `Creó un nuevo post: ${title}`);
+    
+    const target = postData.unlisted && postData.slug !== 'links' ? 'blog_post' : 'post';
+    await logAction('CREATE', target, `Creó un nuevo post: ${title}`);
   }
   
   revalidatePath(`/admin/posts`);

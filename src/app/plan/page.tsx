@@ -6,7 +6,7 @@ import { useLanguage } from "@/context/LanguageContext"
 import { translations } from "@/lib/translations"
 import { curriculum, Subject } from "@/data/curriculum"
 import LanguageSwitcher from "@/components/LanguageSwitcher"
-import { CheckCircle, Info, Lock, ChevronLeft, Layers, Star, Zap, Github, Youtube, Search, X, Calendar, ExternalLink } from "lucide-react"
+import { CheckCircle, Info, Lock, ChevronLeft, Layers, Star, Zap, Coffee, Youtube, Search, X, Calendar, ExternalLink } from "lucide-react"
 import NotificationBanners from "@/components/NotificationBanners"
 import CountdownWidget from "@/components/CountdownWidget"
 import { normalizeString } from "@/lib/string-utils"
@@ -570,8 +570,8 @@ export default function PlanPage() {
         </a>
         <span style={{ fontSize: '0.9rem', opacity: 0.6, color: 'var(--muted)' }}>{translations[lang].footer}</span>
         <div style={{ display: 'flex', gap: '2.5rem', alignItems: 'center' }}>
-          <a href="https://github.com/gonzagramaglia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
-            <Github size={18} />
+          <a href="https://cafecito.app/gonzagramaglia" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
+            <Coffee size={18} />
           </a>
           <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
             <Youtube size={20} />

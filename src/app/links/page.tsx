@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useLanguage } from '../../context/LanguageContext';
 import { translations } from '../../lib/translations';
-import { ChevronLeft, ExternalLink, Mail, Copy, Check, Github, Youtube, Calendar, Zap } from 'lucide-react';
+import { ChevronLeft, ExternalLink, Mail, Copy, Check, Coffee, Youtube, Calendar, Zap } from 'lucide-react';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 import { useState, useEffect, useMemo } from 'react';
 import NotificationBanners from '../../components/NotificationBanners';
@@ -308,8 +308,8 @@ export default function LinksPage() {
             <CommentSection postSlug="links" lang={lang} />
 
             <footer className="footer-main">
-                <a href="https://github.com/gonzagramaglia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
-                    <Github size={18} />
+                <a href="https://cafecito.app/gonzagramaglia" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+                    <Coffee size={18} />
                 </a>
                 <span>{t.footer}</span>
                 <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>

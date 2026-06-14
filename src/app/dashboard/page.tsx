@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useState, useEffect } from "react"
 import { SignOutButton } from "@/components/AuthButtons"
 import { ProgressList } from "./components/ProgressList"
-import { Github, Youtube, ArrowLeft, Zap, CheckCircle, Info, Book, Calendar } from 'lucide-react'
+import { Github, Youtube, ArrowLeft, Zap, CheckCircle, Info, Book, Calendar, Coffee } from 'lucide-react'
 import { useLanguage } from "@/context/LanguageContext"
 import { translations } from "@/lib/translations"
 import LanguageSwitcher from "@/components/LanguageSwitcher"
@@ -287,8 +287,8 @@ export default function DashboardPage() {
       </main>
 
       <footer className="footer-main">
-        <a href="https://github.com/gonzagramaglia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
-          <Github size={20} />
+        <a href="https://cafecito.app/gonzagramaglia" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
+          <Coffee size={20} />
         </a>
         <span style={{ fontSize: '0.9rem', opacity: 0.6, color: 'var(--muted)', fontWeight: '500' }}>{translations[lang].footer}</span>
         <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>

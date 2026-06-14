@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import { translations } from "@/lib/translations";
 import { cookies } from "next/headers";
 import Link from "next/link";
-import { ChevronLeft, Speaker, Github, Youtube, Disc3 } from "lucide-react";
+import { ChevronLeft, Speaker, Github, Youtube, Disc3, Coffee } from "lucide-react";
 import PodcastCard from "@/components/PodcastCard";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 
@@ -79,8 +79,8 @@ export default async function PodcastListPage() {
             </a>
 
             <footer className="footer-main" style={{ marginTop: '8rem', borderTop: '1px solid #f1f5f9', paddingTop: '3rem', marginBottom: '2rem' }}>
-                <a href="https://github.com/gonzagramaglia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
-                    <Github size={18} />
+                <a href="https://cafecito.app/gonzagramaglia" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
+                    <Coffee size={18} />
                 </a>
                 <span>{t.footer}</span>
                 <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>

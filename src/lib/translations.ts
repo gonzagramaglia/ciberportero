@@ -1,7 +1,7 @@
 export const translations = {
     es: {
         title: "Ciberportero",
-        description: "Ciberdefensa y seguridad digital desde la primera línea",
+        description: "Blog técnico sobre ciberseguridad, desarrollo de software y resolución de problemas. Experiencias, guías y recursos prácticos",
         back: "Volver al inicio",
         backToBlog: "Volver al blog",
         footer: "© 2026 | Mens secura in corpore tuto",
