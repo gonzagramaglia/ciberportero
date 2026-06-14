@@ -719,8 +719,8 @@ header p {
     grid-template-areas: 
       "text text text text"
       ". icon1 icon2 .";
-    column-gap: 0.5rem;
-    row-gap: 0.8rem;
+    column-gap: 2.5rem;
+    row-gap: 1.2rem;
     justify-items: center;
     align-items: center;
     text-align: center;

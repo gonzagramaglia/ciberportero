@@ -84,7 +84,7 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                             {status !== 'loading' && (session ? <SignOutButton /> : <SignInButton />)}
                         </div>
                     </div>
-                    <div className="home-lang-container" style={{ marginBottom: 0, marginTop: '0.6rem' }}>
+                    <div className="home-lang-container mobile-hide" style={{ marginBottom: 0, marginTop: '0.6rem' }}>
                         <LanguageSwitcher />
                     </div>
                 </div>
@@ -130,7 +130,7 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                 <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
                     <h2 style={{ fontSize: '1.8rem', fontWeight: '700', color: '#000', display: 'flex', alignItems: 'flex-start', gap: '0.8rem', margin: 0 }}>
                         <BookOpen size={26} style={{ color: 'var(--muted)', marginTop: '10px', flexShrink: 0 }} />
-                        Posts de la Licenciatura en Ciberdefensa
+                        Licenciatura en Ciberdefensa
                     </h2>
                 </div>
 

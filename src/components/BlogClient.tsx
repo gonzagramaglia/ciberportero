@@ -44,6 +44,13 @@ export default function BlogClient({ initialPosts }: BlogClientProps) {
                         <LanguageSwitcher />
                     </div>
                 </div>
+                <p style={{ color: 'var(--muted)', fontSize: '1.1rem', marginTop: '0.2rem', fontWeight: '500' }}>
+                    <span style={{ fontStyle: 'italic', opacity: 0.9 }}>
+                        {lang === 'es' ? 'Artículos, glosarios y notas sobre ciberseguridad, programación y más.' :
+                         lang === 'pt' ? 'Artigos, glossários e notas sobre cibersegurança, programação e mais.' :
+                         'Articles, glossaries, and notes on cybersecurity, programming, and more.'}
+                    </span>
+                </p>
             </header>
 
             <main style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
