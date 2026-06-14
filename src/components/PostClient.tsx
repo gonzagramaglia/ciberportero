@@ -327,9 +327,11 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                                 <h3>{t.post.index}</h3>
                                 <ul>
                                     {toc.map((header, i) => <li key={i} className={`toc-level-${header.level}`}><a href={`#${header.id}`}>{header.text}</a></li>)}
-                                    <li className="toc-level-2" style={{ marginTop: '0.5rem', borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '0.5rem' }}>
-                                        <a href="#comments" style={{ fontWeight: '700', color: '#64748b' }}>💬 {lang === 'es' ? 'Comentarios' : lang === 'pt' ? 'Comentários' : 'Comments'}</a>
-                                    </li>
+                                    {!post.unlisted && (
+                                        <li className="toc-level-2" style={{ marginTop: '0.5rem', borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '0.5rem' }}>
+                                            <a href="#comments" style={{ fontWeight: '700', color: '#64748b' }}>💬 {lang === 'es' ? 'Comentarios' : lang === 'pt' ? 'Comentários' : 'Comments'}</a>
+                                        </li>
+                                    )}
                                 </ul>
                             </nav>
                         </aside>
@@ -353,7 +355,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                     </button>
                 </div>
 
-                <CommentSection postSlug={slug} lang={lang} />
+                {!post.unlisted && <CommentSection postSlug={slug} lang={lang} />}
 
                 <footer className="footer-main">
                     <a href="https://github.com/gonzagramaglia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Github size={18} /></a>

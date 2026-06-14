@@ -264,18 +264,14 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
                         <span style={{ fontWeight: 900, color: unlisted ? '#b45309' : '#64748b', fontSize: '0.85rem' }}>{unlisted ? 'UNLISTED (OCULTO DEL FEED)' : 'LISTADO'}</span>
                       </div>
                     )}
-                    {isEditorPortal && (
-                      <div style={{ padding: '0.5rem', borderRadius: '16px', background: '#fef3c7', border: `2px solid #f59e0b`, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.8 }}>
-                        <span style={{ fontWeight: 900, color: '#b45309', fontSize: '0.85rem' }}>UNLISTED (OBLIGATORIO)</span>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
 
               {/* Cuentas Regresivas Locales */}
-              <div style={{ borderTop: '2px dashed #f1f5f9', paddingTop: '3.5rem' }}>
-                <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              {!isEditorPortal && (
+                <div style={{ borderTop: '2px dashed #f1f5f9', paddingTop: '3.5rem' }}>
+                  <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
                     <h4 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 900 }}>Cuentas Regresivas Locales</h4>
                     <p style={{ margin: 0, fontSize: '0.8rem', color: '#64748b', fontWeight: 600 }}>Solo para este post específico.</p>
@@ -409,6 +405,7 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
                   })}
                 </div>
               </div>
+              )}
             </div>
           </div>
         </div>
