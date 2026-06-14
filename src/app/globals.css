@@ -1016,7 +1016,7 @@ footer a:hover {
 .sidebar-widget-left {
   right: calc(50% + 600px + 3.5rem);
   left: auto;
-  top: 6.4rem;
+  top: 7.15rem;
 }
 
 .sidebar-widget-math {
@@ -1026,7 +1026,7 @@ footer a:hover {
 .sidebar-widget-right {
   left: calc(50% + 600px + 3.5rem);
   right: auto;
-  top: 6.4rem;
+  top: 7.15rem;
 }
 
 .sidebar-widget-right img {

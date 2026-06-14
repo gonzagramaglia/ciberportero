@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import { db } from '@/lib/db';
-import { getPostData } from '@/lib/posts';
 import { notFound } from 'next/navigation';
 import PostClient from '@/components/PostClient';
 import { Locale } from '@/lib/translations';
@@ -11,8 +10,7 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-async function getPost(slug: string) {
-  // 1. Try DB
+async function getUnlistedPost(slug: string) {
   try {
     if (db && db.post) {
       const dbPost = await db.post.findFirst({
@@ -28,18 +26,12 @@ async function getPost(slug: string) {
           votes: true 
         }
       });
-      if (dbPost && dbPost.published && !dbPost.unlisted) return dbPost;
+      // Allow if it is published and unlisted
+      if (dbPost && dbPost.published && dbPost.unlisted) return dbPost;
     }
   } catch (err) {
-    console.warn("Individual Post DB Fetch skipped:", err);
+    console.warn("Individual Blog Post DB Fetch skipped:", err);
   }
-
-  // 2. Fallback to Files
-  try {
-    const filePost = getPostData(slug, 'es'); // Default to ES for search
-    if (filePost) return { ...filePost, id: null, votes: [] };
-  } catch (err) {}
-
   return null;
 }
 
@@ -48,7 +40,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const cookieStore = await cookies();
   const lang = (cookieStore.get('lang')?.value as Locale) || 'es';
   
-  const post = await getPost(slug);
+  const post = await getUnlistedPost(slug);
   if (!post) return { title: 'Post no encontrado' };
 
   const titleObj = post.title as any;
@@ -63,17 +55,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title,
       description,
       type: 'article',
-      url: `https://ciberportero.com/${slug}`,
+      url: `https://ciberportero.com/blog/${slug}`,
     }
   };
 }
 
-export default async function PostPage({ params }: PageProps) {
+export default async function BlogPostPage({ params }: PageProps) {
   const session = await auth();
   const { slug } = await params;
-  const post = await getPost(slug);
+  const post = await getUnlistedPost(slug);
 
   if (!post) notFound();
 
+  // We reuse PostClient, but maybe the base slug needs to be known?
+  // Actually, PostClient uses window.location or slug for some things.
+  // We can just pass the slug.
   return <PostClient post={post} slug={slug} session={session} />;
 }

@@ -64,13 +64,14 @@ export async function GET(request: Request) {
     }
 
     // --- List all posts ---
+    const isUnlisted = searchParams.get('unlisted') === 'true';
     
     // Fetch from DB
     let dbPosts: any[] = [];
     try {
         if (db && db.post) {
             const posts = await db.post.findMany({ 
-                where: { published: true, unlisted: false }, 
+                where: { published: true, unlisted: isUnlisted }, 
                 orderBy: { date: 'desc' } 
             });
             dbPosts = posts
@@ -100,7 +101,7 @@ export async function GET(request: Request) {
     }
 
     // Fetch from Files
-    const filePosts = getAllPosts(lang);
+    const filePosts = isUnlisted ? [] : getAllPosts(lang);
     
     // Merge logic:
     // If ES: Priority to DB posts. Filter out file-based "aprobar-" backups to avoid duplicates in the feed.

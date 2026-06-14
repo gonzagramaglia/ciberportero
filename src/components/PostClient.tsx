@@ -247,7 +247,11 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                     slug.includes('mate') ? 'mate' : slug.includes('ivu') ? 'ivu' : slug.includes('codeforces') ? 'none' : 'all'
                 } />
                 <div className="nav-header-row">
-                    <Link href="/" className="back-link"><ChevronLeft size={16} />{t.back}</Link>
+                    {post.unlisted ? (
+                        <Link href={lang === 'en' ? "/en/blog" : lang === 'pt' ? "/pt/blog" : "/blog"} className="back-link"><ChevronLeft size={16} />{t.backToBlog}</Link>
+                    ) : (
+                        <Link href={lang === 'en' ? "/en" : lang === 'pt' ? "/pt" : "/"} className="back-link"><ChevronLeft size={16} />{t.back}</Link>
+                    )}
                     <LanguageSwitcher availableLangs={Object.keys(post.title as any).filter(l => (post.title as any)[l] && (post.content as any)[l])} />
                 </div>
 
@@ -375,7 +379,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                 </div>
             )}
 
-            <FloatingMusicButton />
+            {!post.unlisted && <FloatingMusicButton />}
             <style jsx global>{`
                 .post-container.highlight-active :global(.nav-header-row),
                 .post-container.highlight-active :global(.footer-main),

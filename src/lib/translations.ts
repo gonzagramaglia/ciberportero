@@ -3,10 +3,11 @@ export const translations = {
         title: "Ciberportero",
         description: "Ciberdefensa y seguridad digital desde la primera línea",
         back: "Volver al inicio",
+        backToBlog: "Volver al blog",
         footer: "© 2026 | Mens secura in corpore tuto",
         auth: {
             signIn: "Iniciar sesión",
-            signInConcise: "Iniciar",
+            signInConcise: "Ingresar",
             signOut: "Cerrar sesión",
             signOutConcise: "Cerrar"
         },
@@ -287,6 +288,7 @@ export const translations = {
             },
             noRooms: "No tienes salas todavía",
             back: "Volver al inicio",
+            backToBlog: "Volver al blog",
             backToRooms: "Volver al ingreso",
             backToLobby: "Volver a las salas",
             sidebar: {
@@ -327,6 +329,7 @@ export const translations = {
         title: "Ciberportero",
         description: "Cyberdefense and digital security from the front lines",
         back: "Back to home",
+        backToBlog: "Back to blog",
         footer: "© 2026 | Mens secura in corpore tuto",
         auth: {
             signIn: "Sign in",
@@ -611,6 +614,7 @@ export const translations = {
             },
             noRooms: "No rooms yet",
             back: "Back to home",
+            backToBlog: "Back to blog",
             backToRooms: "Back to Entry",
             backToLobby: "Back to Rooms",
             sidebar: {
@@ -651,6 +655,7 @@ export const translations = {
         title: "Ciberportero",
         description: "Ciberdefesa e segurança digital na linha de frente",
         back: "Voltar ao início",
+        backToBlog: "Voltar ao blog",
         footer: "© 2026 | Mens secura in corpore tuto",
         auth: {
             signIn: "Fazer login",
@@ -935,6 +940,7 @@ export const translations = {
             },
             noRooms: "Ainda não há salas",
             back: "Voltar ao início",
+            backToBlog: "Voltar ao blog",
             backToRooms: "Voltar para o ingresso",
             backToLobby: "Voltar para as salas",
             sidebar: {
