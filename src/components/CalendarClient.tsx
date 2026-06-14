@@ -96,23 +96,6 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
       if (!isNaN(d.getTime())) {
         setCurrentDate(d);
         setSelectedDate(d);
-
-        // Scroll to the day after a short delay to ensure rendering
-        setTimeout(() => {
-          const card = document.getElementById('selected-events-card');
-          if (card) {
-            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            card.classList.add('flash-focus');
-            setTimeout(() => card.classList.remove('flash-focus'), 2000);
-          } else {
-            const el = document.getElementById(`day-${initialDate}`);
-            if (el) {
-              el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              el.classList.add('flash-focus');
-              setTimeout(() => el.classList.remove('flash-focus'), 2000);
-            }
-          }
-        }, 1000);
       }
     }
   }, [initialDate]);
@@ -131,14 +114,6 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
       if (window.location.pathname !== newPath) {
         window.history.replaceState(null, '', newPath);
       }
-    }
-  }, [selectedDate]);
-
-  useEffect(() => {
-    if (selectedDate && typeof window !== 'undefined') {
-      setTimeout(() => {
-        selectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
     }
   }, [selectedDate]);
 
@@ -733,18 +708,20 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
           </div>
         </div>
 
-      <div className="calendar-notice">
-        <Info size={18} color="#eab308" />
-        <p>
-          {session?.user ? (
-            <>
-              <span style={{ fontWeight: 700 }}>{session.user.name?.split(' ')[0] || 'Estudiante'},</span> {ct.notice}
-            </>
-          ) : ct.notice.charAt(0).toUpperCase() + ct.notice.slice(1)}
-        </p>
-      </div>
+      <main className="calendar-layout">
+        <div className="calendar-main-card">
+          <div className="calendar-header">
+            <div className="calendar-current-month">
+              <CalendarIcon size={20} style={{ color: '#eab308' }} />
+              <h2>{ct.months[currentDate.getMonth()]} {currentDate.getFullYear()}</h2>
+            </div>
+            <div className="calendar-nav-buttons">
+              <button onClick={prevMonth} aria-label="Previous Month"><ChevronLeft size={20} /></button>
+              <button onClick={nextMonth} aria-label="Next Month"><ChevronRight size={20} /></button>
+            </div>
+          </div>
 
-      <div className="calendar-controls">
+          <div className="calendar-controls" style={{ marginTop: '-0.5rem' }}>
         <div className="calendar-search-row">
           <div className="search-box">
             <Search size={18} />
@@ -812,19 +789,6 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
         </div>
       </div>
 
-      <main className="calendar-layout">
-        <div className="calendar-main-card">
-          <div className="calendar-header">
-            <div className="calendar-current-month">
-              <CalendarIcon size={20} style={{ color: '#eab308' }} />
-              <h2>{ct.months[currentDate.getMonth()]} {currentDate.getFullYear()}</h2>
-            </div>
-            <div className="calendar-nav-buttons">
-              <button onClick={prevMonth} aria-label="Previous Month"><ChevronLeft size={20} /></button>
-              <button onClick={nextMonth} aria-label="Next Month"><ChevronRight size={20} /></button>
-            </div>
-          </div>
-
           <div className="calendar-scroller">
             <div className="calendar-weekdays">
               {ct.days.map((day: string) => (
@@ -885,15 +849,21 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
         </main>
 
       <div className="cronogramas-section" style={{
-        margin: '2rem 0 3rem 0',
+        margin: '1rem 0 1.5rem 0',
         width: '100%'
       }}>
+        <h3 style={{ fontSize: '1.25rem', fontWeight: 800, margin: '0 0 0.5rem 0', color: 'var(--text)' }}>
+          {lang === 'es' ? 'Cronogramas oficiales' : lang === 'pt' ? 'Cronogramas oficiais' : 'Official schedules'}
+        </h3>
+        <p style={{ fontSize: '1rem', color: 'var(--muted)', margin: '0 0 1rem 0' }}>
+          {lang === 'es' ? 'Documentos de referencia con el plan de estudio y fechas importantes de las materias del primer cuatrimestre del 2026.' : lang === 'pt' ? 'Documentos de referência com o plano de estudo e datas importantes das disciplinas do primeiro quadrimestre de 2026.' : 'Reference documents with the study plan and important dates for the subjects of the first semester of 2026.'}
+        </p>
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(2, 1fr)',
-          gap: '1rem',
+          gap: '0.8rem',
           background: 'rgba(0,0,0,0.02)',
-          padding: '1.5rem',
+          padding: '0.5rem 1rem',
           borderRadius: '24px',
           border: '1px dashed var(--border)'
         }}>
@@ -1726,11 +1696,11 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
         }
 
         .selection-card {
-          background: white;
+          background: #fefce8;
           border-radius: 24px;
-          border: 1px solid var(--border);
+          border: 1px solid #eab308;
           padding: 1.8rem;
-          box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+          box-shadow: 0 8px 30px rgba(234, 179, 8, 0.08);
           display: flex;
           flex-direction: column;
           transition: all 0.3s ease;
@@ -1925,8 +1895,8 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
         .cronograma-link {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            padding: 1rem;
+            gap: 0.8rem;
+            padding: 0.8rem 1rem;
             background: #fff;
             border: 1px solid var(--border);
             border-radius: 16px;
