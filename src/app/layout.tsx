@@ -8,6 +8,7 @@ import "./globals.css";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://ciberportero.com'),
   title: {
     default: "Ciberportero",
     template: "Ciberportero | %s",
