@@ -32,6 +32,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
     const [copied, setCopied] = useState(false);
     const [isHighlighting, setIsHighlighting] = useState(false);
     const [activeHash, setActiveHash] = useState<string | null>(null);
+    const [currentHash, setCurrentHash] = useState<string>('');
     const [voted, setVoted] = useState<'LIKE' | 'DISLIKE' | null>(null);
     const t = translations[lang];
     const subjectSlugs = [
@@ -165,6 +166,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
     useEffect(() => {
         const handleHash = () => {
             const hash = window.location.hash;
+            setCurrentHash(hash);
             if (hash) {
                 const id = decodeURIComponent(hash.substring(1));
                 setTimeout(() => {
@@ -376,7 +378,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                     ].map((s) => (
                         <Link
                             key={s.id}
-                            href={`/${lang === 'es' ? s.slugs[0] : s.slugs[1]}`}
+                            href={`/${lang === 'es' ? s.slugs[0] : s.slugs[1]}${currentHash}`}
                             className={`subject-nav-item ${s.slugs.includes(slug) ? 'active' : ''}`}
                         >
                             {s.id}
@@ -385,7 +387,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                 </div>
             )}
 
-            {!post.unlisted && <FloatingMusicButton />}
+            {!post.unlisted && <FloatingMusicButton hideOnMobile />}
             <style jsx global>{`
                 .post-container.highlight-active :global(.nav-header-row),
                 .post-container.highlight-active :global(.footer-main),

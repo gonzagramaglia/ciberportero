@@ -2,13 +2,17 @@
 
 import { Music } from 'lucide-react';
 
-export default function FloatingMusicButton() {
+interface FloatingMusicButtonProps {
+    hideOnMobile?: boolean;
+}
+
+export default function FloatingMusicButton({ hideOnMobile }: FloatingMusicButtonProps = {}) {
     return (
         <a
             href="https://youtu.be/3jqTLDHQRMo"
             target="_blank"
             rel="noopener noreferrer"
-            className="floating-music-btn"
+            className={`floating-music-btn ${hideOnMobile ? 'hide-on-mobile' : ''}`}
             aria-label="Escuchar música"
         >
             <Music size={28} className="music-icon" />
@@ -61,6 +65,12 @@ export default function FloatingMusicButton() {
                     :global(.music-icon) {
                         width: 22px !important;
                         height: 22px !important;
+                    }
+                }
+
+                @media (max-width: 768px) {
+                    .hide-on-mobile {
+                        display: none !important;
                     }
                 }
             `}</style>
