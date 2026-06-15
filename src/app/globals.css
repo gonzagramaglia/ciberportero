@@ -1860,13 +1860,37 @@ html {
 /* Sidebar TOC refinements */
 .post-sidebar .post-toc {
   border-left: 1px solid #e2e8f0;
+  padding-left: 0.75rem;
+  max-height: calc(100vh - 14rem);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+  direction: rtl;
+}
+
+.post-sidebar .post-toc > * {
+  direction: ltr;
+}
+
+.post-sidebar .post-toc::-webkit-scrollbar {
+  width: 4px;
+}
+
+.post-sidebar .post-toc::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.post-sidebar .post-toc::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
 }
 
 .post-sidebar .post-toc li a {
   padding: 2px 0;
   border-left: 2px solid transparent;
-  margin-left: -1.6rem;
-  padding-left: 1.5rem;
+  margin-left: -0.85rem;
+  padding-left: 0.75rem;
 }
 
 .post-sidebar .post-toc li a:hover {
