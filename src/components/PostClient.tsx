@@ -99,6 +99,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
 
     const postTitle = getLocalizedField(post.title);
     const postContent = getLocalizedField(post.content);
+    const postDescription = getLocalizedField(post.description);
 
     // FIX: Robustly wrap plain text URLs containing underscores in < > to prevent Markdown italics
     const processedContent = String(postContent)
@@ -155,6 +156,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
     };
 
     const toc = getToc(fullContent);
+    const hasVisibleTocItems = toc.some(t => t.level > 1);
 
     const handleCopy = () => {
         navigator.clipboard.writeText(window.location.href);
@@ -280,10 +282,15 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                         </div>
 
                         <Heading level={1}>{postTitle}</Heading>
+                        {postDescription && (
+                            <p style={{ fontSize: '1.25rem', color: '#64748b', marginTop: '-1rem', marginBottom: '2rem', lineHeight: '1.6', fontWeight: 500 }}>
+                                {postDescription}
+                            </p>
+                        )}
 
                         <div className="mobile-only-countdown"><CountdownWidget countdowns={post?.countdowns} isInline /></div>
 
-                        {toc.length > 2 && (
+                        {hasVisibleTocItems && (
                             <nav className="post-toc mobile-toc">
                                 <h3>{t.post.index}</h3>
                                 <ul>
@@ -348,7 +355,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                         </ReactMarkdown>
                     </article>
 
-                    {toc.length > 2 && (
+                    {hasVisibleTocItems && (
                         <aside className="post-sidebar">
                             <nav className="post-toc desktop-toc">
                                 <h3>{t.post.index}</h3>
