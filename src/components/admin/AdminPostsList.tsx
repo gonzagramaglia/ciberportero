@@ -84,7 +84,7 @@ export default function AdminPostsList({ posts }: AdminPostsListProps) {
                           <FileText size={16} />
                         </div>
                         <Link 
-                          href={`/${post.slug}`} 
+                          href={post.unlisted ? `/blog/${post.slug}` : `/${post.slug}`} 
                           target="_blank" 
                           style={{ fontWeight: 800, color: '#0f172a', textDecoration: 'none', lineHeight: 1.2 }}
                           className="post-title-link"

@@ -30,10 +30,6 @@ async function getPost(slug: string, session?: any) {
       });
       if (dbPost && dbPost.published) {
         if (!dbPost.unlisted) return dbPost;
-        
-        // If unlisted, only allow admin or editor to view
-        const role = (session?.user as any)?.role;
-        if (role === "admin" || role === "editor") return dbPost;
       }
     }
   } catch (err) {
