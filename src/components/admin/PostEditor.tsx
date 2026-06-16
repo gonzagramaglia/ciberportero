@@ -227,6 +227,32 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
                               href = childrenText;
                             }
                             return <a {...props} href={href} target="_blank" rel="noopener noreferrer" />;
+                          },
+                          img: ({ node, ...props }) => {
+                              if (props.alt === 'youtube' && props.src) {
+                                  let videoId = '';
+                                  const src = props.src as string;
+                                  if (src.includes('youtube.com/watch?v=')) {
+                                      videoId = src.split('v=')[1].split('&')[0];
+                                  } else if (src.includes('youtu.be/')) {
+                                      videoId = src.split('youtu.be/')[1].split('?')[0];
+                                  }
+                                  if (videoId) {
+                                      return (
+                                          <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', borderRadius: '16px', margin: '2rem 0', border: '1px solid rgba(0,0,0,0.1)' }}>
+                                              <iframe 
+                                                  style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                                                  src={`https://www.youtube.com/embed/${videoId}`}
+                                                  title="YouTube video player"
+                                                  frameBorder="0"
+                                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                  allowFullScreen
+                                              />
+                                          </div>
+                                      );
+                                  }
+                              }
+                              return <img {...props} />;
                           }
                         }}
                       >
