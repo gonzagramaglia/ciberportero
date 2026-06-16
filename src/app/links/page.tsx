@@ -12,7 +12,7 @@ import CountdownWidget from '../../components/CountdownWidget';
 import { useSession } from "next-auth/react";
 import { SignInButton, SignOutButton } from "@/components/AuthButtons";
 import SyncedBadge from "@/components/SyncedBadge";
-import { createPersonalLink, deletePersonalLink } from "@/lib/actions";
+import { deletePersonalLink } from "@/lib/actions";
 import CommentSection from "@/components/CommentSection";
 import { Trash2, Plus, X as CloseIcon } from "lucide-react";
 
@@ -48,24 +48,7 @@ export default function LinksPage() {
             .catch(() => setIsLoading(false));
     }, []);
 
-    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-    const [newLink, setNewLink] = useState({ name: '', url: '', description: '' });
-    const [isSaving, setIsSaving] = useState(false);
 
-    const handleSaveLink = async () => {
-        if (!newLink.name || !newLink.url) return;
-        setIsSaving(true);
-        const res = await createPersonalLink(newLink);
-        if (res.success) {
-            setIsAddModalOpen(false);
-            setNewLink({ name: '', url: '', description: '' });
-            // Refresh links
-            const response = await fetch('/api/links');
-            const data = await response.json();
-            if (Array.isArray(data)) setDbLinks(data);
-        }
-        setIsSaving(false);
-    };
 
     const handleDeleteLink = async (id: string) => {
         if (!confirm(lang === 'es' ? '¿Eliminar este enlace?' : 'Delete this link?')) return;
@@ -122,8 +105,7 @@ export default function LinksPage() {
                         </div>
                         <div className="page-desc-row">
                             <p style={{ color: 'var(--muted)', fontSize: '1.2rem', margin: 0, fontWeight: '500' }} dangerouslySetInnerHTML={{ __html: t.featured?.description || '' }} />
-                            {status === 'authenticated' && (
-                            (session?.user?.role === 'admin' || session?.user?.email === 'ciberportero@gmail.com') ? (
+                            {status === 'authenticated' && (session?.user?.role === 'admin' || session?.user?.email === 'ciberportero@gmail.com') && (
                                 <Link
                                     href="/admin/links"
                                     className="add-link-btn"
@@ -146,30 +128,7 @@ export default function LinksPage() {
                                     <Plus size={20} />
                                     {lang === 'es' ? 'Agregar link' : lang === 'pt' ? 'Adicionar link' : 'Add link'}
                                 </Link>
-                            ) : (
-                                <button
-                                    onClick={() => setIsAddModalOpen(true)}
-                                    className="add-link-btn"
-                                    style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '0.5rem',
-                                        background: '#000',
-                                        color: '#fff',
-                                        padding: '0.8rem 1.5rem',
-                                        borderRadius: '14px',
-                                        border: 'none',
-                                        fontWeight: '700',
-                                        cursor: 'pointer',
-                                        transition: 'all 0.2s',
-                                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                                    }}
-                                >
-                                    <Plus size={20} />
-                                    {(translations[lang] as any).addPersonalized}
-                                </button>
-                            )
-                        )}
+                            )}
                         </div>
                     </div>
                 </div>
@@ -316,77 +275,7 @@ export default function LinksPage() {
                     <Youtube size={22} />
                 </a>
             </footer>
-            {isAddModalOpen && (
-                <div className="modal-overlay" style={{
-                    position: 'fixed',
-                    top: 0, left: 0, right: 0, bottom: 0,
-                    background: 'rgba(0,0,0,0.5)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    zIndex: 1000,
-                    backdropFilter: 'blur(4px)'
-                }}>
-                    <div className="modal-content" style={{
-                        background: 'white',
-                        padding: '2rem',
-                        borderRadius: '24px',
-                        width: '100%',
-                        maxWidth: '400px',
-                        boxShadow: '0 20px 40px rgba(0,0,0,0.2)'
-                    }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                            <h3 style={{ margin: 0, fontWeight: '900' }}>{lang === 'es' ? 'Nuevo link personal' : 'New personal link'}</h3>
-                            <button onClick={() => setIsAddModalOpen(false)} style={{ border: 'none', background: 'transparent', cursor: 'pointer' }}>
-                                <CloseIcon size={24} />
-                            </button>
-                        </div>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-                            <div>
-                                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '800', marginBottom: '0.4rem', color: 'var(--muted)' }}>{lang === 'es' ? 'Nombre' : 'Name'}</label>
-                                <input
-                                    type="text"
-                                    value={newLink.name}
-                                    onChange={(e) => setNewLink({ ...newLink, name: e.target.value })}
-                                    placeholder="Ej: Mi Portfolio"
-                                    style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
-                                />
-                            </div>
-
-                            <div>
-                                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '800', marginBottom: '0.4rem', color: 'var(--muted)' }}>URL</label>
-                                <input
-                                    type="url"
-                                    value={newLink.url}
-                                    onChange={(e) => setNewLink({ ...newLink, url: e.target.value })}
-                                    placeholder="https://..."
-                                    style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
-                                />
-                            </div>
-
-
-                            <button
-                                onClick={handleSaveLink}
-                                disabled={isSaving}
-                                style={{
-                                    background: '#000',
-                                    color: '#fff',
-                                    padding: '1rem',
-                                    borderRadius: '14px',
-                                    border: 'none',
-                                    fontWeight: '800',
-                                    marginTop: '0.5rem',
-                                    cursor: 'pointer',
-                                    opacity: isSaving ? 0.7 : 1
-                                }}
-                            >
-                                {isSaving ? (lang === 'es' ? 'Guardando...' : lang === 'pt' ? 'Salvando...' : 'Saving...') : (lang === 'es' ? 'Guardar' : lang === 'pt' ? 'Salvar' : 'Save')}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
 
             <style jsx>{`
                 .page-desc-row {

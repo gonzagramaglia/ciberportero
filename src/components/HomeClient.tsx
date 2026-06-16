@@ -131,7 +131,7 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                 <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
                     <h2 style={{ fontSize: '1.8rem', fontWeight: '700', color: '#000', display: 'flex', alignItems: 'flex-start', gap: '0.8rem', margin: 0 }}>
                         <BookOpen size={26} style={{ color: 'var(--muted)', marginTop: '10px', flexShrink: 0 }} />
-                        Licenciatura en Ciberdefensa
+                        {lang === 'en' ? 'Bachelor in Cyberdefense' : lang === 'pt' ? 'Licenciatura em Ciberdefesa' : 'Licenciatura en Ciberdefensa'}
                     </h2>
                 </div>
 
