@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { getAllPosts, getPostData } from '@/lib/posts';
+
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
@@ -50,17 +50,7 @@ export async function GET(request: Request) {
             console.warn("API Post DB skipped:", error);
         }
 
-        // 2. Fallback to Files
-        try {
-            const post = getPostData(slug, lang);
-            const { getAvailableLangs } = require('@/lib/posts');
-            return NextResponse.json({
-                ...post,
-                availableLangs: getAvailableLangs(slug)
-            });
-        } catch (error) {
-            return NextResponse.json({ error: 'Post not found' }, { status: 404 });
-        }
+        return NextResponse.json({ error: 'Post not found' }, { status: 404 });
     }
 
     // --- List all posts ---
@@ -101,34 +91,7 @@ export async function GET(request: Request) {
         console.warn("API Posts List DB skipped:", error);
     }
 
-    // Fetch from Files
-    const filePosts = isUnlisted ? [] : getAllPosts(lang);
-    
-    // Merge logic:
-    // If ES: Priority to DB posts. Filter out file-based "aprobar-" backups to avoid duplicates in the feed.
-    // If EN/PT: DB posts will be empty anyway (filtered by lang above). Only file posts will show.
-    const finalFilePosts = lang === 'es' 
-        ? filePosts.filter(p => !p.slug.startsWith('aprobar-') && !p.slug.includes('codeforces')) 
-        : filePosts;
-
-    let dbSlugs = new Set();
-    try {
-        if (db && db.post) {
-            const allSlugsQuery = await db.post.findMany({
-                select: { slug: true, alternativeSlug: true, alternativeSlug2: true }
-            });
-            allSlugsQuery.forEach(p => {
-                dbSlugs.add(p.slug);
-                if (p.alternativeSlug) dbSlugs.add(p.alternativeSlug);
-                if (p.alternativeSlug2) dbSlugs.add(p.alternativeSlug2);
-            });
-        }
-    } catch (err) {}
-
-    let mergedPosts = [
-        ...dbPosts,
-        ...finalFilePosts.filter(p => !dbSlugs.has(p.slug))
-    ];
+    let mergedPosts = [...dbPosts];
 
     // Filter out "links" post
     mergedPosts = mergedPosts.filter(p => p.slug !== 'links' && p.title !== 'links');

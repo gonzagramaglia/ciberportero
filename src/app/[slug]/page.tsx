@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import { db } from '@/lib/db';
-import { getPostData } from '@/lib/posts';
 import { notFound } from 'next/navigation';
 import PostClient from '@/components/PostClient';
 import { Locale } from '@/lib/translations';
@@ -23,9 +22,9 @@ async function getPost(slug: string, session?: any) {
             { alternativeSlug2: slug }
           ]
         },
-        include: { 
+        include: {
           countdowns: true,
-          votes: true 
+          votes: true
         }
       });
       if (dbPost && dbPost.published) {
@@ -36,11 +35,6 @@ async function getPost(slug: string, session?: any) {
     console.warn("Individual Post DB Fetch skipped:", err);
   }
 
-  // 2. Fallback to Files
-  try {
-    const filePost = getPostData(slug, 'es'); // Default to ES for search
-    if (filePost) return { ...filePost, id: null, votes: [] };
-  } catch (err) {}
 
   return null;
 }
@@ -49,7 +43,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const cookieStore = await cookies();
   const lang = (cookieStore.get('lang')?.value as Locale) || 'es';
-  
+
   const session = await auth();
   const post = await getPost(slug, session);
   if (!post) return { title: 'Post no encontrado' };

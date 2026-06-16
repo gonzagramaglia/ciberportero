@@ -3,7 +3,7 @@ import { translations, Locale } from '@/lib/translations';
 import { cookies } from 'next/headers';
 import HomeClient from '@/components/HomeClient';
 import { db } from '@/lib/db';
-import { getAllPosts } from '@/lib/posts';
+
 
 export async function generateMetadata(): Promise<Metadata> {
   const cookieStore = await cookies();
@@ -58,32 +58,8 @@ async function getInitialPosts(lang: Locale) {
     console.warn("Home DB Posts skipped (expected if DB not ready):", err);
   }
 
-  const filePosts = getAllPosts(lang);
-
-  // Merge logic:
-  // If ES: Priority to DB posts. Filter out file-based "aprobar-" backups to avoid duplicates in the feed.
-  // If EN/PT: DB posts will be empty anyway (filtered by lang above). Only file posts will show.
-  const finalFilePosts = lang === 'es' 
-    ? filePosts.filter(p => !p.slug.startsWith('aprobar-') && !p.slug.includes('codeforces')) 
-    : filePosts;
-
-  let dbSlugs = new Set();
-  try {
-    if (db && db.post) {
-      const allSlugsQuery = await db.post.findMany({
-        select: { slug: true, alternativeSlug: true, alternativeSlug2: true }
-      });
-      allSlugsQuery.forEach(p => {
-        dbSlugs.add(p.slug);
-        if (p.alternativeSlug) dbSlugs.add(p.alternativeSlug);
-        if (p.alternativeSlug2) dbSlugs.add(p.alternativeSlug2);
-      });
-    }
-  } catch (err) {}
-
-  const merged = [...dbPosts, ...finalFilePosts.filter(p => !dbSlugs.has(p.slug))];
-  merged.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  return merged.slice(0, 20);
+  dbPosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  return dbPosts.slice(0, 20);
 }
 
 export default async function Home() {
