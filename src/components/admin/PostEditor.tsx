@@ -98,7 +98,8 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
         unlisted: isEditorPortal ? true : unlisted,
         countdowns
       });
-      router.push(`${isEditorPortal ? '/editor/posts' : '/admin/posts'}?success=${encodeURIComponent(titles.es)}&slug=${slug}`);
+      const finalUnlisted = isEditorPortal ? true : unlisted;
+      router.push(`${isEditorPortal ? '/editor/posts' : '/admin/posts'}?success=${encodeURIComponent(titles.es)}&slug=${finalUnlisted ? `blog/${slug}` : slug}`);
       router.refresh();
     } catch (error) {
       console.error(error);
