@@ -20,7 +20,7 @@ export default function FloatingMusicButton({ hideOnMobile }: FloatingMusicButto
                 .floating-music-btn {
                     position: fixed;
                     bottom: 3.5rem;
-                    right: 4.5rem;
+                    right: 2.5rem;
                     width: 62px;
                     height: 62px;
                     border-radius: 50%;

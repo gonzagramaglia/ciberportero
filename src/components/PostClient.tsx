@@ -421,7 +421,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                     box-shadow: 0 20px 40px rgba(0,0,0,0.05);
                 }
                 .post-content { transition: all 0.6s ease; }
-                .subject-navigator { position: fixed; left: 4.5rem; bottom: 3.5rem; display: flex; flex-direction: column; gap: 1rem; z-index: 1000; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+                .subject-navigator { position: fixed; left: 2.5rem; bottom: 3.5rem; display: flex; flex-direction: column; gap: 1rem; z-index: 1000; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
                 .subject-nav-item { width: 62px; height: 62px; border-radius: 50%; background: #ffffff; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); color: #1e293b; font-weight: 900; font-size: 1.3rem; text-decoration: none; opacity: 0.8; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
                 .subject-nav-item.active { background: #fff; border: 2px solid var(--accent); color: var(--accent); box-shadow: 0 0 20px rgba(0, 112, 243, 0.15); pointer-events: none; opacity: 1; }
                 .copy-button:hover { background: #f8fafc; border-color: #cbd5e1; transform: translateY(-1px); }
