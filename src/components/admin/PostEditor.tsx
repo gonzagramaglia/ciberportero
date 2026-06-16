@@ -268,7 +268,7 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
 
               {/* Slugs y Estado */}
               <div style={{ borderTop: '2px dashed #f1f5f9', paddingTop: '3.5rem' }}>
-                <h4 style={{ margin: '0 0 2rem 0', fontSize: '1.2rem', fontWeight: 900 }}>Configuración de Slugs y Publicación</h4>
+                <h3 style={{ margin: '0 0 2rem 0', fontSize: '1.35rem', fontWeight: 900, color: '#0f172a' }}>Configuración de Slugs y Publicación</h3>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem', background: '#f8fafc', padding: '2rem', borderRadius: '24px', border: '1px solid #f1f5f9' }}>
                   <div>
                     <label className="admin-label">Slug Principal</label>
@@ -282,12 +282,12 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
                     <label className="admin-label">Slug Opcional 2</label>
                     <input className="admin-input" value={alternativeSlug2} onChange={e => setAlternativeSlug2(e.target.value)} />
                   </div>
-                  <div style={{ display: 'flex', gap: '0.5rem', flexDirection: 'column' }}>
-                    <div onClick={() => setPublished(!published)} style={{ cursor: 'pointer', padding: '0.5rem', borderRadius: '16px', background: published ? '#f0fdf4' : '#fff1f2', border: `2px solid ${published ? '#22c55e' : '#fecdd3'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
+                  <div style={{ display: 'flex', gap: '0.5rem', flexDirection: 'row', gridColumn: '1 / -1' }}>
+                    <div onClick={() => setPublished(!published)} style={{ flex: 1, cursor: 'pointer', padding: '0.5rem', borderRadius: '16px', background: published ? '#f0fdf4' : '#fff1f2', border: `2px solid ${published ? '#22c55e' : '#fecdd3'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
                       <span style={{ fontWeight: 900, color: published ? '#166534' : '#9f1239', fontSize: '0.85rem' }}>{published ? 'PUBLICADO' : 'BORRADOR'}</span>
                     </div>
                     {!isEditorPortal && (
-                      <div onClick={() => setUnlisted(!unlisted)} style={{ cursor: 'pointer', padding: '0.5rem', borderRadius: '16px', background: unlisted ? '#fef3c7' : '#f8fafc', border: `2px solid ${unlisted ? '#f59e0b' : '#e2e8f0'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
+                      <div onClick={() => setUnlisted(!unlisted)} style={{ flex: 1, cursor: 'pointer', padding: '0.5rem', borderRadius: '16px', background: unlisted ? '#fef3c7' : '#f8fafc', border: `2px solid ${unlisted ? '#f59e0b' : '#e2e8f0'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
                         <span style={{ fontWeight: 900, color: unlisted ? '#b45309' : '#64748b', fontSize: '0.85rem' }}>{unlisted ? 'UNLISTED (OCULTO DEL FEED)' : 'LISTADO'}</span>
                       </div>
                     )}
@@ -300,8 +300,8 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
                 <div style={{ borderTop: '2px dashed #f1f5f9', paddingTop: '3.5rem' }}>
                   <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
-                    <h4 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 900 }}>Cuentas Regresivas Locales</h4>
-                    <p style={{ margin: 0, fontSize: '0.8rem', color: '#64748b', fontWeight: 600 }}>Solo para este post específico.</p>
+                    <h3 style={{ margin: 0, fontSize: '1.35rem', fontWeight: 900, color: '#0f172a' }}>Cuentas Regresivas Locales</h3>
+
                   </div>
                   <button 
                     type="button" 
