@@ -70,7 +70,7 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                 </div>
             )}
 
-            <header style={{ marginBottom: '3rem' }}>
+            <header style={{ marginBottom: '1.5rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1.2rem', marginBottom: '0.5rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '1.2rem' }}>
                         <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em' }}>{t.title}</h1>
@@ -186,7 +186,7 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                         </div>
                         <a href="https://undef.edu.ar/fadena/carreras-de-grado/licciberdefensa/" target="_blank" rel="noopener noreferrer" className="intro-cover"><img src="/cyberdefense-fadena-undef.png" alt="Cyberdefense FADENA UNDEF" style={{ width: '100%', borderRadius: '12px' }} /></a>
                         <Link href="/links" className="intro-cover"><img src="/moodle-siu.png" alt="Moodle y SIU" style={{ width: '100%', borderRadius: '12px' }} /></Link>
-                        <div style={{ marginTop: '1.5rem', marginBottom: '0.8rem' }}>
+                        <div style={{ marginTop: '1rem', marginBottom: '0.5rem' }}>
                             <h2 style={{ fontSize: '1.8rem', fontWeight: '700', color: '#000', display: 'flex', alignItems: 'center', gap: '0.8rem', margin: 0 }}>
                                 <Calendar size={26} style={{ color: 'var(--muted)' }} />
                                 Calendario Tentativo

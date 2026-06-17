@@ -267,7 +267,11 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
                                 <span className="post-date" style={{ margin: 0 }} suppressHydrationWarning>
                                     <span className="last-updated" style={{ fontSize: '0.85rem', opacity: 0.7, fontWeight: 500 }} suppressHydrationWarning>
-                                        {lang === 'es' ? 'Última actualización' : lang === 'pt' ? 'Última atualização' : 'Last update'}: {timeAgo(post.updatedAt || post.date, lang)}
+                                        {post.unlisted ? (
+                                            <>{new Date(post.date).toLocaleDateString(lang, { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })}</>
+                                        ) : (
+                                            <>{lang === 'es' ? 'Última actualización' : lang === 'pt' ? 'Última atualização' : 'Last update'}: {timeAgo(post.updatedAt || post.date, lang)}</>
+                                        )}
                                     </span>
                                 </span>
                                 {session?.user?.role === 'admin' && post.id && (
@@ -373,16 +377,18 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                 </div>
 
                 <div className="copy-container" style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
-                    <div className="vote-buttons" style={{ display: 'flex', gap: '0.4rem' }}>
-                        <button
-                            onClick={() => handleVote('LIKE')}
-                            className={`vote-button like ${voted === 'LIKE' ? 'active' : ''}`}
-                            title={lang === 'es' ? 'Me gusta' : 'Like'}
-                        >
-                            <ThumbsUp size={18} fill={voted === 'LIKE' ? 'currentColor' : 'none'} />
-                            <span>{likes}</span>
-                        </button>
-                    </div>
+                    {!post.unlisted && (
+                        <div className="vote-buttons" style={{ display: 'flex', gap: '0.4rem' }}>
+                            <button
+                                onClick={() => handleVote('LIKE')}
+                                className={`vote-button like ${voted === 'LIKE' ? 'active' : ''}`}
+                                title={lang === 'es' ? 'Me gusta' : 'Like'}
+                            >
+                                <ThumbsUp size={18} fill={voted === 'LIKE' ? 'currentColor' : 'none'} />
+                                <span>{likes}</span>
+                            </button>
+                        </div>
+                    )}
                     <button onClick={handleCopy} className={`copy-button ${copied ? 'success' : ''}`}>
                         {copied ? <Check size={16} /> : <Link2 size={16} />}
                         <span>{copied ? t.share.copied : t.share.copy}</span>

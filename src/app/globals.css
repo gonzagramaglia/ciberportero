@@ -681,17 +681,17 @@ header p {
 }
 
 .intro-cover:last-of-type {
-  margin-bottom: 3.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .home-cover {
-  margin-top: 3.5rem;
+  margin-top: 2rem;
   margin-bottom: 0;
 }
 
 @media (max-width: 680px) {
   .home-cover {
-    margin-top: 1.5rem;
+    margin-top: 1rem;
   }
 }
 
@@ -709,7 +709,7 @@ header p {
 }
 
 .footer-main {
-  margin-top: 5rem;
+  margin-top: 2.5rem;
   padding: 2rem 0;
   border-top: 1px solid var(--border);
   display: flex;
@@ -1685,8 +1685,8 @@ select {
 
 /* Post Table of Contents */
 html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 2rem;
+  /* scroll-behavior: smooth; REMOVED: causes Next.js Link navigation to scroll down/glitch */
+  /* scroll-padding-top: 2rem; REMOVED: conflicts with Next.js app router scrolling */
 }
 
 .post-toc {
