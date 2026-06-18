@@ -199,6 +199,7 @@ export async function upsertPost(data: any) {
     description: data.description,
     published: data.published,
     unlisted: data.unlisted !== undefined ? data.unlisted : false,
+    tags: data.tags || [],
   };
 
   if (isUpdate) {

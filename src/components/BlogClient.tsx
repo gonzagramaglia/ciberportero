@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '../context/LanguageContext';
 import { translations } from '../lib/translations';
-import { Github, Youtube, Home, ChevronLeft, Coffee } from 'lucide-react';
+import { Github, Youtube, Home, ChevronLeft, Coffee, Plus } from 'lucide-react';
 import LanguageSwitcher from './LanguageSwitcher';
+import { useSession } from 'next-auth/react';
 
 interface BlogClientProps {
     initialPosts: any[];
@@ -16,6 +17,41 @@ export default function BlogClient({ initialPosts }: BlogClientProps) {
     const t = translations[lang];
     const [posts, setPosts] = useState(initialPosts);
     const [isLoadingPosts, setIsLoadingPosts] = useState(false);
+    const { data: session } = useSession();
+    const [selectedTag, setSelectedTag] = useState<string | null>(null);
+
+    // Compute tags frequency
+    const tagFrequencies = useMemo(() => {
+        const freqs: Record<string, number> = {};
+        posts.forEach((p: any) => {
+            const tags = (p.tags && Array.isArray(p.tags) && p.tags.length > 0) ? p.tags : ['Otros'];
+            tags.forEach((t: string) => {
+                freqs[t] = (freqs[t] || 0) + 1;
+            });
+        });
+
+        // Sort tags by frequency (descending)
+        return Object.entries(freqs)
+            .sort((a, b) => b[1] - a[1])
+            .map(([tag]) => tag);
+    }, [posts]);
+
+    // Set default selected tag when tags are loaded
+    useEffect(() => {
+        if (tagFrequencies.length > 0 && !selectedTag) {
+            setSelectedTag(tagFrequencies[0]);
+        } else if (tagFrequencies.length === 0) {
+            setSelectedTag(null);
+        }
+    }, [tagFrequencies, selectedTag]);
+
+    const filteredPosts = useMemo(() => {
+        if (!selectedTag) return posts;
+        return posts.filter((p: any) => {
+            const tags = (p.tags && Array.isArray(p.tags) && p.tags.length > 0) ? p.tags : ['Otros'];
+            return tags.includes(selectedTag);
+        });
+    }, [posts, selectedTag]);
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -46,6 +82,11 @@ export default function BlogClient({ initialPosts }: BlogClientProps) {
                         <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em' }}>
                             Blog
                         </h1>
+                        {session?.user?.role === 'admin' && (
+                            <Link href="/editor/posts" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', background: '#f8fafc', color: '#64748b', padding: '0.4rem 0.8rem', borderRadius: '8px', border: '1px solid #e2e8f0', textDecoration: 'none', transition: 'all 0.2s', marginTop: '0.5rem' }}>
+                                <Plus size={14} /><span>Gestionar Posts</span>
+                            </Link>
+                        )}
                     </div>
                     <div className="home-lang-container mobile-hide" style={{ marginBottom: 0, marginTop: '0.6rem' }}>
                         <LanguageSwitcher />
@@ -53,14 +94,39 @@ export default function BlogClient({ initialPosts }: BlogClientProps) {
                 </div>
                 <p style={{ color: 'var(--muted)', fontSize: '1.1rem', marginTop: '0.2rem', fontWeight: '500' }}>
                     <span style={{ fontStyle: 'italic', opacity: 0.9 }}>
-                        {lang === 'es' ? 'Artículos, glosarios y notas sobre ciberseguridad, programación y más.' :
-                         lang === 'pt' ? 'Artigos, glossários e notas sobre cibersegurança, programação e mais.' :
-                         'Articles, glossaries, and notes on cybersecurity, programming, and more.'}
+                        {lang === 'es' ? 'Posts sobre ciberseguridad, desarrollo web y más.' :
+                            lang === 'pt' ? 'Posts sobre cibersegurança, desenvolvimento web e mais.' :
+                                'Posts about cybersecurity, web development and more.'}
                     </span>
                 </p>
             </header>
 
             <main style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {tagFrequencies.length > 0 && (
+                    <div style={{ display: 'flex', gap: '0.8rem', overflowX: 'auto', paddingBottom: '0.5rem', marginBottom: '1rem', scrollbarWidth: 'none' }}>
+                        {tagFrequencies.map(tag => (
+                            <button
+                                key={tag}
+                                onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
+                                style={{
+                                    padding: '0.5rem 1rem',
+                                    borderRadius: '999px',
+                                    border: 'none',
+                                    background: selectedTag === tag ? '#0f172a' : '#f1f5f9',
+                                    color: selectedTag === tag ? '#fff' : '#64748b',
+                                    fontWeight: '700',
+                                    fontSize: '0.9rem',
+                                    cursor: 'pointer',
+                                    whiteSpace: 'nowrap',
+                                    transition: 'all 0.2s ease'
+                                }}
+                            >
+                                {tag}
+                            </button>
+                        ))}
+                    </div>
+                )}
+
                 <ul className="post-list">
                     {isLoadingPosts ? (
                         [1, 2, 3].map(i => (
@@ -71,8 +137,8 @@ export default function BlogClient({ initialPosts }: BlogClientProps) {
                                 </div>
                             </li>
                         ))
-                    ) : posts.length > 0 ? (
-                        posts.map((post: any) => (
+                    ) : filteredPosts.length > 0 ? (
+                        filteredPosts.map((post: any) => (
                             <li key={post.slug} className="post-item">
                                 <Link href={`/blog/${post.slug}`}>
                                     <span className="post-date">{new Date(post.date).toLocaleDateString(lang, { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })}</span>

@@ -11,7 +11,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     title: "Blog",
-    description: lang === 'es' ? 'Artículos, glosarios y notas sobre ciberseguridad, programación y más.' : 'Articles, glossaries, and notes on cybersecurity, programming, and more.',
+    description: lang === 'es' ? 'Posts sobre ciberseguridad, desarrollo web y más.' : 'Articles, glossaries, and notes on cybersecurity, programming, and more.',
   };
 }
 
@@ -23,7 +23,7 @@ async function getInitialUnlistedPosts(lang: Locale) {
         where: { published: true, unlisted: true },
         orderBy: { date: 'desc' }
       });
-      
+
       if (posts && Array.isArray(posts)) {
         dbPosts = posts
           .filter(p => {
@@ -40,7 +40,8 @@ async function getInitialUnlistedPosts(lang: Locale) {
               title: titleObj[lang] || titleObj['es'] || '',
               description: descObj?.[lang] || descObj?.['es'] || '',
               alternativeSlug: p.alternativeSlug,
-              alternativeSlug2: p.alternativeSlug2
+              alternativeSlug2: p.alternativeSlug2,
+              tags: p.tags || []
             };
           });
       }

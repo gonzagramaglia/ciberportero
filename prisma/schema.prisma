@@ -144,6 +144,7 @@ model Post {
   description     Json?       // { "es": "...", "en": "...", "pt": "..." }
   published       Boolean     @default(false)
   unlisted        Boolean     @default(false)
+  tags            String[]    @default([])
   date            DateTime    @default(now())
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt

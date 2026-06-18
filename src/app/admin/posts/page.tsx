@@ -27,7 +27,7 @@ export default async function AdminPostsPage() {
             <h2 className="admin-title">Posts</h2>
           </div>
           <p className="admin-subtitle">
-            Gestión centralizada de artículos. Ver{" "}
+            Gestión centralizada de posts. Ver{" "}
             <Link href="/" target="_blank" style={{ color: 'var(--accent)', fontWeight: 700, textDecoration: 'underline' }}>
               Portal Público
             </Link>.
@@ -40,11 +40,11 @@ export default async function AdminPostsPage() {
       </div>
 
       <AdminPostsList posts={posts} />
-      <a 
-        href="https://emojis.hoy.today" 
-        target="_blank" 
+      <a
+        href="https://emojis.hoy.today"
+        target="_blank"
         rel="noopener noreferrer"
-        style={{ 
+        style={{
           position: 'fixed', bottom: '4rem', right: '4.5rem', width: '64px', height: '64px', borderRadius: '50%', background: 'white',
           display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
           color: '#0f172a', zIndex: 9999, border: '2px solid #e2e8f0'

@@ -32,6 +32,7 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
   const [published, setPublished] = useState(post?.published ?? true);
   const [unlisted, setUnlisted] = useState(isEditorPortal ? true : (post?.unlisted ?? false));
   const [countdowns, setCountdowns] = useState<any[]>(post?.countdowns || []);
+  const [tags, setTags] = useState<string>(post?.tags ? post.tags.join(', ') : '');
 
   const isDirty = useMemo(() => {
     const initialTitles = post?.title || { es: '', en: '', pt: '' };
@@ -40,6 +41,7 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
     const initialSlug = post?.slug || '';
     const initialPublished = post?.published ?? true;
     const initialCountdowns = post?.countdowns || [];
+    const initialTags = post?.tags ? post.tags.join(', ') : '';
 
     return JSON.stringify(titles) !== JSON.stringify(initialTitles) ||
            JSON.stringify(contents) !== JSON.stringify(initialContents) ||
@@ -49,8 +51,9 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
            alternativeSlug2 !== (post?.alternativeSlug2 || '') ||
            published !== initialPublished ||
            unlisted !== (post?.unlisted ?? false) ||
-           JSON.stringify(countdowns) !== JSON.stringify(initialCountdowns);
-  }, [titles, contents, descriptions, slug, alternativeSlug, published, countdowns, post]);
+           JSON.stringify(countdowns) !== JSON.stringify(initialCountdowns) ||
+           tags !== initialTags;
+  }, [titles, contents, descriptions, slug, alternativeSlug, alternativeSlug2, published, unlisted, countdowns, tags, post]);
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -96,7 +99,8 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
         description: descriptions,
         published,
         unlisted: isEditorPortal ? true : unlisted,
-        countdowns
+        countdowns,
+        tags: tags.split(',').map(t => t.trim()).filter(Boolean)
       });
       const finalUnlisted = isEditorPortal ? true : unlisted;
       router.push(`${isEditorPortal ? '/editor/posts' : '/admin/posts'}?success=${encodeURIComponent(titles.es)}&slug=${finalUnlisted ? `blog/${slug}` : slug}`);
@@ -281,6 +285,10 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
                   <div>
                     <label className="admin-label">Slug Opcional 2</label>
                     <input className="admin-input" value={alternativeSlug2} onChange={e => setAlternativeSlug2(e.target.value)} />
+                  </div>
+                  <div style={{ gridColumn: '1 / -1' }}>
+                    <label className="admin-label">Tags (separados por comas)</label>
+                    <input className="admin-input" value={tags} onChange={e => setTags(e.target.value)} placeholder="React, Ciberseguridad, Tutorial" />
                   </div>
                   <div style={{ display: 'flex', gap: '0.5rem', flexDirection: 'row', gridColumn: '1 / -1' }}>
                     <div onClick={() => setPublished(!published)} style={{ flex: 1, cursor: 'pointer', padding: '0.5rem', borderRadius: '16px', background: published ? '#f0fdf4' : '#fff1f2', border: `2px solid ${published ? '#22c55e' : '#fecdd3'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>

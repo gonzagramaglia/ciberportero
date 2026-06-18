@@ -7,12 +7,12 @@ import { DeleteButton } from "@/components/admin/DeleteButton";
 import { timeAgo } from "@/lib/utils";
 
 export default async function EditorPage() {
-  const posts = await db.post.findMany({ 
-    where: { 
+  const posts = await db.post.findMany({
+    where: {
       unlisted: true,
       slug: { not: 'links' }
     },
-    orderBy: { date: 'desc' } 
+    orderBy: { date: 'desc' }
   });
 
   return (
@@ -26,7 +26,7 @@ export default async function EditorPage() {
             <h2 className="admin-title">Posts del Blog</h2>
           </div>
           <p className="admin-subtitle">
-            Gestión de artículos del blog.
+            Gestión de posts del blog.
           </p>
         </div>
         <Link href="/editor/posts/new" className="btn-primary" style={{ textDecoration: 'none', boxShadow: '0 4px 12px rgba(0, 112, 243, 0.2)' }}>
@@ -55,17 +55,17 @@ export default async function EditorPage() {
                   <td style={{ verticalAlign: 'top' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                       <div className="admin-flex-center">
-                        <div style={{ 
-                          width: '32px', height: '32px', borderRadius: '8px', 
-                          background: '#f8fafc', display: 'flex', alignItems: 'center', 
+                        <div style={{
+                          width: '32px', height: '32px', borderRadius: '8px',
+                          background: '#f8fafc', display: 'flex', alignItems: 'center',
                           justifyContent: 'center', color: '#64748b', border: '1px solid #e2e8f0',
                           flexShrink: 0
                         }}>
                           <FileText size={16} />
                         </div>
-                        <Link 
-                          href={`/${post.slug}`} 
-                          target="_blank" 
+                        <Link
+                          href={`/blog/${post.slug}`}
+                          target="_blank"
                           style={{ fontWeight: 800, color: '#0f172a', textDecoration: 'none', lineHeight: 1.2 }}
                           className="post-title-link"
                         >
@@ -98,10 +98,10 @@ export default async function EditorPage() {
                   </td>
                   <td style={{ textAlign: 'right', verticalAlign: 'top', paddingTop: '0.75rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
-                      <Link 
-                        href={`/editor/posts/${post.id}`} 
-                        style={{ 
-                          width: '36px', height: '36px', borderRadius: '50%', background: 'white', 
+                      <Link
+                        href={`/editor/posts/${post.id}`}
+                        style={{
+                          width: '36px', height: '36px', borderRadius: '50%', background: 'white',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           color: '#94a3b8', border: '1px solid #e2e8f0', transition: 'all 0.2s'
                         }}
