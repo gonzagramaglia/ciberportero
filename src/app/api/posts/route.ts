@@ -18,7 +18,11 @@ export async function GET(request: Request) {
                             { alternativeSlug2: slug }
                         ]
                     },
-                    include: { countdowns: true }
+                    include: { 
+                        countdowns: {
+                            where: { isActive: true }
+                        }
+                    }
                 });
                 if (dbPost && dbPost.published) {
                     const titleObj = dbPost.title as any;

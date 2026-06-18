@@ -23,7 +23,9 @@ async function getPost(slug: string, session?: any) {
           ]
         },
         include: {
-          countdowns: true,
+          countdowns: {
+            where: { isActive: true }
+          },
           votes: true
         }
       });

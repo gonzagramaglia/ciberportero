@@ -22,7 +22,9 @@ async function getUnlistedPost(slug: string) {
           ]
         },
         include: { 
-          countdowns: true,
+          countdowns: {
+            where: { isActive: true }
+          },
           votes: true 
         }
       });

@@ -1008,10 +1008,10 @@ footer a:hover {
 .sidebar-widget {
   position: fixed;
   top: 5.5rem;
-  width: 210px;
+  width: 260px;
   background: linear-gradient(135deg, #1a4a6e 0%, #103253 100%);
   border-radius: 14px;
-  padding: 1.25rem 1.6rem;
+  padding: 1.25rem 2rem 1.25rem 1.6rem;
   color: white;
   z-index: 90;
   box-shadow: 0 8px 24px rgba(16, 50, 83, 0.35);
@@ -1090,12 +1090,19 @@ footer a:hover {
   opacity: 1;
 }
 
+@media (min-width: 601px) {
+  .countdown-clock {
+    display: none;
+  }
+}
+
 .countdown-timer {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 0.35rem;
-  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+  margin-bottom: 0.2rem;
 }
 
 .countdown-unit {
@@ -1162,6 +1169,8 @@ footer a:hover {
   height: 100%;
 }
 
+
+
 .inline-countdown.post-specific {
   background: linear-gradient(135deg, #22c55e 0%, #10b981 100%);
   box-shadow: 0 8px 24px rgba(16, 185, 129, 0.15);
@@ -1208,6 +1217,7 @@ footer a:hover {
   }
   .countdown-timer {
     gap: 0.2rem !important;
+    justify-content: flex-start !important;
   }
   .countdown-number {
     font-size: 1.1rem !important;
@@ -1217,7 +1227,7 @@ footer a:hover {
     letter-spacing: 0 !important;
   }
   .countdown-header {
-    font-size: 0.65rem !important;
+    font-size: 0.85rem !important;
     letter-spacing: 0.02em !important;
   }
 }

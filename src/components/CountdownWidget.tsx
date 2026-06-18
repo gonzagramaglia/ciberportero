@@ -150,14 +150,14 @@ export default function CountdownWidget({ countdowns: initialCountdowns, isInlin
                 const itemContent = (
                     <div className={widgetClass} style={{ cursor: cd.url ? 'pointer' : 'default' }}>
                         <div className="countdown-header" style={{ marginBottom: (cd.description || !time.expired) ? '0.5rem' : '0' }}>
-                            <Clock size={14} />
+                            <Clock size={14} className="countdown-clock" />
                             <span style={{ fontWeight: 900 }}>{processText(cd.title)}</span>
                         </div>
                         
                         {!time.expired ? (
                             <>
                                 {cd.description && (
-                                    <p className="countdown-desc" style={{ fontSize: '0.75rem', opacity: 0.8, marginBottom: '0.5rem', fontWeight: 600 }}>
+                                    <p className="countdown-desc" style={{ fontSize: '0.9rem', opacity: 0.8, marginBottom: '0.5rem', fontWeight: 600 }}>
                                         {processText(cd.description, isSingle)}
                                     </p>
                                 )}
