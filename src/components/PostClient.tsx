@@ -234,6 +234,51 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
         );
     };
 
+    const markdownComponents = React.useMemo(() => ({
+        a: ({ node, ...props }: any) => {
+            // Manually fix trailing underscores in URLs caught by the parser
+            let href = props.href || '';
+            const childrenText = String(props.children || '');
+            if (childrenText.startsWith('http') && childrenText.endsWith('_') && !href.endsWith('_')) {
+                href = childrenText;
+            }
+            return <a {...props} href={href} target="_blank" rel="noopener noreferrer" />;
+        },
+        h1: (props: any) => <Heading level={1} {...props} />,
+        h2: (props: any) => <Heading level={2} {...props} />,
+        h3: (props: any) => <Heading level={3} {...props} />,
+        h4: (props: any) => <Heading level={4} {...props} />,
+        h5: (props: any) => <Heading level={5} {...props} />,
+        h6: (props: any) => <Heading level={6} {...props} />,
+        img: ({ node, ...props }: any) => {
+            if (props.alt === 'youtube' && props.src) {
+                let videoId = '';
+                const src = props.src as string;
+                if (src.includes('youtube.com/watch?v=')) {
+                    videoId = src.split('v=')[1].split('&')[0];
+                } else if (src.includes('youtu.be/')) {
+                    videoId = src.split('youtu.be/')[1].split('?')[0];
+                }
+                if (videoId) {
+                    return (
+                        <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', borderRadius: '16px', margin: '2rem 0', border: '1px solid rgba(0,0,0,0.1)' }}>
+                            <iframe 
+                                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                                src={`https://www.youtube.com/embed/${videoId}`}
+                                title="YouTube video player"
+                                frameBorder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowFullScreen
+                            />
+                        </div>
+                    );
+                }
+            }
+            return <img {...props} style={{ cursor: 'zoom-in' }} onClick={() => setSelectedImage((props.src as string) || null)} />;
+        },
+        del: ({ node, ...props }: any) => <span style={{ color: '#ca8a04', fontWeight: '800' }} {...props} />
+    }), [activeHash, setSelectedImage]);
+
     return (
         <>
             {selectedImage && (
@@ -306,50 +351,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
 
                         <ReactMarkdown
                             remarkPlugins={[remarkGfm]}
-                            components={{
-                                a: ({ node, ...props }) => {
-                                    // Manually fix trailing underscores in URLs caught by the parser
-                                    let href = props.href || '';
-                                    const childrenText = String(props.children || '');
-                                    if (childrenText.startsWith('http') && childrenText.endsWith('_') && !href.endsWith('_')) {
-                                        href = childrenText;
-                                    }
-                                    return <a {...props} href={href} target="_blank" rel="noopener noreferrer" />;
-                                },
-                                h1: (props) => <Heading level={1} {...props} />,
-                                h2: (props) => <Heading level={2} {...props} />,
-                                h3: (props) => <Heading level={3} {...props} />,
-                                h4: (props) => <Heading level={4} {...props} />,
-                                h5: (props) => <Heading level={5} {...props} />,
-                                h6: (props) => <Heading level={6} {...props} />,
-                                img: ({ node, ...props }) => {
-                                    if (props.alt === 'youtube' && props.src) {
-                                        let videoId = '';
-                                        const src = props.src as string;
-                                        if (src.includes('youtube.com/watch?v=')) {
-                                            videoId = src.split('v=')[1].split('&')[0];
-                                        } else if (src.includes('youtu.be/')) {
-                                            videoId = src.split('youtu.be/')[1].split('?')[0];
-                                        }
-                                        if (videoId) {
-                                            return (
-                                                <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', borderRadius: '16px', margin: '2rem 0', border: '1px solid rgba(0,0,0,0.1)' }}>
-                                                    <iframe 
-                                                        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                                                        src={`https://www.youtube.com/embed/${videoId}`}
-                                                        title="YouTube video player"
-                                                        frameBorder="0"
-                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                                        allowFullScreen
-                                                    />
-                                                </div>
-                                            );
-                                        }
-                                    }
-                                    return <img {...props} style={{ cursor: 'zoom-in' }} onClick={() => setSelectedImage((props.src as string) || null)} />;
-                                },
-                                del: ({ node, ...props }) => <span style={{ color: '#ca8a04', fontWeight: '800' }} {...props} />
-                            }}
+                            components={markdownComponents}
                         >
                             {(() => {
                                 const trimmed = processedContent.trim();
