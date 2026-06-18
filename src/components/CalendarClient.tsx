@@ -337,7 +337,14 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
           key={day}
           id={`day-${dateStr}`}
           className={`calendar-day ${hasEvent ? `event-${dayEvents[0].type}` : ''} ${hasPersonalEvent ? 'has-personal' : ''} ${isSelected ? 'selected' : ''} ${isSelected && hasEvent ? `selected-${dayEvents[0].type}` : ''} ${isToday ? 'today' : ''} ${!hasEvent && (searchTerm || subjectFilter !== 'all') ? 'dimmed' : ''}`}
-          onClick={() => setSelectedDate(new Date(year, month, day))}
+          onClick={() => {
+            setSelectedDate(new Date(year, month, day));
+            if (hasEvent) {
+              setTimeout(() => {
+                document.getElementById('selected-events-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }, 50);
+            }
+          }}
         >
           <span className="day-number">{day}</span>
           {hasEvent && (
@@ -672,6 +679,9 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                   <div key={idx} className="upcoming-item" onClick={() => {
                     setCurrentDate(new Date(d.getFullYear(), d.getMonth(), 1));
                     setSelectedDate(d);
+                    setTimeout(() => {
+                      document.getElementById('selected-events-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 50);
                   }}>
                     <div className="upcoming-date">
                       <span className="upcoming-day">{d.getDate()}</span>

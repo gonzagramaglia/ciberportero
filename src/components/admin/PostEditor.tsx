@@ -33,6 +33,7 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
   const [unlisted, setUnlisted] = useState(isEditorPortal ? true : (post?.unlisted ?? false));
   const [countdowns, setCountdowns] = useState<any[]>(post?.countdowns || []);
   const [tags, setTags] = useState<string>(post?.tags ? post.tags.join(', ') : '');
+  const [date, setDate] = useState<string>(post?.date ? new Date(post.date).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16));
 
   const isDirty = useMemo(() => {
     const initialTitles = post?.title || { es: '', en: '', pt: '' };
@@ -42,6 +43,7 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
     const initialPublished = post?.published ?? true;
     const initialCountdowns = post?.countdowns || [];
     const initialTags = post?.tags ? post.tags.join(', ') : '';
+    const initialDate = post?.date ? new Date(post.date).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16);
 
     return JSON.stringify(titles) !== JSON.stringify(initialTitles) ||
            JSON.stringify(contents) !== JSON.stringify(initialContents) ||
@@ -52,8 +54,9 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
            published !== initialPublished ||
            unlisted !== (post?.unlisted ?? false) ||
            JSON.stringify(countdowns) !== JSON.stringify(initialCountdowns) ||
-           tags !== initialTags;
-  }, [titles, contents, descriptions, slug, alternativeSlug, alternativeSlug2, published, unlisted, countdowns, tags, post]);
+           tags !== initialTags ||
+           date !== initialDate;
+  }, [titles, contents, descriptions, slug, alternativeSlug, alternativeSlug2, published, unlisted, countdowns, tags, date, post]);
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -100,7 +103,8 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
         published,
         unlisted: isEditorPortal ? true : unlisted,
         countdowns,
-        tags: tags.split(',').map(t => t.trim()).filter(Boolean)
+        tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+        date: new Date(date).toISOString()
       });
       const finalUnlisted = isEditorPortal ? true : unlisted;
       router.push(`${isEditorPortal ? '/editor/posts' : '/admin/posts'}?success=${encodeURIComponent(titles.es)}&slug=${finalUnlisted ? `blog/${slug}` : slug}`);
@@ -273,24 +277,32 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
               {/* Slugs y Estado */}
               <div style={{ borderTop: '2px dashed #f1f5f9', paddingTop: '3.5rem' }}>
                 <h3 style={{ margin: '0 0 2rem 0', fontSize: '1.35rem', fontWeight: 900, color: '#0f172a' }}>Configuración de Slugs y Publicación</h3>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem', background: '#f8fafc', padding: '2rem', borderRadius: '24px', border: '1px solid #f1f5f9' }}>
-                  <div>
-                    <label className="admin-label">Slug Principal</label>
-                    <input className="admin-input" value={slug} onChange={e => setSlug(e.target.value)} required />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', background: '#f8fafc', padding: '2rem', borderRadius: '24px', border: '1px solid #f1f5f9' }}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem' }}>
+                    <div style={{ flex: '1 1 200px' }}>
+                      <label className="admin-label">Slug Principal</label>
+                      <input className="admin-input" value={slug} onChange={e => setSlug(e.target.value)} required />
+                    </div>
+                    <div style={{ flex: '1 1 200px' }}>
+                      <label className="admin-label">Slug Opcional 1</label>
+                      <input className="admin-input" value={alternativeSlug} onChange={e => setAlternativeSlug(e.target.value)} />
+                    </div>
+                    <div style={{ flex: '1 1 200px' }}>
+                      <label className="admin-label">Slug Opcional 2</label>
+                      <input className="admin-input" value={alternativeSlug2} onChange={e => setAlternativeSlug2(e.target.value)} />
+                    </div>
                   </div>
-                  <div>
-                    <label className="admin-label">Slug Opcional 1</label>
-                    <input className="admin-input" value={alternativeSlug} onChange={e => setAlternativeSlug(e.target.value)} />
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem' }}>
+                    <div style={{ flex: '1 1 200px' }}>
+                      <label className="admin-label">Fecha de Publicación</label>
+                      <input type="datetime-local" className="admin-input" value={date} onChange={e => setDate(e.target.value)} required />
+                    </div>
+                    <div style={{ flex: '2 1 300px' }}>
+                      <label className="admin-label">Tags (separados por comas)</label>
+                      <input className="admin-input" value={tags} onChange={e => setTags(e.target.value)} placeholder="React, Ciberseguridad, Tutorial" />
+                    </div>
                   </div>
-                  <div>
-                    <label className="admin-label">Slug Opcional 2</label>
-                    <input className="admin-input" value={alternativeSlug2} onChange={e => setAlternativeSlug2(e.target.value)} />
-                  </div>
-                  <div style={{ gridColumn: '1 / -1' }}>
-                    <label className="admin-label">Tags (separados por comas)</label>
-                    <input className="admin-input" value={tags} onChange={e => setTags(e.target.value)} placeholder="React, Ciberseguridad, Tutorial" />
-                  </div>
-                  <div style={{ display: 'flex', gap: '0.5rem', flexDirection: 'row', gridColumn: '1 / -1' }}>
+                  <div style={{ display: 'flex', gap: '0.5rem', flexDirection: 'row' }}>
                     <div onClick={() => setPublished(!published)} style={{ flex: 1, cursor: 'pointer', padding: '0.5rem', borderRadius: '16px', background: published ? '#f0fdf4' : '#fff1f2', border: `2px solid ${published ? '#22c55e' : '#fecdd3'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
                       <span style={{ fontWeight: 900, color: published ? '#166534' : '#9f1239', fontSize: '0.85rem' }}>{published ? 'PUBLICADO' : 'BORRADOR'}</span>
                     </div>
@@ -328,11 +340,12 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
                   </button>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
                   {(['left', 'right'] as const).map(slot => {
                     const c = countdowns.find(x => x.slot === slot);
                     return (
                       <div key={slot} style={{ 
+                        flex: '1 1 300px',
                         padding: '2.5rem', borderRadius: '32px', 
                         background: c ? '#fff' : 'rgba(241, 245, 249, 0.4)', 
                         border: c ? '1px solid #e2e8f0' : '2px dashed #e2e8f0',
@@ -345,9 +358,34 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
                             SLOT {slot === 'left' ? 'IZQUIERDO' : 'DERECHO'}
                           </span>
                           {c && (
-                            <button type="button" onClick={() => removeCountdown(slot)} style={{ background: '#fee2e2', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '0.6rem', borderRadius: '12px', transition: 'all 0.2s' }}>
-                              <Trash2 size={18} />
-                            </button>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                              <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '0.5rem', margin: 0 }} title="Habilitar o deshabilitar">
+                                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: c.isActive !== false ? '#10b981' : '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                  {c.isActive !== false ? 'Visible' : 'Oculto'}
+                                </span>
+                                <div style={{ 
+                                  width: '36px', height: '20px', borderRadius: '10px', 
+                                  background: c.isActive !== false ? '#10b981' : '#cbd5e1', 
+                                  position: 'relative', transition: 'all 0.2s ease'
+                                }}>
+                                  <div style={{
+                                    width: '16px', height: '16px', borderRadius: '50%', background: 'white',
+                                    position: 'absolute', top: '2px', left: c.isActive !== false ? '18px' : '2px',
+                                    transition: 'all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1)', boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
+                                  }} />
+                                </div>
+                                <input 
+                                  type="checkbox" 
+                                  checked={c.isActive !== false} 
+                                  onChange={e => updateCountdown(slot, 'isActive', e.target.checked)}
+                                  style={{ display: 'none' }}
+                                />
+                              </label>
+                              
+                              <button type="button" onClick={() => removeCountdown(slot)} style={{ background: '#fee2e2', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '0.6rem', borderRadius: '12px', transition: 'all 0.2s' }}>
+                                <Trash2 size={18} />
+                              </button>
+                            </div>
                           )}
                         </div>
 
@@ -410,8 +448,8 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
                               />
                             </div>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-                              <div>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem' }}>
+                              <div style={{ flex: '1 1 200px' }}>
                                 <label className="admin-label" style={{ fontWeight: 800 }}>Fecha Objetivo</label>
                                 <input 
                                   type="datetime-local"
@@ -421,7 +459,7 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
                                   onChange={e => updateCountdown(slot, 'targetDate', new Date(e.target.value).toISOString())}
                                 />
                               </div>
-                              <div>
+                              <div style={{ flex: '1 1 200px' }}>
                                 <label className="admin-label" style={{ fontWeight: 800 }}>URL Link</label>
                                 <input 
                                   type="url"

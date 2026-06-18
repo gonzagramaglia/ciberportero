@@ -200,6 +200,7 @@ export async function upsertPost(data: any) {
     published: data.published,
     unlisted: data.unlisted !== undefined ? data.unlisted : false,
     tags: data.tags || [],
+    date: data.date ? new Date(data.date) : new Date(),
   };
 
   if (isUpdate) {
