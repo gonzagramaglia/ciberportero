@@ -208,6 +208,17 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
     }, [activeHash]);
 
     useEffect(() => {
+        if (currentHash) {
+            setTimeout(() => {
+                const activeTocItem = document.querySelector('.desktop-toc a.active-toc-item');
+                if (activeTocItem) {
+                    activeTocItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            }, 100);
+        }
+    }, [currentHash]);
+
+    useEffect(() => {
         if (selectedImage) document.body.classList.add('lightbox-open');
         else document.body.classList.remove('lightbox-open');
         return () => document.body.classList.remove('lightbox-open');
