@@ -709,6 +709,10 @@ export async function uploadImage(formData: FormData) {
 
   const { supabaseAdmin } = await import('@/lib/supabase');
   
+  if (!supabaseAdmin) {
+    return { error: "Supabase credentials are not configured properly" };
+  }
+
   const buffer = Buffer.from(await file.arrayBuffer());
   const fileExt = file.name.split('.').pop();
   const filePath = `${slug}-${Date.now()}.${fileExt}`;
