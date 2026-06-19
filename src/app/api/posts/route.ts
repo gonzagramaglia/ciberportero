@@ -37,6 +37,7 @@ export async function GET(request: Request) {
                         description: descObj?.[lang] || descObj?.['es'] || descObj?.['en'] || '',
                         date: dbPost.date,
                         updatedAt: dbPost.updatedAt,
+                        keywords: dbPost.keywords || null,
                         availableLangs: Object.keys(titleObj).filter(l => titleObj[l] && contentObj[l]),
                         countdowns: dbPost.countdowns.map(c => ({
                             slot: c.slot,
@@ -88,7 +89,8 @@ export async function GET(request: Request) {
                         availableLangs: Object.keys(titleObj).filter(l => titleObj[l]),
                         alternativeSlug: p.alternativeSlug,
                         alternativeSlug2: p.alternativeSlug2,
-                        tags: p.tags || []
+                        tags: p.tags || [],
+                        keywords: p.keywords || null
                     };
                 });
         }

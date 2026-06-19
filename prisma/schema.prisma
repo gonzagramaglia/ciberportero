@@ -145,6 +145,7 @@ model Post {
   published       Boolean     @default(false)
   unlisted        Boolean     @default(false)
   tags            String[]    @default([])
+  keywords        String?
   date            DateTime    @default(now())
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
@@ -206,6 +207,7 @@ model Image {
   size      Int
   width     Int?
   height    Int?
+  source    String   @default("admin")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userId    String?

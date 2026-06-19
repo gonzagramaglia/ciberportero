@@ -21,7 +21,7 @@ export default function EditorImagesPage() {
         </div>
       </div>
 
-      <ImageManager filterByUploader={true} />
+      <ImageManager filterByUploader={true} source="editor" />
     </div>
   );
 }

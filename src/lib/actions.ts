@@ -200,6 +200,7 @@ export async function upsertPost(data: any) {
     published: data.published,
     unlisted: data.unlisted !== undefined ? data.unlisted : false,
     tags: data.tags || [],
+    keywords: data.keywords || null,
     date: data.date ? new Date(data.date) : new Date(),
   };
 
@@ -704,6 +705,8 @@ export async function uploadImage(formData: FormData) {
 
   if (!file || !slug) return { error: "Faltan datos" };
 
+  const source = formData.get('source') as string || 'admin';
+
   const { supabaseAdmin } = await import('@/lib/supabase');
   
   const buffer = Buffer.from(await file.arrayBuffer());
@@ -734,6 +737,7 @@ export async function uploadImage(formData: FormData) {
         filename: file.name,
         mimeType: file.type,
         size: file.size,
+        source,
         userId: user?.id || null,
       }
     });
@@ -747,23 +751,26 @@ export async function uploadImage(formData: FormData) {
   }
 }
 
-export async function getImages(filterByUploader: boolean = false) {
+export async function getImages(filterByUploader: boolean = false, source: string = 'admin') {
   const session = await auth();
   const user = await db.user.findUnique({ where: { id: session?.user?.id } });
   
   if ((user as any)?.role === 'admin') {
     if (filterByUploader) {
       return db.image.findMany({
-        where: { userId: user?.id },
+        where: { userId: user?.id, source },
         orderBy: { createdAt: 'desc' }
       });
     }
-    return db.image.findMany({ orderBy: { createdAt: 'desc' } });
+    return db.image.findMany({ 
+      where: { source },
+      orderBy: { createdAt: 'desc' } 
+    });
   }
   
   if ((user as any)?.role === 'editor') {
     return db.image.findMany({
-      where: { userId: user?.id },
+      where: { userId: user?.id, source },
       orderBy: { createdAt: 'desc' }
     });
   }

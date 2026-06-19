@@ -13,9 +13,10 @@ import {
 import './images.css';
 interface ImageManagerProps {
   filterByUploader?: boolean;
+  source?: 'admin' | 'editor';
 }
 
-export default function ImageManager({ filterByUploader = false }: ImageManagerProps) {
+export default function ImageManager({ filterByUploader = false, source = 'admin' }: ImageManagerProps) {
   const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
   const [slug, setSlug] = useState('');
@@ -36,7 +37,7 @@ export default function ImageManager({ filterByUploader = false }: ImageManagerP
   const fetchImages = async () => {
     setIsLoading(true);
     try {
-      const data = await getImages(filterByUploader);
+      const data = await getImages(filterByUploader, source);
       setImages(data);
     } catch (e) {
       console.error(e);
@@ -90,6 +91,7 @@ export default function ImageManager({ filterByUploader = false }: ImageManagerP
     const formData = new FormData();
     formData.append('file', file);
     formData.append('slug', slug);
+    formData.append('source', source);
 
     const result = await uploadImage(formData);
     if (result.success) {

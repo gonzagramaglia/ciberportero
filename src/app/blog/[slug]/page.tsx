@@ -53,6 +53,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: { absolute: title },
     description,
+    keywords: post.keywords ? post.keywords.split(',').map(k => k.trim()) : undefined,
     openGraph: {
       title,
       description,

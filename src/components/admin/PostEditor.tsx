@@ -33,6 +33,7 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
   const [unlisted, setUnlisted] = useState(isEditorPortal ? true : (post?.unlisted ?? false));
   const [countdowns, setCountdowns] = useState<any[]>(post?.countdowns || []);
   const [tags, setTags] = useState<string>(post?.tags ? post.tags.join(', ') : '');
+  const [keywords, setKeywords] = useState<string>(post?.keywords || '');
   const [date, setDate] = useState<string>(post?.date ? new Date(post.date).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16));
 
   const isDirty = useMemo(() => {
@@ -43,6 +44,7 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
     const initialPublished = post?.published ?? true;
     const initialCountdowns = post?.countdowns || [];
     const initialTags = post?.tags ? post.tags.join(', ') : '';
+    const initialKeywords = post?.keywords || '';
     const initialDate = post?.date ? new Date(post.date).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16);
 
     return JSON.stringify(titles) !== JSON.stringify(initialTitles) ||
@@ -53,10 +55,12 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
            alternativeSlug2 !== (post?.alternativeSlug2 || '') ||
            published !== initialPublished ||
            unlisted !== (post?.unlisted ?? false) ||
+           countdowns !== initialCountdowns || // using stringify is fine for countdowns but wait
            JSON.stringify(countdowns) !== JSON.stringify(initialCountdowns) ||
            tags !== initialTags ||
+           keywords !== initialKeywords ||
            date !== initialDate;
-  }, [titles, contents, descriptions, slug, alternativeSlug, alternativeSlug2, published, unlisted, countdowns, tags, date, post]);
+  }, [titles, contents, descriptions, slug, alternativeSlug, alternativeSlug2, published, unlisted, countdowns, tags, keywords, date, post]);
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -104,6 +108,7 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
         unlisted: isEditorPortal ? true : unlisted,
         countdowns,
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+        keywords: keywords.trim(),
         date: new Date(date).toISOString()
       });
       const finalUnlisted = isEditorPortal ? true : unlisted;
@@ -300,6 +305,10 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
                     <div style={{ flex: '2 1 300px' }}>
                       <label className="admin-label">Tags (separados por comas)</label>
                       <input className="admin-input" value={tags} onChange={e => setTags(e.target.value)} placeholder="React, Ciberseguridad, Tutorial" />
+                    </div>
+                    <div style={{ flex: '2 1 300px' }}>
+                      <label className="admin-label">Keywords SEO (separadas por comas)</label>
+                      <input className="admin-input" value={keywords} onChange={e => setKeywords(e.target.value)} placeholder="ej: tutorial react, guia ciberseguridad, 2024" />
                     </div>
                   </div>
                   <div style={{ display: 'flex', gap: '0.5rem', flexDirection: 'row' }}>

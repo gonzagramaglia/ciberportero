@@ -33,6 +33,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
     const [isHighlighting, setIsHighlighting] = useState(false);
     const [activeHash, setActiveHash] = useState<string | null>(null);
     const [currentHash, setCurrentHash] = useState<string>('');
+    const [focusedHashes, setFocusedHashes] = useState<string[]>([]);
     const [voted, setVoted] = useState<'LIKE' | 'DISLIKE' | null>(null);
     const t = translations[lang];
     const subjectSlugs = [
@@ -197,13 +198,47 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
             const element = document.getElementById(activeHash);
             if (element) {
                 const elements: HTMLElement[] = [];
+                const hashes: string[] = [activeHash];
+                const currentLevel = parseInt(element.tagName.replace('H', '')) || 6;
                 let next = element.nextElementSibling;
-                while (next && !['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(next.tagName) && next.tagName !== 'FOOTER' && !next.classList.contains('footer-main') && !next.classList.contains('copy-container')) {
+                
+                const isStopHeading = (tagName: string) => {
+                    if (!tagName.startsWith('H')) return false;
+                    const level = parseInt(tagName.replace('H', ''));
+                    return level <= currentLevel;
+                };
+
+                while (next && !isStopHeading(next.tagName) && next.tagName !== 'FOOTER' && !next.classList.contains('footer-main') && !next.classList.contains('copy-container')) {
                     elements.push(next as HTMLElement);
+                    if (next.tagName.startsWith('H') && next.id) {
+                        hashes.push(next.id);
+                    }
                     next = next.nextElementSibling;
                 }
+
+                // Also highlight parent headings (e.g. if H3 is focused, highlight its H2 parent)
+                let prev = element.previousElementSibling;
+                let currentSearchLevel = currentLevel;
+                while (prev) {
+                    if (prev.tagName.startsWith('H')) {
+                        const level = parseInt(prev.tagName.replace('H', ''));
+                        if (level < currentSearchLevel) {
+                            elements.push(prev as HTMLElement);
+                            if (prev.id) hashes.push(prev.id);
+                            currentSearchLevel = level;
+                            if (level === 1) break; // Reached the top heading
+                        }
+                    }
+                    prev = prev.previousElementSibling;
+                }
+
                 elements.forEach(el => el.classList.add('section-focus'));
+                setFocusedHashes(hashes);
+            } else {
+                setFocusedHashes([]);
             }
+        } else {
+            setFocusedHashes([]);
         }
     }, [activeHash]);
 
@@ -301,7 +336,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                 </div>
             )}
 
-            <div className={`container fade-in post-container ${isHighlighting ? 'highlight-active' : ''}`}>
+            <div className={`container fade-in post-container ${isHighlighting ? 'highlight-active' : ''} ${post.unlisted ? 'is-blog-post' : ''}`}>
                 <CountdownWidget countdowns={post?.countdowns} />
                 <NotificationBanners limitTo={
                     slug.includes('mate') ? 'mate' : slug.includes('ivu') ? 'ivu' : slug.includes('codeforces') ? 'none' : 'all'
@@ -354,7 +389,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                             <nav className="post-toc mobile-toc">
                                 <h3>{t.post.index}</h3>
                                 <ul>
-                                    {toc.map((header, i) => <li key={i} className={`toc-level-${header.level}`}><a href={`#${header.id}`} className={currentHash === `#${header.id}` ? 'active-toc-item' : ''}>{header.text}</a></li>)}
+                                    {toc.map((header, i) => <li key={i} className={`toc-level-${header.level}`}><a href={`#${header.id}`} className={(currentHash === `#${header.id}` || focusedHashes.includes(header.id)) ? 'active-toc-item' : ''}>{header.text}</a></li>)}
                                     <li className="toc-level-2"><a href="#comments" className={currentHash === '#comments' ? 'active-toc-item' : ''}>💬 {lang === 'es' ? 'Comentarios' : lang === 'pt' ? 'Comentários' : 'Comments'}</a></li>
                                 </ul>
                             </nav>
@@ -377,7 +412,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                             <nav className="post-toc desktop-toc">
                                 <h3>{t.post.index}</h3>
                                 <ul>
-                                    {toc.map((header, i) => <li key={i} className={`toc-level-${header.level}`}><a href={`#${header.id}`} className={currentHash === `#${header.id}` ? 'active-toc-item' : ''}>{header.text}</a></li>)}
+                                    {toc.map((header, i) => <li key={i} className={`toc-level-${header.level}`}><a href={`#${header.id}`} className={(currentHash === `#${header.id}` || focusedHashes.includes(header.id)) ? 'active-toc-item' : ''}>{header.text}</a></li>)}
                                     {!post.unlisted && (
                                         <li className="toc-level-2" style={{ marginTop: '0.5rem', borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '0.5rem' }}>
                                             <a href="#comments" className={currentHash === '#comments' ? 'active-toc-item' : ''} style={{ fontWeight: '700', color: '#64748b' }}>💬 {lang === 'es' ? 'Comentarios' : lang === 'pt' ? 'Comentários' : 'Comments'}</a>
@@ -471,6 +506,14 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                     margin-left: -1rem;
                     border-radius: 12px;
                     box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+                }
+                :global(.is-blog-post h1.section-focus),
+                :global(.is-blog-post h2.section-focus),
+                :global(.is-blog-post h3.section-focus),
+                :global(.is-blog-post h4.section-focus),
+                :global(.is-blog-post h5.section-focus),
+                :global(.is-blog-post h6.section-focus) {
+                    color: #eab308 !important;
                 }
                 :global(.section-focus a) {
                     color: #eab308 !important;
