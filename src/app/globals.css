@@ -1863,7 +1863,7 @@ html {
 }
 
 .post-toc .active-toc-item {
-  color: var(--accent) !important;
+  color: #eab308 !important;
   font-weight: 700;
 }
 
@@ -2000,6 +2000,10 @@ html {
     transition: all 0.2s ease;
     font-weight: 700;
     line-height: 1.5;
+  }
+
+  .mobile-toc li a.active-toc-item {
+    text-decoration-color: rgba(234, 179, 8, 0.4) !important;
   }
 
   .mobile-toc li a:active {

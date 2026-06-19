@@ -343,8 +343,8 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                             <nav className="post-toc mobile-toc">
                                 <h3>{t.post.index}</h3>
                                 <ul>
-                                    {toc.map((header, i) => <li key={i} className={`toc-level-${header.level}`}><a href={`#${header.id}`}>{header.text}</a></li>)}
-                                    <li className="toc-level-2"><a href="#comments">💬 {lang === 'es' ? 'Comentarios' : lang === 'pt' ? 'Comentários' : 'Comments'}</a></li>
+                                    {toc.map((header, i) => <li key={i} className={`toc-level-${header.level}`}><a href={`#${header.id}`} className={currentHash === `#${header.id}` ? 'active-toc-item' : ''}>{header.text}</a></li>)}
+                                    <li className="toc-level-2"><a href="#comments" className={currentHash === '#comments' ? 'active-toc-item' : ''}>💬 {lang === 'es' ? 'Comentarios' : lang === 'pt' ? 'Comentários' : 'Comments'}</a></li>
                                 </ul>
                             </nav>
                         )}
@@ -366,10 +366,10 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                             <nav className="post-toc desktop-toc">
                                 <h3>{t.post.index}</h3>
                                 <ul>
-                                    {toc.map((header, i) => <li key={i} className={`toc-level-${header.level}`}><a href={`#${header.id}`}>{header.text}</a></li>)}
+                                    {toc.map((header, i) => <li key={i} className={`toc-level-${header.level}`}><a href={`#${header.id}`} className={currentHash === `#${header.id}` ? 'active-toc-item' : ''}>{header.text}</a></li>)}
                                     {!post.unlisted && (
                                         <li className="toc-level-2" style={{ marginTop: '0.5rem', borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '0.5rem' }}>
-                                            <a href="#comments" style={{ fontWeight: '700', color: '#64748b' }}>💬 {lang === 'es' ? 'Comentarios' : lang === 'pt' ? 'Comentários' : 'Comments'}</a>
+                                            <a href="#comments" className={currentHash === '#comments' ? 'active-toc-item' : ''} style={{ fontWeight: '700', color: '#64748b' }}>💬 {lang === 'es' ? 'Comentarios' : lang === 'pt' ? 'Comentários' : 'Comments'}</a>
                                         </li>
                                     )}
                                 </ul>
@@ -431,7 +431,8 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
             <style jsx global>{`
                 .post-container.highlight-active :global(.nav-header-row),
                 .post-container.highlight-active :global(.footer-main),
-                .post-container.highlight-active :global(.post-sidebar),
+                .post-container.highlight-active :global(.post-sidebar h3),
+                .post-container.highlight-active :global(.post-sidebar a:not(.active-toc-item)),
                 .post-container.highlight-active :global(.post-date),
                 .post-container.highlight-active :global(.admin-edit-badge),
                 .post-container.highlight-active :global(.copy-container),
@@ -460,8 +461,11 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                     border-radius: 12px;
                     box-shadow: 0 20px 40px rgba(0,0,0,0.05);
                 }
+                :global(.section-focus a) {
+                    color: #eab308 !important;
+                }
                 .post-content { transition: all 0.6s ease; }
-                .subject-navigator { position: fixed; left: 2.5rem; bottom: 3.5rem; display: flex; flex-direction: column; gap: 1rem; z-index: 1000; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+                .subject-navigator { position: fixed; left: 2.5rem; bottom: 3.5rem; display: flex; flex-direction: column-reverse; gap: 1rem; z-index: 1000; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
                 .subject-nav-item { width: 62px; height: 62px; border-radius: 50%; background: #ffffff; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); color: #1e293b; font-weight: 900; font-size: 1.3rem; text-decoration: none; opacity: 0.8; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
                 .subject-nav-item.active { background: #fff; border: 2px solid var(--accent); color: var(--accent); box-shadow: 0 0 20px rgba(0, 112, 243, 0.15); pointer-events: none; opacity: 1; }
                 .copy-button:hover { background: #f8fafc; border-color: #cbd5e1; transform: translateY(-1px); }
