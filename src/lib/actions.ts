@@ -763,7 +763,6 @@ export async function getImages(filterByUploader: boolean = false, source: strin
       });
     }
     return db.image.findMany({ 
-      where: { source },
       orderBy: { createdAt: 'desc' } 
     });
   }
@@ -792,7 +791,7 @@ export async function deleteImage(id: string) {
 
   const { supabaseAdmin } = await import('@/lib/supabase');
   const path = image.url.split('/').pop();
-  if (path) {
+  if (supabaseAdmin && path) {
     await supabaseAdmin.storage.from('images').remove([path]);
   }
 

@@ -256,3 +256,13 @@
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+.im-hide-mobile {
+  display: inline;
+}
+
+@media (max-width: 600px) {
+  .im-hide-mobile {
+    display: none;
+  }
+}

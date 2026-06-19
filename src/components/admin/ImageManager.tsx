@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { uploadImage, getImages, deleteImage } from '@/lib/actions';
 import { 
@@ -25,12 +26,15 @@ export default function ImageManager({ filterByUploader = false, source = 'admin
   const [isLoading, setIsLoading] = useState(true);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
+  const [imageToDelete, setImageToDelete] = useState<{id: string, slug: string} | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [mounted, setMounted] = useState(false);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    setMounted(true);
     fetchImages();
   }, []);
 
@@ -101,18 +105,20 @@ export default function ImageManager({ filterByUploader = false, source = 'admin
       setSlug('');
       if (fileInputRef.current) fileInputRef.current.value = '';
       fetchImages();
-      router.push(`/admin/images?success=${encodeURIComponent(uploadedSlug)}&message=${encodeURIComponent('Imagen subida con éxito')}&slug=${encodeURIComponent(imageUrl)}`);
+      const redirectPath = source === 'editor' ? '/editor/images' : '/admin/images';
+      router.push(`${redirectPath}?success=${encodeURIComponent(uploadedSlug)}&message=${encodeURIComponent('Imagen subida con éxito')}&slug=${encodeURIComponent(imageUrl)}`);
     } else {
       alert(result.error);
     }
     setIsUploading(false);
   };
 
-  const handleDelete = async (id: string, slug: string) => {
-    if (!confirm(`¿Estás seguro de eliminar la imagen "${slug}"?`)) return;
-    const result = await deleteImage(id);
+  const confirmDelete = async () => {
+    if (!imageToDelete) return;
+    const result = await deleteImage(imageToDelete.id);
     if (result.success) {
-      setImages(images.filter(img => img.id !== id));
+      setImages(images.filter(img => img.id !== imageToDelete.id));
+      setImageToDelete(null);
     } else {
       alert(result.error);
     }
@@ -322,7 +328,12 @@ export default function ImageManager({ filterByUploader = false, source = 'admin
                           </a>
                         </td>
                         <td>
-                          <span className="im-asset-filename">{img.filename}</span>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <span className="im-asset-filename">{img.filename}</span>
+                            {img.source === 'editor' && source !== 'editor' && (
+                              <span style={{ fontSize: '0.65rem', padding: '2px 6px', background: '#fef3c7', color: '#d97706', borderRadius: '4px', fontWeight: 800 }}>EDITOR</span>
+                            )}
+                          </div>
                         </td>
                         <td>
                           <div className="im-asset-actions-row">
@@ -335,7 +346,7 @@ export default function ImageManager({ filterByUploader = false, source = 'admin
                               <span>{copiedId === img.id ? 'COPIADO' : 'COPIAR'}</span>
                             </button>
                             <button 
-                              onClick={() => handleDelete(img.id, img.slug)}
+                              onClick={() => setImageToDelete({ id: img.id, slug: img.slug })}
                               className="im-btn-delete-small"
                               title="Eliminar"
                             >
@@ -357,6 +368,31 @@ export default function ImageManager({ filterByUploader = false, source = 'admin
           </footer>
         </section>
       </div>
+
+      {mounted && imageToDelete && createPortal(
+        <div 
+          style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999 }}
+          onClick={() => setImageToDelete(null)}
+        >
+          <div 
+            style={{ background: 'white', padding: '2rem', borderRadius: '16px', maxWidth: '400px', width: '90%', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 900, marginBottom: '1rem', color: '#0f172a' }}>Confirmar Eliminación</h3>
+            <p style={{ color: '#475569', marginBottom: '1.5rem', lineHeight: '1.5' }}>
+              ¿Estás seguro de que quieres eliminar la imagen <strong>{imageToDelete.slug}</strong>? Esta acción no se puede deshacer.
+            </p>
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'space-between' }}>
+              <button onClick={() => setImageToDelete(null)} className="btn-secondary">Cancelar</button>
+              <button onClick={confirmDelete} className="btn-primary" style={{ background: '#ef4444' }}>
+                <Trash2 size={16} />
+                <span>Eliminar<span className="im-hide-mobile"> Imagen</span></span>
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
 
       <style jsx>{`
         .animate-spin { animation: spin 1s linear infinite; }
