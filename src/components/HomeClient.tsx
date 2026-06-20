@@ -198,7 +198,7 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
             </main>
 
             <div className="home-cover">
-                <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer"><img src="/blog.png" alt="Ciberportero Blog Cover" style={{ width: '100%', borderRadius: '12px', cursor: 'pointer' }} /></a>
+                <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer"><img src="/portada.jpeg" alt="Ciberportero Blog Cover" style={{ width: '100%', borderRadius: '12px', cursor: 'pointer' }} /></a>
             </div>
 
             <footer className="footer-main">
