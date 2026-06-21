@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '../context/LanguageContext';
 import { translations } from '../lib/translations';
-import { Github, Youtube, BookOpen, Calendar, Info, Link as LinkIcon, X, Zap , Coffee } from 'lucide-react';
+import { Github, Youtube, BookOpen, Calendar, Info, Link as LinkIcon, X, Zap, Coffee } from 'lucide-react';
 import NotificationBanners from './NotificationBanners';
 import CountdownWidget from './CountdownWidget';
 import { useSession } from 'next-auth/react';
@@ -192,7 +192,7 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                                 Calendario Tentativo
                             </h2>
                         </div>
-                        <div className="intro-cover" onClick={() => handleImageClick('/intro.png')}><img src="/intro.png" alt="Calendario Académico de Grado 2026" style={{ width: '100%', borderRadius: '12px', cursor: 'zoom-in' }} /></div>
+                        <div className="intro-cover" onClick={() => handleImageClick('/intro-ghibli.jpeg')}><img src="/intro-ghibli.jpeg" alt="Calendario Académico de Grado 2026" style={{ width: '100%', borderRadius: '12px', cursor: 'zoom-in' }} /></div>
                     </>
                 )}
             </main>

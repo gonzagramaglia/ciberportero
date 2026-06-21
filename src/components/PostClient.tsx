@@ -307,6 +307,8 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                     videoId = src.split('v=')[1].split('&')[0];
                 } else if (src.includes('youtu.be/')) {
                     videoId = src.split('youtu.be/')[1].split('?')[0];
+                } else if (src.includes('youtube.com/shorts/')) {
+                    videoId = src.split('youtube.com/shorts/')[1].split('?')[0];
                 }
                 if (videoId) {
                     return (
@@ -483,7 +485,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                         const id = num.toString().padStart(2, '0');
                         const sSlug = `owasp-${num}`;
                         
-                        if (num >= 8) {
+                        if (num >= 9) {
                             return (
                                 <span
                                     key={id}
@@ -516,7 +518,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                 </div>
             )}
 
-            {!post.unlisted && <FloatingMusicButton hideOnMobile />}
+            {(!post.unlisted || owaspSlugs.includes(slug)) && <FloatingMusicButton hideOnMobile isOwasp={owaspSlugs.includes(slug)} />}
             <style jsx global>{`
                 .post-container.highlight-active :global(.nav-header-row),
                 .post-container.highlight-active :global(.footer-main),

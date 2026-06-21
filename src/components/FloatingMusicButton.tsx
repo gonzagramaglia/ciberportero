@@ -4,18 +4,24 @@ import { Music } from 'lucide-react';
 
 interface FloatingMusicButtonProps {
     hideOnMobile?: boolean;
+    isOwasp?: boolean;
 }
 
-export default function FloatingMusicButton({ hideOnMobile }: FloatingMusicButtonProps = {}) {
+export default function FloatingMusicButton({ hideOnMobile, isOwasp }: FloatingMusicButtonProps = {}) {
+    const url = isOwasp ? "https://youtu.be/Jzr0Jdnq_EI" : "https://youtu.be/3jqTLDHQRMo";
     return (
         <a
-            href="https://youtu.be/3jqTLDHQRMo"
+            href={url}
             target="_blank"
             rel="noopener noreferrer"
-            className={`floating-music-btn ${hideOnMobile ? 'hide-on-mobile' : ''}`}
+            className={`floating-music-btn ${hideOnMobile ? 'hide-on-mobile' : ''} ${isOwasp ? 'owasp-btn' : ''}`}
             aria-label="Escuchar música"
         >
-            <Music size={28} className="music-icon" />
+            {isOwasp ? (
+                <img src="/owasp-logo.png" alt="OWASP Logo" className="music-icon" style={{ width: '44px', height: '44px' }} />
+            ) : (
+                <Music size={28} className="music-icon" />
+            )}
             <style jsx>{`
                 .floating-music-btn {
                     position: fixed;
@@ -65,6 +71,12 @@ export default function FloatingMusicButton({ hideOnMobile }: FloatingMusicButto
                     :global(.music-icon) {
                         width: 22px !important;
                         height: 22px !important;
+                    }
+                }
+
+                @media (max-width: 1700px) {
+                    .owasp-btn {
+                        display: none !important;
                     }
                 }
 
