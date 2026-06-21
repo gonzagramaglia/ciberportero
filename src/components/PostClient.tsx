@@ -4,6 +4,7 @@ import React, { useState, useEffect, useLayoutEffect } from 'react';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import remarkBreaks from 'remark-breaks';
 import { ChevronLeft, Github, Youtube, ArrowUp, ArrowDown, X, Link2, Check, Edit, ThumbsUp, Coffee } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { translations } from '../lib/translations';
@@ -107,7 +108,8 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
 
     // FIX: Robustly wrap plain text URLs containing underscores in < > to prevent Markdown italics
     const processedContent = String(postContent)
-        .replace(/(^|\s)(https?:\/\/[^\s<*>]*_[^\s<*>]*)/g, '$1<$2>');
+        .replace(/(^|\s)(https?:\/\/[^\s<*>]*_[^\s<*>]*)/g, '$1<$2>')
+        .replace(/([.:;])\s+-\s/g, '$1\n- ');
 
     const slugify = (text: any) => {
         const str = String(text || '');
@@ -299,6 +301,9 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
         h4: (props: any) => <Heading level={4} {...props} />,
         h5: (props: any) => <Heading level={5} {...props} />,
         h6: (props: any) => <Heading level={6} {...props} />,
+        ul: ({ node, ...props }: any) => <ul style={{ paddingLeft: '2rem', marginBottom: '2rem', listStyleType: 'disc', display: 'block' }} {...props} />,
+        ol: ({ node, ...props }: any) => <ol style={{ paddingLeft: '2rem', marginBottom: '2rem', listStyleType: 'decimal', display: 'block' }} {...props} />,
+        li: ({ node, ...props }: any) => <li style={{ lineHeight: '1.8', color: '#1e293b', marginBottom: '1rem', paddingLeft: '0.5rem' }} {...props} />,
         img: ({ node, ...props }: any) => {
             if (props.alt === 'youtube' && props.src) {
                 let videoId = '';
@@ -401,7 +406,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                         )}
 
                         <ReactMarkdown
-                            remarkPlugins={[remarkGfm]}
+                            remarkPlugins={[remarkGfm, remarkBreaks]}
                             components={markdownComponents}
                         >
                             {(() => {
@@ -485,19 +490,6 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                         const id = num.toString().padStart(2, '0');
                         const sSlug = `owasp-${num}`;
                         
-                        if (num >= 9) {
-                            return (
-                                <span
-                                    key={id}
-                                    className="subject-nav-item"
-                                    style={{ opacity: 0.4, cursor: 'not-allowed', backgroundColor: '#f1f5f9' }}
-                                    title="Próximamente"
-                                >
-                                    {id}
-                                </span>
-                            );
-                        }
-
                         return (
                             <Link
                                 key={id}

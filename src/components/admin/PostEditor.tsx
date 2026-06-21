@@ -6,6 +6,7 @@ import { Save, X, ExternalLink, Smile, Plus, Trash2, ArrowLeftRight } from 'luci
 import { upsertPost } from '@/lib/actions';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import remarkBreaks from 'remark-breaks';
 import LanguageTabs from './LanguageTabs';
 import { toLocalISOString } from '@/lib/utils';
 
@@ -173,7 +174,7 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
           </div>
         </div>
 
-        <LanguageTabs active={activeLang} onChange={(l: any) => setActiveLang(l)} />
+        <LanguageTabs active={activeLang} onChange={(l: any) => setActiveLang(l)} hidePt />
 
         <div className="space-y-12">
           <div className="admin-card" style={{ padding: '3rem', borderRadius: '32px' }}>
@@ -232,7 +233,7 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
                   ) : (
                     <div className="markdown-preview" style={{ minHeight: '600px', background: '#f8fafc', padding: '3rem', border: '1px dashed #cbd5e1', borderRadius: '24px' }}>
                       <ReactMarkdown 
-                        remarkPlugins={[remarkGfm]}
+                        remarkPlugins={[remarkGfm, remarkBreaks]}
                         components={{
                           a: ({ node, ...props }) => {
                             let href = props.href || '';
@@ -272,6 +273,7 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
                       >
                         {String(contents[activeLang])
                           .replace(/(^|\s)(https?:\/\/[^\s<*>]*_[^\s<*>]*)/g, '$1<$2>')
+                          .replace(/([.:;])\s+-\s/g, '$1\n- ')
                           .trim()}
                       </ReactMarkdown>
                     </div>

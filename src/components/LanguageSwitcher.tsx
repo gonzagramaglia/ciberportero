@@ -61,6 +61,10 @@ export default function LanguageSwitcher({ availableLangs }: LanguageSwitcherPro
         const isAvailable = !availableLangs || availableLangs.includes(l);
         const isActive = lang === l;
 
+        if (l === 'pt' && (pathname.includes('/blog') || pathname.includes('/editor'))) {
+            return null;
+        }
+
         return (
             <button
                 key={l}

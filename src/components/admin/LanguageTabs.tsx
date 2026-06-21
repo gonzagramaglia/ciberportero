@@ -3,13 +3,14 @@
 interface Props {
   active: 'es' | 'en' | 'pt';
   onChange: (lang: 'es' | 'en' | 'pt') => void;
+  hidePt?: boolean;
 }
 
-export default function LanguageTabs({ active, onChange }: Props) {
+export default function LanguageTabs({ active, onChange, hidePt }: Props) {
   const languages = [
     { id: 'es', label: 'Español', flag: '🇦🇷' },
     { id: 'en', label: 'English', flag: '🇬🇧' },
-    { id: 'pt', label: 'Português', flag: '🇧🇷' },
+    ...(hidePt ? [] : [{ id: 'pt', label: 'Português', flag: '🇧🇷' }]),
   ];
 
   return (

@@ -38,9 +38,11 @@ export default function BlogClient({ initialPosts }: BlogClientProps) {
 
     // Set default selected tag when tags are loaded
     useEffect(() => {
-        if (tagFrequencies.length > 0 && !selectedTag) {
-            setSelectedTag(tagFrequencies[0]);
-        } else if (tagFrequencies.length === 0) {
+        if (tagFrequencies.length > 0) {
+            if (!selectedTag || !tagFrequencies.includes(selectedTag)) {
+                setSelectedTag(tagFrequencies[0]);
+            }
+        } else {
             setSelectedTag(null);
         }
     }, [tagFrequencies, selectedTag]);
