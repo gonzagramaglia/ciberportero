@@ -40,6 +40,9 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
         'sistemas-operativos-1', 'ingles-1', 'gsi', 'algebra-1', 'analisis-1',
         'aprobar-sistemas-operativos-1', 'aprobar-ingles-1', 'aprobar-gsi', 'aprobar-algebra-1', 'aprobar-analisis-1'
     ];
+    const owaspSlugs = ['owasp-top-10', ...Array.from({ length: 10 }, (_, i) => `owasp-${i + 1}`)];
+
+
 
     // Sync state with props when server revalidates
     useEffect(() => {
@@ -473,6 +476,46 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                 </div>
             )}
 
+            {owaspSlugs.includes(slug) && (
+                <div className="subject-navigator">
+                    {Array.from({ length: 10 }, (_, i) => {
+                        const num = i + 1;
+                        const id = num.toString().padStart(2, '0');
+                        const sSlug = `owasp-${num}`;
+                        
+                        if (num >= 8) {
+                            return (
+                                <span
+                                    key={id}
+                                    className="subject-nav-item"
+                                    style={{ opacity: 0.4, cursor: 'not-allowed', backgroundColor: '#f1f5f9' }}
+                                    title="Próximamente"
+                                >
+                                    {id}
+                                </span>
+                            );
+                        }
+
+                        return (
+                            <Link
+                                key={id}
+                                href={`/blog/${sSlug}${currentHash}`}
+                                className={`subject-nav-item ${slug === sSlug ? 'active' : ''}`}
+                            >
+                                {id}
+                            </Link>
+                        );
+                    }).reverse()}
+                    <Link
+                        key="00"
+                        href={`/blog/owasp-top-10${currentHash}`}
+                        className={`subject-nav-item ${slug === 'owasp-top-10' ? 'active' : ''}`}
+                    >
+                        00
+                    </Link>
+                </div>
+            )}
+
             {!post.unlisted && <FloatingMusicButton hideOnMobile />}
             <style jsx global>{`
                 .post-container.highlight-active :global(.nav-header-row),
@@ -554,13 +597,17 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                 }
                 .vote-button span { font-size: 0.9rem; }
 
-                @media (max-width: 1200px) {
+                @media (max-width: 1700px) {
                     .subject-navigator { 
                         left: 50%; 
                         bottom: 2.5rem; 
                         transform: translateX(-50%); 
-                        flex-direction: row; 
+                        flex-direction: row-reverse; 
                         gap: 0.6rem; 
+                        flex-wrap: wrap-reverse;
+                        justify-content: center;
+                        width: max-content;
+                        max-width: 95vw;
                     }
                     .subject-nav-item {
                         width: 52px;
@@ -579,7 +626,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                         font-size: 0.9rem;
                     }
                 }
-                @media (max-width: 1200px) { .fab-container { display: none !important; } }
+                @media (max-width: 1700px) { .fab-container { display: none !important; } }
             `}</style>
         </>
     );
