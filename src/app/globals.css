@@ -1025,8 +1025,8 @@ footer a:hover {
 }
 
 .sidebar-widget-left {
-  right: calc(50% + 600px + 3.5rem);
-  left: auto;
+  left: max(1.5rem, calc(50% - 600px - 3.5rem - 260px));
+  right: auto;
   top: 7.15rem;
 }
 
@@ -1035,8 +1035,8 @@ footer a:hover {
 }
 
 .sidebar-widget-right {
-  left: calc(50% + 600px + 3.5rem);
-  right: auto;
+  right: max(1.5rem, calc(50% - 600px - 3.5rem - 260px));
+  left: auto;
   top: 7.15rem;
 }
 
@@ -1758,6 +1758,8 @@ html {
 .header-anchor-link {
   position: absolute;
   left: -1.75rem;
+  top: 50%;
+  transform: translateY(-50%);
   opacity: 0;
   transition: opacity 0.2s ease, color 0.2s ease;
   color: #94a3b8;

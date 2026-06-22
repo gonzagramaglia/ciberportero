@@ -18,6 +18,8 @@ import { votePost } from '../lib/actions';
 import { toast } from 'react-hot-toast';
 import FloatingMusicButton from './FloatingMusicButton';
 
+const LinkContext = React.createContext(false);
+
 interface PostClientProps {
     post: any;
     slug: string;
@@ -170,6 +172,15 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
         setTimeout(() => setCopied(false), 2000);
     };
 
+    const handleClearHash = () => {
+        window.history.pushState(null, '', window.location.pathname + window.location.search);
+        setCurrentHash('');
+        setActiveHash(null);
+        setFocusedHashes([]);
+        setIsHighlighting(false);
+        document.querySelectorAll('.section-focus').forEach(el => el.classList.remove('section-focus'));
+    };
+
 
     useEffect(() => {
         const handleHash = () => {
@@ -275,25 +286,54 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
         const id = slugify(text);
         const Tag = `h${level}` as any;
         const isActive = activeHash === id;
-        const style = level === 1 ? { display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' } : {};
-        if (level === 1) return <Tag id={id} {...props} style={style} className={isActive ? 'section-focus' : ''}>{children}</Tag>;
+        const style = level === 1 ? { display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', cursor: 'pointer' } : {};
+        if (level === 1) return <Tag id={id} {...props} style={style} className={isActive ? 'section-focus' : ''} onClick={handleClearHash} title={lang === 'es' ? 'Limpiar selección' : 'Clear selection'}>{children}</Tag>;
+        const handleHeadingClick = () => {
+            window.location.hash = id;
+            navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}#${id}`);
+            toast.success(lang === 'es' ? 'Enlace copiado' : 'Link copied');
+        };
+
         return (
-            <Tag id={id} {...props} className={`post-header-anchor ${isActive ? 'section-focus' : ''}`} style={style}>
+            <Tag 
+                id={id} 
+                {...props} 
+                className={`post-header-anchor ${isActive ? 'section-focus' : ''}`} 
+                style={{ ...style, cursor: 'pointer' }}
+                onClick={handleHeadingClick}
+            >
                 {children}
-                <a href={`#${id}`} className="header-anchor-link"><Link2 size={18} strokeWidth={3} /></a>
+                <a 
+                    href={`#${id}`} 
+                    className="header-anchor-link"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}#${id}`);
+                        toast.success(lang === 'es' ? 'Enlace copiado' : 'Link copied');
+                    }}
+                >
+                    <Link2 size={18} strokeWidth={3} />
+                </a>
             </Tag>
         );
     };
 
     const markdownComponents = React.useMemo(() => ({
         a: ({ node, ...props }: any) => {
-            // Manually fix trailing underscores in URLs caught by the parser
+            const isInsideLink = React.useContext(LinkContext);
             let href = props.href || '';
             const childrenText = String(props.children || '');
             if (childrenText.startsWith('http') && childrenText.endsWith('_') && !href.endsWith('_')) {
                 href = childrenText;
             }
-            return <a {...props} href={href} target="_blank" rel="noopener noreferrer" />;
+            if (isInsideLink) {
+                return <span className="nested-link" style={{ wordBreak: 'break-all' }}>{props.children}</span>;
+            }
+            return (
+                <LinkContext.Provider value={true}>
+                    <a {...props} href={href} target="_blank" rel="noopener noreferrer" />
+                </LinkContext.Provider>
+            );
         },
         h1: (props: any) => <Heading level={1} {...props} />,
         h2: (props: any) => <Heading level={2} {...props} />,
@@ -397,7 +437,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
 
                         {hasVisibleTocItems && (
                             <nav className="post-toc mobile-toc">
-                                <h3>{t.post.index}</h3>
+                                <h3 onClick={handleClearHash} style={{ cursor: 'pointer' }} title={lang === 'es' ? 'Limpiar selección' : 'Clear selection'}>{t.post.index}</h3>
                                 <ul>
                                     {toc.map((header, i) => <li key={i} className={`toc-level-${header.level}`}><a href={`#${header.id}`} className={(currentHash === `#${header.id}` || focusedHashes.includes(header.id)) ? 'active-toc-item' : ''}>{header.text}</a></li>)}
                                     <li className="toc-level-2"><a href="#comments" className={currentHash === '#comments' ? 'active-toc-item' : ''}>💬 {lang === 'es' ? 'Comentarios' : lang === 'pt' ? 'Comentários' : 'Comments'}</a></li>
@@ -420,7 +460,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                     {hasVisibleTocItems && (
                         <aside className="post-sidebar">
                             <nav className="post-toc desktop-toc">
-                                <h3>{t.post.index}</h3>
+                                <h3 onClick={handleClearHash} style={{ cursor: 'pointer' }} title={lang === 'es' ? 'Limpiar selección' : 'Clear selection'}>{t.post.index}</h3>
                                 <ul>
                                     {toc.map((header, i) => <li key={i} className={`toc-level-${header.level}`}><a href={`#${header.id}`} className={(currentHash === `#${header.id}` || focusedHashes.includes(header.id)) ? 'active-toc-item' : ''}>{header.text}</a></li>)}
                                     {!post.unlisted && (
@@ -484,7 +524,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
             )}
 
             {owaspSlugs.includes(slug) && (
-                <div className="subject-navigator">
+                <div className="subject-navigator owasp-navigator">
                     {Array.from({ length: 10 }, (_, i) => {
                         const num = i + 1;
                         const id = num.toString().padStart(2, '0');
@@ -558,7 +598,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                 .post-content { transition: all 0.6s ease; }
                 .subject-navigator { position: fixed; left: 2.5rem; bottom: 3.5rem; display: flex; flex-direction: column-reverse; gap: 1rem; z-index: 1000; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
                 .subject-nav-item { width: 62px; height: 62px; border-radius: 50%; background: #ffffff; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); color: #1e293b; font-weight: 900; font-size: 1.3rem; text-decoration: none; opacity: 0.8; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-                .subject-nav-item.active { background: #fff; border: 2px solid var(--accent); color: var(--accent); box-shadow: 0 0 20px rgba(0, 112, 243, 0.15); pointer-events: none; opacity: 1; }
+                .subject-nav-item.active { background: #fff; border: 2px solid #eab308; color: #eab308; box-shadow: 0 0 20px rgba(234, 179, 8, 0.2); pointer-events: none; opacity: 1; }
                 .copy-button:hover { background: #f8fafc; border-color: #cbd5e1; transform: translateY(-1px); }
                 .copy-button.success { background: #f0fdf4; border-color: #4ade80; color: #166534; }
                 
@@ -609,10 +649,18 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                         font-size: 1.1rem;
                     }
                 }
+                @media (max-width: 1100px) {
+                    .subject-navigator.owasp-navigator {
+                        width: calc(6 * 52px + 5 * 0.6rem + 2px);
+                    }
+                }
                 @media (max-width: 640px) {
                     .subject-navigator {
                         bottom: 1.5rem;
                         gap: 0.4rem;
+                    }
+                    .subject-navigator.owasp-navigator {
+                        width: calc(6 * 42px + 5 * 0.4rem + 2px);
                     }
                     .subject-nav-item {
                         width: 42px;
