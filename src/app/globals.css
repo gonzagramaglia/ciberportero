@@ -1008,10 +1008,10 @@ footer a:hover {
 .sidebar-widget {
   position: fixed;
   top: 5.5rem;
-  width: 260px;
+  width: 230px;
   background: linear-gradient(135deg, #1a4a6e 0%, #103253 100%);
   border-radius: 14px;
-  padding: 1.25rem 2rem 1.25rem 1.6rem;
+  padding: 1.25rem 1.5rem;
   color: white;
   z-index: 90;
   box-shadow: 0 8px 24px rgba(16, 50, 83, 0.35);
@@ -1025,7 +1025,7 @@ footer a:hover {
 }
 
 .sidebar-widget-left {
-  left: max(1.5rem, calc(50% - 600px - 3.5rem - 260px));
+  left: max(1.5rem, calc(50% - 600px - 3.5rem - 230px));
   right: auto;
   top: 7.15rem;
 }
@@ -1035,7 +1035,7 @@ footer a:hover {
 }
 
 .sidebar-widget-right {
-  right: max(1.5rem, calc(50% - 600px - 3.5rem - 260px));
+  right: max(1.5rem, calc(50% - 600px - 3.5rem - 230px));
   left: auto;
   top: 7.15rem;
 }

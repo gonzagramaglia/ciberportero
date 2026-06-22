@@ -636,12 +636,16 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                         left: 50%; 
                         bottom: 2.5rem; 
                         transform: translateX(-50%); 
-                        flex-direction: row-reverse; 
+                        flex-direction: row; 
                         gap: 0.6rem; 
-                        flex-wrap: wrap-reverse;
+                        flex-wrap: wrap;
                         justify-content: center;
                         width: max-content;
                         max-width: 95vw;
+                    }
+                    .subject-navigator.owasp-navigator {
+                        flex-direction: row-reverse;
+                        flex-wrap: wrap-reverse;
                     }
                     .subject-nav-item {
                         width: 52px;
