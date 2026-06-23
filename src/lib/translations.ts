@@ -77,6 +77,18 @@ export const translations = {
             text: "¿Ves algo para corregir o que haya que agregar?",
             cta: "Avisanos a: ciberportero@gmail.com"
         },
+        blog: {
+            title: "Blog",
+            managePosts: "Gestionar Posts",
+            subtitle: "Posts sobre ciberseguridad, desarrollo web y más.",
+            noPosts: "No hay posts unlisted en este momento.",
+            tags: {
+                "Seguridad Web": "Seguridad Web",
+                "Seguridad en la Nube": "Seguridad en la Nube",
+                "Primer Trabajo en Ciber": "Primer Trabajo en Ciber",
+                "Otros": "Otros"
+            }
+        },
         share: {
             copy: "Copiar enlace del post",
             copied: "¡Enlace del post copiado!"
@@ -403,6 +415,18 @@ export const translations = {
             text: "See something to fix or add?",
             cta: "Email: ciberportero@gmail.com"
         },
+        blog: {
+            title: "Blog",
+            managePosts: "Manage Posts",
+            subtitle: "Posts about cybersecurity, web development and more.",
+            noPosts: "No unlisted posts at this time.",
+            tags: {
+                "Seguridad Web": "Web Security",
+                "Seguridad en la Nube": "Cloud Security",
+                "Primer Trabajo en Ciber": "First Job in Cyber",
+                "Otros": "Others"
+            }
+        },
         share: {
             copy: "Copy post link",
             copied: "Post link copied!"
@@ -728,6 +752,18 @@ export const translations = {
         reporting: {
             text: "Vê algo para corrigir ou adicionar?",
             cta: "Contate: ciberportero@gmail.com"
+        },
+        blog: {
+            title: "Blog",
+            managePosts: "Gerenciar Posts",
+            subtitle: "Posts sobre cibersegurança, desenvolvimento web e mais.",
+            noPosts: "Não há posts unlisted no momento.",
+            tags: {
+                "Seguridad Web": "Segurança Web",
+                "Seguridad en la Nube": "Segurança na Nuvem",
+                "Primer Trabajo en Ciber": "Primeiro Emprego em Ciber",
+                "Otros": "Outros"
+            }
         },
         share: {
             copy: "Copiar link do post",

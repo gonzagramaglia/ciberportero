@@ -72,7 +72,7 @@ export default function BlogClient({ initialPosts }: BlogClientProps) {
     return (
         <div className="container fade-in page-container">
             <div className="nav-header-row" style={{ marginTop: '-0.5rem', marginBottom: '2.5rem' }}>
-                <Link href={lang === 'en' ? "/en" : lang === 'pt' ? "/pt" : "/"} className="back-link"><ChevronLeft size={16} />Volver al inicio</Link>
+                <Link href={lang === 'en' ? "/en" : lang === 'pt' ? "/pt" : "/"} className="back-link"><ChevronLeft size={16} />{t.back}</Link>
                 <div className="mobile-only">
                     <LanguageSwitcher />
                 </div>
@@ -82,11 +82,11 @@ export default function BlogClient({ initialPosts }: BlogClientProps) {
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1.2rem', marginBottom: '0.5rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '1.2rem' }}>
                         <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em' }}>
-                            Blog
+                            {t.blog.title}
                         </h1>
                         {session?.user?.role === 'admin' && (
                             <Link href="/editor/posts" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', background: '#f8fafc', color: '#64748b', padding: '0.4rem 0.8rem', borderRadius: '8px', border: '1px solid #e2e8f0', textDecoration: 'none', transition: 'all 0.2s', marginTop: '0.5rem' }}>
-                                <Plus size={14} /><span>Gestionar Posts</span>
+                                <Plus size={14} /><span>{t.blog.managePosts}</span>
                             </Link>
                         )}
                     </div>
@@ -96,9 +96,7 @@ export default function BlogClient({ initialPosts }: BlogClientProps) {
                 </div>
                 <p style={{ color: 'var(--muted)', fontSize: '1.1rem', marginTop: '0.2rem', fontWeight: '500' }}>
                     <span style={{ fontStyle: 'italic', opacity: 0.9 }}>
-                        {lang === 'es' ? 'Posts sobre ciberseguridad, desarrollo web y más.' :
-                            lang === 'pt' ? 'Posts sobre cibersegurança, desenvolvimento web e mais.' :
-                                'Posts about cybersecurity, web development and more.'}
+                        {t.blog.subtitle}
                     </span>
                 </p>
             </header>
@@ -123,7 +121,7 @@ export default function BlogClient({ initialPosts }: BlogClientProps) {
                                     transition: 'all 0.2s ease'
                                 }}
                             >
-                                {tag}
+                                {t.blog.tags?.[tag as keyof typeof t.blog.tags] || tag}
                             </button>
                         ))}
                     </div>
@@ -159,9 +157,7 @@ export default function BlogClient({ initialPosts }: BlogClientProps) {
                             color: 'var(--muted)'
                         }}>
                             <p style={{ margin: 0, fontWeight: '500' }}>
-                                {lang === 'es' ? 'No hay posts unlisted en este momento.' :
-                                    lang === 'pt' ? 'Não há posts unlisted no momento.' :
-                                        'No unlisted posts at this time.'}
+                                {t.blog.noPosts}
                             </p>
                         </div>
                     )}
