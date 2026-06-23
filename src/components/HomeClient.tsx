@@ -204,7 +204,7 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
 
                 {lang === 'es' && (
                     <>
-                        <div style={{ marginTop: '1.5rem', marginBottom: '0.8rem' }}>
+                        <div style={{ marginTop: '2.5rem', marginBottom: '0.8rem' }}>
                             <h2 style={{ fontSize: '1.8rem', fontWeight: '700', color: '#000', display: 'flex', alignItems: 'center', gap: '0.8rem', margin: 0 }}>
                                 <Info size={26} style={{ color: 'var(--muted)' }} />
                                 <span className="mobile-hide">Información de la Carrera</span>
