@@ -61,10 +61,6 @@ export default function LanguageSwitcher({ availableLangs }: LanguageSwitcherPro
         const isAvailable = !availableLangs || availableLangs.includes(l);
         const isActive = lang === l;
 
-        if (l === 'pt' && (pathname.includes('/blog') || pathname.includes('/editor'))) {
-            return null;
-        }
-
         return (
             <button
                 key={l}
@@ -94,7 +90,6 @@ export default function LanguageSwitcher({ availableLangs }: LanguageSwitcherPro
         <nav className="lang-switcher" style={{ display: 'flex', gap: '0.25rem' }}>
             {renderButton('es', 'ES')}
             {renderButton('en', 'EN')}
-            {renderButton('pt', 'PT')}
         </nav>
     );
 }
