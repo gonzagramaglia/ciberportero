@@ -447,6 +447,10 @@ header p {
   transform: translateX(4px);
 }
 
+.post-item:hover .post-title {
+  color: var(--accent);
+}
+
 .post-date {
   font-size: 0.85rem;
   color: var(--muted);
@@ -462,6 +466,7 @@ header p {
   margin-bottom: 0.5rem;
   display: block;
   color: #000000;
+  transition: color 0.2s ease;
 }
 
 .post-description {

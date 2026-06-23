@@ -56,6 +56,9 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
         return () => document.body.classList.remove('lightbox-open');
     }, [selectedImage]);
 
+    const ingresantesPosts = posts.filter((p: any) => p.title && p.title.includes('[00]'));
+    const materiaPosts = posts.filter((p: any) => !(p.title && p.title.includes('[00]')));
+
     return (
         <div className="container fade-in home-container">
             <CountdownWidget />
@@ -145,8 +148,8 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                                 </div>
                             </li>
                         ))
-                    ) : posts.length > 0 ? (
-                        posts.map((post: any) => (
+                    ) : materiaPosts.length > 0 ? (
+                        materiaPosts.map((post: any) => (
                             <li key={post.slug} className="post-item">
                                 <Link href={`/${post.slug}`}>
                                     <span className="post-date" suppressHydrationWarning>
@@ -174,6 +177,30 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                         </div>
                     )}
                 </ul>
+
+                {!isLoadingPosts && ingresantesPosts.length > 0 && (
+                    <>
+                        <div style={{ marginTop: '2.5rem', marginBottom: '1rem' }}>
+                            <h2 style={{ fontSize: '1.8rem', fontWeight: '700', color: '#000', display: 'flex', alignItems: 'flex-start', gap: '0.8rem', margin: 0 }}>
+                                <BookOpen size={26} style={{ color: 'var(--muted)', marginTop: '10px', flexShrink: 0 }} />
+                                {lang === 'en' ? 'Admission Course Material' : lang === 'pt' ? 'Material para Ingressantes' : 'Material para Ingresantes'}
+                            </h2>
+                        </div>
+                        <ul className="post-list">
+                            {ingresantesPosts.map((post: any) => (
+                                <li key={post.slug} className="post-item">
+                                    <Link href={`/${post.slug}`}>
+                                        <span className="post-date" suppressHydrationWarning>
+                                            {lang === 'es' ? 'Última actualización' : lang === 'pt' ? 'Última atualização' : 'Last update'}: {timeAgo(post.updatedAt || post.date, lang)}
+                                        </span>
+                                        <span className="post-title">{post.title}</span>
+                                        <p className="post-description">{post.description}</p>
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </>
+                )}
 
                 {lang === 'es' && (
                     <>
