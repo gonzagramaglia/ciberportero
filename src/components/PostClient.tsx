@@ -36,6 +36,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
     const [isHighlighting, setIsHighlighting] = useState(false);
     const [activeHash, setActiveHash] = useState<string | null>(null);
     const [currentHash, setCurrentHash] = useState<string>('');
+    const [activeScrollId, setActiveScrollId] = useState<string>('');
     const [focusedHashes, setFocusedHashes] = useState<string[]>([]);
     const [voted, setVoted] = useState<'LIKE' | 'DISLIKE' | null>(null);
     const t = translations[lang];
@@ -259,15 +260,52 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
     }, [activeHash]);
 
     useEffect(() => {
-        if (currentHash) {
-            setTimeout(() => {
-                const activeTocItem = document.querySelector('.desktop-toc a.active-toc-item');
-                if (activeTocItem) {
-                    activeTocItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        const handleScroll = () => {
+            const headings = Array.from(document.querySelectorAll('.post-content h1, .post-content h2, .post-content h3, .post-content h4, .post-content h5, .post-content h6'));
+            let current = '';
+            for (const heading of headings) {
+                const rect = heading.getBoundingClientRect();
+                if (rect.top <= 180) {
+                    current = heading.id;
+                } else {
+                    break;
                 }
-            }, 100);
-        }
-    }, [currentHash]);
+            }
+            if (current && current !== activeScrollId) {
+                setActiveScrollId(current);
+            }
+
+            // Scroll TOC to top or bottom only at page boundaries
+            const tocContainer = document.querySelector('.post-sidebar .post-toc');
+            if (tocContainer) {
+                const authorSection = document.querySelector('.author-section');
+                let isBottom = false;
+                
+                if (authorSection) {
+                    const rect = authorSection.getBoundingClientRect();
+                    // Trigger just above the author section (before it fully enters the viewport)
+                    if (rect.top <= window.innerHeight + 1000) {
+                        isBottom = true;
+                    }
+                } else {
+                    isBottom = (window.innerHeight + Math.round(window.scrollY)) >= document.body.offsetHeight - 500;
+                }
+
+                if (window.scrollY < 200) {
+                    tocContainer.scrollTo({ top: 0, behavior: 'smooth' });
+                } else if (isBottom) {
+                    tocContainer.scrollTo({ top: tocContainer.scrollHeight, behavior: 'smooth' });
+                }
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll();
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [postContent, slug, activeScrollId]);
+
+    // Keep highlighting active sections but don't auto-scroll the TOC
+    // currentHash auto-scroll removed as per user request to stop progressive scrolling
 
     useEffect(() => {
         if (selectedImage) document.body.classList.add('lightbox-open');
@@ -439,8 +477,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                             <nav className="post-toc mobile-toc">
                                 <h3 onClick={handleClearHash} style={{ cursor: 'pointer' }} title={lang === 'es' ? 'Limpiar selección' : 'Clear selection'}>{t.post.index}</h3>
                                 <ul>
-                                    {toc.map((header, i) => <li key={i} className={`toc-level-${header.level}`}><a href={`#${header.id}`} className={(currentHash === `#${header.id}` || focusedHashes.includes(header.id)) ? 'active-toc-item' : ''}>{header.text}</a></li>)}
-                                    <li className="toc-level-2"><a href="#comments" className={currentHash === '#comments' ? 'active-toc-item' : ''}>💬 {lang === 'es' ? 'Comentarios' : lang === 'pt' ? 'Comentários' : 'Comments'}</a></li>
+                                    {toc.map((header, i) => <li key={i} className={`toc-level-${header.level}`}><a href={`#${header.id}`} className={(currentHash === `#${header.id}` || activeScrollId === header.id || focusedHashes.includes(header.id)) ? 'active-toc-item' : ''}>{header.text}</a></li>)}
                                 </ul>
                             </nav>
                         )}
@@ -463,12 +500,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                             <nav className="post-toc desktop-toc">
                                 <h3 onClick={handleClearHash} style={{ cursor: 'pointer' }} title={lang === 'es' ? 'Limpiar selección' : 'Clear selection'}>{t.post.index}</h3>
                                 <ul>
-                                    {toc.map((header, i) => <li key={i} className={`toc-level-${header.level}`}><a href={`#${header.id}`} className={(currentHash === `#${header.id}` || focusedHashes.includes(header.id)) ? 'active-toc-item' : ''}>{header.text}</a></li>)}
-                                    {!post.unlisted && (
-                                        <li className="toc-level-2" style={{ marginTop: '0.5rem', borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '0.5rem' }}>
-                                            <a href="#comments" className={currentHash === '#comments' ? 'active-toc-item' : ''} style={{ fontWeight: '700', color: '#64748b' }}>💬 {lang === 'es' ? 'Comentarios' : lang === 'pt' ? 'Comentários' : 'Comments'}</a>
-                                        </li>
-                                    )}
+                                    {toc.map((header, i) => <li key={i} className={`toc-level-${header.level}`}><a href={`#${header.id}`} className={(currentHash === `#${header.id}` || activeScrollId === header.id || focusedHashes.includes(header.id)) ? 'active-toc-item' : ''}>{header.text}</a></li>)}
                                 </ul>
                             </nav>
                         </aside>
