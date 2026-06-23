@@ -455,6 +455,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                                 return processedContent;
                             })()}
                         </ReactMarkdown>
+
                     </article>
 
                     {hasVisibleTocItems && (
@@ -474,19 +475,19 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                     )}
                 </div>
 
-                <div className="copy-container" style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
-                    {!post.unlisted && (
-                        <div className="vote-buttons" style={{ display: 'flex', gap: '0.4rem' }}>
-                            <button
-                                onClick={() => handleVote('LIKE')}
-                                className={`vote-button like ${voted === 'LIKE' ? 'active' : ''}`}
-                                title={lang === 'es' ? 'Me gusta' : 'Like'}
-                            >
-                                <ThumbsUp size={18} fill={voted === 'LIKE' ? 'currentColor' : 'none'} />
-                                <span>{likes}</span>
-                            </button>
-                        </div>
-                    )}
+                <div className="author-section">
+                    <img src="/profile.jpg" alt="Gonzalo Gramaglia" className="author-image" />
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+                        <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#94a3b8' }}>
+                            {lang === 'es' ? 'Autor del post' : lang === 'pt' ? 'Autor do post' : 'Post author'}
+                        </span>
+                        <h4 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 800, color: '#0f172a' }}>Gonzalo Gramaglia</h4>
+                        <p style={{ margin: 0, color: '#475569', fontSize: '0.95rem', fontWeight: 500 }}>Full Stack Developer | Systems Reliability & Security</p>
+                        <a href="https://gonzagramaglia.github.io" target="_blank" rel="noopener noreferrer" style={{ color: '#2563eb', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 700, marginTop: '0.2rem' }}>gonzagramaglia.github.io</a>
+                    </div>
+                </div>
+
+                <div className="copy-container" style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-start', marginBottom: '2rem' }}>
                     <button onClick={handleCopy} className={`copy-button ${copied ? 'success' : ''}`}>
                         {copied ? <Check size={16} /> : <Link2 size={16} />}
                         <span>{copied ? t.share.copied : t.share.copy}</span>
@@ -630,6 +631,25 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                     background: #fef2f2;
                 }
                 .vote-button span { font-size: 0.9rem; }
+                
+                .author-section {
+                    padding-top: 1.5rem;
+                    border-top: 1px solid #e2e8f0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-start;
+                    text-align: left;
+                    gap: 1.2rem;
+                    width: 100%;
+                    margin: -1rem 0 5.5rem 0;
+                }
+                .author-image {
+                    width: 104px;
+                    height: 104px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    flex-shrink: 0;
+                }
 
                 @media (max-width: 1700px) {
                     .subject-navigator { 
@@ -670,6 +690,15 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                         width: 42px;
                         height: 42px;
                         font-size: 0.9rem;
+                    }
+                    .author-section {
+                        padding-top: 1rem;
+                        margin: -0.5rem 0 3.5rem 0;
+                        gap: 1rem;
+                    }
+                    .author-image {
+                        width: 80px;
+                        height: 80px;
                     }
                 }
                 @media (max-width: 1700px) { .fab-container { display: none !important; } }

@@ -39,8 +39,9 @@ export default async function EditorPage() {
         <table className="admin-table">
           <thead>
             <tr>
-              <th style={{ width: '40%' }}>Contenido</th>
-              <th>Estado</th>
+              <th style={{ width: '35%' }}>Contenido</th>
+              <th style={{ width: '15%' }}>Estado</th>
+              <th style={{ width: '15%' }}>Tags</th>
               <th>Fecha</th>
               <th>Última Actualización</th>
               <th style={{ textAlign: 'right' }}>Acciones</th>
@@ -76,18 +77,39 @@ export default async function EditorPage() {
                   </td>
                   <td style={{ verticalAlign: 'top' }}>
                     <div style={{ marginTop: '0.5rem' }}>
-                      {post.published ? (
-                        <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
+                      <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
+                        {post.published ? (
                           <span style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', padding: '0.3rem 0.6rem', background: '#dcfce7', color: '#166534', borderRadius: '8px', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
                             <CheckCircle2 size={12} /> Publicado
                           </span>
-                          <span style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', padding: '0.3rem 0.6rem', background: '#fef3c7', color: '#b45309', borderRadius: '8px', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
-                            Blog
-                          </span>
-                        </div>
-                      ) : (
-                        <span style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', padding: '0.3rem 0.6rem', background: '#fef3c7', color: '#92400e', borderRadius: '8px' }}>Borrador</span>
-                      )}
+                        ) : (
+                          <span style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', padding: '0.3rem 0.6rem', background: '#fef3c7', color: '#92400e', borderRadius: '8px', display: 'inline-flex', alignItems: 'center' }}>Borrador</span>
+                        )}
+                        {titleObj?.es && (
+                          <span title="Español" style={{ fontSize: '12px', padding: '0.2rem 0.4rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', display: 'inline-flex', alignItems: 'center', lineHeight: 1 }}>🇦🇷</span>
+                        )}
+                        {titleObj?.en && (
+                          <span title="English" style={{ fontSize: '12px', padding: '0.2rem 0.4rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', display: 'inline-flex', alignItems: 'center', lineHeight: 1 }}>🇺🇸</span>
+                        )}
+                        {titleObj?.pt && (
+                          <span title="Português" style={{ fontSize: '12px', padding: '0.2rem 0.4rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', display: 'inline-flex', alignItems: 'center', lineHeight: 1 }}>🇧🇷</span>
+                        )}
+                      </div>
+                    </div>
+                  </td>
+                  <td style={{ verticalAlign: 'top' }}>
+                    <div style={{ marginTop: '0.5rem' }}>
+                      <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
+                        {Array.isArray(post.tags) && post.tags.length > 0 ? (
+                          post.tags.map((tag: string, idx: number) => (
+                            <span key={idx} style={{ fontSize: '10px', fontWeight: 700, padding: '0.2rem 0.5rem', background: '#f1f5f9', color: '#475569', borderRadius: '6px', whiteSpace: 'nowrap' }}>
+                              {tag}
+                            </span>
+                          ))
+                        ) : (
+                          <span style={{ fontSize: '10px', color: '#94a3b8', fontStyle: 'italic' }}>-</span>
+                        )}
+                      </div>
                     </div>
                   </td>
                   <td style={{ color: '#64748b', whiteSpace: 'nowrap', fontSize: '0.85rem', fontWeight: 600, verticalAlign: 'top', paddingTop: '1.25rem' }}>
@@ -116,7 +138,7 @@ export default async function EditorPage() {
             })}
             {posts.length === 0 && (
               <tr>
-                <td colSpan={5} style={{ textAlign: 'center', padding: '2rem', color: '#64748b', fontWeight: 600 }}>
+                <td colSpan={6} style={{ textAlign: 'center', padding: '2rem', color: '#64748b', fontWeight: 600 }}>
                   No hay posts del blog
                 </td>
               </tr>
