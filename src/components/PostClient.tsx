@@ -453,13 +453,13 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                 <NotificationBanners limitTo={
                     slug.includes('mate') ? 'mate' : slug.includes('ivu') ? 'ivu' : slug.includes('codeforces') ? 'none' : 'all'
                 } />
-                <div className="nav-header-row">
+                <div className="nav-header-row" style={{ marginBottom: 0 }}>
                     {post.unlisted ? (
                         <Link href={lang === 'en' ? "/en/blog" : lang === 'pt' ? "/pt/blog" : "/blog"} className="back-link"><ChevronLeft size={16} />{t.backToBlog}</Link>
                     ) : (
                         <Link href={lang === 'en' ? "/en" : lang === 'pt' ? "/pt" : "/"} className="back-link"><ChevronLeft size={16} />{t.back}</Link>
                     )}
-                    <div className="mobile-only">
+                    <div className="lang-header">
                         <LanguageSwitcher availableLangs={Object.keys(post.title as any).filter(l => (post.title as any)[l] && (post.content as any)[l])} />
                     </div>
                 </div>
@@ -483,9 +483,6 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                                     </Link>
                                 )}
                             </div>
-                            <div className="mobile-hide">
-                                <LanguageSwitcher availableLangs={Object.keys(post.title as any).filter(l => (post.title as any)[l] && (post.content as any)[l])} />
-                            </div>
                         </div>
 
                         <Heading level={1}>{postTitle}</Heading>
@@ -495,7 +492,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                             </p>
                         )}
 
-                        <div className="mobile-only-countdown"><CountdownWidget countdowns={post?.countdowns} isInline /></div>
+                        <div className="mobile-only-countdown" style={{ marginTop: '-0.5rem' }}><CountdownWidget countdowns={post?.countdowns} isInline /></div>
 
                         {hasVisibleTocItems && (
                             <nav className="post-toc mobile-toc">
@@ -516,19 +513,21 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                                 return processedContent;
                             })()}
                         </ReactMarkdown>
-
                     </article>
 
-                    {hasVisibleTocItems && (
-                        <aside className="post-sidebar">
+                    <aside className="post-sidebar" style={{ top: '7rem' }}>
+                        <div className="lang-sidebar" style={{ marginBottom: '1.5rem' }}>
+                            <LanguageSwitcher availableLangs={Object.keys(post.title as any).filter(l => (post.title as any)[l] && (post.content as any)[l])} />
+                        </div>
+                        {hasVisibleTocItems && (
                             <nav className="post-toc desktop-toc">
                                 <h3 onClick={handleClearHash} style={{ cursor: 'pointer' }} title={lang === 'es' ? 'Limpiar selección' : 'Clear selection'}>{t.post.index}</h3>
                                 <ul>
                                     {toc.map((header, i) => <li key={i} className={`toc-level-${header.level}`}><a href={`#${header.id}`} className={(currentHash === `#${header.id}` || activeHierarchy.includes(header.id) || focusedHashes.includes(header.id)) ? 'active-toc-item' : ''}>{header.text}</a></li>)}
                                 </ul>
                             </nav>
-                        </aside>
-                    )}
+                        )}
+                    </aside>
                 </div>
 
                 <div className="author-section">
@@ -541,9 +540,15 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                         <p style={{ margin: 0, color: '#475569', fontSize: '0.95rem', fontWeight: 500 }}>Full Stack Developer | Systems Reliability & Security</p>
                         <a href="https://gonzagramaglia.github.io" target="_blank" rel="noopener noreferrer" style={{ color: '#2563eb', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 700, marginTop: '0.2rem' }}>gonzagramaglia.github.io</a>
                     </div>
+                    <div className="copy-container mobile-hide" style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                        <button onClick={handleCopy} className={`copy-button ${copied ? 'success' : ''}`}>
+                            {copied ? <Check size={16} /> : <Link2 size={16} />}
+                            <span>{copied ? t.share.copied : t.share.copy}</span>
+                        </button>
+                    </div>
                 </div>
 
-                <div className="copy-container" style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-start', marginBottom: '2rem' }}>
+                <div className="copy-container mobile-only" style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-start', marginBottom: '2rem' }}>
                     <button onClick={handleCopy} className={`copy-button ${copied ? 'success' : ''}`}>
                         {copied ? <Check size={16} /> : <Link2 size={16} />}
                         <span>{copied ? t.share.copied : t.share.copy}</span>
@@ -690,7 +695,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                 .vote-button span { font-size: 0.9rem; }
                 
                 .author-section {
-                    padding-top: 1.5rem;
+                    padding-top: 2.5rem;
                     border-top: 1px solid #e2e8f0;
                     display: flex;
                     align-items: center;
@@ -698,7 +703,10 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                     text-align: left;
                     gap: 1.2rem;
                     width: 100%;
-                    margin: -1rem 0 5.5rem 0;
+                    margin: -1rem 0 1rem 0;
+                }
+                .author-section .copy-container {
+                    margin: 0 1.5rem 0 auto !important;
                 }
                 .author-image {
                     width: 104px;
@@ -759,6 +767,14 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                     }
                 }
                 @media (max-width: 1700px) { .fab-container { display: none !important; } }
+                @media (max-width: 1100px) {
+                    .lang-sidebar { display: none !important; }
+                    .lang-header { display: flex !important; }
+                }
+                @media (min-width: 1101px) {
+                    .lang-sidebar { display: block !important; }
+                    .lang-header { display: none !important; }
+                }
             `}</style>
         </>
     );

@@ -2,8 +2,9 @@
 
 import { useLanguage } from "../context/LanguageContext"
 import { translations } from "../lib/translations"
-import { LogIn, LogOut, User as UserIcon } from "lucide-react"
+import { LogIn, LogOut, User as UserIcon, Settings } from "lucide-react"
 import { signIn, signOut } from "next-auth/react"
+import Link from "next/link"
 
 export function SignInButton() {
   const { lang } = useLanguage()
@@ -118,5 +119,63 @@ export function SignOutButton() {
         }
       `}</style>
     </button>
+  )
+}
+
+export function AdminPanelButton() {
+  const { lang } = useLanguage()
+
+  return (
+    <Link href="/admin" className="admin-btn-premium" style={{ textDecoration: 'none' }}>
+      <div className="icon-box">
+        <Settings size={18} strokeWidth={2.5} />
+      </div>
+      <span className="btn-text">
+        {lang === 'es' ? 'Panel de Admin' : 'Admin Panel'}
+      </span>
+      
+      <style jsx global>{`
+        .admin-btn-premium {
+          display: flex;
+          align-items: center;
+          gap: 0.8rem;
+          background: #fff;
+          color: #1e293b;
+          padding: 0.5rem 1.4rem 0.5rem 0.6rem;
+          border-radius: 100px;
+          border: 1px solid #e2e8f0;
+          font-weight: 700;
+          font-size: 0.95rem;
+          cursor: pointer;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+        .admin-btn-premium:hover {
+          background: #f8fafc;
+          border-color: #cbd5e1;
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+        }
+        .icon-box {
+          width: 36px;
+          height: 36px;
+          background: #f1f5f9;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #64748b;
+          transition: all 0.2s;
+        }
+        .admin-btn-premium:hover .icon-box {
+          background: #3b82f6;
+          color: #fff;
+        }
+        @media (max-width: 600px) {
+          .btn-text { display: none; }
+          .admin-btn-premium { padding: 0.4rem; }
+        }
+      `}</style>
+    </Link>
   )
 }

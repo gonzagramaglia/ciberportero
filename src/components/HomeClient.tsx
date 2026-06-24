@@ -8,7 +8,7 @@ import { Github, Youtube, BookOpen, Calendar, Info, Link as LinkIcon, X, Zap, Co
 import NotificationBanners from './NotificationBanners';
 import CountdownWidget from './CountdownWidget';
 import { useSession } from 'next-auth/react';
-import { SignInButton, SignOutButton } from './AuthButtons';
+import { SignInButton, SignOutButton, AdminPanelButton } from './AuthButtons';
 import { useMotivation } from '../hooks/useMotivation';
 import LanguageSwitcher from './LanguageSwitcher';
 import FloatingMusicButton from './FloatingMusicButton';
@@ -85,7 +85,7 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                             opacity: status === 'loading' ? 0 : 1,
                             transition: 'opacity 0.2s ease-in-out'
                         }}>
-                            {status !== 'loading' && (session ? <SignOutButton /> : <SignInButton />)}
+                            {status !== 'loading' && (session ? (session.user?.role === 'admin' ? <AdminPanelButton /> : <SignOutButton />) : <SignInButton />)}
                         </div>
                     </div>
                     <div className="home-lang-container mobile-hide" style={{ marginBottom: 0, marginTop: '0.6rem' }}>

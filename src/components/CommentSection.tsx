@@ -706,7 +706,7 @@ export default function CommentSection({ postSlug, podcastSlug, lang = 'es' }: {
 
       <style jsx>{`
         .comments-container {
-          margin-top: 4rem;
+          margin-top: 2.5rem;
           padding: 3rem;
           background: #ffffff;
           border-radius: 32px;

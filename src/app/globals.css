@@ -1030,7 +1030,7 @@ footer a:hover {
 .sidebar-widget.post-specific {
   background: linear-gradient(135deg, #22c55e 0%, #10b981 100%);
   box-shadow: 0 8px 24px rgba(16, 185, 129, 0.25);
-  top: 9rem !important;
+  top: 7.2rem !important;
 }
 
 .sidebar-widget-left {
@@ -1815,7 +1815,7 @@ html {
   gap: 1rem;
   flex-wrap: wrap;
   margin-bottom: 0.25rem;
-  margin-top: -1.5rem;
+  margin-top: 1.5rem;
 }
 
 .post-sidebar {
@@ -1823,7 +1823,7 @@ html {
   position: sticky;
   top: 7rem;
   flex-shrink: 0;
-  margin-top: -1.5rem;
+  margin-top: 1.5rem;
 }
 
 @media (max-width: 1100px) {
@@ -1933,11 +1933,6 @@ html {
   }
 }
 
-/* Adjust TOC position to clear banners and align with title */
-.post-sidebar {
-  top: 11rem; 
-  margin-top: 6.4rem; /* Exact alignment with the title */
-}
 
 @media (max-width: 1100px) {
   .post-sidebar {
