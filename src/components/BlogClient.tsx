@@ -78,7 +78,7 @@ export default function BlogClient({ initialPosts }: BlogClientProps) {
                 </div>
             </div>
 
-            <header style={{ marginBottom: '3rem' }}>
+            <header style={{ marginBottom: '2rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1.2rem', marginBottom: '0.5rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '1.2rem' }}>
                         <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em' }}>

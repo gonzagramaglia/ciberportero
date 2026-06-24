@@ -35,7 +35,7 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
   const [countdowns, setCountdowns] = useState<any[]>(post?.countdowns || []);
   const [tags, setTags] = useState<string>(post?.tags ? post.tags.join(', ') : '');
   const [keywords, setKeywords] = useState<string>(post?.keywords || '');
-  const [date, setDate] = useState<string>(post?.date ? new Date(post.date).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16));
+  const [date, setDate] = useState<string>(post?.date ? toLocalISOString(post.date) : toLocalISOString(new Date()));
 
   const isDirty = useMemo(() => {
     const initialTitles = post?.title || { es: '', en: '', pt: '' };
@@ -46,7 +46,7 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
     const initialCountdowns = post?.countdowns || [];
     const initialTags = post?.tags ? post.tags.join(', ') : '';
     const initialKeywords = post?.keywords || '';
-    const initialDate = post?.date ? new Date(post.date).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16);
+    const initialDate = post?.date ? toLocalISOString(post.date) : toLocalISOString(new Date());
 
     return JSON.stringify(titles) !== JSON.stringify(initialTitles) ||
            JSON.stringify(contents) !== JSON.stringify(initialContents) ||
