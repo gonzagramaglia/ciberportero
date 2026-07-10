@@ -48,7 +48,7 @@ Students and faculty of the Licenciatura en Ciberdefensa at UNDEF (FADENA). The 
 
 ## 5. Technical Architecture
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │                  Frontend (Vercel)                        │
 │  Next.js 16 App Router (SSR + Static)                    │
@@ -115,7 +115,7 @@ yarn test:coverage # Run with coverage report
 
 - **CodeRabbit:** Automated AI code review on every PR to `main`.
 - **ESLint 9:** Code quality enforcement.
-- **Commitlint + Husky:** Conventional Commits enforced via pre-commit hooks.
+- **Commitlint + Husky:** Conventional Commits enforced via the commit-msg hook.
 - **Vitest Coverage:** 80% threshold prevents merging undertested code.
 
 ## 10. Future Improvements
@@ -135,7 +135,7 @@ yarn test:coverage # Run with coverage report
 | Kiro | Primary development environment |
 | CodeRabbit | Automated AI code review |
 | Vercel | Production hosting |
-| Supabase | PostgreSQL + Auth + Storage + Realtime |
+| Supabase | PostgreSQL + Storage + Realtime |
 | Prisma | ORM and schema management |
 | Vitest | Unit testing with coverage |
 | Husky + Commitlint | Git hooks and commit conventions |

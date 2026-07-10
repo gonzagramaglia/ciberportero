@@ -13,5 +13,5 @@ Read in this exact order before any implementation:
 • Always use `yarn` as the package manager.
 • All PRs go through CodeRabbit review before merging to `main`.
 • Never push directly to `main`.
-• Conventional Commits enforced via commitlint + Husky pre-commit hooks.
+• Conventional Commits enforced via commitlint + Husky commit-msg hook.
 • Coverage threshold is 80% — never merge code that drops below it.

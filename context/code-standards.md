@@ -10,7 +10,7 @@ Implementation rules and conventions for the entire project. AI agents and contr
 - Every feature must be testable — if it cannot be verified immediately after implementation, it is incomplete.
 - Clean over clever — simple readable code that a junior developer can understand is always preferred.
 - One thing at a time — complete one feature fully before touching the next.
-- Failures are expected — wrap operations in try/catch, log failures, never let one failure crash everything.
+- Failures are expected — use try/catch at recoverable boundaries (API routes, server actions). Let unrecoverable failures propagate. Never swallow errors to continue with invalid state.
 
 ## Git & CodeRabbit Workflow
 
@@ -87,7 +87,7 @@ export function ComponentName({ lang, title }: Props) {
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     const session = await auth();
     if (!session?.user) {
@@ -98,6 +98,7 @@ export async function POST(req: NextRequest) {
     // validate body
 
     // business logic
+    const result = { id: body.id }; // placeholder
     return NextResponse.json({ success: true, data: result });
   } catch (error) {
     console.error("[api/example]", error);
@@ -121,7 +122,7 @@ export async function POST(req: NextRequest) {
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 
-export async function createPost(data: CreatePostInput) {
+export async function createPost(data: CreatePostInput): Promise<Post> {
   const session = await auth();
   if (!session?.user || session.user.role !== "admin") {
     throw new Error("Unauthorized");
@@ -129,6 +130,7 @@ export async function createPost(data: CreatePostInput) {
 
   // validation
   // mutation
+  const result = await prisma.post.create({ data });
   return result;
 }
 ```

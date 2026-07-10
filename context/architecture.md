@@ -19,7 +19,7 @@
 
 ## Folder Structure
 
-```
+```text
 /
 ├── AGENTS.md                  → Agent instructions (read first)
 ├── CLAUDE.md                  → Points to AGENTS.md
@@ -70,7 +70,7 @@
 
 ## Data Flow: Page Rendering
 
-```
+```text
 User requests page
   ↓
 Next.js App Router resolves the route
@@ -84,7 +84,7 @@ Client Components handle interactivity (language switching, local state)
 
 ## Data Flow: Collaborative Rooms
 
-```
+```text
 User joins room with secret code
   ↓
 RoomMember record created via server action
@@ -100,7 +100,7 @@ UI updates in real-time
 
 ## Data Flow: Authentication
 
-```
+```text
 User clicks "Sign in with Google"
   ↓
 Auth.js handles OAuth flow (Google provider)
