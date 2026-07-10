@@ -6,7 +6,9 @@ import { logAction } from "./audit";
 
 export async function uploadImage(formData: FormData) {
   const session = await auth();
-  const user = await db.user.findUnique({ where: { id: session?.user?.id } });
+  if (!session?.user?.id) return { error: "Unauthorized" };
+
+  const user = await db.user.findUnique({ where: { id: session.user.id } });
   if ((user as any)?.role !== 'admin' && (user as any)?.role !== 'editor') return { error: "Unauthorized" };
 
   const file = formData.get('file') as File;
@@ -59,6 +61,8 @@ export async function uploadImage(formData: FormData) {
     return { success: true, image };
   } catch (error: any) {
     console.error('Prisma Error:', error);
+    // Clean up the uploaded file since DB insert failed
+    await supabaseAdmin.storage.from('images').remove([filePath]);
     if (error.code === 'P2002') return { error: "El slug ya existe" };
     return { error: `Error en DB: ${error.message}` };
   }
@@ -66,7 +70,9 @@ export async function uploadImage(formData: FormData) {
 
 export async function getImages(filterByUploader: boolean = false, source: string = 'admin') {
   const session = await auth();
-  const user = await db.user.findUnique({ where: { id: session?.user?.id } });
+  if (!session?.user?.id) return [];
+
+  const user = await db.user.findUnique({ where: { id: session.user.id } });
   
   if ((user as any)?.role === 'admin') {
     if (filterByUploader) {
@@ -92,7 +98,9 @@ export async function getImages(filterByUploader: boolean = false, source: strin
 
 export async function deleteImage(id: string) {
   const session = await auth();
-  const user = await db.user.findUnique({ where: { id: session?.user?.id } });
+  if (!session?.user?.id) return { error: "Unauthorized" };
+
+  const user = await db.user.findUnique({ where: { id: session.user.id } });
   if ((user as any)?.role !== 'admin' && (user as any)?.role !== 'editor') return { error: "Unauthorized" };
 
   const image = await db.image.findUnique({ where: { id } });

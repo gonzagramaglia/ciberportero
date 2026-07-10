@@ -19,6 +19,11 @@ export async function getAdminNote(section: string) {
 }
 
 export async function updateAdminSectionNote(section: string, content: string) {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "Unauthorized" };
+  const user = await db.user.findUnique({ where: { id: session.user.id } });
+  if ((user as any)?.role !== 'admin') return { error: "Unauthorized" };
+
   try {
     await db.adminNote.upsert({
       where: { section },
@@ -69,10 +74,15 @@ export async function getUsers() {
     });
 }
   
+const VALID_ROLES = ['admin', 'editor', 'user'] as const;
+
 export async function updateUserRole(userId: string, role: string) {
     const session = await auth();
     const currentUser = await db.user.findUnique({ where: { id: session?.user?.id } });
     if ((currentUser as any)?.role !== 'admin') return { error: "Unauthorized" };
+
+    if (!VALID_ROLES.includes(role as any)) return { error: "Invalid role" };
+    if (userId === session?.user?.id && role !== 'admin') return { error: "Cannot demote yourself" };
   
     await db.user.update({
       where: { id: userId },

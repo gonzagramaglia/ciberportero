@@ -21,28 +21,32 @@ export async function updateUserProgress(completed: number[], inProgress: number
   const session = await auth();
   if (!session?.user?.id) return { error: "Not authenticated" };
 
-  await db.examProgress.deleteMany({
-    where: { userId: session.user.id }
+  const userId = session.user.id;
+
+  await db.$transaction(async (tx) => {
+    await tx.examProgress.deleteMany({
+      where: { userId, type: "subject" }
+    });
+
+    const data = [
+      ...completed.map(id => ({
+        userId,
+        examTitle: id.toString(),
+        type: "subject",
+        completed: true
+      })),
+      ...inProgress.map(id => ({
+        userId,
+        examTitle: id.toString(),
+        type: "subject",
+        completed: false
+      }))
+    ];
+
+    if (data.length > 0) {
+      await tx.examProgress.createMany({ data });
+    }
   });
-
-  const data = [
-    ...completed.map(id => ({
-      userId: session.user.id as string,
-      examTitle: id.toString(),
-      type: "subject",
-      completed: true
-    })),
-    ...inProgress.map(id => ({
-      userId: session.user.id as string,
-      examTitle: id.toString(),
-      type: "subject",
-      completed: false
-    }))
-  ];
-
-  if (data.length > 0) {
-    await db.examProgress.createMany({ data });
-  }
 
   return { success: true };
 }

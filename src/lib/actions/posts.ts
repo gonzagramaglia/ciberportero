@@ -7,16 +7,18 @@ import { logAction } from "./audit";
 
 export async function deletePost(id: string) {
   const post = await db.post.findUnique({ where: { id } });
-  const title = (post?.title as any)?.es || 'Sin título';
+  if (!post) return;
+
+  const title = (post.title as any)?.es || 'Sin título';
   
   await db.post.delete({ where: { id } });
   
-  const target = post?.unlisted && post?.slug !== 'links' ? 'blog_post' : 'post';
+  const target = post.unlisted && post.slug !== 'links' ? 'blog_post' : 'post';
   await logAction('DELETE', target, `Eliminó el post: ${title}`);
   
   revalidatePath('/admin/posts');
   revalidatePath('/');
-  revalidatePath(`/${post?.slug}`);
+  revalidatePath(`/${post.slug}`);
 }
 
 export async function upsertPost(data: any) {
