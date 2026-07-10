@@ -29,7 +29,7 @@ The platform remains heavily focused on the needs of **Cyberdefense (UNDEF)** st
 - **Secure Authentication**: Integrated with **Auth.js (v5)** and **Google OAuth** for seamless student access.
 - **Media Orchestration**: High-fidelity image management using **Supabase Storage** for chat attachments and institutional assets.
 - **Progress Persistence**: Student progress and room memberships are securely synced across devices.
-- **Full Localization (ES / EN)**: The entire platform is fully localized to support both Spanish and English across the entire user experience.
+- **Full Localization (ES / EN / PT)**: The entire platform is fully localized to support Spanish, English, and Portuguese across the entire user experience.
 - **Regional Branding**: A custom-designed interface that reflects UNDEF's institutional identity through original illustrations, warm visuals, and a cohesive design language.
 
 ## 🧪 Testing & Code Quality
@@ -37,13 +37,44 @@ The platform remains heavily focused on the needs of **Cyberdefense (UNDEF)** st
 - **Unit Testing**: [Vitest](https://vitest.dev/) with `@vitest/coverage-v8` for fast, reliable tests.
 - **Coverage Threshold**: 80% minimum enforced on statements, branches, functions, and lines.
 - **Automated PR Reviews**: [CodeRabbit](https://coderabbit.ai/) configured with assertive profile for auto-review on every PR to `main`.
+- **Commit Standards**: Conventional Commits enforced via [Commitlint](https://commitlint.js.org/) + [Husky](https://typicode.github.io/husky/) pre-commit hooks.
 
 ```bash
 # Run tests
-npm run test
+yarn test
 
 # Run tests with coverage report
-npm run test:coverage
+yarn test:coverage
+```
+
+## 📖 Documentation
+
+| File | Purpose |
+|------|---------|
+| [context/project-overview.md](context/project-overview.md) | High-level project description, features, and target user |
+| [context/architecture.md](context/architecture.md) | Technical architecture, stack, folder structure, data flows |
+| [context/code-standards.md](context/code-standards.md) | Engineering conventions, TypeScript rules, testing standards |
+| [docs/project-report.md](docs/project-report.md) | Full project report (summary, stack, security, future) |
+| [PR_STANDARDS.md](PR_STANDARDS.md) | Pull Request conventions and templates |
+| [AGENTS.md](AGENTS.md) | AI agent instructions (read order, invariants) |
+
+## 🏗️ Project Structure
+
+```
+ciberportero/
+├── src/
+│   ├── app/            # Next.js App Router (pages, API routes, admin)
+│   ├── components/     # Reusable UI components
+│   ├── context/        # React Context providers (Auth, Language)
+│   ├── data/           # Static data (curriculum)
+│   ├── hooks/          # Custom React hooks
+│   ├── lib/            # Utilities, DB client, server actions, tests
+│   └── types/          # TypeScript definitions
+├── prisma/             # Database schema
+├── context/            # Agent documentation
+├── docs/               # Project report
+├── public/             # Static assets
+└── scripts/            # Seed scripts
 ```
 
 ## 📝 Community Contributions
