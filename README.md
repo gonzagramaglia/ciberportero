@@ -23,21 +23,28 @@ The platform remains heavily focused on the needs of **Cyberdefense (UNDEF)** st
 - **Tri-State Subject Tracking**: Manage your semester with precision. Subjects support **Pending** (⚪), **In Progress** (🟡), and **Completed** (🟢).
 - **Centralized Calendar with Google Sync**: A modern interface to manage academic dates and exams. Features one-click "Add to Google Calendar" and batch .ics exports.
 
-## 🎙️ Podcast System
-
-Ciberportero includes an integrated **Podcast Hub** to centralize academic resources and community insights:
-
-- **Native Audio Player**: Listen to lessons, interviews, and tips directly within the platform.
-- **Resource Linking**: Every podcast episode can be linked to external repositories (GitHub, YouTube) or academic materials.
-
 ## ✨ Technical Highlights
 
 - **Full Cloud Synchronization**: Powered by **Supabase (PostgreSQL)** and **Prisma ORM** for real-time data persistence.
 - **Secure Authentication**: Integrated with **Auth.js (v5)** and **Google OAuth** for seamless student access.
 - **Media Orchestration**: High-fidelity image management using **Supabase Storage** for chat attachments and institutional assets.
 - **Progress Persistence**: Student progress and room memberships are securely synced across devices.
-- **Full Localization (ES / EN / PT)**: The entire platform is fully localized to support our regional community.
-- **Regional Branding**: A clean, premium UI synchronized with UNDEF institutional aesthetics.
+- **Full Localization (ES / EN)**: The entire platform is fully localized to support both Spanish and English across the entire user experience.
+- **Regional Branding**: A custom-designed interface that reflects UNDEF's institutional identity through original illustrations, warm visuals, and a cohesive design language.
+
+## 🧪 Testing & Code Quality
+
+- **Unit Testing**: [Vitest](https://vitest.dev/) with `@vitest/coverage-v8` for fast, reliable tests.
+- **Coverage Threshold**: 80% minimum enforced on statements, branches, functions, and lines.
+- **Automated PR Reviews**: [CodeRabbit](https://coderabbit.ai/) configured with assertive profile for auto-review on every PR to `main`.
+
+```bash
+# Run tests
+npm run test
+
+# Run tests with coverage report
+npm run test:coverage
+```
 
 ## 📝 Community Contributions
 

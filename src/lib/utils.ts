@@ -113,7 +113,7 @@ export function slugify(text: string): string {
     .replace(/--+/g, '-'); // replace multiple - with single -
 }
 
-export function formatMarkdown(text: string): string {
+export function formatMarkdown(text: unknown): string {
   if (!text || typeof text !== 'string') return '';
   return text
       .replace(/\*\*(?!\s)(.*?)(?<!\s)\*\*/g, '<strong>$1</strong>')
