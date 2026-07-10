@@ -26,23 +26,23 @@ export const pt = {
     },
     contact: {
         title: "Consultas Oficiais UNDEF",
-        description: "Canal oficial de contacto para consultas académicas y administrativas",
+        description: "Canal oficial de contato para consultas acadêmicas e administrativas",
         email: "licciberdefensa@fadena.undef.edu.ar",
-        copied: "¡Copiado!"
+        copied: "Copiado!"
     },
     links: [
         { name: 'Site Oficial do Curso', url: 'https://undef.edu.ar/fadena/carreras-de-grado/licciberdefensa/', desc: 'Informações sobre a Licenciatura em Ciberdefesa' },
-        { name: 'Plano de Estudos do Curso', url: 'https://undef.edu.ar/fadena/wp-content/uploads/2025/10/Plan-de-estudios-CIBERDEFENSA.pdf', desc: 'Documento oficial con a grade curricular completa' },
+        { name: 'Plano de Estudos do Curso', url: 'https://undef.edu.ar/fadena/wp-content/uploads/2025/10/Plan-de-estudios-CIBERDEFENSA.pdf', desc: 'Documento oficial com a grade curricular completa' },
         { name: 'Campus Oficial do Curso', url: 'https://campus.fadena.undef.edu.ar/my/courses.php', desc: 'Material atualizado de cada uma das matérias' },
-        { name: 'Autogestão SIU Guaraní', url: 'https://autogestion.fadena.undef.edu.ar/3w/', desc: 'Portal oficial de gestão académica dos alunos já inscritos' },
+        { name: 'Autogestão SIU Guaraní', url: 'https://autogestion.fadena.undef.edu.ar/3w/', desc: 'Portal oficial de gestão acadêmica dos alunos já inscritos' },
         { name: 'Todo o Material de Estudo (Google Drive)', url: 'https://drive.google.com/drive/folders/1BqM0J_I4qXVZLzSvxdNcExtUlD_dkaBB', desc: 'Pasta que centraliza o material de todo o curso' },
         { name: 'Material do 1º Cuatrimestre / 1º Ano (Google Drive)', url: 'https://drive.google.com/drive/folders/1BnlGi3g2Rfu59RPlYi9RPJc1TqC_v-sE?usp=sharing', desc: 'Recursos fundamentais para as matérias do primeiro semestre' },
-        { name: 'Aulas da Licenciatura em Ciberdefensa (YouTube)', url: 'https://www.youtube.com/@licenciaturaenciberdefensa', desc: 'Canal oficial com aulas gravadas e material de estudo' },
-        { name: '🛡️ Grupo General – Ciberdefesa (WhatsApp)', url: 'https://chat.whatsapp.com/F2NUFYbj4AYGvsETVhFSC1', desc: 'Comunidade principal con subgrupos para cada matéria' },
+        { name: 'Aulas da Licenciatura em Ciberdefesa (YouTube)', url: 'https://www.youtube.com/@licenciaturaenciberdefensa', desc: 'Canal oficial com aulas gravadas e material de estudo' },
+        { name: '🛡️ Grupo General – Ciberdefesa (WhatsApp)', url: 'https://chat.whatsapp.com/F2NUFYbj4AYGvsETVhFSC1', desc: 'Comunidade principal com subgrupos para cada matéria' },
         { name: 'Los Magios - Lic. em Ciberdefesa (WhatsApp)', url: 'https://chat.whatsapp.com/HonLxwUP8JODfxHbLXXmhd', desc: 'Grupo da comunidade de estudantes para dúvidas e avisos' },
         { name: 'Lic. em Ciberdefesa 2026 (WhatsApp)', url: 'https://chat.whatsapp.com/KjlaP3RGYK94ekGZonwLHR', desc: 'Grupo específico para os alunos da turma de 2026' },
         { name: 'Ciberdefesa FADENA (Discord)', url: 'https://discord.gg/AxqkVzYPeN', desc: 'Servidor oficial da comunidade de estudantes da FADENA' },
-        { name: 'Comunidade Ciberdefesa Argentina (Discord)', url: 'https://discord.gg/zPWRAfUR82', desc: 'Espaço de estudio e networking da comunidade nacional' },
+        { name: 'Comunidade Ciberdefesa Argentina (Discord)', url: 'https://discord.gg/zPWRAfUR82', desc: 'Espaço de estudo e networking da comunidade nacional' },
     ],
     addPersonalized: "Adicionar link personalizado",
     feedback: "Por que escolhemos a Ciberdefesa?",
@@ -80,7 +80,7 @@ export const pt = {
         title: "Blog",
         managePosts: "Gerenciar Posts",
         subtitle: "Posts sobre cibersegurança, desenvolvimento web e mais.",
-        noPosts: "Não há posts unlisted no momento.",
+        noPosts: "Não há posts não listados no momento.",
         tags: {
             "Seguridad Web": "Segurança Web",
             "Seguridad en la Nube": "Segurança na Nuvem",
@@ -90,7 +90,7 @@ export const pt = {
     },
     share: {
         copy: "Copiar link do post",
-        copied: "¡Link do post copiado!"
+        copied: "Link do post copiado!"
     },
     post: {
         index: "Índice"
@@ -159,7 +159,7 @@ export const pt = {
     },
     plan: {
         title: "Plano de Estudos",
-        subtitle: "Licenciatura em Ciberdefensa - UNDEF",
+        subtitle: "Licenciatura em Ciberdefesa - UNDEF",
         description: "<strong>Visualize o seu progresso</strong> e as matérias que você está desbloqueando.",
         completed: "Concluída",
         completedPlural: "Concluídas",
@@ -169,7 +169,7 @@ export const pt = {
         unlocks: "Habilita",
         year: "Ano",
         term: "Semestre",
-        totalHours: "Horas Totales",
+        totalHours: "Horas Totais",
         stats: {
             completed: "Matérias Concluídas",
             remaining: "Matérias Restantes",
@@ -178,16 +178,16 @@ export const pt = {
         objective: "Objetivo Acadêmico",
         intermediate: "Título Intermediário",
         full: "Licenciatura Completa",
-        search: "Buscar matéria o ID...",
+        search: "Buscar matéria ou ID...",
         storageNotice: "Seu progresso é salvo localmente neste navegador.",
         subjectNames: {
-            1: "Cálculo I", 2: "Álgebra I", 3: "Gestão de Serviços de Informação", 4: "Inglés I", 5: "Sistemas Operacionais I",
+            1: "Cálculo I", 2: "Álgebra I", 3: "Gestão de Serviços de Informação", 4: "Inglês I", 5: "Sistemas Operacionais I",
             6: "Sistemas de Processamento de Dados", 7: "Infraestrutura de Telecomunicações", 8: "Sociedade e Estado", 9: "Sistemas Operacionais II", 10: "Linguagens de Programação",
             11: "Cálculo II", 12: "Álgebra II", 13: "Probabilidade e Estatística", 14: "Inglês II", 15: "Tecnologia Operacional",
-            16: "Programação Segura", 17: "Ciberseguridad Aplicada", 18: "Dispositivos Remotos e IoT", 19: "Ética Profissional", 20: "Gestão de Segurança da Informação",
-            21: "Proteção de Infraestructuras Críticas", 22: "Metodologias de Análise de Riscos", 23: "Análise de Cenários e Capacidades", 24: "Governo e Políticas Públicas", 25: "Informática Forense",
+            16: "Programação Segura", 17: "Cibersegurança Aplicada", 18: "Dispositivos Remotos e IoT", 19: "Ética Profissional", 20: "Gestão de Segurança da Informação",
+            21: "Proteção de Infraestruturas Críticas", 22: "Metodologias de Análise de Riscos", 23: "Análise de Cenários e Capacidades", 24: "Governo e Políticas Públicas", 25: "Informática Forense",
             26: "Relações Internacionais", 27: "IA e Aprendizado de Máquina", 28: "Geopolítica", 29: "Direito à Defesa Nacional", 30: "Sistema de Inteligência Nacional",
-            31: "Investigação Operativa", 32: "Criptografía Aplicada", 33: "Gestão de Projetos", 34: "Instrumento Militar e Sistemas de Armas", 35: "Modelos e Simulação",
+            31: "Investigação Operativa", 32: "Criptografia Aplicada", 33: "Gestão de Projetos", 34: "Instrumento Militar e Sistemas de Armas", 35: "Modelos e Simulação",
             36: "Prospectiva Estratégica", 37: "Atores no Quinto Domínio"
         }
     },
@@ -268,7 +268,7 @@ export const pt = {
         "Lembre-se que você deve manter o foco, o objetivo está cada vez mais perto.",
         "Lembre-se que o conhecimento é a melhor defesa.",
         "Lembre-se que você deve seguir em frente, seu progresso é imparável.",
-        "Lembre-se que a disciplina e a constância são as bases de un grande profesional.",
+        "Lembre-se que a disciplina e a constância são as bases de um grande profissional.",
         "Lembre-se que você não deve parar até se sentir orgulhoso.",
         "Lembre-se que a educação é a arma mais poderosa para proteger a nação."
     ],

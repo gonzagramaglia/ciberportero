@@ -41,8 +41,8 @@ export const es = {
         { name: '🛡️ Grupo General – Ciberdefensa (WhatsApp)', url: 'https://chat.whatsapp.com/F2NUFYbj4AYGvsETVhFSC1', desc: 'Comunidad principal con subgrupos para cada materia' },
         { name: 'Los Magios - Lic. en Ciberdefensa (WhatsApp)', url: 'https://chat.whatsapp.com/HonLxwUP8JODfxHbLXXmhd', desc: 'Grupo de la comunidad de estudiantes para consultas y avisos' },
         { name: 'Lic. en Ciberdefensa 2026 (WhatsApp)', url: 'https://chat.whatsapp.com/KjlaP3RGYK94ekGZonwLHR', desc: 'Grupo específico para la cursada de la camada 2026' },
-        { name: 'Ciberdefensa FADENA (Discord)', url: 'https://discord.gg/AxqkVzYPeN', desc: 'Server oficial de la comunidad de estudiantes de FADENA' },
-        { name: 'Comunidad Ciberdefensa Argentina (Discord)', url: 'https://discord.gg/zPWRAfUR82', desc: 'Espacio de estudio y networking de la comunidad nacional' },
+        { name: 'Ciberdefensa FADENA (Discord)', url: 'https://discord.gg/AxqkVzYPeN', desc: 'Servidor oficial de la comunidad de estudiantes de FADENA' },
+        { name: 'Comunidad Ciberdefensa Argentina (Discord)', url: 'https://discord.gg/zPWRAfUR82', desc: 'Espacio de estudio y contactos de la comunidad nacional' },
     ],
     addPersonalized: "Agregar link personalizado",
     feedback: "¿Por qué elegimos Ciberdefensa?",
@@ -80,7 +80,7 @@ export const es = {
         title: "Blog",
         managePosts: "Gestionar Posts",
         subtitle: "Posts sobre ciberseguridad, desarrollo web y más.",
-        noPosts: "No hay posts unlisted en este momento.",
+        noPosts: "No hay publicaciones no listadas en este momento.",
         tags: {
             "Seguridad Web": "Seguridad Web",
             "Seguridad en la Nube": "Seguridad en la Nube",
@@ -117,7 +117,7 @@ export const es = {
     dashboard: {
         title: "Dashboard de Estudios",
         description: "<strong>Registrá tu avance académico</strong>, llevá el control de tus notas y organizá tus tareas del campus.",
-        back: "← Voltar ao início",
+        back: "← Volver al inicio",
         guestUser: "Estudiante Invitado",
         welcome: "Hola",
         loading: "Cargando dashboard...",
@@ -153,7 +153,7 @@ export const es = {
             campus: "Campus"
         },
         beta: {
-            title: "🚀 Versão Beta v0.1",
+            title: "🚀 Versión Beta v0.1",
             desc: "Tu progreso se guarda automáticamente en el navegador (Local Storage).\nPronto integraremos el inicio de sesión con Google para sincronizar tus avances en la nube."
         }
     },
@@ -248,7 +248,7 @@ export const es = {
             sixtyDays: "Próximos 60 días",
             customRange: "Todo el año",
             generateButton: "Descargar archivo .ics",
-            instructions: "Once downloaded, import el config de Google Calendar.",
+            instructions: "Una vez descargado, importá el archivo en Google Calendar.",
             help: "Al ser un sistema académico, te recomendamos exportar por materias para mejor organización."
         }
     },
