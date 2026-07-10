@@ -111,7 +111,7 @@ describe('toLocalISOString', () => {
 
   it('handles string input', () => {
     const result = toLocalISOString('2026-01-15T08:05:00');
-    expect(result).toMatch(/2026-01-15T08:05/);
+    expect(result).toBe('2026-01-15T08:05');
   });
 
   it('returns empty string for falsy input', () => {
@@ -210,7 +210,7 @@ describe('formatMarkdown', () => {
   });
 
   it('returns empty string for null', () => {
-    expect(formatMarkdown(null as any)).toBe('');
+    expect(formatMarkdown(null)).toBe('');
   });
 
   it('returns empty string for empty string', () => {
@@ -218,7 +218,7 @@ describe('formatMarkdown', () => {
   });
 
   it('returns empty string for non-string values', () => {
-    expect(formatMarkdown(123 as any)).toBe('');
+    expect(formatMarkdown(123)).toBe('');
   });
 
   it('handles mixed formatting', () => {
