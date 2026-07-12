@@ -108,11 +108,22 @@ Branches follow the pattern:
 
 ---
 
+## PR Draft Generation
+
+Whenever a PR is prepared, the AI assistant must generate a local markdown file containing both the **Description Template** and the **Extended Description** for the user to review or copy.
+- **Path:** `docs/prs/pr-[number]-[slug].md`
+- **Note:** The `docs/prs/` directory is git-ignored, so these drafts won't be pushed.
+
+---
+
 ## PR History Reference
 
 | PR | Branch | Description | Status |
 |----|--------|-------------|--------|
-| #1 | `feat/coderabbit-coverage` | CodeRabbit config & 80% coverage enforcement | ✅ Merged |
-| #2 | `docs/agent-context-files` | Agent docs, context files, PR standards | 🟡 Open |
+| #2 | `feat/coderabbit-coverage` | CodeRabbit config & 80% coverage enforcement | ✅ Merged |
+| #3 | `docs/agent-context-files` | Agent docs, context files, PR standards | ✅ Merged |
+| #4 | `refactor/modularize-actions` | Modularize actions.ts into domain-specific modules | ✅ Merged |
+| #5 | `refactor/modularize-translations` | Modularize translations into per-language files | ✅ Merged |
+| #6 | `feat/enhance-links-admin` | Link admin image uploads and compact UI | 🟡 Open |
 
 *(Update this table every time a PR is opened or merged.)*

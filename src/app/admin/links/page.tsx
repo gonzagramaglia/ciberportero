@@ -39,9 +39,7 @@ export default async function AdminLinksPage() {
         <table className="admin-table">
           <thead>
             <tr>
-              <th>Nombre (ES)</th>
-              <th>URL</th>
-              <th>Icono</th>
+              <th>Link</th>
               <th style={{ textAlign: 'center' }}>Orden</th>
               <th style={{ textAlign: 'right', paddingRight: '2.5rem' }}>Acciones</th>
             </tr>
@@ -57,13 +55,27 @@ export default async function AdminLinksPage() {
 
               return (
                 <tr key={link.id}>
-                  <td style={{ fontWeight: 600, whiteSpace: 'nowrap' }}>{name}</td>
-                  <td>
-                    <a href={url} target="_blank" rel="noreferrer" style={{ color: '#2563eb', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.4rem', whiteSpace: 'nowrap' }}>
-                      {displayUrl} <ExternalLink size={12} />
-                    </a>
+                  <td style={{ fontWeight: 600, whiteSpace: 'nowrap' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                      {link.iconType && (link.iconType.startsWith('/') || link.iconType.startsWith('http')) ? (
+                        <img src={link.iconType} alt={name} style={{ width: '32px', height: '32px', borderRadius: '8px', objectFit: 'cover' }} />
+                      ) : link.iconType ? (
+                        <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', color: '#64748b' }}>
+                          {link.iconType.substring(0, 2).toUpperCase()}
+                        </div>
+                      ) : (
+                        <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <ExternalLink size={16} color="#64748b" />
+                        </div>
+                      )}
+                      <div>
+                        <div style={{ fontWeight: 600 }}>{name}</div>
+                        <a href={url} target="_blank" rel="noreferrer" style={{ color: '#64748b', fontSize: '0.8rem', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                          {displayUrl} <ExternalLink size={10} />
+                        </a>
+                      </div>
+                    </div>
                   </td>
-                  <td style={{ textTransform: 'capitalize', whiteSpace: 'nowrap' }}>{link.iconType || '-'}</td>
                   <td style={{ textAlign: 'center' }}>
                     <div className="admin-flex-center" style={{ justifyContent: 'center', gap: '0.8rem' }}>
                       <span style={{ fontWeight: 800, color: '#64748b', fontSize: '1.2rem', minWidth: '1.5rem' }}>{link.order}</span>
@@ -95,7 +107,7 @@ export default async function AdminLinksPage() {
               );
             }) : (
               <tr>
-                <td colSpan={5} style={{ padding: '3rem', textAlign: 'center', color: '#94a3b8', fontStyle: 'italic' }}>
+                <td colSpan={3} style={{ padding: '3rem', textAlign: 'center', color: '#94a3b8', fontStyle: 'italic' }}>
                   No hay links configurados aún.
                 </td>
               </tr>
