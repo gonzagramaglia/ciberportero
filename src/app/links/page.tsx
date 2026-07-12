@@ -11,10 +11,9 @@ import NotificationBanners from '../../components/NotificationBanners';
 import CountdownWidget from '../../components/CountdownWidget';
 import { useSession } from "next-auth/react";
 import { SignInButton, SignOutButton } from "@/components/AuthButtons";
-import SyncedBadge from "@/components/SyncedBadge";
 import { deletePersonalLink } from "@/lib/actions";
 import CommentSection from "@/components/CommentSection";
-import { Trash2, Plus, X as CloseIcon } from "lucide-react";
+import { Trash2, Edit } from "lucide-react";
 
 export default function LinksPage() {
     const { data: session, status } = useSession();
@@ -125,8 +124,8 @@ export default function LinksPage() {
                                         textDecoration: 'none'
                                     }}
                                 >
-                                    <Plus size={20} />
-                                    {lang === 'es' ? 'Agregar link' : lang === 'pt' ? 'Adicionar link' : 'Add link'}
+                                    <Edit size={20} />
+                                    {lang === 'es' ? 'Editar links' : lang === 'pt' ? 'Editar links' : 'Edit links'}
                                 </Link>
                             )}
                         </div>
@@ -157,10 +156,14 @@ export default function LinksPage() {
                         return (
                             <li key={link.id || link.url} className={`post-item ${isPersonal ? 'is-personal' : ''}`} style={{ marginBottom: 0 }}>
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem' }}>
-                                    <a href={link.url} target="_blank" rel="noopener noreferrer" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '1rem', minWidth: 0 }}>
+                                    <a href={link.url.startsWith('http') || link.url.startsWith('/') || link.url.startsWith('mailto:') || link.url.startsWith('tel:') ? link.url : `https://${link.url}`} target="_blank" rel="noopener noreferrer" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '1rem', minWidth: 0 }}>
                                         <div style={{ width: 46, flexShrink: 0, display: 'flex', justifyContent: 'center' }}>
                                             {!isExternal ? (
-                                                <Image src={iconSrc} alt="link icon" width={iconW} height={iconH} style={{ flexShrink: 0, borderRadius: '8px', objectFit: 'contain' }} />
+                                                iconSrc.startsWith('http') || (iconSrc.includes('.') && !iconSrc.startsWith('/')) ? (
+                                                    <img src={iconSrc.startsWith('http') ? iconSrc : `https://${iconSrc}`} alt="link icon" style={{ width: iconW, height: iconH, flexShrink: 0, borderRadius: '8px', objectFit: 'contain' }} />
+                                                ) : (
+                                                    <Image src={iconSrc.startsWith('/') ? iconSrc : `/${iconSrc}`} alt="link icon" width={iconW} height={iconH} style={{ flexShrink: 0, borderRadius: '8px', objectFit: 'contain' }} />
+                                                )
                                             ) : (
                                                 <ExternalLink size={28} color={isPersonal ? "#8b5cf6" : "var(--accent)"} />
                                             )}

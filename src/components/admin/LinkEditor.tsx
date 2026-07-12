@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from "react";
-import { upsertLink } from "@/lib/actions";
+import { upsertLink, uploadImage } from "@/lib/actions";
 import { useRouter } from "next/navigation";
-import { Save, ArrowLeft } from "lucide-react";
+import { Save, ArrowLeft, Upload, Loader2 } from "lucide-react";
 import Link from "next/link";
 
 interface Props {
@@ -28,6 +28,37 @@ export function LinkEditor({ initialData }: Props) {
 
   const [url, setUrl] = useState(initialData?.url || '');
   const [iconType, setIconType] = useState(initialData?.iconType || 'external');
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingImage(true);
+    try {
+      const slug = file.name.split('.')[0]
+        .toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^\w-]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+        
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('slug', slug);
+      formData.append('source', 'admin');
+
+      const result = await uploadImage(formData);
+      if (result.success && result.image?.url) {
+        setIconType(result.image.url);
+      } else {
+        alert('Error al subir imagen: ' + (result.error || 'Desconocido'));
+      }
+    } catch (error) {
+      alert('Error al subir imagen');
+    } finally {
+      setIsUploadingImage(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -106,13 +137,37 @@ export function LinkEditor({ initialData }: Props) {
 
           <div>
             <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#64748b' }}>URL del Icono (Opcional)</label>
-            <input 
-              className="admin-input"
-              placeholder="Ej: /wsp.png o moodle"
-              value={iconType}
-              onChange={e => setIconType(e.target.value)}
-            />
-            <p style={{ fontSize: '0.7rem', color: '#94a3b8', marginTop: '0.5rem', marginBottom: 0 }}>Icono flecha por defecto si está vacío.</p>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <input 
+                className="admin-input"
+                placeholder="Ej: /wsp.png o moodle"
+                value={iconType}
+                onChange={e => setIconType(e.target.value)}
+                style={{ flex: 1 }}
+              />
+              <label style={{ 
+                cursor: isUploadingImage ? 'not-allowed' : 'pointer', 
+                background: '#f1f5f9', 
+                padding: '0.75rem', 
+                borderRadius: '10px', 
+                border: '1px solid #e2e8f0',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                opacity: isUploadingImage ? 0.7 : 1,
+                margin: 0
+              }}>
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  style={{ display: 'none' }} 
+                  onChange={handleImageUpload}
+                  disabled={isUploadingImage}
+                />
+                {isUploadingImage ? <Loader2 size={18} className="animate-spin" /> : <Upload size={18} />}
+              </label>
+            </div>
+            <p style={{ fontSize: '0.7rem', color: '#94a3b8', marginTop: '0.5rem', marginBottom: 0 }}>Sube una imagen o usa un icono por defecto.</p>
           </div>
         </div>
 
