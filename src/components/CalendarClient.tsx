@@ -719,7 +719,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
         </div>
 
       <main className="calendar-layout">
-        <div className="calendar-main-card">
+        <div className="calendar-main-card" style={{ overflow: 'hidden' }}>
           <div className="calendar-header">
             <div className="calendar-current-month">
               <CalendarIcon size={20} style={{ color: '#eab308' }} />
@@ -853,6 +853,14 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
               />
               {(ct as any).batchExport.button}
             </button>
+          </div>
+          
+          <div style={{ width: '100%', marginTop: '1.5rem', borderRadius: '12px', overflow: 'hidden' }}>
+            <img 
+              src="/enzo.png" 
+              alt="Enzo"
+              style={{ width: '100%', height: 'auto', maxHeight: '400px', objectFit: 'cover', display: 'block' }} 
+            />
           </div>
         </div>
 
