@@ -2,9 +2,11 @@ import { db } from "@/lib/db";
 import { translations } from "@/lib/translations";
 import { cookies } from "next/headers";
 import Link from "next/link";
-import { ChevronLeft, Speaker, Github, Youtube, Disc3, Coffee } from "lucide-react";
+import { ChevronLeft, Speaker, Github, Youtube, Disc3, Coffee , Twitch} from "lucide-react";
 import PodcastCard from "@/components/PodcastCard";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { FaXTwitter } from 'react-icons/fa6';
+import { TbBrandDiscord } from 'react-icons/tb';
 
 export default async function PodcastListPage() {
     const cookieStore = await cookies();
@@ -79,13 +81,15 @@ export default async function PodcastListPage() {
             </a>
 
             <footer className="footer-main" style={{ marginTop: '8rem', borderTop: '1px solid #f1f5f9', paddingTop: '3rem', marginBottom: '2rem' }}>
-                <a href="https://cafecito.app/gonzagramaglia" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
-                    <Coffee size={18} />
-                </a>
+                <div className="footer-social-left" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <a href="https://x.com/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="X (Twitter) de Ciberportero"><FaXTwitter size={16} aria-hidden="true" /></a>
+                    <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><TbBrandDiscord size={21} aria-hidden="true" /></a>
+                </div>
                 <span>{t.footer}</span>
-                <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
-                    <Youtube size={22} />
-                </a>
+                <div className="footer-social-right" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <a href="https://twitch.tv/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex'  }} aria-label="Twitch de Ciberportero"><Twitch size={18} aria-hidden="true" /></a>
+                    <a href="https://youtube.com/@ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="YouTube de Ciberportero"><Youtube size={22} aria-hidden="true" /></a>
+                </div>
             </footer>
 
             <style dangerouslySetInnerHTML={{

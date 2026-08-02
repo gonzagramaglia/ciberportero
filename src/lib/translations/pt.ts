@@ -205,7 +205,7 @@ export const pt = {
             upcoming: "Próximos eventos",
             exam: "Exame / Parcial",
             quiz_mandatory: "Autoavaliação Obrigatória",
-            enrollment: "Tarefa",
+            enrollment: "Trâmite Administrativo",
             classes: "Aula",
             admin: "Administrativo",
             event: "Outro",

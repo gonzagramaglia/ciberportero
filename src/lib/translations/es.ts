@@ -205,7 +205,7 @@ export const es = {
             upcoming: "Próximos eventos",
             exam: "Examen",
             quiz_mandatory: "Autoevaluación",
-            enrollment: "Tarea",
+            enrollment: "Trámite Administrativo",
             classes: "Clase",
             admin: "Administrativo",
             event: "Otro",

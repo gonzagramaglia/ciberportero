@@ -26,7 +26,7 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
   const typeToCategory: Record<string, string> = {
     'exam': 'Examen / Parcial',
     'quiz_mandatory': 'Autoevaluación (obligatoria)',
-    'enrollment': 'Tarea',
+    'enrollment': 'Trámite Administrativo',
     'classes': 'Clase',
     'event': 'Otro'
   };
@@ -68,7 +68,7 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
     const typeMap: Record<string, string> = {
       'Examen / Parcial': 'exam',
       'Autoevaluación (obligatoria)': 'quiz_mandatory',
-      'Tarea': 'enrollment',
+      'Trámite Administrativo': 'enrollment',
       'Clase': 'classes',
       'Otro': 'event'
     };
@@ -76,12 +76,12 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
     try {
       // Parse YYYY-MM-DD as local midnight
       const [sy, sm, sd] = startDate.split('-').map(Number);
-      const startLocal = new Date(sy, sm - 1, sd, 0, 0, 0);
+      const startLocal = new Date(sy, sm - 1, sd, 12, 0, 0);
       
       let endLocal = null;
       if (endDate) {
         const [ey, em, ed] = endDate.split('-').map(Number);
-        endLocal = new Date(ey, em - 1, ed, 23, 59, 59); // End of day
+        endLocal = new Date(ey, em - 1, ed, 12, 0, 0); // End of day
       }
 
       await upsertCalendarEvent({
@@ -115,7 +115,7 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
     }
   };
 
-  const categories = ['Examen / Parcial', 'Autoevaluación (obligatoria)', 'Tarea', 'Clase', 'Otro'];
+  const categories = ['Examen / Parcial', 'Autoevaluación (obligatoria)', 'Trámite Administrativo', 'Clase', 'Otro'];
 
   return (
     <form onSubmit={handleSubmit} className="space-y-12 fade-in">

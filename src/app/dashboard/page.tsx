@@ -5,11 +5,13 @@ import Link from 'next/link'
 import { useState, useEffect } from "react"
 import { SignOutButton } from "@/components/AuthButtons"
 import { ProgressList } from "./components/ProgressList"
-import { Github, Youtube, ArrowLeft, Zap, CheckCircle, Info, Book, Calendar, Coffee } from 'lucide-react'
+import { Github, Youtube, ArrowLeft, Zap, CheckCircle, Info, Book, Calendar, Coffee , Twitch} from 'lucide-react'
 import { useLanguage } from "@/context/LanguageContext"
 import { translations } from "@/lib/translations"
 import LanguageSwitcher from "@/components/LanguageSwitcher"
 import NotificationBanners from "@/components/NotificationBanners"
+import { FaXTwitter } from 'react-icons/fa6';
+import { TbBrandDiscord } from 'react-icons/tb';
 
 export default function DashboardPage() {
   const { lang } = useLanguage()
@@ -287,14 +289,16 @@ export default function DashboardPage() {
       </main>
 
       <footer className="footer-main">
-        <a href="https://cafecito.app/gonzagramaglia" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
-          <Coffee size={20} />
-        </a>
-        <span style={{ fontSize: '0.9rem', opacity: 0.6, color: 'var(--muted)', fontWeight: '500' }}>{translations[lang].footer}</span>
-        <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
-          <Youtube size={22} />
-        </a>
-      </footer>
+                <div className="footer-social-left" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <a href="https://x.com/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="X (Twitter) de Ciberportero"><FaXTwitter size={16} aria-hidden="true" /></a>
+                    <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><TbBrandDiscord size={21} aria-hidden="true" /></a>
+                </div>
+                <span>{t.footer}</span>
+                <div className="footer-social-right" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <a href="https://twitch.tv/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex'  }} aria-label="Twitch de Ciberportero"><Twitch size={18} aria-hidden="true" /></a>
+                    <a href="https://youtube.com/@ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="YouTube de Ciberportero"><Youtube size={22} aria-hidden="true" /></a>
+                </div>
+            </footer>
     </div>
   )
 }

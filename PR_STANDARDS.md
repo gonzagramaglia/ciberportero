@@ -110,7 +110,7 @@ Branches follow the pattern:
 
 ## PR Draft Generation
 
-Whenever a PR is prepared, the AI assistant must generate a local markdown file containing both the **Description Template** and the **Extended Description** for the user to review or copy.
+Whenever a PR is prepared, the AI assistant must generate a local markdown file containing the **PR Title**, the **Description Template**, and the **Extended Description** for the user to review or copy.
 - **Path:** `docs/prs/pr-[number]-[slug].md`
 - **Note:** The `docs/prs/` directory is git-ignored, so these drafts won't be pushed.
 
@@ -124,6 +124,7 @@ Whenever a PR is prepared, the AI assistant must generate a local markdown file 
 | #3 | `docs/agent-context-files` | Agent docs, context files, PR standards | ✅ Merged |
 | #4 | `refactor/modularize-actions` | Modularize actions.ts into domain-specific modules | ✅ Merged |
 | #5 | `refactor/modularize-translations` | Modularize translations into per-language files | ✅ Merged |
-| #6 | `feat/enhance-links-admin` | Link admin image uploads and compact UI | 🟡 Open |
+| #6 | `feat/enhance-links-admin` | Link admin image uploads and compact UI | ✅ Merged |
+| #7 | `feat/social-links-and-calendar` | Update social links (X, Discord, Twitch, YouTube) and fix calendar date timezone bugs | 🟡 Open |
 
 *(Update this table every time a PR is opened or merged.)*
