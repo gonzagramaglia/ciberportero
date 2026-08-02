@@ -572,17 +572,17 @@ export default function PlanPage() {
         </a>
         <span style={{ fontSize: '0.9rem', opacity: 0.6, color: 'var(--muted)' }}>{translations[lang].footer}</span>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          <a href="https://x.com/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
-            <FaXTwitter size={16} />
+          <a href="https://x.com/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }} aria-label="X (Twitter) de Ciberportero">
+            <FaXTwitter size={16} aria-hidden="true" />
           </a>
           <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
-            <TbBrandDiscord size={21} />
+            <TbBrandDiscord size={21} aria-hidden="true" />
           </a>
-          <a href="https://twitch.tv/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
-            <Twitch size={18} />
+          <a href="https://twitch.tv/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }} aria-label="Twitch de Ciberportero">
+            <Twitch size={18} aria-hidden="true" />
           </a>
-          <a href="https://youtube.com/@ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
-            <Youtube size={20} />
+          <a href="https://youtube.com/@ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }} aria-label="YouTube de Ciberportero">
+            <Youtube size={20} aria-hidden="true" />
           </a>
         </div>
       </footer>
