@@ -5,7 +5,9 @@ import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkBreaks from 'remark-breaks';
-import { ChevronLeft, Github, Youtube, ArrowUp, ArrowDown, X, Link2, Check, Edit, ThumbsUp, Coffee } from 'lucide-react';
+import { ChevronLeft, Github, Youtube, ArrowUp, ArrowDown, X, Link2, Check, Edit, ThumbsUp, Coffee , Twitter, Twitch} from 'lucide-react';
+import { FaXTwitter } from 'react-icons/fa6';
+import { TbBrandDiscord } from 'react-icons/tb';
 import { useLanguage } from '../context/LanguageContext';
 import { translations } from '../lib/translations';
 import { useSession } from 'next-auth/react';
@@ -422,7 +424,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                         <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', borderRadius: '16px', margin: '2rem 0', border: '1px solid rgba(0,0,0,0.1)' }}>
                             <iframe 
                                 style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                                src={`https://www.youtube.com/embed/${videoId}`}
+                                src={`https://youtube.com/embed/${videoId}`}
                                 title="YouTube video player"
                                 frameBorder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -536,9 +538,12 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                         <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#94a3b8' }}>
                             {lang === 'es' ? 'Autor del post' : lang === 'pt' ? 'Autor do post' : 'Post author'}
                         </span>
-                        <h4 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 800, color: '#0f172a' }}>Gonzalo Gramaglia</h4>
+                        <a href="https://cafecito.app/gonzagramaglia" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', color: '#0f172a' }} title="Invitame un cafecito">
+                            <Coffee size={20} style={{ color: '#000000' }} />
+                            <h4 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 800 }}>Gonzalo Gramaglia</h4>
+                        </a>
                         <p style={{ margin: 0, color: '#475569', fontSize: '0.95rem', fontWeight: 500 }}>Full Stack Developer | Systems Reliability & Security</p>
-                        <a href="https://gonzagramaglia.github.io" target="_blank" rel="noopener noreferrer" style={{ color: '#2563eb', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 700, marginTop: '0.2rem' }}>gonzagramaglia.github.io</a>
+                        <a href="https://gonzagramaglia.github.io" target="_blank" rel="noopener noreferrer" style={{ color: '#0ea5e9', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 700, marginTop: '0.2rem' }}>gonzagramaglia.github.io</a>
                     </div>
                     <div className="copy-container mobile-hide" style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
                         <button onClick={handleCopy} className={`copy-button ${copied ? 'success' : ''}`}>
@@ -558,10 +563,16 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                 {!post.unlisted && <CommentSection postSlug={slug} lang={lang} />}
 
                 <footer className="footer-main">
-                    <a href="https://cafecito.app/gonzagramaglia" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Coffee size={18} /></a>
-                    <span>{t.footer}</span>
-                    <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Youtube size={22} /></a>
-                </footer>
+                <div className="footer-social-left" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <a href="https://x.com/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><FaXTwitter size={16} /></a>
+                    <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><TbBrandDiscord size={21} /></a>
+                </div>
+                <span>{t.footer}</span>
+                <div className="footer-social-right" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <a href="https://twitch.tv/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex'  }}><Twitch size={18} /></a>
+                    <a href="https://youtube.com/@ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Youtube size={22} /></a>
+                </div>
+            </footer>
             </div>
 
 

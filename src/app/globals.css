@@ -739,7 +739,7 @@ header p {
     grid-template-areas: 
       "text text text text"
       ". icon1 icon2 .";
-    column-gap: 2.5rem;
+    column-gap: 1rem;
     row-gap: 1.2rem;
     justify-items: center;
     align-items: center;
@@ -751,11 +751,11 @@ header p {
     white-space: nowrap;
   }
 
-  .footer-main:not(.footer-stacked) a:first-of-type {
+  .footer-main:not(.footer-stacked) .footer-social-left {
     grid-area: icon1;
   }
 
-  .footer-main:not(.footer-stacked) a:last-of-type {
+  .footer-main:not(.footer-stacked) .footer-social-right {
     grid-area: icon2;
   }
 

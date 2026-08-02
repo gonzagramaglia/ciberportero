@@ -6,7 +6,7 @@ import { useLanguage } from "@/context/LanguageContext"
 import { translations } from "@/lib/translations"
 import { curriculum, Subject } from "@/data/curriculum"
 import LanguageSwitcher from "@/components/LanguageSwitcher"
-import { CheckCircle, Info, Lock, ChevronLeft, Layers, Star, Zap, Coffee, Youtube, Search, X, Calendar, ExternalLink } from "lucide-react"
+import { CheckCircle, Info, Lock, ChevronLeft, Layers, Star, Zap, Coffee, Youtube, Search, X, Calendar, ExternalLink, Twitch } from "lucide-react"
 import NotificationBanners from "@/components/NotificationBanners"
 import CountdownWidget from "@/components/CountdownWidget"
 import { normalizeString } from "@/lib/string-utils"
@@ -15,6 +15,8 @@ import { getUserProgress, updateUserProgress } from "@/lib/actions"
 import SyncedBadge from "@/components/SyncedBadge"
 import { SignInButton, SignOutButton } from "@/components/AuthButtons"
 import CommentSection from "@/components/CommentSection"
+import { FaXTwitter } from 'react-icons/fa6';
+import { TbBrandDiscord } from 'react-icons/tb';
 
 export default function PlanPage() {
   const { lang } = useLanguage()
@@ -569,11 +571,17 @@ export default function PlanPage() {
           {translations[lang].credits}
         </a>
         <span style={{ fontSize: '0.9rem', opacity: 0.6, color: 'var(--muted)' }}>{translations[lang].footer}</span>
-        <div style={{ display: 'flex', gap: '2.5rem', alignItems: 'center' }}>
-          <a href="https://cafecito.app/gonzagramaglia" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
-            <Coffee size={18} />
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <a href="https://x.com/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
+            <FaXTwitter size={16} />
           </a>
-          <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
+          <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
+            <TbBrandDiscord size={21} />
+          </a>
+          <a href="https://twitch.tv/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
+            <Twitch size={18} />
+          </a>
+          <a href="https://youtube.com/@ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }}>
             <Youtube size={20} />
           </a>
         </div>

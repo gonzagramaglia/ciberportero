@@ -4,7 +4,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useLanguage } from '../../context/LanguageContext';
 import { translations } from '../../lib/translations';
-import { ChevronLeft, ExternalLink, Mail, Copy, Check, Coffee, Youtube, Calendar, Zap } from 'lucide-react';
+import { ChevronLeft, ExternalLink, Mail, Copy, Check, Coffee, Youtube, Calendar, Zap , Twitter, Twitch} from 'lucide-react';
+import { FaXTwitter } from 'react-icons/fa6';
+import { TbBrandDiscord } from 'react-icons/tb';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 import { useState, useEffect, useMemo } from 'react';
 import NotificationBanners from '../../components/NotificationBanners';
@@ -270,13 +272,15 @@ export default function LinksPage() {
             <CommentSection postSlug="links" lang={lang} />
 
             <footer className="footer-main">
-                <a href="https://cafecito.app/gonzagramaglia" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
-                    <Coffee size={18} />
-                </a>
+                <div className="footer-social-left" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <a href="https://x.com/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><FaXTwitter size={16} /></a>
+                    <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><TbBrandDiscord size={21} /></a>
+                </div>
                 <span>{t.footer}</span>
-                <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}>
-                    <Youtube size={22} />
-                </a>
+                <div className="footer-social-right" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <a href="https://twitch.tv/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex'  }}><Twitch size={18} /></a>
+                    <a href="https://youtube.com/@ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Youtube size={22} /></a>
+                </div>
             </footer>
 
 

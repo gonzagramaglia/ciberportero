@@ -4,7 +4,9 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '../context/LanguageContext';
 import { translations } from '../lib/translations';
-import { Github, Youtube, BookOpen, Calendar, Info, Link as LinkIcon, X, Zap, Coffee } from 'lucide-react';
+import { Github, Youtube, BookOpen, Calendar, Info, Link as LinkIcon, X, Zap, Coffee , Twitter, Twitch} from 'lucide-react';
+import { FaXTwitter } from 'react-icons/fa6';
+import { TbBrandDiscord } from 'react-icons/tb';
 import NotificationBanners from './NotificationBanners';
 import CountdownWidget from './CountdownWidget';
 import { useSession } from 'next-auth/react';
@@ -225,13 +227,19 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
             </main>
 
             <div className="home-cover">
-                <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer"><img src="/portada.jpeg" alt="Ciberportero Blog Cover" style={{ width: '100%', borderRadius: '12px', cursor: 'pointer' }} /></a>
+                <a href="https://youtube.com/@ciberportero" target="_blank" rel="noopener noreferrer"><img src="/portada.jpeg" alt="Ciberportero Blog Cover" style={{ width: '100%', borderRadius: '12px', cursor: 'pointer' }} /></a>
             </div>
 
             <footer className="footer-main">
-                <a href="https://cafecito.app/gonzagramaglia" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Coffee size={18} /></a>
+                <div className="footer-social-left" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <a href="https://x.com/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><FaXTwitter size={16} /></a>
+                    <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><TbBrandDiscord size={21} /></a>
+                </div>
                 <span>{t.footer}</span>
-                <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Youtube size={22} /></a>
+                <div className="footer-social-right" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <a href="https://twitch.tv/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex'  }}><Twitch size={18} /></a>
+                    <a href="https://youtube.com/@ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Youtube size={22} /></a>
+                </div>
             </footer>
 
             <FloatingMusicButton />

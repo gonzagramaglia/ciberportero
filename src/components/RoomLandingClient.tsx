@@ -2,7 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ChevronLeft, LogIn, Github, Youtube , Coffee } from 'lucide-react';
+import { ChevronLeft, LogIn, Github, Youtube , Coffee , Twitter, Twitch} from 'lucide-react';
+import { FaXTwitter } from 'react-icons/fa6';
+import { TbBrandDiscord } from 'react-icons/tb';
 import { useRouter } from 'next/navigation';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useLanguage } from '@/context/LanguageContext';
@@ -161,10 +163,16 @@ export default function RoomLandingClient({ session }: any) {
                 </div>
 
                 <footer className="footer-main" style={{ marginTop: '6rem' }}>
-                    <a href="https://cafecito.app/gonzagramaglia" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Coffee size={18} /></a>
-                    <span>{t.footer}</span>
-                    <a href="https://youtu.be/Sdz38CpLrUs" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Youtube size={22} /></a>
-                </footer>
+                <div className="footer-social-left" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <a href="https://x.com/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><FaXTwitter size={16} /></a>
+                    <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><TbBrandDiscord size={21} /></a>
+                </div>
+                <span>{t.footer}</span>
+                <div className="footer-social-right" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <a href="https://twitch.tv/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex'  }}><Twitch size={18} /></a>
+                    <a href="https://youtube.com/@ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><Youtube size={22} /></a>
+                </div>
+            </footer>
 
                 <style jsx>{`
                 .home-container { max-width: 900px; margin: 0 auto; }
