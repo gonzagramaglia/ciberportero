@@ -136,6 +136,9 @@ export default function LinksPage() {
             </header>
 
             <main>
+                <div style={{ marginTop: '-1.5rem', marginBottom: '2rem', width: '100%' }}>
+                    <img src="/tree.png" alt="Tree" style={{ width: '100%', borderRadius: '12px', objectFit: 'cover', maxHeight: '300px' }} />
+                </div>
                 {/* Helper to render a single link card */}
                 {(() => {
                     const renderLink = (link: any) => {
@@ -231,7 +234,7 @@ export default function LinksPage() {
                     );
                 })()}
 
-                <div className="contact-container" style={{ marginTop: '4rem', marginBottom: '1.25rem', padding: '2.5rem', background: 'rgba(16, 185, 129, 0.05)', borderRadius: '24px', border: '1px solid rgba(16, 185, 129, 0.1)', borderLeft: '4px solid var(--success)' }}>
+                <div className="contact-container" style={{ marginTop: '2.5rem', marginBottom: '2.5rem', padding: '2.5rem', background: 'rgba(16, 185, 129, 0.05)', borderRadius: '24px', border: '1px solid rgba(16, 185, 129, 0.1)', borderLeft: '4px solid var(--success)' }}>
                     <div className="contact-container-inner">
                         <Mail size={22} color="var(--success)" />
                         <h2 style={{ fontSize: '1.4rem', fontWeight: '800', margin: 0 }}>{t.contact?.title}</h2>
@@ -268,6 +271,10 @@ export default function LinksPage() {
                     </div>
                 </div>
             </main>
+
+            <div className="home-cover" style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+                <a href="https://www.twitch.tv/ciberportero" target="_blank" rel="noopener noreferrer"><img src="/portada.jpeg" alt="Ciberportero" style={{ width: '100%', borderRadius: '12px', cursor: 'pointer' }} /></a>
+            </div>
 
             <CommentSection postSlug="links" lang={lang} />
 

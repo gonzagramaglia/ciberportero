@@ -82,7 +82,7 @@ export default function CountdownEditor({ countdown, slot }: CountdownEditorProp
 
       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '3.5rem' }}>
         <div className="space-y-8">
-          <LanguageTabs active={activeLang} onChange={setActiveLang} />
+          <LanguageTabs active={activeLang} onChange={setActiveLang as any} hidePt />
 
           <section className="admin-card" style={{ padding: '3rem', borderRadius: '32px' }}>
             <div style={{ marginBottom: '2.5rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '1.25rem' }}>

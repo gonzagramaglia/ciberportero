@@ -107,6 +107,10 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
             </header>
 
             <main style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div style={{ marginBottom: '1rem', width: '100%' }}>
+                    <img src="/tree.png" alt="Tree" style={{ width: '100%', borderRadius: '12px', objectFit: 'cover', maxHeight: '300px' }} />
+                </div>
+
                 <div className="featured-grid">
                     <Link href="/links" className="post-item featured roadmap-block links-card" style={{ display: 'block', textDecoration: 'none', border: '1px solid var(--success)', background: 'rgba(16, 185, 129, 0.03)' }}>
                         <span className="post-title" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', color: 'var(--success)' }}>
@@ -144,7 +148,7 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                     {isLoadingPosts ? (
                         [1, 2, 3].map(i => (
                             <li key={i} className="post-item" style={{ pointerEvents: 'none' }}>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', padding: '1.5rem' }}>
                                     <div style={{ width: '120px', height: '14px', borderRadius: '8px', background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.4s infinite' }} />
                                     <div style={{ width: `${60 + i * 10}%`, height: '20px', borderRadius: '8px', background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.4s infinite' }} />
                                 </div>
@@ -218,7 +222,7 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                         <div style={{ marginTop: '1rem', marginBottom: '0.5rem' }}>
                             <h2 style={{ fontSize: '1.8rem', fontWeight: '700', color: '#000', display: 'flex', alignItems: 'center', gap: '0.8rem', margin: 0 }}>
                                 <Calendar size={26} style={{ color: 'var(--muted)' }} />
-                                Calendario Tentativo
+                                Calendario Tentativo (2026)
                             </h2>
                         </div>
                         <div className="intro-cover" onClick={() => handleImageClick('/intro-ghibli.jpeg')}><img src="/intro-ghibli.jpeg" alt="Calendario Académico de Grado 2026" style={{ width: '100%', borderRadius: '12px', cursor: 'zoom-in' }} /></div>
@@ -227,7 +231,7 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
             </main>
 
             <div className="home-cover">
-                <a href="https://youtube.com/@ciberportero" target="_blank" rel="noopener noreferrer" aria-label="YouTube de Ciberportero"><img src="/portada.jpeg" alt="Ciberportero Blog Cover" style={{ width: '100%', borderRadius: '12px', cursor: 'pointer' }} /></a>
+                <a href="https://www.twitch.tv/ciberportero" target="_blank" rel="noopener noreferrer"><img src="/portada.jpeg" alt="Ciberportero Blog Cover" style={{ width: '100%', borderRadius: '12px', cursor: 'pointer' }} /></a>
             </div>
 
             <footer className="footer-main">
