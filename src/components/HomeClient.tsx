@@ -137,11 +137,8 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                     </Link>
                 </div>
 
-                <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
-                    <h2 style={{ fontSize: '1.8rem', fontWeight: '700', color: '#000', display: 'flex', alignItems: 'flex-start', gap: '0.8rem', margin: 0 }}>
-                        <BookOpen size={26} style={{ color: 'var(--muted)', marginTop: '10px', flexShrink: 0 }} />
-                        {lang === 'en' ? 'Bachelor in Cyberdefense' : lang === 'pt' ? 'Licenciatura em Ciberdefesa' : 'Licenciatura en Ciberdefensa'}
-                    </h2>
+                <div style={{ marginTop: '0.5rem', marginBottom: '1.2rem' }}>
+                    <img src="/licenciatura-en-ciberdefensa.png" alt="Licenciatura en Ciberdefensa" style={{ width: '100%', borderRadius: '12px', display: 'block' }} />
                 </div>
 
                 <ul className="post-list">
@@ -186,11 +183,8 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
 
                 {!isLoadingPosts && ingresantesPosts.length > 0 && (
                     <>
-                        <div style={{ marginTop: '2.5rem', marginBottom: '1rem' }}>
-                            <h2 style={{ fontSize: '1.8rem', fontWeight: '700', color: '#000', display: 'flex', alignItems: 'flex-start', gap: '0.8rem', margin: 0 }}>
-                                <BookOpen size={26} style={{ color: 'var(--muted)', marginTop: '10px', flexShrink: 0 }} />
-                                {lang === 'en' ? 'Admission Course Material' : lang === 'pt' ? 'Material para Ingressantes' : 'Material para Ingresantes'}
-                            </h2>
+                        <div style={{ marginTop: '0.5rem', marginBottom: '1.5rem' }}>
+                            <img src="/material-para-ingresantes.png" alt="Material para Ingresantes" style={{ width: '100%', borderRadius: '12px', display: 'block' }} />
                         </div>
                         <ul className="post-list">
                             {ingresantesPosts.map((post: any) => (
@@ -210,20 +204,13 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
 
                 {lang === 'es' && (
                     <>
-                        <div style={{ marginTop: '2.5rem', marginBottom: '0.8rem' }}>
-                            <h2 style={{ fontSize: '1.8rem', fontWeight: '700', color: '#000', display: 'flex', alignItems: 'center', gap: '0.8rem', margin: 0 }}>
-                                <Info size={26} style={{ color: 'var(--muted)' }} />
-                                <span className="mobile-hide">Información de la Carrera</span>
-                                <span className="mobile-only">Info de la Carrera</span>
-                            </h2>
+                        <div style={{ marginTop: '1rem', marginBottom: '1.5rem' }}>
+                            <img src="/informacion-de-la-carrera.png" alt="Información de la Carrera" style={{ width: '100%', borderRadius: '12px', display: 'block' }} />
                         </div>
                         <a href="https://undef.edu.ar/fadena/carreras-de-grado/licciberdefensa/" target="_blank" rel="noopener noreferrer" className="intro-cover"><img src="/cyberdefense-fadena-undef.png" alt="Cyberdefense FADENA UNDEF" style={{ width: '100%', borderRadius: '12px' }} /></a>
                         <Link href="/links" className="intro-cover"><img src="/moodle-siu.png" alt="Moodle y SIU" style={{ width: '100%', borderRadius: '12px' }} /></Link>
-                        <div style={{ marginTop: '1rem', marginBottom: '0.5rem' }}>
-                            <h2 style={{ fontSize: '1.8rem', fontWeight: '700', color: '#000', display: 'flex', alignItems: 'center', gap: '0.8rem', margin: 0 }}>
-                                <Calendar size={26} style={{ color: 'var(--muted)' }} />
-                                Calendario Tentativo (2026)
-                            </h2>
+                        <div style={{ marginTop: '1rem', marginBottom: '1.5rem' }}>
+                            <img src="/calendario-tentativo.png" alt="Calendario Tentativo (2026)" style={{ width: '100%', borderRadius: '12px', display: 'block' }} />
                         </div>
                         <div className="intro-cover" onClick={() => handleImageClick('/intro-ghibli.jpeg')}><img src="/intro-ghibli.jpeg" alt="Calendario Académico de Grado 2026" style={{ width: '100%', borderRadius: '12px', cursor: 'zoom-in' }} /></div>
                     </>

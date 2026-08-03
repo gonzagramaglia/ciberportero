@@ -487,9 +487,20 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                             </div>
                         </div>
 
+                        {subjectSlugs.includes(slug) && (
+                            <div style={{ marginTop: '0rem', marginBottom: '0rem' }}>
+                                <img src="/licenciatura-en-ciberdefensa.png" alt="Licenciatura en Ciberdefensa" style={{ width: '100%', borderRadius: '12px', display: 'block', margin: '0 0 1rem 0' }} />
+                            </div>
+                        )}
+                        {postTitle && typeof postTitle === 'string' && postTitle.includes('[00]') && (
+                            <div style={{ marginTop: '0rem', marginBottom: '0rem' }}>
+                                <img src="/material-para-ingresantes.png" alt="Material para Ingresantes" style={{ width: '100%', borderRadius: '12px', display: 'block', margin: '0 0 1rem 0' }} />
+                            </div>
+                        )}
+
                         <Heading level={1}>{postTitle}</Heading>
                         {postDescription && (
-                            <p style={{ fontSize: '1.25rem', color: '#64748b', marginTop: '-1rem', marginBottom: '2rem', lineHeight: '1.6', fontWeight: 500 }}>
+                            <p style={{ fontSize: '1.25rem', color: '#64748b', marginTop: '0rem', marginBottom: '2rem', lineHeight: '1.6', fontWeight: 500 }}>
                                 {postDescription}
                             </p>
                         )}
