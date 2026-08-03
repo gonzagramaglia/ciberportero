@@ -16,6 +16,8 @@ import { SignInButton, SignOutButton } from "@/components/AuthButtons";
 import { deletePersonalLink } from "@/lib/actions";
 import CommentSection from "@/components/CommentSection";
 import { Trash2, Edit } from "lucide-react";
+import FloatingMusicButton from "@/components/FloatingMusicButton";
+import FloatingFootballButton from "@/components/FloatingFootballButton";
 
 export default function LinksPage() {
     const { data: session, status } = useSession();
@@ -281,7 +283,7 @@ export default function LinksPage() {
             <footer className="footer-main">
                 <div className="footer-social-left" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
                     <a href="https://x.com/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="X (Twitter) de Ciberportero"><FaXTwitter size={16} aria-hidden="true" /></a>
-                    <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><TbBrandDiscord size={21} aria-hidden="true" /></a>
+                    <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label={lang === 'es' ? "Discord de Ciberportero" : lang === 'pt' ? "Discord do Ciberportero" : "Ciberportero Discord"}><TbBrandDiscord size={21} aria-hidden="true" /></a>
                 </div>
                 <span>{t.footer}</span>
                 <div className="footer-social-right" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
@@ -290,6 +292,8 @@ export default function LinksPage() {
                 </div>
             </footer>
 
+            <FloatingMusicButton />
+            <FloatingFootballButton />
 
             <style jsx>{`
                 .page-desc-row {
