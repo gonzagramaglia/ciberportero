@@ -42,14 +42,19 @@ export default function PlanPage() {
   }
 
   useEffect(() => {
-    // Timeout to ensure DOM is fully rendered before calculating width
-    const timeout = setTimeout(() => {
+    const updateWidth = () => {
       if (mainScrollRef.current && dummyContentRef.current) {
         dummyContentRef.current.style.width = `${mainScrollRef.current.scrollWidth}px`
       }
-    }, 50)
-    return () => clearTimeout(timeout)
-  }, [isLoaded, search, objective])
+    }
+    // Timeout to ensure DOM is fully rendered before calculating width
+    const timeout = setTimeout(updateWidth, 50)
+    window.addEventListener('resize', updateWidth)
+    return () => {
+      clearTimeout(timeout)
+      window.removeEventListener('resize', updateWidth)
+    }
+  }, [isLoaded, search, objective, lang])
 
   // Load from localStorage and Sync with Cloud
   useEffect(() => {
