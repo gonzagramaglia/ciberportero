@@ -127,5 +127,6 @@ Whenever a PR is prepared, the AI assistant must generate a local markdown file 
 | #6 | `feat/enhance-links-admin` | Link admin image uploads and compact UI | ✅ Merged |
 | #7 | `feat/social-links-and-calendar` | Update social links (X, Discord, Twitch, YouTube) and fix calendar date timezone bugs | ✅ Merged |
 | #8 | `style/posts-cards-and-images` | UI enhancements for posts, tree/messi images, and admin tweaks | ✅ Merged |
+| #9 | `style/ui-enhancements` | Update footer spacing, English banners for posts, and /plan scrollbar | ✅ Merged |
 
 *(Update this table every time a PR is opened or merged.)*

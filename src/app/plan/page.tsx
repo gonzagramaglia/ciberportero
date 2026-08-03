@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { useLanguage } from "@/context/LanguageContext"
 import { translations } from "@/lib/translations"
-import { curriculum, Subject } from "@/data/curriculum"
+import { curriculum } from "@/data/curriculum"
 import LanguageSwitcher from "@/components/LanguageSwitcher"
 import { CheckCircle, Info, Lock, ChevronLeft, Layers, Star, Zap, Coffee, Youtube, Search, X, Calendar, ExternalLink, Twitch } from "lucide-react"
 import NotificationBanners from "@/components/NotificationBanners"
@@ -12,7 +12,6 @@ import CountdownWidget from "@/components/CountdownWidget"
 import { normalizeString } from "@/lib/string-utils"
 import { useSession } from "next-auth/react"
 import { getUserProgress, updateUserProgress } from "@/lib/actions"
-import SyncedBadge from "@/components/SyncedBadge"
 import { SignInButton, SignOutButton } from "@/components/AuthButtons"
 import CommentSection from "@/components/CommentSection"
 import { FaXTwitter } from 'react-icons/fa6';
@@ -29,6 +28,33 @@ export default function PlanPage() {
   const [search, setSearch] = useState('')
   const [hoveredId, setHoveredId] = useState<number | null>(null)
   const [isLoaded, setIsLoaded] = useState(false)
+
+  const topScrollRef = useRef<HTMLDivElement>(null)
+  const mainScrollRef = useRef<HTMLElement>(null)
+  const dummyContentRef = useRef<HTMLDivElement>(null)
+
+  const handleTopScroll = (e: React.UIEvent) => {
+    if (mainScrollRef.current) mainScrollRef.current.scrollLeft = (e.target as HTMLDivElement).scrollLeft
+  }
+  
+  const handleMainScroll = (e: React.UIEvent) => {
+    if (topScrollRef.current) topScrollRef.current.scrollLeft = (e.target as HTMLElement).scrollLeft
+  }
+
+  useEffect(() => {
+    const updateWidth = () => {
+      if (mainScrollRef.current && dummyContentRef.current) {
+        dummyContentRef.current.style.width = `${mainScrollRef.current.scrollWidth}px`
+      }
+    }
+    // Timeout to ensure DOM is fully rendered before calculating width
+    const timeout = setTimeout(updateWidth, 50)
+    window.addEventListener('resize', updateWidth)
+    return () => {
+      clearTimeout(timeout)
+      window.removeEventListener('resize', updateWidth)
+    }
+  }, [isLoaded, search, objective, lang])
 
   // Load from localStorage and Sync with Cloud
   useEffect(() => {
@@ -437,14 +463,26 @@ export default function PlanPage() {
         </h2>
       </div>
 
-      <main style={{
+      <div 
+        ref={topScrollRef} 
+        onScroll={handleTopScroll}
+        className="custom-scrollbar"
+        style={{ overflowX: 'auto', margin: '0 -1rem 1rem -1rem' }}
+      >
+        <div ref={dummyContentRef} style={{ height: '1px' }}></div>
+      </div>
+
+      <main 
+        ref={mainScrollRef}
+        onScroll={handleMainScroll}
+        className="custom-scrollbar"
+        style={{
         display: 'grid',
         gridTemplateColumns: `repeat(${filteredYears.length}, 1fr)`,
         gap: '2rem',
         alignItems: 'start',
         overflowX: 'auto',
-        padding: '1rem',
-        paddingBottom: '4rem',
+        padding: '0 1rem 4rem 1rem',
         margin: '0 -1rem' // Compensate container padding
       }}>
         {filteredYears.map(year => (
@@ -578,7 +616,7 @@ export default function PlanPage() {
           {translations[lang].credits}
         </a>
         <span style={{ fontSize: '0.9rem', opacity: 0.6, color: 'var(--muted)' }}>{translations[lang].footer}</span>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
           <a href="https://x.com/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', color: 'var(--muted)' }} aria-label="X (Twitter) de Ciberportero">
             <FaXTwitter size={16} aria-hidden="true" />
           </a>
@@ -593,6 +631,24 @@ export default function PlanPage() {
           </a>
         </div>
       </footer>
+      <style jsx global>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          height: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: rgba(0, 0, 0, 0.03); 
+          border-radius: 10px;
+          margin: 0 1rem;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #cbd5e1; 
+          border-radius: 10px;
+          border: 2px solid #f8fafc;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #94a3b8; 
+        }
+      `}</style>
     </div>
   )
 }
