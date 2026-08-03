@@ -138,7 +138,7 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                 </div>
 
                 <div style={{ marginTop: '0.5rem', marginBottom: '1.2rem' }}>
-                    <img src="/licenciatura-en-ciberdefensa.png" alt="Licenciatura en Ciberdefensa" style={{ width: '100%', borderRadius: '12px', display: 'block' }} />
+                    <img src={lang === 'en' ? "/bachelor-degree.png" : "/licenciatura-en-ciberdefensa.png"} alt={lang === 'en' ? "Bachelor in Cyber Defense" : "Licenciatura en Ciberdefensa"} style={{ width: '100%', borderRadius: '12px', display: 'block' }} />
                 </div>
 
                 <ul className="post-list">
@@ -184,7 +184,7 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                 {!isLoadingPosts && ingresantesPosts.length > 0 && (
                     <>
                         <div style={{ marginTop: '0.5rem', marginBottom: '1.5rem' }}>
-                            <img src="/material-para-ingresantes.png" alt="Material para Ingresantes" style={{ width: '100%', borderRadius: '12px', display: 'block' }} />
+                            <img src={lang === 'en' ? "/new-students.png" : "/material-para-ingresantes.png"} alt={lang === 'en' ? "Material for New Students" : "Material para Ingresantes"} style={{ width: '100%', borderRadius: '12px', display: 'block' }} />
                         </div>
                         <ul className="post-list">
                             {ingresantesPosts.map((post: any) => (
@@ -215,6 +215,19 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                         <div className="intro-cover" onClick={() => handleImageClick('/intro-ghibli.jpeg')}><img src="/intro-ghibli.jpeg" alt="Calendario Académico de Grado 2026" style={{ width: '100%', borderRadius: '12px', cursor: 'zoom-in' }} /></div>
                     </>
                 )}
+                
+                {lang === 'en' && (
+                    <>
+                        <div style={{ marginTop: '1rem', marginBottom: '1.5rem' }}>
+                            <img src="/degree-information.png" alt="Degree Information" style={{ width: '100%', borderRadius: '12px', display: 'block' }} />
+                        </div>
+                        <a href="https://undef.edu.ar/fadena/carreras-de-grado/licciberdefensa/" target="_blank" rel="noopener noreferrer" className="intro-cover"><img src="/information.png" alt="Career Information" style={{ width: '100%', borderRadius: '12px' }} /></a>
+                        <Link href="/links" className="intro-cover"><img src="/siu-vs-moodle.png" alt="Moodle and SIU" style={{ width: '100%', borderRadius: '12px' }} /></Link>
+                        <div style={{ marginTop: '1rem', marginBottom: '1.5rem' }}>
+                            <img src="/calendar.png" alt="Provisional Calendar (2026)" style={{ width: '100%', borderRadius: '12px', display: 'block' }} />
+                        </div>
+                    </>
+                )}
             </main>
 
             <div className="home-cover">
@@ -222,12 +235,12 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
             </div>
 
             <footer className="footer-main">
-                <div className="footer-social-left" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                <div className="footer-social-left" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
                     <a href="https://x.com/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="X (Twitter) de Ciberportero"><FaXTwitter size={16} aria-hidden="true" /></a>
                     <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><TbBrandDiscord size={21} aria-hidden="true" /></a>
                 </div>
                 <span>{t.footer}</span>
-                <div className="footer-social-right" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                <div className="footer-social-right" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
                     <a href="https://twitch.tv/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex'  }} aria-label="Twitch de Ciberportero"><Twitch size={18} aria-hidden="true" /></a>
                     <a href="https://youtube.com/@ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="YouTube de Ciberportero"><Youtube size={22} aria-hidden="true" /></a>
                 </div>
