@@ -125,6 +125,7 @@ Whenever a PR is prepared, the AI assistant must generate a local markdown file 
 | #4 | `refactor/modularize-actions` | Modularize actions.ts into domain-specific modules | ✅ Merged |
 | #5 | `refactor/modularize-translations` | Modularize translations into per-language files | ✅ Merged |
 | #6 | `feat/enhance-links-admin` | Link admin image uploads and compact UI | ✅ Merged |
-| #7 | `feat/social-links-and-calendar` | Update social links (X, Discord, Twitch, YouTube) and fix calendar date timezone bugs | 🟡 Open |
+| #7 | `feat/social-links-and-calendar` | Update social links (X, Discord, Twitch, YouTube) and fix calendar date timezone bugs | ✅ Merged |
+| #8 | `style/posts-cards-and-images` | UI enhancements for posts, tree/messi images, and admin tweaks | 🟡 Open |
 
 *(Update this table every time a PR is opened or merged.)*

@@ -133,7 +133,7 @@ export default function BlogClient({ initialPosts }: BlogClientProps) {
                     {isLoadingPosts ? (
                         [1, 2, 3].map(i => (
                             <li key={i} className="post-item" style={{ pointerEvents: 'none' }}>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', padding: '1.5rem' }}>
                                     <div style={{ width: '120px', height: '14px', borderRadius: '8px', background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.4s infinite' }} />
                                     <div style={{ width: `${60 + i * 10}%`, height: '20px', borderRadius: '8px', background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.4s infinite' }} />
                                 </div>
