@@ -14,6 +14,7 @@ import { SignInButton, SignOutButton, AdminPanelButton } from './AuthButtons';
 import { useMotivation } from '../hooks/useMotivation';
 import LanguageSwitcher from './LanguageSwitcher';
 import FloatingMusicButton from './FloatingMusicButton';
+import FloatingFootballButton from './FloatingFootballButton';
 import { timeAgo } from '../lib/utils';
 
 interface HomeClientProps {
@@ -224,8 +225,9 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                         <a href="https://undef.edu.ar/fadena/carreras-de-grado/licciberdefensa/" target="_blank" rel="noopener noreferrer" className="intro-cover"><img src="/information.png" alt="Career Information" style={{ width: '100%', borderRadius: '12px' }} /></a>
                         <Link href="/links" className="intro-cover"><img src="/siu-vs-moodle.png" alt="Moodle and SIU" style={{ width: '100%', borderRadius: '12px' }} /></Link>
                         <div style={{ marginTop: '1rem', marginBottom: '1.5rem' }}>
-                            <img src="/calendar.png" alt="Provisional Calendar (2026)" style={{ width: '100%', borderRadius: '12px', display: 'block' }} />
+                            <img src="/provisional-calendar.png" alt="Provisional Calendar (2026)" style={{ width: '100%', borderRadius: '12px', display: 'block' }} />
                         </div>
+                        <button type="button" className="intro-cover" onClick={() => handleImageClick('/calendar.png')} style={{ border: 'none', background: 'none', padding: 0, width: '100%', display: 'block' }}><img src="/calendar.png" alt="Academic Calendar 2026" style={{ width: '100%', borderRadius: '12px', cursor: 'zoom-in' }} /></button>
                     </>
                 )}
             </main>
@@ -247,6 +249,7 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
             </footer>
 
             <FloatingMusicButton />
+            <FloatingFootballButton />
 
             <style jsx>{`
                 @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }

@@ -16,6 +16,8 @@ import { SignInButton, SignOutButton } from "@/components/AuthButtons"
 import CommentSection from "@/components/CommentSection"
 import { FaXTwitter } from 'react-icons/fa6';
 import { TbBrandDiscord } from 'react-icons/tb';
+import FloatingMusicButton from "@/components/FloatingMusicButton"
+import FloatingFootballButton from "@/components/FloatingFootballButton"
 
 export default function PlanPage() {
   const { lang } = useLanguage()
@@ -631,6 +633,8 @@ export default function PlanPage() {
           </a>
         </div>
       </footer>
+      <FloatingMusicButton />
+      <FloatingFootballButton />
       <style jsx global>{`
         .custom-scrollbar::-webkit-scrollbar {
           height: 10px;

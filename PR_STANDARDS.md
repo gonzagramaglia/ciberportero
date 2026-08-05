@@ -128,5 +128,6 @@ Whenever a PR is prepared, the AI assistant must generate a local markdown file 
 | #7 | `feat/social-links-and-calendar` | Update social links (X, Discord, Twitch, YouTube) and fix calendar date timezone bugs | ✅ Merged |
 | #8 | `style/posts-cards-and-images` | UI enhancements for posts, tree/messi images, and admin tweaks | ✅ Merged |
 | #9 | `style/ui-enhancements` | Update footer spacing, English banners for posts, and /plan scrollbar | ✅ Merged |
+| #10 | `feat/global-music-football-buttons` | Add global floating music and football buttons across pages | ✅ Merged |
 
 *(Update this table every time a PR is opened or merged.)*
