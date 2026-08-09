@@ -1102,15 +1102,20 @@ footer a:hover {
 }
 
 .countdown-header {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
+  display: block;
   margin-bottom: 0.75rem;
   font-size: 0.72rem;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   opacity: 1;
+}
+
+.countdown-clock {
+  display: inline-block;
+  vertical-align: text-bottom;
+  margin-right: 0.45rem;
+  margin-bottom: 0.05rem;
 }
 
 @media (min-width: 601px) {
@@ -1190,6 +1195,19 @@ footer a:hover {
   color: white;
   box-shadow: 0 8px 24px rgba(16, 50, 83, 0.15);
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.inline-countdown .countdown-header,
+.inline-countdown .countdown-timer {
+  justify-content: center;
+}
+
+.inline-countdown .countdown-desc {
+  text-align: center;
 }
 
 
@@ -1229,6 +1247,16 @@ footer a:hover {
   .mobile-only-countdown {
     display: flex;
     flex-direction: column;
+  }
+  .mobile-only-countdown.countdowns-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .mobile-only-countdown.countdowns-grid {
+      grid-template-columns: 1fr 1fr;
+    }
   }
 }
 

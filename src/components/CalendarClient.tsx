@@ -12,7 +12,7 @@ import { ArrowLeft, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, 
 import NotificationBanners from "@/components/NotificationBanners"
 import CountdownWidget from "@/components/CountdownWidget"
 import SyncedBadge from "@/components/SyncedBadge"
-import { SignInButton, SignOutButton } from "@/components/AuthButtons"
+import { SignInButton, SignOutButton, AdminPanelButton } from "@/components/AuthButtons"
 import CommentSection from "@/components/CommentSection"
 import { Download, Share2 } from "lucide-react"
 import { formatMarkdown } from "@/lib/utils"
@@ -476,7 +476,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                   display: 'flex',
                   alignItems: 'center'
                 }}>
-                  {status !== 'loading' && (session ? <SignOutButton /> : <SignInButton />)}
+                  {status !== 'loading' && (session ? ((session.user?.role === 'admin' || session.user?.email === 'ciberportero@gmail.com') ? <AdminPanelButton /> : <SignOutButton />) : <SignInButton />)}
                 </div>
               </h1>
               <div className="mobile-hide">

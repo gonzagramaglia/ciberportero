@@ -87,7 +87,7 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                             opacity: status === 'loading' ? 0 : 1,
                             transition: 'opacity 0.2s ease-in-out'
                         }}>
-                            {status !== 'loading' && (session ? (session.user?.role === 'admin' ? <AdminPanelButton /> : <SignOutButton />) : <SignInButton />)}
+                            {status !== 'loading' && (session ? ((session.user?.role === 'admin' || session.user?.email === 'ciberportero@gmail.com') ? <AdminPanelButton /> : <SignOutButton />) : <SignInButton />)}
                         </div>
                     </div>
                     <div className="home-lang-container mobile-hide" style={{ marginBottom: 0, marginTop: '0.6rem' }}>
@@ -109,6 +109,9 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
             <main style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <div style={{ marginBottom: '1rem', width: '100%' }}>
                     <img src="/tree.png" alt="Tree" style={{ width: '100%', borderRadius: '12px', objectFit: 'cover', maxHeight: '300px' }} />
+                </div>
+                <div className="mobile-only-countdown" style={{ marginBottom: '0.5rem', marginTop: '-1.25rem' }}>
+                    <CountdownWidget isInline />
                 </div>
 
                 <div className="featured-grid">
