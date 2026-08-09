@@ -489,12 +489,12 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
 
                         {subjectSlugs.includes(slug) && (
                             <div style={{ marginTop: '0rem', marginBottom: '0rem' }}>
-                                <img src="/licenciatura-en-ciberdefensa.png" alt="Licenciatura en Ciberdefensa" style={{ width: '100%', borderRadius: '12px', display: 'block', margin: '0 0 1rem 0' }} />
+                                <img src={lang === 'en' ? "/bachelor-degree.png" : "/licenciatura-en-ciberdefensa.png"} alt={lang === 'en' ? "Bachelor in Cyber Defense" : "Licenciatura en Ciberdefensa"} style={{ width: '100%', borderRadius: '12px', display: 'block', margin: '0 0 1rem 0' }} />
                             </div>
                         )}
                         {postTitle && typeof postTitle === 'string' && postTitle.includes('[00]') && (
                             <div style={{ marginTop: '0rem', marginBottom: '0rem' }}>
-                                <img src="/material-para-ingresantes.png" alt="Material para Ingresantes" style={{ width: '100%', borderRadius: '12px', display: 'block', margin: '0 0 1rem 0' }} />
+                                <img src={lang === 'en' ? "/new-students.png" : "/material-para-ingresantes.png"} alt={lang === 'en' ? "Material for New Students" : "Material para Ingresantes"} style={{ width: '100%', borderRadius: '12px', display: 'block', margin: '0 0 1rem 0' }} />
                             </div>
                         )}
 
@@ -574,12 +574,12 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                 {!post.unlisted && <CommentSection postSlug={slug} lang={lang} />}
 
                 <footer className="footer-main">
-                <div className="footer-social-left" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                <div className="footer-social-left" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
                     <a href="https://x.com/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="X (Twitter) de Ciberportero"><FaXTwitter size={16} aria-hidden="true" /></a>
-                    <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><TbBrandDiscord size={21} aria-hidden="true" /></a>
+                    <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label={lang === 'es' ? "Discord de Ciberportero" : lang === 'pt' ? "Discord do Ciberportero" : "Ciberportero Discord"}><TbBrandDiscord size={21} aria-hidden="true" /></a>
                 </div>
                 <span>{t.footer}</span>
-                <div className="footer-social-right" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                <div className="footer-social-right" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
                     <a href="https://twitch.tv/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex'  }} aria-label="Twitch de Ciberportero"><Twitch size={18} aria-hidden="true" /></a>
                     <a href="https://youtube.com/@ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="YouTube de Ciberportero"><Youtube size={22} aria-hidden="true" /></a>
                 </div>

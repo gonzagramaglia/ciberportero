@@ -1241,22 +1241,67 @@ footer a:hover {
 }
 
 @media (max-width: 1720px) {
-  .sidebar-widget {
+  .sidebar-widget:not(.responsive-countdown-wrapper .sidebar-widget) {
     display: none;
   }
   .mobile-only-countdown {
     display: flex;
     flex-direction: column;
   }
-  .mobile-only-countdown.countdowns-grid {
-    display: grid;
-    grid-template-columns: 1fr;
+  
+  .responsive-countdown-wrapper {
+    display: flex;
+    flex-direction: column;
     gap: 1.25rem;
   }
-  @media (min-width: 768px) {
-    .mobile-only-countdown.countdowns-grid {
-      grid-template-columns: 1fr 1fr;
-    }
+  .responsive-countdown-wrapper.countdowns-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  
+  .responsive-countdown-wrapper .sidebar-widget {
+    position: static;
+    width: 100%;
+    background: linear-gradient(135deg, #1a4a6e 0%, #103253 100%);
+    border-radius: 14px;
+    padding: 1.25rem;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 0;
+  }
+  .responsive-countdown-wrapper .sidebar-widget.post-specific {
+    background: linear-gradient(135deg, #22c55e 0%, #10b981 100%);
+  }
+  
+  .responsive-countdown-wrapper .sidebar-widget .countdown-header,
+  .responsive-countdown-wrapper .sidebar-widget .countdown-timer {
+    justify-content: center;
+  }
+  
+  .responsive-countdown-wrapper .sidebar-widget .countdown-desc {
+    text-align: center;
+  }
+  
+  .responsive-countdown-wrapper .sidebar-widget .countdown-number {
+    font-size: 1.1rem;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1720px) {
+  .responsive-countdown-wrapper.countdowns-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1721px) {
+  .responsive-countdown-wrapper {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 0 !important;
   }
 }
 

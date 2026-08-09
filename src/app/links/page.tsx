@@ -16,6 +16,8 @@ import { SignInButton, SignOutButton, AdminPanelButton } from "@/components/Auth
 import { deletePersonalLink } from "@/lib/actions";
 import CommentSection from "@/components/CommentSection";
 import { Trash2, Edit } from "lucide-react";
+import FloatingMusicButton from "@/components/FloatingMusicButton";
+import FloatingFootballButton from "@/components/FloatingFootballButton";
 
 export default function LinksPage() {
     const { data: session, status } = useSession();
@@ -70,8 +72,6 @@ export default function LinksPage() {
 
     return (
         <div className="container fade-in page-container">
-            <CountdownWidget />
-
             <NotificationBanners limitTo="none" />
 
 
@@ -139,8 +139,8 @@ export default function LinksPage() {
                 <div style={{ marginTop: '-1.5rem', marginBottom: '2rem', width: '100%' }}>
                     <img src="/tree.png" alt="Tree" style={{ width: '100%', borderRadius: '12px', objectFit: 'cover', maxHeight: '300px' }} />
                 </div>
-                <div className="mobile-only-countdown countdowns-grid" style={{ marginBottom: '1.5rem', marginTop: '-1.5rem' }}>
-                    <CountdownWidget isInline />
+                <div className="responsive-countdown-wrapper countdowns-grid" style={{ marginBottom: '1.5rem', marginTop: '-1.5rem' }}>
+                    <CountdownWidget />
                 </div>
                 {/* Helper to render a single link card */}
                 {(() => {
@@ -282,17 +282,19 @@ export default function LinksPage() {
             <CommentSection postSlug="links" lang={lang} />
 
             <footer className="footer-main">
-                <div className="footer-social-left" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                <div className="footer-social-left" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
                     <a href="https://x.com/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="X (Twitter) de Ciberportero"><FaXTwitter size={16} aria-hidden="true" /></a>
-                    <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }}><TbBrandDiscord size={21} aria-hidden="true" /></a>
+                    <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label={lang === 'es' ? "Discord de Ciberportero" : lang === 'pt' ? "Discord do Ciberportero" : "Ciberportero Discord"}><TbBrandDiscord size={21} aria-hidden="true" /></a>
                 </div>
                 <span>{t.footer}</span>
-                <div className="footer-social-right" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                <div className="footer-social-right" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
                     <a href="https://twitch.tv/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex'  }} aria-label="Twitch de Ciberportero"><Twitch size={18} aria-hidden="true" /></a>
                     <a href="https://youtube.com/@ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="YouTube de Ciberportero"><Youtube size={22} aria-hidden="true" /></a>
                 </div>
             </footer>
 
+            <FloatingMusicButton />
+            <FloatingFootballButton />
 
             <style jsx>{`
                 .page-desc-row {

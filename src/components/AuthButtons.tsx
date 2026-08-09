@@ -126,7 +126,7 @@ export function AdminPanelButton() {
   const { lang } = useLanguage()
 
   return (
-    <Link href="/admin" className="admin-btn-premium" style={{ textDecoration: 'none' }}>
+    <Link href="/admin" className="admin-btn-premium" style={{ textDecoration: 'none' }} aria-label={lang === 'es' ? 'Panel de Admin' : 'Admin Panel'}>
       <div className="icon-box">
         <Settings size={18} strokeWidth={2.5} />
       </div>
