@@ -12,7 +12,7 @@ import { useState, useEffect, useMemo } from 'react';
 import NotificationBanners from '../../components/NotificationBanners';
 import CountdownWidget from '../../components/CountdownWidget';
 import { useSession } from "next-auth/react";
-import { SignInButton, SignOutButton } from "@/components/AuthButtons";
+import { SignInButton, SignOutButton, AdminPanelButton } from "@/components/AuthButtons";
 import { deletePersonalLink } from "@/lib/actions";
 import CommentSection from "@/components/CommentSection";
 import { Trash2, Edit } from "lucide-react";
@@ -72,8 +72,6 @@ export default function LinksPage() {
 
     return (
         <div className="container fade-in page-container">
-            <CountdownWidget />
-
             <NotificationBanners limitTo="none" />
 
 
@@ -99,7 +97,7 @@ export default function LinksPage() {
                                     display: 'flex',
                                     alignItems: 'center'
                                 }}>
-                                    {status !== 'loading' && (session ? <SignOutButton /> : <SignInButton />)}
+                                    {status !== 'loading' && (session ? ((session.user?.role === 'admin' || session.user?.email === 'ciberportero@gmail.com') ? <AdminPanelButton /> : <SignOutButton />) : <SignInButton />)}
                                 </div>
                             </h1>
                             <div className="mobile-hide">
@@ -140,6 +138,9 @@ export default function LinksPage() {
             <main>
                 <div style={{ marginTop: '-1.5rem', marginBottom: '2rem', width: '100%' }}>
                     <img src="/tree.png" alt="Tree" style={{ width: '100%', borderRadius: '12px', objectFit: 'cover', maxHeight: '300px' }} />
+                </div>
+                <div className="responsive-countdown-wrapper countdowns-grid" style={{ marginBottom: '1.5rem', marginTop: '-1.5rem' }}>
+                    <CountdownWidget />
                 </div>
                 {/* Helper to render a single link card */}
                 {(() => {

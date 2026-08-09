@@ -1102,15 +1102,20 @@ footer a:hover {
 }
 
 .countdown-header {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
+  display: block;
   margin-bottom: 0.75rem;
   font-size: 0.72rem;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   opacity: 1;
+}
+
+.countdown-clock {
+  display: inline-block;
+  vertical-align: text-bottom;
+  margin-right: 0.45rem;
+  margin-bottom: 0.05rem;
 }
 
 @media (min-width: 601px) {
@@ -1190,6 +1195,19 @@ footer a:hover {
   color: white;
   box-shadow: 0 8px 24px rgba(16, 50, 83, 0.15);
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.inline-countdown .countdown-header,
+.inline-countdown .countdown-timer {
+  justify-content: center;
+}
+
+.inline-countdown .countdown-desc {
+  text-align: center;
 }
 
 
@@ -1223,12 +1241,67 @@ footer a:hover {
 }
 
 @media (max-width: 1720px) {
-  .sidebar-widget {
+  .sidebar-widget:not(.responsive-countdown-wrapper .sidebar-widget) {
     display: none;
   }
   .mobile-only-countdown {
     display: flex;
     flex-direction: column;
+  }
+  
+  .responsive-countdown-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .responsive-countdown-wrapper.countdowns-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  
+  .responsive-countdown-wrapper .sidebar-widget {
+    position: static;
+    width: 100%;
+    background: linear-gradient(135deg, #1a4a6e 0%, #103253 100%);
+    border-radius: 14px;
+    padding: 1.25rem;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 0;
+  }
+  .responsive-countdown-wrapper .sidebar-widget.post-specific {
+    background: linear-gradient(135deg, #22c55e 0%, #10b981 100%);
+  }
+  
+  .responsive-countdown-wrapper .sidebar-widget .countdown-header,
+  .responsive-countdown-wrapper .sidebar-widget .countdown-timer {
+    justify-content: center;
+  }
+  
+  .responsive-countdown-wrapper .sidebar-widget .countdown-desc {
+    text-align: center;
+  }
+  
+  .responsive-countdown-wrapper .sidebar-widget .countdown-number {
+    font-size: 1.1rem;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1720px) {
+  .responsive-countdown-wrapper.countdowns-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1721px) {
+  .responsive-countdown-wrapper {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 0 !important;
   }
 }
 

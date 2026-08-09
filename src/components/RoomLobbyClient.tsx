@@ -1,21 +1,19 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
-import { Plus, Hash, Key, ArrowRight, X, ChevronLeft, Github, Youtube, Loader2, Trash2 , Coffee , Twitter, Twitch} from 'lucide-react';
+import { Plus, Hash, Key, ArrowRight, X, ChevronLeft, Github, Youtube, Loader2, Trash2, Coffee, Twitter, Twitch } from 'lucide-react';
 import { FaXTwitter } from 'react-icons/fa6';
 import { TbBrandDiscord } from 'react-icons/tb';
 import { createRoom, joinRoom, deleteRoom } from '@/lib/salasActions';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
-import LanguageSwitcher from './LanguageSwitcher';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/lib/translations';
 import RoomNavbar from './RoomNavbar';
 import { guestStore } from '@/lib/guestStore';
 import { slugify } from '@/lib/utils';
 
-import { SignOutButton } from './AuthButtons';
+import { SignOutButton, AdminPanelButton } from './AuthButtons';
 
 export default function RoomLobbyClient({ initialRooms, session }: any) {
     const { lang } = useLanguage();
@@ -137,7 +135,7 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                         </h1>
                         {!isGuest && session?.user && (
                             <div className="user-actions">
-                                <SignOutButton />
+                                {isAdmin ? <AdminPanelButton /> : <SignOutButton />}
                             </div>
                         )}
                     </div>
@@ -417,16 +415,16 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
 
             <div style={{ maxWidth: '1100px', margin: '0 auto', width: '100%' }}>
                 <footer className="footer-main" style={{ marginTop: '2.5rem' }}>
-                <div className="footer-social-left" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-                    <a href="https://x.com/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="X (Twitter) de Ciberportero"><FaXTwitter size={16} aria-hidden="true" /></a>
-                    <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label={lang === 'es' ? "Discord de Ciberportero" : lang === 'pt' ? "Discord do Ciberportero" : "Ciberportero Discord"}><TbBrandDiscord size={21} aria-hidden="true" /></a>
-                </div>
-                <span>{t.footer}</span>
-                <div className="footer-social-right" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-                    <a href="https://twitch.tv/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex'  }} aria-label="Twitch de Ciberportero"><Twitch size={18} aria-hidden="true" /></a>
-                    <a href="https://youtube.com/@ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="YouTube de Ciberportero"><Youtube size={22} aria-hidden="true" /></a>
-                </div>
-            </footer>
+                    <div className="footer-social-left" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+                        <a href="https://x.com/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="X (Twitter) de Ciberportero"><FaXTwitter size={16} aria-hidden="true" /></a>
+                        <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label={lang === 'es' ? "Discord de Ciberportero" : lang === 'pt' ? "Discord do Ciberportero" : "Ciberportero Discord"}><TbBrandDiscord size={21} aria-hidden="true" /></a>
+                    </div>
+                    <span>{t.footer}</span>
+                    <div className="footer-social-right" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+                        <a href="https://twitch.tv/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex'  }} aria-label="Twitch de Ciberportero"><Twitch size={18} aria-hidden="true" /></a>
+                        <a href="https://youtube.com/@ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="YouTube de Ciberportero"><Youtube size={22} aria-hidden="true" /></a>
+                    </div>
+                </footer>
             </div>
 
             <style jsx>{`

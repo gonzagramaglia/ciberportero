@@ -12,7 +12,7 @@ import CountdownWidget from "@/components/CountdownWidget"
 import { normalizeString } from "@/lib/string-utils"
 import { useSession } from "next-auth/react"
 import { getUserProgress, updateUserProgress } from "@/lib/actions"
-import { SignInButton, SignOutButton } from "@/components/AuthButtons"
+import { SignInButton, SignOutButton, AdminPanelButton } from "@/components/AuthButtons"
 import CommentSection from "@/components/CommentSection"
 import { FaXTwitter } from 'react-icons/fa6';
 import { TbBrandDiscord } from 'react-icons/tb';
@@ -276,7 +276,7 @@ export default function PlanPage() {
                   display: 'flex',
                   alignItems: 'center'
                 }}>
-                  {status !== 'loading' && (session ? <SignOutButton /> : <SignInButton />)}
+                  {status !== 'loading' && (session ? ((session.user?.role === 'admin' || session.user?.email === 'ciberportero@gmail.com') ? <AdminPanelButton /> : <SignOutButton />) : <SignInButton />)}
                 </div>
               </h1>
               <div className="mobile-hide">
