@@ -110,7 +110,7 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                 <div style={{ marginBottom: '1rem', width: '100%' }}>
                     <img src="/tree.png" alt="Tree" style={{ width: '100%', borderRadius: '12px', objectFit: 'cover', maxHeight: '300px' }} />
                 </div>
-                <div className="responsive-countdown-wrapper" style={{ marginBottom: '0.5rem', marginTop: '-1.25rem' }}>
+                <div className="responsive-countdown-wrapper countdowns-grid" style={{ marginBottom: '0.5rem', marginTop: '-1.25rem' }}>
                     <CountdownWidget />
                 </div>
 
@@ -140,7 +140,7 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                     </Link>
                 </div>
 
-                <div style={{ marginTop: '0.5rem', marginBottom: '1.2rem' }}>
+                <div style={{ marginTop: '0', marginBottom: '1.2rem' }}>
                     <img src={lang === 'en' ? "/bachelor-degree.png" : "/licenciatura-en-ciberdefensa.png"} alt={lang === 'en' ? "Bachelor in Cyber Defense" : "Licenciatura en Ciberdefensa"} style={{ width: '100%', borderRadius: '12px', display: 'block' }} />
                 </div>
 
