@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { upsertLink, uploadImage } from "@/lib/actions";
 import { useRouter } from "next/navigation";
-import { Save, ArrowLeft, Upload, Loader2 } from "lucide-react";
+import { Save, Upload, Loader2 } from "lucide-react";
 import Link from "next/link";
 
 interface Props {
@@ -13,16 +13,15 @@ interface Props {
 export function LinkEditor({ initialData }: Props) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  
+
   // State for multilingual names
   const [names, setNames] = useState(() => {
     if (typeof initialData?.name === 'string') {
-      return { es: initialData.name, en: initialData.name, pt: initialData.name };
+      return { es: initialData.name, en: initialData.name };
     }
     return {
       es: initialData?.name?.es || '',
       en: initialData?.name?.en || '',
-      pt: initialData?.name?.pt || '',
     };
   });
 
@@ -41,7 +40,7 @@ export function LinkEditor({ initialData }: Props) {
         .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
         .replace(/[^\w-]+/g, '-')
         .replace(/^-+|-+$/g, '');
-        
+
       const formData = new FormData();
       formData.append('file', file);
       formData.append('slug', slug);
@@ -53,7 +52,7 @@ export function LinkEditor({ initialData }: Props) {
       } else {
         alert('Error al subir imagen: ' + (result.error || 'Desconocido'));
       }
-    } catch (error) {
+    } catch {
       alert('Error al subir imagen');
     } finally {
       setIsUploadingImage(false);
@@ -72,7 +71,7 @@ export function LinkEditor({ initialData }: Props) {
       });
       router.push(`/admin/links?success=${encodeURIComponent(names.es)}&message=${encodeURIComponent('Link guardado correctamente')}`);
       router.refresh();
-    } catch (error) {
+    } catch {
       alert('Error al guardar el link');
     } finally {
       setLoading(false);
@@ -92,40 +91,31 @@ export function LinkEditor({ initialData }: Props) {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
           <div>
             <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#64748b' }}>Nombre (Español)</label>
-            <input 
+            <input
               required
               className="admin-input"
               value={names.es}
-              onChange={e => setNames({...names, es: e.target.value})}
+              onChange={e => setNames({ ...names, es: e.target.value })}
               style={{ width: '100%', padding: '0.75rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}
             />
           </div>
           <div>
             <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#64748b' }}>Nombre (Inglés)</label>
-            <input 
+            <input
               required
               className="admin-input"
               value={names.en}
-              onChange={e => setNames({...names, en: e.target.value})}
+              onChange={e => setNames({ ...names, en: e.target.value })}
               style={{ width: '100%', padding: '0.75rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}
             />
           </div>
-          <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#64748b' }}>Nombre (Portugués)</label>
-            <input 
-              required
-              className="admin-input"
-              value={names.pt}
-              onChange={e => setNames({...names, pt: e.target.value})}
-              style={{ width: '100%', padding: '0.75rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}
-            />
-          </div>
+
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem' }}>
           <div>
             <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#64748b' }}>URL del Enlace</label>
-            <input 
+            <input
               required
               type="url"
               className="admin-input"
@@ -138,18 +128,18 @@ export function LinkEditor({ initialData }: Props) {
           <div>
             <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#64748b' }}>URL del Icono (Opcional)</label>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <input 
+              <input
                 className="admin-input"
                 placeholder="Ej: /wsp.png o moodle"
                 value={iconType}
                 onChange={e => setIconType(e.target.value)}
                 style={{ flex: 1 }}
               />
-              <label style={{ 
-                cursor: isUploadingImage ? 'not-allowed' : 'pointer', 
-                background: '#f1f5f9', 
-                padding: '0.75rem', 
-                borderRadius: '10px', 
+              <label style={{
+                cursor: isUploadingImage ? 'not-allowed' : 'pointer',
+                background: '#f1f5f9',
+                padding: '0.75rem',
+                borderRadius: '10px',
                 border: '1px solid #e2e8f0',
                 display: 'flex',
                 alignItems: 'center',
@@ -157,10 +147,10 @@ export function LinkEditor({ initialData }: Props) {
                 opacity: isUploadingImage ? 0.7 : 1,
                 margin: 0
               }}>
-                <input 
-                  type="file" 
-                  accept="image/*" 
-                  style={{ display: 'none' }} 
+                <input
+                  type="file"
+                  accept="image/*"
+                  style={{ display: 'none' }}
                   onChange={handleImageUpload}
                   disabled={isUploadingImage}
                 />
@@ -172,23 +162,23 @@ export function LinkEditor({ initialData }: Props) {
         </div>
 
         <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={loading}
-            className="btn-primary" 
+            className="btn-primary"
             style={{ flex: 1, justifyContent: 'center' }}
           >
             <Save size={18} />
             {loading ? 'Guardando...' : 'Guardar Link'}
           </button>
-          <Link 
-            href="/admin/links" 
-            style={{ 
-              padding: '0.75rem 1.5rem', 
-              borderRadius: '10px', 
-              border: '1px solid #e2e8f0', 
-              textDecoration: 'none', 
-              color: '#64748b', 
+          <Link
+            href="/admin/links"
+            style={{
+              padding: '0.75rem 1.5rem',
+              borderRadius: '10px',
+              border: '1px solid #e2e8f0',
+              textDecoration: 'none',
+              color: '#64748b',
               fontWeight: 600,
               display: 'flex',
               alignItems: 'center',

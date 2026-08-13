@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useLanguage } from '../../context/LanguageContext';
 import { translations } from '../../lib/translations';
-import { ChevronLeft, ExternalLink, Mail, Copy, Check, Coffee, Youtube, Calendar, Zap , Twitter, Twitch} from 'lucide-react';
+import { ChevronLeft, ExternalLink, Mail, Copy, Check, Coffee, Youtube, Calendar, Zap , Twitter, Twitch, Home } from 'lucide-react';
 import { FaXTwitter } from 'react-icons/fa6';
 import { TbBrandDiscord } from 'react-icons/tb';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
@@ -72,7 +72,7 @@ export default function LinksPage() {
 
     return (
         <div className="container fade-in page-container">
-            <NotificationBanners limitTo="none" />
+            <NotificationBanners />
 
 
             <div className="nav-header-row">
@@ -90,7 +90,10 @@ export default function LinksPage() {
                     <div style={{ width: '100%' }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1.2rem' }}>
                             <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-                                {t.featured?.title}
+                                <Link href="/" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
+                                    <Home className="title-home-icon" size={36} style={{ marginRight: '0.5rem' }} />
+                                    {t.featured?.title}
+                                </Link>
                                 <div style={{
                                     opacity: status === 'loading' ? 0 : 1,
                                     transition: 'opacity 0.2s',
@@ -127,7 +130,7 @@ export default function LinksPage() {
                                     }}
                                 >
                                     <Edit size={20} />
-                                    {lang === 'es' ? 'Editar links' : lang === 'pt' ? 'Editar links' : 'Edit links'}
+                                    {lang === 'es' ? 'Editar links' : 'Edit links'}
                                 </Link>
                             )}
                         </div>
@@ -137,7 +140,7 @@ export default function LinksPage() {
 
             <main>
                 <div style={{ marginTop: '-1.5rem', marginBottom: '2rem', width: '100%' }}>
-                    <img src="/tree.png" alt="Tree" style={{ width: '100%', borderRadius: '12px', objectFit: 'cover', maxHeight: '300px' }} />
+                    <img src="/ciberportero-recover.png" alt="Tree" style={{ width: '100%', borderRadius: '12px', objectFit: 'cover', maxHeight: '300px' }} />
                 </div>
                 <div className="responsive-countdown-wrapper countdowns-grid" style={{ marginBottom: '1.5rem', marginTop: '-1.5rem' }}>
                     <CountdownWidget />
@@ -276,7 +279,7 @@ export default function LinksPage() {
             </main>
 
             <div className="home-cover" style={{ marginTop: '2rem', marginBottom: '2rem' }}>
-                <a href="https://www.twitch.tv/ciberportero" target="_blank" rel="noopener noreferrer"><img src="/portada.jpeg" alt="Ciberportero" style={{ width: '100%', borderRadius: '12px', cursor: 'pointer' }} /></a>
+                <a href="https://www.twitch.tv/ciberportero" target="_blank" rel="noopener noreferrer"><img src="/ciberportero-cover.jpeg" alt="Ciberportero" style={{ width: '100%', borderRadius: '12px', cursor: 'pointer' }} /></a>
             </div>
 
             <CommentSection postSlug="links" lang={lang} />
@@ -284,7 +287,7 @@ export default function LinksPage() {
             <footer className="footer-main">
                 <div className="footer-social-left" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
                     <a href="https://x.com/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="X (Twitter) de Ciberportero"><FaXTwitter size={16} aria-hidden="true" /></a>
-                    <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label={lang === 'es' ? "Discord de Ciberportero" : lang === 'pt' ? "Discord do Ciberportero" : "Ciberportero Discord"}><TbBrandDiscord size={21} aria-hidden="true" /></a>
+                    <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label={lang === 'es' ? "Discord de Ciberportero" : "Ciberportero Discord"}><TbBrandDiscord size={21} aria-hidden="true" /></a>
                 </div>
                 <span>{t.footer}</span>
                 <div className="footer-social-right" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>

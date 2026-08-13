@@ -22,9 +22,9 @@ export async function createPersonalLink(data: { name: string, url: string, desc
 
   await db.link.create({
     data: {
-      name: { es: data.name, en: data.name, pt: data.name },
+      name: { es: data.name, en: data.name },
       url: data.url,
-      description: data.description ? { es: data.description, en: data.description, pt: data.description } : undefined,
+      description: data.description ? { es: data.description, en: data.description } : undefined,
       userId: session.user.id
     }
   });

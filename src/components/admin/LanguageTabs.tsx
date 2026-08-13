@@ -1,17 +1,15 @@
 'use client';
 
 interface Props {
-  active: 'es' | 'en' | 'pt';
-  onChange: (lang: 'es' | 'en' | 'pt') => void;
-  hidePt?: boolean;
+  active: 'es' | 'en';
+  onChange: (lang: 'es' | 'en') => void;
 }
 
-export default function LanguageTabs({ active, onChange, hidePt }: Props) {
+export default function LanguageTabs({ active, onChange }: Props) {
   const languages = [
     { id: 'es', label: 'Español', flag: '🇦🇷' },
-    { id: 'en', label: 'English', flag: '🇬🇧' },
-    ...(hidePt ? [] : [{ id: 'pt', label: 'Português', flag: '🇧🇷' }]),
-  ];
+    { id: 'en', label: 'English', flag: '🇺🇸' },
+  ] as const;
 
   return (
     <div style={{ display: 'inline-flex', background: '#f1f5f9', padding: '0.4rem', borderRadius: '16px', gap: '0.4rem' }}>

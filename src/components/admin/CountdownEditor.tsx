@@ -15,12 +15,12 @@ interface CountdownEditorProps {
 export default function CountdownEditor({ countdown, slot }: CountdownEditorProps) {
   const router = useRouter();
   const [isPending, setIsPending] = useState(false);
-  const [activeLang, setActiveLang] = useState<'es' | 'en' | 'pt'>('es');
+  const [activeLang, setActiveLang] = useState<'es' | 'en'>('es');
 
   // Form state
-  const [titles, setTitles] = useState<any>(countdown?.title || { es: '', en: '', pt: '' });
-  const [descriptions, setDescriptions] = useState<any>(countdown?.description || { es: '', en: '', pt: '' });
-  const [expiredMessages, setExpiredMessages] = useState<any>(countdown?.expiredMessage || { es: '', en: '', pt: '' });
+  const [titles, setTitles] = useState<any>(countdown?.title || { es: '', en: '' });
+  const [descriptions, setDescriptions] = useState<any>(countdown?.description || { es: '', en: '' });
+  const [expiredMessages, setExpiredMessages] = useState<any>(countdown?.expiredMessage || { es: '', en: '' });
   const [targetDate, setTargetDate] = useState(toLocalISOString(countdown?.targetDate));
   const [url, setUrl] = useState(countdown?.url || '');
   const [isActive, setIsActive] = useState(countdown?.isActive ?? true);
@@ -82,7 +82,7 @@ export default function CountdownEditor({ countdown, slot }: CountdownEditorProp
 
       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '3.5rem' }}>
         <div className="space-y-8">
-          <LanguageTabs active={activeLang} onChange={setActiveLang as any} hidePt />
+          <LanguageTabs active={activeLang} onChange={setActiveLang as any} />
 
           <section className="admin-card" style={{ padding: '3rem', borderRadius: '32px' }}>
             <div style={{ marginBottom: '2.5rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '1.25rem' }}>

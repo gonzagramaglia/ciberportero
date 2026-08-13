@@ -15,7 +15,7 @@ interface PostEditorProps {
   isEditorPortal?: boolean;
 }
 
-type Lang = 'es' | 'en' | 'pt';
+type Lang = 'es' | 'en';
 
 export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
   const router = useRouter();
@@ -24,9 +24,9 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
   const [activeLang, setActiveLang] = useState<Lang>('es');
 
   // Form state
-  const [titles, setTitles] = useState<Record<Lang, string>>(post?.title || { es: '', en: '', pt: '' });
-  const [contents, setContents] = useState<Record<Lang, string>>(post?.content || { es: '', en: '', pt: '' });
-  const [descriptions, setDescriptions] = useState<Record<Lang, string>>(post?.description || { es: '', en: '', pt: '' });
+  const [titles, setTitles] = useState<Record<Lang, string>>(post?.title || { es: '', en: '' });
+  const [contents, setContents] = useState<Record<Lang, string>>(post?.content || { es: '', en: '' });
+  const [descriptions, setDescriptions] = useState<Record<Lang, string>>(post?.description || { es: '', en: '' });
   const [slug, setSlug] = useState(post?.slug || '');
   const [alternativeSlug, setAlternativeSlug] = useState(post?.alternativeSlug || '');
   const [alternativeSlug2, setAlternativeSlug2] = useState(post?.alternativeSlug2 || '');
@@ -38,9 +38,9 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
   const [date, setDate] = useState<string>(post?.date ? toLocalISOString(post.date) : toLocalISOString(new Date()));
 
   const isDirty = useMemo(() => {
-    const initialTitles = post?.title || { es: '', en: '', pt: '' };
-    const initialContents = post?.content || { es: '', en: '', pt: '' };
-    const initialDescriptions = post?.description || { es: '', en: '', pt: '' };
+    const initialTitles = post?.title || { es: '', en: '' };
+    const initialContents = post?.content || { es: '', en: '' };
+    const initialDescriptions = post?.description || { es: '', en: '' };
     const initialSlug = post?.slug || '';
     const initialPublished = post?.published ?? true;
     const initialCountdowns = post?.countdowns || [];
@@ -132,9 +132,9 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
     } else {
       const newC = { 
         slot, 
-        title: { es: '', en: '', pt: '' }, 
-        description: { es: '', en: '', pt: '' },
-        expiredMessage: { es: '', en: '', pt: '' },
+        title: { es: '', en: '' }, 
+        description: { es: '', en: '' },
+        expiredMessage: { es: '', en: '' },
         targetDate: new Date().toISOString(), 
         url: '',
         isActive: true 
@@ -174,7 +174,7 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
           </div>
         </div>
 
-        <LanguageTabs active={activeLang} onChange={(l: any) => setActiveLang(l)} hidePt />
+        <LanguageTabs active={activeLang} onChange={(l: any) => setActiveLang(l)} />
 
         <div className="space-y-12">
           <div className="admin-card" style={{ padding: '3rem', borderRadius: '32px' }}>
@@ -235,7 +235,8 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
                       <ReactMarkdown 
                         remarkPlugins={[remarkGfm, remarkBreaks]}
                         components={{
-                          a: ({ node, ...props }) => {
+                          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                          a: ({ node: _node, ...props }) => {
                             let href = props.href || '';
                             const childrenText = String(props.children || '');
                             if (childrenText.startsWith('http') && childrenText.endsWith('_') && !href.endsWith('_')) {
@@ -243,7 +244,8 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
                             }
                             return <a {...props} href={href} target="_blank" rel="noopener noreferrer" />;
                           },
-                          img: ({ node, ...props }) => {
+                          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                          img: ({ node: _node, ...props }) => {
                               if (props.alt === 'youtube' && props.src) {
                                   let videoId = '';
                                   const src = props.src as string;

@@ -81,11 +81,6 @@ describe('timeAgo', () => {
     expect(timeAgo(date)).toBe('hace 2 años');
   });
 
-  it('supports Portuguese', () => {
-    const date = new Date('2026-07-10T11:59:30Z');
-    expect(timeAgo(date, 'pt')).toBe('agora mesmo');
-  });
-
   it('falls back to Spanish for unknown language', () => {
     const date = new Date('2026-07-10T11:59:30Z');
     expect(timeAgo(date, 'fr')).toBe('hace un momento');

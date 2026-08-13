@@ -91,9 +91,7 @@ export default async function EditorPage() {
                         {titleObj?.en && (
                           <span title="English" style={{ fontSize: '12px', padding: '0.2rem 0.4rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', display: 'inline-flex', alignItems: 'center', lineHeight: 1 }}>🇺🇸</span>
                         )}
-                        {titleObj?.pt && (
-                          <span title="Português" style={{ fontSize: '12px', padding: '0.2rem 0.4rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', display: 'inline-flex', alignItems: 'center', lineHeight: 1 }}>🇧🇷</span>
-                        )}
+
                       </div>
                     </div>
                   </td>

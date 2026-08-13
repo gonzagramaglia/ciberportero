@@ -13,7 +13,7 @@ export function CountdownToggle({ id, initialActive }: { id: string, initialActi
     try {
       await toggleCountdown(id, !active);
       setActive(!active);
-    } catch (error) {
+    } catch {
       alert('Error al cambiar estado');
     } finally {
       setLoading(false);

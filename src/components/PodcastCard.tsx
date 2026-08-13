@@ -7,7 +7,7 @@ import { translations } from '@/lib/translations';
 
 export default function PodcastCard({ podcast, forcedLang }: { podcast: any, forcedLang?: string }) {
     const { lang: contextLang } = useLanguage();
-    const lang = (forcedLang || contextLang) as 'es' | 'en' | 'pt';
+    const lang = (forcedLang || contextLang) as 'es' | 'en';
     const t = translations[lang].podcast;
     const title = (podcast.title as any)[lang] || (podcast.title as any)['es'] || podcast.slug;
     const description = (podcast.description as any)[lang] || (podcast.description as any)['es'] || "";
@@ -22,7 +22,7 @@ export default function PodcastCard({ podcast, forcedLang }: { podcast: any, for
                     <div className="podcast-card-meta">
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', alignItems: 'flex-start' }}>
                             <span className="podcast-card-date">
-                                {lang === 'es' ? 'Audio del ' : lang === 'pt' ? 'Áudio de ' : 'Audio from '}
+                                {lang === 'es' ? 'Audio del ' : 'Audio from '}
                                 {new Date(podcast.date || podcast.createdAt).toLocaleDateString(lang, {
                                     year: 'numeric',
                                     month: 'long',

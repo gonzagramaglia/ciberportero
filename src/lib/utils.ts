@@ -34,21 +34,6 @@ export function timeAgo(date: Date | string, lang: string = 'es'): string {
       months: '{n} months ago',
       year: '1 year ago',
       years: '{n} years ago'
-    },
-    pt: {
-      now: 'agora mesmo',
-      minute: 'há 1 minuto',
-      minutes: 'há {n} minutos',
-      hour: 'há 1 hora',
-      hours: 'há {n} horas',
-      day: 'há 1 dia',
-      days: 'há {n} dias',
-      week: 'há 1 semana',
-      weeks: 'há {n} semanas',
-      month: 'há 1 mes',
-      months: 'há {n} meses',
-      year: 'há 1 ano',
-      years: 'há {n} anos'
     }
   };
 

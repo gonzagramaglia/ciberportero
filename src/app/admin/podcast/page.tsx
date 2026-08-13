@@ -51,9 +51,6 @@ export default async function AdminPodcastPage() {
             ) : (
               podcasts.map((podcast) => {
                 const titleObj = podcast.title as any;
-                const hasEs = !!titleObj?.es;
-                const hasEn = !!titleObj?.en;
-                const hasPt = !!titleObj?.pt;
 
                 return (
                   <tr key={podcast.id}>

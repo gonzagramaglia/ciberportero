@@ -10,7 +10,7 @@ interface FloatingFootballButtonProps {
 export default function FloatingFootballButton({ hideOnMobile }: FloatingFootballButtonProps = {}) {
     const { lang } = useLanguage();
     const url = "https://youtu.be/LhnH0juUaGw";
-    const label = lang === 'es' ? "Ver video de fútbol" : lang === 'pt' ? "Assistir vídeo de futebol" : "Watch football video";
+    const label = lang === 'es' ? "Ver video de fútbol" : "Watch football video";
     return (
         <a
             href={url}

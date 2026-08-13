@@ -894,7 +894,7 @@ footer a:hover {
 
 .notification-content {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.85rem;
   padding: 1.5rem 3rem 1.5rem 1.15rem;
 }
@@ -934,11 +934,11 @@ footer a:hover {
 
 .notification-close {
   flex-shrink: 0;
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.2);
   border: none;
-  color: #000;
-  width: 28px;
-  height: 28px;
+  color: white;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -946,12 +946,20 @@ footer a:hover {
   cursor: pointer;
   transition: background 0.2s ease;
   position: absolute;
-  top: 12px;
+  top: 50%;
+  transform: translateY(-50%);
   right: 12px;
 }
 
 .notification-close:hover {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.title-home-icon {
+  display: none;
+  color: #000;
+  margin-right: 0.1rem;
+  margin-top: 3px;
 }
 
 .notification-progress {
@@ -1313,6 +1321,30 @@ footer a:hover {
     padding: 0 !important;
     pointer-events: none !important;
   }
+  
+  /* Align notification with fixed sidebar countdowns on large screens */
+  .page-container .notification-container-wrapper {
+    margin-top: 4.38rem !important;
+  }
+  .home-container .notification-container-wrapper {
+    margin-top: 0.88rem !important;
+  }
+  .post-container .notification-container-wrapper {
+    margin-top: 4.88rem !important;
+  }
+}
+
+/* Hide back button if notification is active */
+.page-container:has(.notification-container-wrapper) .nav-header-row .back-link {
+  display: none !important;
+}
+
+.page-container:has(.notification-container-wrapper) .nav-header-row {
+  margin-bottom: 0 !important;
+}
+
+.page-container:has(.notification-container-wrapper) .title-home-icon {
+  display: block;
 }
 
 @media (max-width: 600px) {

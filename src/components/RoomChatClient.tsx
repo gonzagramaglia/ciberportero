@@ -102,12 +102,12 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
     const isHistory = currentSubId === 'history';
 
     function formatMessageDate(date: Date, lang: string, short = false) {
-        const connector = lang === 'es' ? ' a las ' : lang === 'pt' ? ' às ' : ' at ';
+        const connector = lang === 'es' ? ' a las ' : ' at ';
 
         if (lang !== 'es') {
-            return date.toLocaleDateString(lang === 'pt' ? 'pt-BR' : 'en-US', {
+            return date.toLocaleDateString('en-US', {
                 weekday: 'long', day: 'numeric', month: 'long'
-            }) + connector + date.toLocaleTimeString(lang === 'pt' ? 'pt-BR' : 'en-US', {
+            }) + connector + date.toLocaleTimeString('en-US', {
                 hour: '2-digit', minute: '2-digit', hour12: false
             });
         }
@@ -587,8 +587,8 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                         <span className="reply-count-badge">
                                             <MessageCircle size={10} />
                                             {count} {count === 1 ? 
-                                                (lang === 'es' ? 'respuesta' : lang === 'pt' ? 'resposta' : 'reply') : 
-                                                (lang === 'es' ? 'respuestas' : lang === 'pt' ? 'respostas' : 'replies')}
+                                                (lang === 'es' ? 'respuesta' : 'reply') : 
+                                                (lang === 'es' ? 'respuestas' : 'replies')}
                                         </span>
                                     );
                                 })()}

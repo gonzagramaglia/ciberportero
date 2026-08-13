@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '../context/LanguageContext';
 import { translations } from '../lib/translations';
-import { Github, Youtube, BookOpen, Calendar, Info, Link as LinkIcon, X, Zap, Coffee , Twitter, Twitch} from 'lucide-react';
+import { Calendar, Link as LinkIcon, X, Zap, Twitch, Youtube } from 'lucide-react';
 import { FaXTwitter } from 'react-icons/fa6';
 import { TbBrandDiscord } from 'react-icons/tb';
 import NotificationBanners from './NotificationBanners';
@@ -108,7 +108,7 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
 
             <main style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <div style={{ marginBottom: '1rem', width: '100%' }}>
-                    <img src="/tree.png" alt="Tree" style={{ width: '100%', borderRadius: '12px', objectFit: 'cover', maxHeight: '300px' }} />
+                    <img src="/ciberportero-recover.png" alt="Tree" style={{ width: '100%', borderRadius: '12px', objectFit: 'cover', maxHeight: '300px' }} />
                 </div>
                 <div className="responsive-countdown-wrapper countdowns-grid" style={{ marginBottom: '0.5rem', marginTop: '-1.25rem' }}>
                     <CountdownWidget />
@@ -159,7 +159,7 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                             <li key={post.slug} className="post-item">
                                 <Link href={`/${post.slug}`}>
                                     <span className="post-date" suppressHydrationWarning>
-                                        {lang === 'es' ? 'Última actualización' : lang === 'pt' ? 'Última atualização' : 'Last update'}: {timeAgo(post.updatedAt || post.date, lang)}
+                                        {lang === 'es' ? 'Última actualización' : 'Last update'}: {timeAgo(post.updatedAt || post.date, lang)}
                                     </span>
                                     <span className="post-title">{post.title}</span>
                                     <p className="post-description">{post.description}</p>
@@ -176,9 +176,7 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                             color: 'var(--muted)'
                         }}>
                             <p style={{ margin: 0, fontWeight: '500' }}>
-                                {lang === 'es' ? 'No hay posts publicados en este momento.' :
-                                    lang === 'pt' ? 'Não há posts publicados no momento.' :
-                                        'No posts published at this time.'}
+                                {lang === 'es' ? 'No hay posts publicados por el momento.' : 'No posts published yet.'}
                             </p>
                         </div>
                     )}
@@ -194,7 +192,7 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                                 <li key={post.slug} className="post-item">
                                     <Link href={`/${post.slug}`}>
                                         <span className="post-date" suppressHydrationWarning>
-                                            {lang === 'es' ? 'Última actualización' : lang === 'pt' ? 'Última atualização' : 'Last update'}: {timeAgo(post.updatedAt || post.date, lang)}
+                                            {lang === 'es' ? 'Última actualización' : 'Last update'}: {timeAgo(post.updatedAt || post.date, lang)}
                                         </span>
                                         <span className="post-title">{post.title}</span>
                                         <p className="post-description">{post.description}</p>
@@ -215,10 +213,10 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                         <div style={{ marginTop: '1rem', marginBottom: '1.5rem' }}>
                             <img src="/calendario-tentativo.png" alt="Calendario Tentativo (2026)" style={{ width: '100%', borderRadius: '12px', display: 'block' }} />
                         </div>
-                        <div className="intro-cover" onClick={() => handleImageClick('/intro-ghibli.jpeg')}><img src="/intro-ghibli.jpeg" alt="Calendario Académico de Grado 2026" style={{ width: '100%', borderRadius: '12px', cursor: 'zoom-in' }} /></div>
+                        <div className="intro-cover" onClick={() => handleImageClick('/calendar-cover-ghibli.jpeg')}><img src="/calendar-cover-ghibli.jpeg" alt="Calendario Académico de Grado 2026" style={{ width: '100%', borderRadius: '12px', cursor: 'zoom-in' }} /></div>
                     </>
                 )}
-                
+
                 {lang === 'en' && (
                     <>
                         <div style={{ marginTop: '1rem', marginBottom: '1.5rem' }}>
@@ -235,17 +233,17 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
             </main>
 
             <div className="home-cover">
-                <a href="https://www.twitch.tv/ciberportero" target="_blank" rel="noopener noreferrer"><img src="/portada.jpeg" alt="Ciberportero Blog Cover" style={{ width: '100%', borderRadius: '12px', cursor: 'pointer' }} /></a>
+                <a href="https://www.twitch.tv/ciberportero" target="_blank" rel="noopener noreferrer"><img src="/ciberportero-cover.jpeg" alt="Ciberportero Blog Cover" style={{ width: '100%', borderRadius: '12px', cursor: 'pointer' }} /></a>
             </div>
 
             <footer className="footer-main">
                 <div className="footer-social-left" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
                     <a href="https://x.com/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="X (Twitter) de Ciberportero"><FaXTwitter size={16} aria-hidden="true" /></a>
-                    <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label={lang === 'es' ? "Discord de Ciberportero" : lang === 'pt' ? "Discord do Ciberportero" : "Ciberportero Discord"}><TbBrandDiscord size={21} aria-hidden="true" /></a>
+                    <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label={lang === 'es' ? "Discord de Ciberportero" : "Ciberportero Discord"}><TbBrandDiscord size={21} aria-hidden="true" /></a>
                 </div>
                 <span>{t.footer}</span>
                 <div className="footer-social-right" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-                    <a href="https://twitch.tv/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex'  }} aria-label="Twitch de Ciberportero"><Twitch size={18} aria-hidden="true" /></a>
+                    <a href="https://twitch.tv/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="Twitch de Ciberportero"><Twitch size={18} aria-hidden="true" /></a>
                     <a href="https://youtube.com/@ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="YouTube de Ciberportero"><Youtube size={22} aria-hidden="true" /></a>
                 </div>
             </footer>

@@ -19,7 +19,7 @@ function LanguageContent({ children, initialLang }: { children: React.ReactNode,
     const searchParams = useSearchParams();
 
     useEffect(() => {
-        const locales: Locale[] = ['en', 'pt', 'es'] as Locale[];
+        const locales: Locale[] = ['en', 'es'] as Locale[];
         
         // Detection strategy: URL > Cookie > LocalStorage
         const pathSegments = pathname.split('/');

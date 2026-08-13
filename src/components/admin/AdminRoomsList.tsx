@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Trash2, Users, Layers, ExternalLink, Calendar } from 'lucide-react';
+import { Trash2, Users, Layers, ExternalLink } from 'lucide-react';
 import { deleteRoom } from '@/lib/salasActions';
 import { toast } from 'react-hot-toast';
 import Link from 'next/link';

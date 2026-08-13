@@ -4,14 +4,12 @@ import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Save, X, ExternalLink, Speaker, Upload, Check, Loader2, Plus, Trash2 } from 'lucide-react';
 import { upsertPodcast } from '@/lib/actions';
-import LanguageTabs from './LanguageTabs';
 import { supabase } from '@/lib/supabase';
 
 interface PodcastEditorProps {
   podcast?: any;
 }
 
-type Lang = 'es' | 'en' | 'pt';
 
 export default function PodcastEditor({ podcast }: PodcastEditorProps) {
   const router = useRouter();
@@ -50,7 +48,7 @@ export default function PodcastEditor({ podcast }: PodcastEditorProps) {
         const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
         const filePath = `${fileName}`; // Removed redundant 'podcasts/' prefix if bucket name is already 'podcasts'
 
-        const { data, error: uploadError } = await supabase.storage
+        const { error: uploadError } = await supabase.storage
             .from('podcasts')
             .upload(filePath, file, {
               cacheControl: '3600',
@@ -137,9 +135,9 @@ export default function PodcastEditor({ podcast }: PodcastEditorProps) {
     try {
       await upsertPodcast({
         id: podcast?.id,
-        title: { es: title, en: title, pt: title },
+        title: { es: title, en: title },
         slug,
-        description: { es: description, en: description, pt: description },
+        description: { es: description, en: description },
         audioUrl,
         subjectId: subjectId === 'none' ? null : subjectId,
         links: links.filter(l => l.url.trim()),

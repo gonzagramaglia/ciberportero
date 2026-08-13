@@ -89,9 +89,10 @@ export async function addComment(slug: string, content: string, parentId?: strin
       post = await db.post.create({
         data: {
           slug,
-          title: { es: slug, en: slug, pt: slug },
-          content: { es: "Draft from markdown sync", en: "Draft from markdown sync", pt: "Draft from markdown sync" },
-          published: true
+          title: { es: slug, en: slug },
+          content: { es: "Draft from markdown sync", en: "Draft from markdown sync" },
+          published: true,
+          unlisted: true
         } as any
       });
     }

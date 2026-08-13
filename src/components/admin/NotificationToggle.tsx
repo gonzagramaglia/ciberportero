@@ -13,7 +13,7 @@ export function NotificationToggle({ id, initialActive }: { id: string, initialA
     try {
       await toggleNotification(id, !active);
       setActive(!active);
-    } catch (error) {
+    } catch {
       alert('Error al cambiar estado');
     } finally {
       setLoading(false);

@@ -23,7 +23,7 @@ export default function LanguageSwitcher({ availableLangs }: LanguageSwitcherPro
         // 2. Identify current segments and search params
         const segments = pathname.split('/');
         const currentLang = segments[1];
-        const isLocalized = ['en', 'pt', 'es'].includes(currentLang);
+        const isLocalized = ['en', 'es'].includes(currentLang);
         
         // Handle search params
         const params = new URLSearchParams(window.location.search);

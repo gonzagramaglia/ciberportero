@@ -9,7 +9,7 @@ export default function SyncedBadge() {
 
   if (status !== 'authenticated' || !session?.user) return null
 
-  const label = lang === 'es' ? 'Sincronizado' : lang === 'pt' ? 'Sincronizado' : 'Synced'
+  const label = lang === 'es' ? 'Sincronizado' : 'Synced'
 
   return (
     <div 

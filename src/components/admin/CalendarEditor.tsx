@@ -17,8 +17,8 @@ export default function CalendarEditor({ event }: CalendarEditorProps) {
   const [isPending, setIsPending] = useState(false);
 
   // Form state
-  const [titles, setTitles] = useState<any>(event?.title || { es: '', en: '', pt: '' });
-  const [descriptions, setDescriptions] = useState<any>(event?.description || { es: '', en: '', pt: '' });
+  const [titles, setTitles] = useState<any>(event?.title || { es: '', en: '' });
+  const [descriptions, setDescriptions] = useState<any>(event?.description || { es: '', en: '' });
   const [startDate, setStartDate] = useState(toLocalISOString(event?.startDate, 10));
   const [endDate, setEndDate] = useState(toLocalISOString(event?.endDate, 10));
   const [url, setUrl] = useState(event?.url || '');

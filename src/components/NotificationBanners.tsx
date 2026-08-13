@@ -3,11 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { AlertTriangle, Bell, X } from 'lucide-react';
-import { translations } from '../lib/translations';
 import { useLanguage } from '../context/LanguageContext';
 import { formatMarkdown } from '../lib/utils';
 
-export default function NotificationBanners({ limitTo = 'all' }: { limitTo?: 'ivu' | 'mate' | 'none' | 'all' }) {
+export default function NotificationBanners() {
     const { lang } = useLanguage();
     const { data: session } = useSession();
     const [dbNotifications, setDbNotifications] = useState<any[]>([]);
@@ -50,12 +49,12 @@ export default function NotificationBanners({ limitTo = 'all' }: { limitTo?: 'iv
     if (activeNotifications.length === 0) return null;
 
     return (
-        <div style={{ display: 'grid', gap: '0.75rem', marginBottom: '1.5rem' }}>
+        <div className="notification-container-wrapper" style={{ display: 'grid', gap: '0.75rem', marginBottom: '0.5rem' }}>
             {activeNotifications.map(notification => {
                 const message = typeof notification.message === 'object' ? notification.message[lang] : notification.message;
                 const description = typeof notification.description === 'object' ? notification.description[lang] : notification.description;
                 const type = notification.type || 'info';
-                
+
                 // Color mapping based on type
                 const styles = {
                     danger: { bg: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', border: '#b91c1c', icon: <AlertTriangle size={18} /> },
@@ -72,14 +71,14 @@ export default function NotificationBanners({ limitTo = 'all' }: { limitTo?: 'iv
                             {styles.icon}
                         </div>
                         <div className="notification-text">
-                            <p 
-                                style={{ margin: 0, fontWeight: 800, fontSize: '0.95rem', letterSpacing: '-0.01em' }} 
-                                dangerouslySetInnerHTML={{ __html: formatMarkdown(message) }} 
+                            <p
+                                style={{ margin: 0, fontWeight: 800, fontSize: '0.95rem', letterSpacing: '-0.01em' }}
+                                dangerouslySetInnerHTML={{ __html: formatMarkdown(message) }}
                             />
                             {description && (
-                                <p 
-                                    style={{ margin: '0.1rem 0 0', opacity: 0.9, fontSize: '0.85rem', fontWeight: 500 }} 
-                                    dangerouslySetInnerHTML={{ __html: formatMarkdown(description) }} 
+                                <p
+                                    style={{ margin: '0.1rem 0 0', opacity: 0.9, fontSize: '0.85rem', fontWeight: 500 }}
+                                    dangerouslySetInnerHTML={{ __html: formatMarkdown(description) }}
                                 />
                             )}
                         </div>
@@ -87,7 +86,7 @@ export default function NotificationBanners({ limitTo = 'all' }: { limitTo?: 'iv
                 );
 
                 return (
-                    <div key={notification.id} className={`notification-banner ${type}`} style={{ 
+                    <div key={notification.id} className={`notification-banner ${type}`} style={{
                         background: styles.bg,
                         color: 'white',
                         border: `1px solid ${styles.border}`,
@@ -103,8 +102,8 @@ export default function NotificationBanners({ limitTo = 'all' }: { limitTo?: 'iv
                         ) : (
                             <Content />
                         )}
-                        <button 
-                            className="notification-close" 
+                        <button
+                            className="notification-close"
                             onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
@@ -112,7 +111,7 @@ export default function NotificationBanners({ limitTo = 'all' }: { limitTo?: 'iv
                             }}
                             style={{ zIndex: 10 }}
                         >
-                            <X size={16} />
+                            <X size={18} />
                         </button>
                     </div>
                 );
