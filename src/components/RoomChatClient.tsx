@@ -101,7 +101,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
     const isGeneral = !currentSubId || currentSubId === 'general';
     const isHistory = currentSubId === 'history';
 
-    function formatMessageDate(date: Date, lang: string, short = false) {
+    function formatMessageDate(date: Date, lang: string) {
         const connector = lang === 'es' ? ' a las ' : ' at ';
 
         if (lang !== 'es') {
@@ -745,7 +745,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     res = await addRoomMessage(currentSubId!, content, imageUrls, isReply ? replyingTo?.id : undefined);
                 }
 
-                if (res.success) {
+                if ('success' in res && res.success) {
                     if (isReply) {
                         setReplyText('');
                         setReplyExternalImageUrl('');
@@ -1148,7 +1148,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                                         <div className="log-main">
                                                             <div className="log-meta">
                                                                 <span className="log-user">{msg.user.name}{(isMe && !msg.user.name.includes('(tú)')) ? ' (tú)' : ''}</span>
-                                                                <span className="log-time">{formatMessageDate(new Date(msg.createdAt), lang, true)}</span>
+                                                                <span className="log-time">{formatMessageDate(new Date(msg.createdAt), lang)}</span>
                                                                 {msg.parentId && (
                                                                     <div className="log-reply-tag">
                                                                         <ReplyIcon size={10} />

@@ -213,7 +213,7 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                         <div style={{ marginTop: '1rem', marginBottom: '1.5rem' }}>
                             <img src="/calendario-tentativo.png" alt="Calendario Tentativo (2026)" style={{ width: '100%', borderRadius: '12px', display: 'block' }} />
                         </div>
-                        <div className="intro-cover" onClick={() => handleImageClick('/calendar-cover-ghibli.jpeg')}><img src="/calendar-cover-ghibli.jpeg" alt="Calendario Académico de Grado 2026" style={{ width: '100%', borderRadius: '12px', cursor: 'zoom-in' }} /></div>
+                        <button type="button" className="intro-cover" onClick={() => handleImageClick('/calendar-cover-ghibli.jpeg')} style={{ border: 'none', background: 'none', padding: 0, width: '100%', display: 'block' }}><img src="/calendar-cover-ghibli.jpeg" alt="Calendario Académico de Grado 2026" style={{ width: '100%', borderRadius: '12px', cursor: 'zoom-in' }} /></button>
                     </>
                 )}
 

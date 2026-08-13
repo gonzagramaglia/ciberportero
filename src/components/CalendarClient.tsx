@@ -562,6 +562,8 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                       </div>
                       {(session?.user?.id === event.userId || session?.user?.email === 'ciberportero@gmail.com') && (
                         <button
+                          type="button"
+                          aria-label={lang === 'es' ? 'Eliminar evento' : 'Delete event'}
                           onClick={() => handleDeleteEvent(event.id)}
                           style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: '#ef4444', opacity: 0.6, padding: '4px', marginLeft: '0.5rem' }}
                         >
@@ -583,12 +585,12 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                       )}
                     </div>
                     <h4 style={{ margin: 0 }}>
-                      {event.title['es']}
-                      {event.subjectId && event.subjectId !== 'all' && ` (${(st as any)[event.subjectId]})`}
+                      {event.title[lang] || event.title['es']}
+                      {event.subjectId && event.subjectId !== 'all' && ` (${(st as Record<string, string>)[event.subjectId]})`}
                     </h4>
                     <div
                       style={{ whiteSpace: 'pre-wrap', marginBottom: '1rem' }}
-                      dangerouslySetInnerHTML={{ __html: formatMarkdown(event.desc['es'] || '') }}
+                      dangerouslySetInnerHTML={{ __html: formatMarkdown(event.desc[lang] || event.desc['es'] || '') }}
                     />
 
                     {event.url && (
@@ -673,9 +675,10 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
           </div>
           <div className="upcoming-list">
             {upcomingEvents.length > 0 ? upcomingEvents.map((event, idx) => {
-              const d = new Date(((event as any).displayDate || event.startDate) + 'T12:00:00');
+              const displayDateStr = (event as any).displayDate || event.startDate;
+              const d = new Date(displayDateStr + 'T12:00:00');
               return (
-                <div key={idx} className="upcoming-item" onClick={() => {
+                <button type="button" key={idx} className="upcoming-item" style={{ textAlign: 'left', border: 'none', padding: 0, margin: 0, cursor: 'pointer', background: 'transparent', display: 'flex' }} onClick={() => {
                   setCurrentDate(new Date(d.getFullYear(), d.getMonth(), 1));
                   setSelectedDate(d);
                   setTimeout(() => {
@@ -688,8 +691,8 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                   </div>
                   <div className="upcoming-info">
                     <h4>
-                      {event.title['es']}
-                      {event.subjectId && event.subjectId !== 'all' && ` (${(st as any)[event.subjectId]})`}
+                      {event.title[lang] || event.title['es']}
+                      {event.subjectId && event.subjectId !== 'all' && ` (${(st as Record<string, string>)[event.subjectId]})`}
                     </h4>
                     {event.endDate && event.endDate !== event.startDate && (
                       <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.2rem', fontWeight: 500 }}>
@@ -705,7 +708,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                       {event.userId && ` (${lang === 'es' ? 'personal' : 'personal'})`}
                     </span>
                   </div>
-                </div>
+                </button>
               );
             }) : (
               <div className="empty-selection">

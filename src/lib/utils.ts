@@ -101,6 +101,11 @@ export function slugify(text: string): string {
 export function formatMarkdown(text: unknown): string {
   if (!text || typeof text !== 'string') return '';
   return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;')
       .replace(/\*\*(?!\s)(.*?)(?<!\s)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(?!\s)(.*?)(?<!\s)\*/g, '<strong>$1</strong>')
       .replace(/_(?!\s)(.*?)(?<!\s)_/g, '<em>$1</em>')

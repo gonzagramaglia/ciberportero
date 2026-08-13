@@ -5,8 +5,23 @@ import Link from 'next/link';
 import { Calendar as CalendarIcon, Edit, Search } from 'lucide-react';
 import { DeleteButton } from './DeleteButton';
 
+interface LocalizedText {
+  es?: string;
+  en?: string;
+}
+
+interface Event {
+  id: string;
+  title: LocalizedText;
+  description: LocalizedText;
+  type: string;
+  startDate: string | Date;
+  endDate?: string | Date;
+  period?: string;
+}
+
 interface Props {
-  events: any[];
+  events: Event[];
 }
 
 export default function AdminCalendarList({ events }: Props) {
@@ -16,8 +31,8 @@ export default function AdminCalendarList({ events }: Props) {
   // We just filter them by search query
   const filteredEvents = events.filter(event => {
     if (!searchQuery) return true;
-    const title = (event.title as any)?.es?.toLowerCase() || '';
-    const desc = (event.description as any)?.es?.toLowerCase() || '';
+    const title = event.title?.es?.toLowerCase() || '';
+    const desc = event.description?.es?.toLowerCase() || '';
     const type = event.type?.toLowerCase() || '';
     const q = searchQuery.toLowerCase();
     return title.includes(q) || desc.includes(q) || type.includes(q);
@@ -81,7 +96,7 @@ export default function AdminCalendarList({ events }: Props) {
                         return (
                           <Link href={publicLink} target="_blank" style={{ textDecoration: 'none' }}>
                             <span style={{ fontWeight: 800, color: '#0f172a', fontSize: '1rem', cursor: 'pointer' }} className="hover-link">
-                              {(event.title as any)?.es || 'Sin título'}
+                              {event.title?.es || 'Sin título'}
                             </span>
                           </Link>
                         );
@@ -89,11 +104,11 @@ export default function AdminCalendarList({ events }: Props) {
                     </div>
                   </td>
                   <td style={{ color: '#64748b', fontSize: '0.85rem', fontWeight: 500 }}>
-                    {(event.description as any)?.es || '-'}
+                    {event.description?.es || '-'}
                   </td>
                   <td>
                     <span style={{ fontWeight: 900, color: '#0f172a', whiteSpace: 'nowrap' }}>
-                      {new Date(event.startDate).toLocaleDateString('es-AR', { day: '2-digit', month: 'short' })}
+                      {new Date(event.startDate).toLocaleDateString('es-AR', { day: '2-digit', month: 'short', timeZone: 'UTC' })}
                     </span>
                   </td>
                   <td>

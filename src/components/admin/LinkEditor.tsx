@@ -83,15 +83,16 @@ export function LinkEditor({ initialData }: Props) {
       <div className="admin-header">
         <div>
           <h2 className="admin-title">{initialData ? 'Editar Link' : 'Nuevo Link'}</h2>
-          <p className="admin-subtitle">Completa la información en los tres idiomas.</p>
+          <p className="admin-subtitle">Completa la información en ambos idiomas.</p>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="admin-card" style={{ padding: '2rem', display: 'grid', gap: '1.5rem' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#64748b' }}>Nombre (Español)</label>
+            <label htmlFor="link-name-es" style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#64748b' }}>Nombre (Español)</label>
             <input
+              id="link-name-es"
               required
               className="admin-input"
               value={names.es}
@@ -100,8 +101,9 @@ export function LinkEditor({ initialData }: Props) {
             />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#64748b' }}>Nombre (Inglés)</label>
+            <label htmlFor="link-name-en" style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#64748b' }}>Nombre (Inglés)</label>
             <input
+              id="link-name-en"
               required
               className="admin-input"
               value={names.en}
@@ -114,8 +116,9 @@ export function LinkEditor({ initialData }: Props) {
 
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem' }}>
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#64748b' }}>URL del Enlace</label>
+            <label htmlFor="link-url" style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#64748b' }}>URL del Enlace</label>
             <input
+              id="link-url"
               required
               type="url"
               className="admin-input"

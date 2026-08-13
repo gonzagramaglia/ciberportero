@@ -11,6 +11,17 @@ import { normalizeString } from "@/lib/string-utils"
 const DASHBOARD_CURRICULUM = curriculum.filter(s => s.year <= 2);
 const ALL_TERMS = Array.from(new Set(DASHBOARD_CURRICULUM.map(s => `${s.year}.${s.term}`))).sort();
 
+interface ProgressEntry {
+  id: string;
+  type: string;
+  materia: string;
+  examTitle: string;
+  fecha: string;
+  campusLink?: string;
+  calificacion?: string;
+  observaciones?: string;
+}
+
 export function ProgressList() {
   const { lang } = useLanguage()
   const t = translations[lang].dashboard
@@ -213,8 +224,9 @@ export function ProgressList() {
           {/* Row 1: Primary Selection */}
           <div className="form-row">
             <div className="form-group">
-              <label>{translations[lang].plan.year} / {translations[lang].plan.term}</label>
+              <label htmlFor="progress-term-select">{translations[lang].plan.year} / {translations[lang].plan.term}</label>
               <select
+                id="progress-term-select"
                 value={selectedTerm}
                 onChange={e => setSelectedTerm(e.target.value)}
               >
@@ -224,10 +236,11 @@ export function ProgressList() {
               </select>
             </div>
             <div className="form-group flex-1-2" style={{ position: 'relative' }} ref={dropdownRef}>
-              <label>{t.tracking.materia}</label>
+              <label htmlFor="progress-materia-search">{t.tracking.materia}</label>
               <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                 <Book size={18} style={{ position: 'absolute', left: '1.2rem', color: 'var(--muted)', opacity: 0.5, zIndex: 1 }} />
                 <input
+                  id="progress-materia-search"
                   type="text"
                   placeholder={translations[lang].plan.search}
                   value={materiaSearch}
@@ -255,8 +268,9 @@ export function ProgressList() {
                   }}
                 >
                   {filteredSubjectsInForm.map(s => (
-                    <div
+                    <button
                       key={s}
+                      type="button"
                       onClick={() => {
                         setMateria(s);
                         setMateriaSearch(s);
@@ -267,17 +281,20 @@ export function ProgressList() {
                         if (term) setSelectedTerm(term);
                       }}
                       style={{
+                        width: '100%',
+                        textAlign: 'left',
                         padding: '0.8rem 1rem', borderRadius: '10px', cursor: 'pointer',
                         background: materia === s ? 'black' : 'transparent',
                         color: materia === s ? 'white' : 'inherit',
                         fontSize: '0.9rem', fontWeight: 600,
+                        border: 'none',
                         transition: 'background 0.2s'
                       }}
                       onMouseEnter={(e) => { if (materia !== s) e.currentTarget.style.background = '#f8fafc' }}
                       onMouseLeave={(e) => { if (materia !== s) e.currentTarget.style.background = 'transparent' }}
                     >
                       {s}
-                    </div>
+                    </button>
                   ))}
                   {filteredSubjectsInForm.length === 0 && (
                     <div style={{ padding: '1rem', color: 'var(--muted)', textAlign: 'center', fontSize: '0.85rem' }}>
@@ -487,11 +504,11 @@ export function ProgressList() {
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   {items
-                    .sort((a: any, b: any) => {
-                      const priority: any = { tp: 1, autoevaluacion: 2, parcial: 3 }
-                      return priority[a.type] - priority[b.type]
+                    .sort((a: ProgressEntry, b: ProgressEntry) => {
+                      const priority: Record<string, number> = { tp: 1, autoevaluacion: 2, parcial: 3 }
+                      return (priority[a.type] || 4) - (priority[b.type] || 4)
                     })
-                    .map((item: any) => {
+                    .map((item: ProgressEntry) => {
                       const scoreVal = parseInt(item.calificacion || "0")
                       const isHigh = scoreVal >= 70
                       const isMid = scoreVal >= 50
@@ -537,6 +554,7 @@ export function ProgressList() {
                                 </div>
                               )}
                               <button
+                                aria-label={lang === 'es' ? 'Eliminar' : 'Delete'}
                                 onClick={() => handleDeleteClick(item.id)}
                                 style={{
                                   padding: '0.5rem',

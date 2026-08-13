@@ -9,7 +9,7 @@ import { Suspense } from "react";
 
 export default async function AdminCalendarPage() {
   const [events, note] = await Promise.all([
-    db.calendarEvent.findMany({ orderBy: { startDate: 'desc' } as any }),
+    db.calendarEvent.findMany({ orderBy: { startDate: 'desc' } }),
     getAdminNote('calendar')
   ]);
 
@@ -34,7 +34,7 @@ export default async function AdminCalendarPage() {
         </Link>
       </div>
 
-      <AdminCalendarList events={events} />
+      <AdminCalendarList events={events as any[]} />
 
       <AdminSectionNotes section="calendar" initialContent={note?.content || ''} />
     </div>

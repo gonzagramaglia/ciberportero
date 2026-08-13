@@ -174,7 +174,7 @@ export default function PostEditor({ post, isEditorPortal }: PostEditorProps) {
           </div>
         </div>
 
-        <LanguageTabs active={activeLang} onChange={(l: any) => setActiveLang(l)} />
+        <LanguageTabs active={activeLang} onChange={setActiveLang} />
 
         <div className="space-y-12">
           <div className="admin-card" style={{ padding: '3rem', borderRadius: '32px' }}>

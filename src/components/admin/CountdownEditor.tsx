@@ -6,6 +6,7 @@ import { Save, X } from 'lucide-react';
 import { upsertCountdown } from '@/lib/actions';
 import LanguageTabs from './LanguageTabs';
 import { toLocalISOString } from '@/lib/utils';
+import { LocalizedContent, normalizeLocalized } from './CalendarEditor';
 
 interface CountdownEditorProps {
   countdown?: any;
@@ -18,9 +19,9 @@ export default function CountdownEditor({ countdown, slot }: CountdownEditorProp
   const [activeLang, setActiveLang] = useState<'es' | 'en'>('es');
 
   // Form state
-  const [titles, setTitles] = useState<any>(countdown?.title || { es: '', en: '' });
-  const [descriptions, setDescriptions] = useState<any>(countdown?.description || { es: '', en: '' });
-  const [expiredMessages, setExpiredMessages] = useState<any>(countdown?.expiredMessage || { es: '', en: '' });
+  const [titles, setTitles] = useState<LocalizedContent>(normalizeLocalized(countdown?.title));
+  const [descriptions, setDescriptions] = useState<LocalizedContent>(normalizeLocalized(countdown?.description));
+  const [expiredMessages, setExpiredMessages] = useState<LocalizedContent>(normalizeLocalized(countdown?.expiredMessage));
   const [targetDate, setTargetDate] = useState(toLocalISOString(countdown?.targetDate));
   const [url, setUrl] = useState(countdown?.url || '');
   const [isActive, setIsActive] = useState(countdown?.isActive ?? true);
@@ -82,7 +83,7 @@ export default function CountdownEditor({ countdown, slot }: CountdownEditorProp
 
       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '3.5rem' }}>
         <div className="space-y-8">
-          <LanguageTabs active={activeLang} onChange={setActiveLang as any} />
+          <LanguageTabs active={activeLang} onChange={setActiveLang} />
 
           <section className="admin-card" style={{ padding: '3rem', borderRadius: '32px' }}>
             <div style={{ marginBottom: '2.5rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '1.25rem' }}>

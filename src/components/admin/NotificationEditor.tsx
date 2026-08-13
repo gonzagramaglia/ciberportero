@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Save, X } from 'lucide-react';
 import { upsertNotification } from '@/lib/actions';
 import LanguageTabs from './LanguageTabs';
+import { LocalizedContent, normalizeLocalized } from './CalendarEditor';
 
 interface NotificationEditorProps {
   notification?: any;
@@ -16,8 +17,8 @@ export default function NotificationEditor({ notification }: NotificationEditorP
   const [activeLang, setActiveLang] = useState<'es' | 'en'>('es');
 
   // Form state
-  const [messages, setMessages] = useState<any>(notification?.message || { es: '', en: '' });
-  const [descriptions, setDescriptions] = useState<any>(notification?.description || { es: '', en: '' });
+  const [messages, setMessages] = useState<LocalizedContent>(normalizeLocalized(notification?.message));
+  const [descriptions, setDescriptions] = useState<LocalizedContent>(normalizeLocalized(notification?.description));
   const [type, setType] = useState(notification?.type || 'info');
   const [active, setActive] = useState(notification?.active ?? true);
   const [url, setUrl] = useState(notification?.url || '');
@@ -73,7 +74,7 @@ export default function NotificationEditor({ notification }: NotificationEditorP
 
       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '3.5rem' }}>
         <div className="space-y-8">
-          <LanguageTabs active={activeLang} onChange={setActiveLang as any} />
+          <LanguageTabs active={activeLang} onChange={setActiveLang} />
           
           <section className="admin-card" style={{ padding: '3rem', borderRadius: '32px' }}>
             <div style={{ marginBottom: '2.5rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '1.25rem' }}>

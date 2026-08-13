@@ -12,13 +12,24 @@ interface CalendarEditorProps {
   event?: any;
 }
 
+export interface LocalizedContent {
+  es: string;
+  en: string;
+}
+
+export const normalizeLocalized = (val: any): LocalizedContent => {
+  if (!val) return { es: '', en: '' };
+  if (typeof val === 'string') return { es: val, en: '' };
+  return { es: val.es || '', en: val.en || '' };
+};
+
 export default function CalendarEditor({ event }: CalendarEditorProps) {
   const router = useRouter();
   const [isPending, setIsPending] = useState(false);
 
   // Form state
-  const [titles, setTitles] = useState<any>(event?.title || { es: '', en: '' });
-  const [descriptions, setDescriptions] = useState<any>(event?.description || { es: '', en: '' });
+  const [titles, setTitles] = useState<LocalizedContent>(normalizeLocalized(event?.title));
+  const [descriptions, setDescriptions] = useState<LocalizedContent>(normalizeLocalized(event?.description));
   const [startDate, setStartDate] = useState(toLocalISOString(event?.startDate, 10));
   const [endDate, setEndDate] = useState(toLocalISOString(event?.endDate, 10));
   const [url, setUrl] = useState(event?.url || '');

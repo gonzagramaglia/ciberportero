@@ -8,7 +8,7 @@ Beyond writing code, this is my core initiative to help fellow students navigate
 
 ## 💪 Tech Content & Community
 
-- 🌴 **[YouTube Channel](https://www.youtube.com/@ciberportero):** Creating educational videos about the Cyberdefense career, programming, and cybersecurity (some with over 1,000+ views!).
+- 🌴 **[YouTube Channel](https://www.youtube.com/@ciberportero):** Creating educational videos about the Cyberdefense career, programming, and cybersecurity (some with over 1,000 views!).
 - 📚 **[Student Resources & Course Blogs](https://www.ciberportero.com/blog):** Writing detailed blog posts for each subject as I progress through the Cyberdefense degree, alongside developing tools and compiling resources to help fellow students succeed in tech.
 
 ## 🎓 Academic Plan Manager (For UNDEF Students)
