@@ -18,7 +18,7 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  const locales = ['en', 'pt', 'es'];
+  const locales = ['en', 'es'];
   const segments = pathname.split('/');
   const urlLang = segments[1];
 

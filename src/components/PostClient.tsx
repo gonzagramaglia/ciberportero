@@ -452,14 +452,12 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
 
             <div className={`container fade-in post-container ${isHighlighting ? 'highlight-active' : ''} ${post.unlisted ? 'is-blog-post' : ''}`}>
                 <CountdownWidget countdowns={post?.countdowns} />
-                <NotificationBanners limitTo={
-                    slug.includes('mate') ? 'mate' : slug.includes('ivu') ? 'ivu' : slug.includes('codeforces') ? 'none' : 'all'
-                } />
+                <NotificationBanners />
                 <div className="nav-header-row" style={{ marginBottom: 0 }}>
                     {post.unlisted ? (
-                        <Link href={lang === 'en' ? "/en/blog" : lang === 'pt' ? "/pt/blog" : "/blog"} className="back-link"><ChevronLeft size={16} />{t.backToBlog}</Link>
+                        <Link href={lang === 'en' ? "/en/blog" : "/blog"} className="back-link"><ChevronLeft size={16} />{t.backToBlog}</Link>
                     ) : (
-                        <Link href={lang === 'en' ? "/en" : lang === 'pt' ? "/pt" : "/"} className="back-link"><ChevronLeft size={16} />{t.back}</Link>
+                        <Link href={lang === 'en' ? "/en" : "/"} className="back-link"><ChevronLeft size={16} />{t.back}</Link>
                     )}
                     <div className="lang-header">
                         <LanguageSwitcher availableLangs={Object.keys(post.title as any).filter(l => (post.title as any)[l] && (post.content as any)[l])} />
@@ -475,7 +473,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                                         {post.unlisted ? (
                                             <>{new Date(post.date).toLocaleDateString(lang, { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })}</>
                                         ) : (
-                                            <>{lang === 'es' ? 'Última actualización' : lang === 'pt' ? 'Última atualização' : 'Last update'}: {timeAgo(post.updatedAt || post.date, lang)}</>
+                                            <>{lang === 'es' ? 'Última actualización' : 'Last update'}: {timeAgo(post.updatedAt || post.date, lang)}</>
                                         )}
                                     </span>
                                 </span>
@@ -547,7 +545,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                     <img src="/profile.jpg" alt="Gonzalo Gramaglia" className="author-image" />
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
                         <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#94a3b8' }}>
-                            {lang === 'es' ? 'Autor del post' : lang === 'pt' ? 'Autor do post' : 'Post author'}
+                            {lang === 'es' ? 'Autor del post' : 'Post author'}
                         </span>
                         <a href="https://cafecito.app/gonzagramaglia" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', color: '#0f172a' }} title="Invitame un cafecito">
                             <Coffee size={20} style={{ color: '#000000' }} />
@@ -576,7 +574,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                 <footer className="footer-main">
                 <div className="footer-social-left" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
                     <a href="https://x.com/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="X (Twitter) de Ciberportero"><FaXTwitter size={16} aria-hidden="true" /></a>
-                    <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label={lang === 'es' ? "Discord de Ciberportero" : lang === 'pt' ? "Discord do Ciberportero" : "Ciberportero Discord"}><TbBrandDiscord size={21} aria-hidden="true" /></a>
+                    <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label={lang === 'es' ? "Discord de Ciberportero" : "Ciberportero Discord"}><TbBrandDiscord size={21} aria-hidden="true" /></a>
                 </div>
                 <span>{t.footer}</span>
                 <div className="footer-social-right" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>

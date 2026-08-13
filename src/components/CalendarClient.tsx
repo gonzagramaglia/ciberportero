@@ -2,19 +2,17 @@
 
 import { useState, useEffect, useMemo, useRef } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { translations, Locale } from "@/lib/translations"
 import LanguageSwitcher from "@/components/LanguageSwitcher"
 import { useLanguage } from "@/context/LanguageContext"
 import { useSession } from "next-auth/react"
 import { createPersonalEvent, deleteCalendarEvent } from "@/lib/actions"
-import { ArrowLeft, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, Bell, Coffee, Youtube, Search, Filter, Copy, Check, Info, Lock, Plus, Trash2, X as CloseIcon, GraduationCap, Zap, Tag, ExternalLink, FileText, Edit2 , Twitch} from "lucide-react"
+import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, Bell, Coffee, Youtube, Search, Filter, Copy, Check, Info, Lock, Plus, Trash2, X as CloseIcon, GraduationCap, Zap, Tag, ExternalLink, FileText, Edit2, Twitch, Home } from "lucide-react"
 import NotificationBanners from "@/components/NotificationBanners"
 import CountdownWidget from "@/components/CountdownWidget"
-import SyncedBadge from "@/components/SyncedBadge"
 import { SignInButton, SignOutButton, AdminPanelButton } from "@/components/AuthButtons"
 import CommentSection from "@/components/CommentSection"
-import { Download, Share2 } from "lucide-react"
+import { Download } from "lucide-react"
 import { formatMarkdown } from "@/lib/utils"
 import { FaXTwitter } from 'react-icons/fa6';
 import { TbBrandDiscord } from 'react-icons/tb';
@@ -471,7 +469,10 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
           <div style={{ width: '100%' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1.2rem' }}>
               <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-                {ct.title}
+                <Link href="/" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
+                  <Home className="title-home-icon" size={40} style={{ marginRight: '0.5rem' }} />
+                  {ct.title}
+                </Link>
                 <div style={{
                   opacity: status === 'loading' ? 0 : 1,
                   transition: 'opacity 0.2s',
@@ -497,28 +498,28 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                 )}
               </p>
               {status === 'authenticated' && (session?.user?.role === 'admin' || session?.user?.email === 'ciberportero@gmail.com') && (
-                  <Link
-                    href="/admin/calendar/new"
-                    className="add-event-btn"
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem',
-                      background: '#000',
-                      color: '#fff',
-                      padding: '0.8rem 1.5rem',
-                      borderRadius: '14px',
-                      border: 'none',
-                      fontWeight: '700',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                      textDecoration: 'none'
-                    }}
-                  >
-                    <Plus size={20} />
-                    {lang === 'es' ? 'Agregar evento' : lang === 'pt' ? 'Adicionar evento' : 'Add event'}
-                  </Link>
+                <Link
+                  href="/admin/calendar/new"
+                  className="add-event-btn"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    background: '#000',
+                    color: '#fff',
+                    padding: '0.8rem 1.5rem',
+                    borderRadius: '14px',
+                    border: 'none',
+                    fontWeight: '700',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                    textDecoration: 'none'
+                  }}
+                >
+                  <Plus size={20} />
+                  {lang === 'es' ? 'Agregar evento' : 'Add event'}
+                </Link>
               )}
             </div>
           </div>
@@ -526,201 +527,198 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
       </header>
 
       <div className="calendar-sidebar" ref={selectionRef} style={{ marginBottom: '2rem', marginTop: '-1.5rem' }}>
-          {selectedDate && (
-            <div id="selected-events-card" className={`selection-card ${selectedEvents.some(e => e.userId) ? 'is-personal' : ''}`}>
-              <div className="selection-header">
-                <Clock size={16} />
-                <h3>
-                  {lang === 'es' ? (
-                    `${ct.fullDays[selectedDate.getDay()]} ${selectedDate.getDate()} de ${ct.months[selectedDate.getMonth()]}`
-                  ) : lang === 'pt' ? (
-                    `${ct.fullDays[selectedDate.getDay()]}, ${selectedDate.getDate()} de ${ct.months[selectedDate.getMonth()]}`
-                  ) : (
-                    `${ct.fullDays[selectedDate.getDay()]}, ${ct.months[selectedDate.getMonth()]} ${selectedDate.getDate()}`
-                  )}
-                </h3>
-              </div>
+        {selectedDate && (
+          <div id="selected-events-card" className={`selection-card ${selectedEvents.some(e => e.userId) ? 'is-personal' : ''}`}>
+            <div className="selection-header">
+              <Clock size={16} />
+              <h3>
+                {lang === 'es' ? (
+                  `${ct.fullDays[selectedDate.getDay()]} ${selectedDate.getDate()} de ${ct.months[selectedDate.getMonth()]}`
+                ) : (
+                  `${ct.fullDays[selectedDate.getDay()]}, ${ct.months[selectedDate.getMonth()]} ${selectedDate.getDate()}`
+                )}
+              </h3>
+            </div>
 
-              <div className="selection-content">
-                {selectedEvents.length > 0 ? (
-                  selectedEvents.map((event, idx) => (
-                    <div key={idx} className={`event-detail-item type-${event.type} ${event.userId ? 'is-personal' : ''}`}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
-                        <span style={{ fontSize: '0.85rem', fontWeight: 800, opacity: 0.7 }}>
-                          {lang === 'es' ? (
-                            event.endDate
-                              ? `Del ${formatEventDate(event.startDate)} al ${formatEventDate(event.endDate)}:`
-                              : `El ${formatEventDate(event.startDate)}:`
-                          ) : lang === 'pt' ? (
-                            event.endDate
-                              ? `De ${formatEventDate(event.startDate)} a ${formatEventDate(event.endDate)}:`
-                              : `Em ${formatEventDate(event.startDate)}:`
-                          ) : (
-                            event.endDate
-                              ? `From ${formatEventDate(event.startDate)} to ${formatEventDate(event.endDate)}:`
-                              : `On ${formatEventDate(event.startDate)}:`
-                          )}
-                        </span>
-                        <div className={`upcoming-tag tag-${event.type}`} style={{ margin: 0, padding: '0.1rem 0.4rem' }}>
-                          {(ct.events[event.type as keyof typeof ct.events] || event.type)}
-                          {event.userId && ` (${lang === 'es' ? 'personal' : lang === 'pt' ? 'pessoal' : 'personal'})`}
-                        </div>
-                        {(session?.user?.id === event.userId || session?.user?.email === 'ciberportero@gmail.com') && (
-                          <button
-                            onClick={() => handleDeleteEvent(event.id)}
-                            style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: '#ef4444', opacity: 0.6, padding: '4px', marginLeft: '0.5rem' }}
-                          >
-                            <Trash2 size={16} />
-                          </button>
+            <div className="selection-content">
+              {selectedEvents.length > 0 ? (
+                selectedEvents.map((event, idx) => (
+                  <div key={idx} className={`event-detail-item type-${event.type} ${event.userId ? 'is-personal' : ''}`}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
+                      <span style={{ fontSize: '0.85rem', fontWeight: 800, opacity: 0.7 }}>
+                        {lang === 'es' ? (
+                          event.endDate
+                            ? `Del ${formatEventDate(event.startDate)} al ${formatEventDate(event.endDate)}:`
+                            : `El ${formatEventDate(event.startDate)}:`
+                        ) : (
+                          event.endDate
+                            ? `From ${formatEventDate(event.startDate)} to ${formatEventDate(event.endDate)}:`
+                            : `On ${formatEventDate(event.startDate)}:`
                         )}
-                        {(session?.user?.role === 'admin' || session?.user?.email === 'gonzagramaglia@gmail.com' || session?.user?.email === 'ciberportero@gmail.com') && (
-                          <a
-                            href={`/admin/calendar/${event.id}`}
-                            className="edit-event-link"
-                            style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: 'var(--accent)', textDecoration: 'none', fontSize: '0.75rem', fontWeight: 800, padding: '0.4rem 0.8rem', borderRadius: '8px', background: 'rgba(34, 211, 238, 0.08)', border: '1px solid rgba(34, 211, 238, 0.2)', transition: 'all 0.2s' }}
-                            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(34, 211, 238, 0.15)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-                            onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(34, 211, 238, 0.08)'; e.currentTarget.style.transform = 'none'; }}
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <Edit2 size={14} />
-                            {lang === 'es' ? 'EDITAR' : lang === 'pt' ? 'EDITAR' : 'EDIT'}
-                          </a>
-                        )}
+                      </span>
+                      <div className={`upcoming-tag tag-${event.type}`} style={{ margin: 0, padding: '0.1rem 0.4rem' }}>
+                        {(ct.events[event.type as keyof typeof ct.events] || event.type)}
+                        {event.userId && ` (${lang === 'es' ? 'personal' : 'personal'})`}
                       </div>
-                      <h4 style={{ margin: 0 }}>
-                        {event.title['es']}
-                        {event.subjectId && event.subjectId !== 'all' && ` (${(st as any)[event.subjectId]})`}
-                      </h4>
-                      <div
-                        style={{ whiteSpace: 'pre-wrap', marginBottom: '1rem' }}
-                        dangerouslySetInnerHTML={{ __html: formatMarkdown(event.desc['es'] || '') }}
-                      />
-
-                      {event.url && (
+                      {(session?.user?.id === event.userId || session?.user?.email === 'ciberportero@gmail.com') && (
+                        <button
+                          type="button"
+                          aria-label={lang === 'es' ? 'Eliminar evento' : 'Delete event'}
+                          onClick={() => handleDeleteEvent(event.id)}
+                          style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: '#ef4444', opacity: 0.6, padding: '4px', marginLeft: '0.5rem' }}
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      )}
+                      {(session?.user?.role === 'admin' || session?.user?.email === 'gonzagramaglia@gmail.com' || session?.user?.email === 'ciberportero@gmail.com') && (
                         <a
-                          href={event.url.startsWith('http') ? event.url : `https://${event.url}`}
+                          href={`/admin/calendar/${event.id}`}
+                          className="edit-event-link"
+                          style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: 'var(--accent)', textDecoration: 'none', fontSize: '0.75rem', fontWeight: 800, padding: '0.4rem 0.8rem', borderRadius: '8px', background: 'rgba(34, 211, 238, 0.08)', border: '1px solid rgba(34, 211, 238, 0.2)', transition: 'all 0.2s' }}
+                          onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(34, 211, 238, 0.15)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(34, 211, 238, 0.08)'; e.currentTarget.style.transform = 'none'; }}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Edit2 size={14} />
+                          {lang === 'es' ? 'EDITAR' : 'EDIT'}
+                        </a>
+                      )}
+                    </div>
+                    <h4 style={{ margin: 0 }}>
+                      {event.title[lang] || event.title['es']}
+                      {event.subjectId && event.subjectId !== 'all' && ` (${(st as Record<string, string>)[event.subjectId]})`}
+                    </h4>
+                    <div
+                      style={{ whiteSpace: 'pre-wrap', marginBottom: '1rem' }}
+                      dangerouslySetInnerHTML={{ __html: formatMarkdown(event.desc[lang] || event.desc['es'] || '') }}
+                    />
+
+                    {event.url && (
+                      <a
+                        href={event.url.startsWith('http') ? event.url : `https://${event.url}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.4rem',
+                          marginTop: '0.5rem',
+                          color: 'var(--accent)',
+                          fontSize: '0.85rem',
+                          fontWeight: 700,
+                          textDecoration: 'underline'
+                        }}
+                      >
+                        <ExternalLink size={14} />
+                        {lang === 'es' ? 'Ir al enlace del evento' : 'Go to event link'}
+                      </a>
+                    )}
+
+                    {(() => {
+                      const style = getTypeStyle(event.type);
+                      return (
+                        <a
+                          href={getGoogleCalendarUrl(event)}
                           target="_blank"
                           rel="noopener noreferrer"
                           style={{
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '0.4rem',
-                            marginTop: '0.5rem',
-                            color: 'var(--accent)',
+                            gap: '0.6rem',
+                            marginTop: '1.2rem',
+                            padding: '0.8rem 1.2rem',
+                            borderRadius: '12px',
+                            background: style.bg,
+                            color: style.text,
                             fontSize: '0.85rem',
-                            fontWeight: 700,
-                            textDecoration: 'underline'
+                            fontWeight: '800',
+                            textDecoration: 'none',
+                            transition: 'all 0.2s',
+                            border: `1px solid ${style.border}`,
+                            width: 'fit-content'
                           }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = style.hover;
+                            e.currentTarget.style.boxShadow = `0 4px 12px ${style.border}44`;
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = style.bg;
+                            e.currentTarget.style.boxShadow = 'none';
+                          }}
+                          onClick={(e) => e.stopPropagation()}
                         >
-                          <ExternalLink size={14} />
-                          {lang === 'es' ? 'Ir al enlace del evento' : lang === 'pt' ? 'Ir para o link do evento' : 'Go to event link'}
+                          <img
+                            src="/google-calendar-logo.png"
+                            alt="Google Calendar"
+                            style={{ width: '18px', height: '18px', objectFit: 'contain' }}
+                          />
+                          {(ct as any).exportToGoogleCalendar}
                         </a>
-                      )}
-
-                      {(() => {
-                        const style = getTypeStyle(event.type);
-                        return (
-                          <a
-                            href={getGoogleCalendarUrl(event)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: '0.6rem',
-                              marginTop: '1.2rem',
-                              padding: '0.8rem 1.2rem',
-                              borderRadius: '12px',
-                              background: style.bg,
-                              color: style.text,
-                              fontSize: '0.85rem',
-                              fontWeight: '800',
-                              textDecoration: 'none',
-                              transition: 'all 0.2s',
-                              border: `1px solid ${style.border}`,
-                              width: 'fit-content'
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.background = style.hover;
-                              e.currentTarget.style.boxShadow = `0 4px 12px ${style.border}44`;
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.background = style.bg;
-                              e.currentTarget.style.boxShadow = 'none';
-                            }}
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <img
-                              src="/google-calendar-logo.png"
-                              alt="Google Calendar"
-                              style={{ width: '18px', height: '18px', objectFit: 'contain' }}
-                            />
-                            {(ct as any).exportToGoogleCalendar}
-                          </a>
-                        );
-                      })()}
-                    </div>
-                  ))
-                ) : (
-                  <div className="empty-selection">
-                    <CalendarIcon size={48} strokeWidth={1.5} style={{ opacity: 0.15, marginBottom: '1.2rem' }} />
-                    <p>{searchTerm || subjectFilter !== 'all' ? (lang === 'es' ? 'No hay eventos que coincidan' : 'No matching events') : (lang === 'es' ? 'No hay eventos para este día' : ct.events.empty)}</p>
+                      );
+                    })()}
                   </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          <div className="upcoming-card">
-            <div className="upcoming-header">
-              <Bell size={16} />
-              <h3>{ct.events.upcoming}</h3>
-            </div>
-            <div className="upcoming-list">
-              {upcomingEvents.length > 0 ? upcomingEvents.map((event, idx) => {
-                const d = new Date(((event as any).displayDate || event.startDate) + 'T12:00:00');
-                return (
-                  <div key={idx} className="upcoming-item" onClick={() => {
-                    setCurrentDate(new Date(d.getFullYear(), d.getMonth(), 1));
-                    setSelectedDate(d);
-                    setTimeout(() => {
-                      document.getElementById('selected-events-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 50);
-                  }}>
-                    <div className="upcoming-date">
-                      <span className="upcoming-day">{d.getDate()}</span>
-                      <span className="upcoming-month">{ct.months[d.getMonth()].slice(0, 3)}</span>
-                    </div>
-                    <div className="upcoming-info">
-                      <h4>
-                        {event.title['es']}
-                        {event.subjectId && event.subjectId !== 'all' && ` (${(st as any)[event.subjectId]})`}
-                      </h4>
-                      {event.endDate && event.endDate !== event.startDate && (
-                        <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.2rem', fontWeight: 500 }}>
-                          {lang === 'es' ? 'Hasta el ' : lang === 'pt' ? 'Até ' : 'Until '}
-                          {(() => {
-                            const ed = new Date(event.endDate + 'T12:00:00');
-                            return `${ed.getDate()} de ${ct.months[ed.getMonth()]}`;
-                          })()}
-                        </div>
-                      )}
-                      <span className={`upcoming-tag tag-${event.type}`}>
-                        {ct.events[event.type as keyof typeof ct.events] || event.type}
-                        {event.userId && ` (${lang === 'es' ? 'personal' : lang === 'pt' ? 'pessoal' : 'personal'})`}
-                      </span>
-                    </div>
-                  </div>
-                );
-              }) : (
+                ))
+              ) : (
                 <div className="empty-selection">
-                  <Bell size={48} strokeWidth={1.5} style={{ opacity: 0.15, marginBottom: '1.2rem' }} />
-                  <p>{lang === 'es' ? 'Sin eventos próximos' : 'No upcoming events'}</p>
+                  <CalendarIcon size={48} strokeWidth={1.5} style={{ opacity: 0.15, marginBottom: '1.2rem' }} />
+                  <p>{searchTerm || subjectFilter !== 'all' ? (lang === 'es' ? 'No hay eventos que coincidan' : 'No matching events') : (lang === 'es' ? 'No hay eventos para este día' : ct.events.empty)}</p>
                 </div>
               )}
             </div>
           </div>
+        )}
+
+        <div className="upcoming-card">
+          <div className="upcoming-header">
+            <Bell size={16} />
+            <h3>{ct.events.upcoming}</h3>
+          </div>
+          <div className="upcoming-list">
+            {upcomingEvents.length > 0 ? upcomingEvents.map((event, idx) => {
+              const displayDateStr = (event as any).displayDate || event.startDate;
+              const d = new Date(displayDateStr + 'T12:00:00');
+              return (
+                <button type="button" key={idx} className="upcoming-item" style={{ textAlign: 'left', border: 'none', padding: 0, margin: 0, cursor: 'pointer', background: 'transparent', display: 'flex' }} onClick={() => {
+                  setCurrentDate(new Date(d.getFullYear(), d.getMonth(), 1));
+                  setSelectedDate(d);
+                  setTimeout(() => {
+                    document.getElementById('selected-events-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  }, 50);
+                }}>
+                  <div className="upcoming-date">
+                    <span className="upcoming-day">{d.getDate()}</span>
+                    <span className="upcoming-month">{ct.months[d.getMonth()].slice(0, 3)}</span>
+                  </div>
+                  <div className="upcoming-info">
+                    <h4>
+                      {event.title[lang] || event.title['es']}
+                      {event.subjectId && event.subjectId !== 'all' && ` (${(st as Record<string, string>)[event.subjectId]})`}
+                    </h4>
+                    {event.endDate && event.endDate !== event.startDate && (
+                      <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.2rem', fontWeight: 500 }}>
+                        {lang === 'es' ? 'Hasta el ' : 'Until '}
+                        {(() => {
+                          const ed = new Date(event.endDate + 'T12:00:00');
+                          return `${ed.getDate()} de ${ct.months[ed.getMonth()]}`;
+                        })()}
+                      </div>
+                    )}
+                    <span className={`upcoming-tag tag-${event.type}`}>
+                      {ct.events[event.type as keyof typeof ct.events] || event.type}
+                      {event.userId && ` (${lang === 'es' ? 'personal' : 'personal'})`}
+                    </span>
+                  </div>
+                </button>
+              );
+            }) : (
+              <div className="empty-selection">
+                <Bell size={48} strokeWidth={1.5} style={{ opacity: 0.15, marginBottom: '1.2rem' }} />
+                <p>{lang === 'es' ? 'Sin eventos próximos' : 'No upcoming events'}</p>
+              </div>
+            )}
+          </div>
         </div>
+      </div>
 
       <main className="calendar-layout">
         <div className="calendar-main-card" style={{ overflow: 'hidden' }}>
@@ -736,72 +734,72 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
           </div>
 
           <div className="calendar-controls" style={{ marginTop: '-0.5rem' }}>
-        <div className="calendar-search-row">
-          <div className="search-box">
-            <Search size={18} />
-            <input
-              type="text"
-              placeholder={lang === 'es' ? 'Buscar por título o materia...' : lang === 'pt' ? 'Procurar por título ou matéria...' : 'Search by title or subject...'}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+            <div className="calendar-search-row">
+              <div className="search-box">
+                <Search size={18} />
+                <input
+                  type="text"
+                  placeholder={lang === 'es' ? 'Buscar por título o materia...' : 'Search by title or subject...'}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="calendar-filters-row">
+              <div className="filter-box" title={ct.periodMessage}>
+                <Lock size={16} color="#64748b" />
+                <select
+                  value={periodFilter}
+                  onChange={(e) => {
+                    setPeriodFilter(e.target.value);
+                    setSubjectFilter('all'); // Reset subject filter when period changes
+                  }}
+                  style={{
+                    fontWeight: periodFilter === 'all' ? '800' : '500',
+                    background: 'transparent',
+                    border: 'none',
+                    outline: 'none',
+                    width: '100%',
+                    color: '#1e293b'
+                  }}
+                >
+                  <option value="all">{ct.allPeriods}</option>
+                  <option value={ct.firstPeriod}>{ct.firstPeriod}</option>
+                  <option value={ct.secondPeriod}>{ct.secondPeriod}</option>
+                  <option value={ct.thirdPeriod}>{ct.thirdPeriod}</option>
+                  <option value={ct.fourthPeriod}>{ct.fourthPeriod}</option>
+                </select>
+              </div>
+              <div className="filter-box">
+                <Filter size={18} />
+                <select
+                  value={subjectFilter}
+                  onChange={(e) => setSubjectFilter(e.target.value)}
+                  style={{ fontWeight: subjectFilter === 'all' ? '800' : '500' }}
+                >
+                  <option value="all">{periodFilter === 'all' ? ct.allSubjects : ct.allSubjectsOfPeriod}</option>
+                  {availableSubjects.main.map(sub => (
+                    <option key={sub.id} value={sub.id}>{sub.name as string}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="filter-box">
+                <Tag size={18} />
+                <select
+                  value={typeFilter}
+                  onChange={(e) => setTypeFilter(e.target.value)}
+                  style={{ fontWeight: typeFilter === 'all' ? '800' : '500' }}
+                >
+                  <option value="all">{ct.allTypes}</option>
+                  <option value="exam">{ct.events.exam}</option>
+                  <option value="quiz_mandatory">{ct.events.quiz_mandatory}</option>
+                  <option value="enrollment">{ct.events.enrollment}</option>
+                  <option value="classes">{ct.events.classes}</option>
+                  <option value="event">{ct.events.event}</option>
+                </select>
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="calendar-filters-row">
-          <div className="filter-box" title={ct.periodMessage}>
-            <Lock size={16} color="#64748b" />
-            <select
-              value={periodFilter}
-              onChange={(e) => {
-                setPeriodFilter(e.target.value);
-                setSubjectFilter('all'); // Reset subject filter when period changes
-              }}
-              style={{
-                fontWeight: periodFilter === 'all' ? '800' : '500',
-                background: 'transparent',
-                border: 'none',
-                outline: 'none',
-                width: '100%',
-                color: '#1e293b'
-              }}
-            >
-              <option value="all">{ct.allPeriods}</option>
-              <option value={ct.firstPeriod}>{ct.firstPeriod}</option>
-              <option value={ct.secondPeriod}>{ct.secondPeriod}</option>
-              <option value={ct.thirdPeriod}>{ct.thirdPeriod}</option>
-              <option value={ct.fourthPeriod}>{ct.fourthPeriod}</option>
-            </select>
-          </div>
-          <div className="filter-box">
-            <Filter size={18} />
-            <select
-              value={subjectFilter}
-              onChange={(e) => setSubjectFilter(e.target.value)}
-              style={{ fontWeight: subjectFilter === 'all' ? '800' : '500' }}
-            >
-              <option value="all">{periodFilter === 'all' ? ct.allSubjects : ct.allSubjectsOfPeriod}</option>
-              {availableSubjects.main.map(sub => (
-                <option key={sub.id} value={sub.id}>{sub.name as string}</option>
-              ))}
-            </select>
-          </div>
-          <div className="filter-box">
-            <Tag size={18} />
-            <select
-              value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value)}
-              style={{ fontWeight: typeFilter === 'all' ? '800' : '500' }}
-            >
-              <option value="all">{ct.allTypes}</option>
-              <option value="exam">{ct.events.exam}</option>
-              <option value="quiz_mandatory">{ct.events.quiz_mandatory}</option>
-              <option value="enrollment">{ct.events.enrollment}</option>
-              <option value="classes">{ct.events.classes}</option>
-              <option value="event">{ct.events.event}</option>
-            </select>
-          </div>
-        </div>
-      </div>
 
           <div className="calendar-scroller">
             <div className="calendar-weekdays">
@@ -858,27 +856,27 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
               {(ct as any).batchExport.button}
             </button>
           </div>
-          
+
           <div style={{ width: '100%', marginTop: '1.5rem', borderRadius: '12px', overflow: 'hidden' }}>
-            <img 
-              src="/enzo.png" 
+            <img
+              src="/meme-enzo.png"
               alt="Enzo"
-              style={{ width: '100%', height: 'auto', maxHeight: '400px', objectFit: 'cover', display: 'block' }} 
+              style={{ width: '100%', height: 'auto', maxHeight: '400px', objectFit: 'cover', display: 'block' }}
             />
           </div>
         </div>
 
-        </main>
+      </main>
 
       <div className="cronogramas-section" style={{
         margin: '1rem 0 1.5rem 0',
         width: '100%'
       }}>
         <h3 style={{ fontSize: '1.25rem', fontWeight: 800, margin: '0 0 0.5rem 0', color: 'var(--text)' }}>
-          {lang === 'es' ? 'Cronogramas oficiales' : lang === 'pt' ? 'Cronogramas oficiais' : 'Official schedules'}
+          {lang === 'es' ? 'Cronogramas oficiales' : 'Official schedules'}
         </h3>
         <p style={{ fontSize: '1rem', color: 'var(--muted)', margin: '0 0 1rem 0' }}>
-          {lang === 'es' ? 'Documentos de referencia con el plan de estudio y fechas importantes de las materias del primer cuatrimestre del 2026.' : lang === 'pt' ? 'Documentos de referência com o plano de estudo e datas importantes das disciplinas do primeiro quadrimestre de 2026.' : 'Reference documents with the study plan and important dates for the subjects of the first semester of 2026.'}
+          {lang === 'es' ? 'Documentos de referencia con el plan de estudio y fechas importantes de las materias del primer cuatrimestre del 2026.' : 'Reference documents with the study plan and important dates for the subjects of the first semester of 2026.'}
         </p>
         <div style={{
           display: 'grid',
@@ -955,16 +953,16 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
       <CommentSection postSlug="calendar" lang={lang} />
 
       <footer className="footer-main" style={{ marginTop: '3rem' }}>
-                <div className="footer-social-left" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-                    <a href="https://x.com/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="X (Twitter) de Ciberportero"><FaXTwitter size={16} aria-hidden="true" /></a>
-                    <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label={lang === 'es' ? "Discord de Ciberportero" : lang === 'pt' ? "Discord do Ciberportero" : "Ciberportero Discord"}><TbBrandDiscord size={21} aria-hidden="true" /></a>
-                </div>
-                <span>{t.footer}</span>
-                <div className="footer-social-right" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-                    <a href="https://twitch.tv/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex'  }} aria-label="Twitch de Ciberportero"><Twitch size={18} aria-hidden="true" /></a>
-                    <a href="https://youtube.com/@ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="YouTube de Ciberportero"><Youtube size={22} aria-hidden="true" /></a>
-                </div>
-            </footer>
+        <div className="footer-social-left" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+          <a href="https://x.com/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="X (Twitter) de Ciberportero"><FaXTwitter size={16} aria-hidden="true" /></a>
+          <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label={lang === 'es' ? "Discord de Ciberportero" : "Ciberportero Discord"}><TbBrandDiscord size={21} aria-hidden="true" /></a>
+        </div>
+        <span>{t.footer}</span>
+        <div className="footer-social-right" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+          <a href="https://twitch.tv/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="Twitch de Ciberportero"><Twitch size={18} aria-hidden="true" /></a>
+          <a href="https://youtube.com/@ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="YouTube de Ciberportero"><Youtube size={22} aria-hidden="true" /></a>
+        </div>
+      </footer>
 
       {/* Batch Export Modal */}
       {isExportModalOpen && (
@@ -1027,7 +1025,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                     <div className="option-ui">
                       <span className="radio-dot"></span>
                       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                        <span style={{ fontWeight: 800 }}>{lang === 'es' ? 'Selección personalizada' : lang === 'pt' ? 'Seleção personalizada' : 'Custom selection'}</span>
+                        <span style={{ fontWeight: 800 }}>{lang === 'es' ? 'Selección personalizada' : 'Custom selection'}</span>
                         {exportConfig.type === 'custom' && (
                           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                             <select
@@ -1130,7 +1128,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                     onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
                   >
                     <ExternalLink size={14} />
-                    {lang === 'es' ? 'Abrir Configuración de Google Calendar' : lang === 'pt' ? 'Abrir Configurações do Google Agenda' : 'Open Google Calendar Settings'}
+                    {lang === 'es' ? 'Abrir Configuración de Google Calendar' : 'Open Google Calendar Settings'}
                   </a>
                 </p>
                 <button
@@ -1268,19 +1266,19 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
               <div className="form-group">
-                <label>{lang === 'es' ? 'Título' : lang === 'pt' ? 'Título' : 'Title'}</label>
+                <label>{lang === 'es' ? 'Título' : 'Title'}</label>
                 <input
                   type="text"
                   value={newEvent.title}
                   onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
-                  placeholder={lang === 'es' ? 'Ej: Entrega de TP' : lang === 'pt' ? 'Ex: Entrega de TP' : 'e.g. Project Delivery'}
+                  placeholder={lang === 'es' ? 'Ej: Entrega de TP' : 'e.g. Project Delivery'}
                   style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', border: '1px solid var(--border)' }}
                 />
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div className="form-group">
-                  <label>{lang === 'es' ? 'Desde' : lang === 'pt' ? 'Início' : 'From'}</label>
+                  <label>{lang === 'es' ? 'Desde' : 'From'}</label>
                   <input
                     type="date"
                     value={newEvent.startDate}
@@ -1289,7 +1287,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                   />
                 </div>
                 <div className="form-group">
-                  <label>{lang === 'es' ? 'Hasta (Opcional)' : lang === 'pt' ? 'Fim (Opcional)' : 'To (Optional)'}</label>
+                  <label>{lang === 'es' ? 'Hasta (Opcional)' : 'To (Optional)'}</label>
                   <input
                     type="date"
                     value={newEvent.endDate}
@@ -1301,7 +1299,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
               </div>
 
               <div className="form-group" style={{ marginTop: '1rem' }}>
-                <label>{lang === 'es' ? 'Tipo' : lang === 'pt' ? 'Tipo' : 'Type'}</label>
+                <label>{lang === 'es' ? 'Tipo' : 'Type'}</label>
                 <select
                   value={newEvent.type}
                   onChange={(e) => setNewEvent({ ...newEvent, type: e.target.value })}
@@ -1331,7 +1329,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
               </div>
 
               <div className="form-group" style={{ marginTop: '1rem' }}>
-                <label>{lang === 'es' ? 'Materia (opcional)' : lang === 'pt' ? 'Matéria (opcional)' : 'Subject (optional)'}</label>
+                <label>{lang === 'es' ? 'Materia (opcional)' : 'Subject (optional)'}</label>
                 <select
                   value={newEvent.subjectId}
                   onChange={(e) => setNewEvent({ ...newEvent, subjectId: e.target.value })}
@@ -1361,7 +1359,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
                   boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
                 }}
               >
-                {isSaving ? (lang === 'es' ? 'Guardando...' : lang === 'pt' ? 'Salvando...' : 'Saving...') : (lang === 'es' ? 'Guardar' : lang === 'pt' ? 'Salvar' : 'Save')}
+                {isSaving ? (lang === 'es' ? 'Guardando...' : 'Saving...') : (lang === 'es' ? 'Guardar' : 'Save')}
               </button>
             </div>
           </div>

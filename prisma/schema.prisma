@@ -1,48 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model User {
-  id            String          @id @default(cuid())
-  name          String?
-  email         String?         @unique
-  emailVerified DateTime?
-  image         String?
-  role          String          @default("user") // "user" or "admin"
-  accounts      Account[]
-  sessions      Session[]
-  // WebAuthn support
-  Authenticator Authenticator[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  lastLoginAt DateTime?
-
-  // Personal data
-  examProgress   ExamProgress[]
-  calendarEvents CalendarEvent[]
-  comments       Comment[]
-  links          Link[]
-  auditLogs      AuditLog[]
-  images         Image[]
-  podcastVotes   PodcastVote[]
-  postVotes      PostVote[]
-
-  roomsCreated   Room[]          @relation("RoomCreator")
+  id              String          @id @default(cuid())
+  name            String?
+  email           String?         @unique
+  emailVerified   DateTime?
+  image           String?
+  role            String          @default("user")
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  lastLoginAt     DateTime?
+  accounts        Account[]
+  auditLogs       AuditLog[]
+  Authenticator   Authenticator[]
+  calendarEvents  CalendarEvent[]
+  comments        Comment[]
+  examProgress    ExamProgress[]
+  images          Image[]
+  links           Link[]
+  podcastVotes    PodcastVote[]
+  postVotes       PostVote[]
   roomMemberships RoomMember[]
-  roomMessages   RoomMessage[]
+  roomMessages    RoomMessage[]
+  roomsCreated    Room[]          @relation("RoomCreator")
+  sessions        Session[]
 
   @@map("users")
 }
 
 model Account {
-  id                String  @id @default(cuid())
+  id                String   @id @default(cuid())
   userId            String
   type              String
   provider          String
@@ -54,11 +49,9 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
@@ -69,10 +62,9 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
   @@map("sessions")
 }
@@ -95,79 +87,75 @@ model Authenticator {
   credentialDeviceType String
   credentialBackedUp   Boolean
   transports           String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user                 User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("authenticators")
 }
 
-// Student progress tracking
 model ExamProgress {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   userId      String
-  examTitle   String   // e.g., "Aprobar IVU", "Parcial 1"
-  type        String   // "autoevaluacion" or "parcial"
+  examTitle   String
+  type        String
   subject     String?
-  completed   Boolean  @default(false)
+  completed   Boolean   @default(false)
   completedAt DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("exam_progresses")
 }
 
-// Admin managed content
 model Link {
   id          String   @id @default(cuid())
-  name        Json     // { "es": "...", "en": "...", "pt": "..." }
+  name        Json
   url         String
-  description Json?    // { "es": "...", "en": "...", "pt": "..." }
-  iconType    String?  // wsp, discord, drive, moodle, siu, youtube, external
+  description Json?
+  iconType    String?
   order       Int      @default(0)
-  userId      String?
-  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("links")
 }
 
 model Post {
-  id              String      @id @default(cuid())
-  title           Json        // { "es": "...", "en": "...", "pt": "..." }
-  content         Json        // { "es": "...", "en": "...", "pt": "..." }
-  slug            String      @unique
+  id               String      @id @default(cuid())
+  title            Json
+  slug             String      @unique
+  content          Json
+  description      Json?
+  published        Boolean     @default(false)
+  date             DateTime    @default(now())
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
   alternativeSlug  String?     @unique
   alternativeSlug2 String?     @unique
-  description     Json?       // { "es": "...", "en": "...", "pt": "..." }
-  published       Boolean     @default(false)
-  unlisted        Boolean     @default(false)
-  tags            String[]    @default([])
-  keywords        String?
-  date            DateTime    @default(now())
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
-  comments        Comment[]
-  countdowns      Countdown[]
-  votes           PostVote[]
+  unlisted         Boolean     @default(false)
+  tags             String[]    @default([])
+  keywords         String?
+  comments         Comment[]
+  countdowns       Countdown[]
+  votes            PostVote[]
 
   @@map("posts")
 }
 
 model Podcast {
-  id          String   @id @default(cuid())
-  title       Json     // { "es": "...", "en": "...", "pt": "..." }
-  description Json?    // { "es": "...", "en": "...", "pt": "..." }
-  slug        String   @unique
+  id          String        @id @default(cuid())
+  title       Json
+  description Json?
+  slug        String        @unique
   audioUrl    String
-  subjectId   String?  // ID related to subjectNames in translations
-  links       Json?    // Array of { title, url }
-  published   Boolean  @default(false)
-  date        DateTime @default(now())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  published   Boolean       @default(false)
+  date        DateTime      @default(now())
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  subjectId   String?
+  links       Json?
   comments    Comment[]
   votes       PodcastVote[]
 
@@ -175,24 +163,24 @@ model Podcast {
 }
 
 model PodcastVote {
-  id        String   @id @default(cuid())
+  id        String  @id @default(cuid())
   userId    String
   podcastId String
-  type      String   // "LIKE" or "DISLIKE"
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  podcast   Podcast  @relation(fields: [podcastId], references: [id], onDelete: Cascade)
+  type      String
+  podcast   Podcast @relation(fields: [podcastId], references: [id], onDelete: Cascade)
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, podcastId])
   @@map("podcast_votes")
 }
 
 model PostVote {
-  id        String   @id @default(cuid())
-  userId    String
-  postId    String
-  type      String   // "LIKE" or "DISLIKE"
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  id     String @id @default(cuid())
+  userId String
+  postId String
+  type   String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, postId])
   @@map("post_votes")
@@ -201,124 +189,123 @@ model PostVote {
 model Image {
   id        String   @id @default(cuid())
   slug      String   @unique
-  url       String   // Supabase Storage URL
+  url       String
   filename  String
   mimeType  String
   size      Int
   width     Int?
   height    Int?
-  source    String   @default("admin")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userId    String?
-  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  source    String   @default("admin")
+  user      User?    @relation(fields: [userId], references: [id])
 
   @@map("images")
 }
 
 model Comment {
-  id        String   @id @default(cuid())
-  content   String   @db.Text
+  id        String    @id @default(cuid())
+  content   String
   postId    String?
-  podcastId String?
   userId    String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   parentId  String?
-  images    Json?    @default("[]")
-  parent    Comment? @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  images    Json?     @default("[]")
+  podcastId String?
+  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
   replies   Comment[] @relation("CommentReplies")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  post    Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
-  podcast Podcast? @relation(fields: [podcastId], references: [id], onDelete: Cascade)
-  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  podcast   Podcast?  @relation(fields: [podcastId], references: [id], onDelete: Cascade)
+  post      Post?     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("comments")
 }
 
 model CalendarEvent {
-  id          String   @id @default(cuid())
-  title       Json     // { "es": "...", "en": "...", "pt": "..." }
+  id          String    @id @default(cuid())
+  title       Json
   description Json?
   startDate   DateTime
+  period      String?
+  type        String    @default("event")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  subjectId   String?
+  userId      String?
   endDate     DateTime?
-  period      String?  // e.g., "1st Semester", "Full Year"
-  type        String   @default("event") // "exam", "class", "admin", "event"
-  subjectId   String?  // ID related to subjectNames in translations
   url         String?
-  userId      String?  // Personal event for a user
-  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("calendar_events")
 }
 
 model Notification {
-  id          String   @id @default(cuid())
-  message     Json     // { "es": "...", "en": "...", "pt": "..." }
-  description Json?    // { "es": "...", "en": "...", "pt": "..." }
-  type        String   @default("info") // info, warning, danger, success
-  active      Boolean  @default(true)
-  url         String?
+  id          String    @id @default(cuid())
+  message     Json
+  type        String    @default("info")
+  active      Boolean   @default(true)
   expiresAt   DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  description Json?
+  url         String?
 
   @@map("notifications")
 }
 
 model Countdown {
-  id          String   @id @default(cuid())
-  slot        String?  // "left" or "right"
-  postId      String?
-  post        Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
-  title       Json     // { "es": "...", "en": "...", "pt": "..." }
-  targetDate  DateTime
-  description Json?    // { "es": "...", "en": "...", "pt": "..." }
-  expiredMessage Json?    // { "es": "...", "en": "...", "pt": "..." }
-  url         String?
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id             String   @id @default(cuid())
+  title          Json
+  targetDate     DateTime
+  description    Json?
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  slot           String?
+  postId         String?
+  url            String?
+  expiredMessage Json?
+  post           Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   @@unique([postId, slot])
   @@map("countdowns")
 }
+
 model AuditLog {
   id        String   @id @default(cuid())
   userId    String?
-  action    String   // "CREATE", "UPDATE", "DELETE", "TOGGLE"
-  target    String   // "link", "notification", "post", "event"
-  details   String?  // e.g., "Updated link Google Drive"
+  action    String
+  target    String
+  details   String?
   ip        String?
   createdAt DateTime @default(now())
-
-  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user      User?    @relation(fields: [userId], references: [id])
 
   @@map("audit_logs")
 }
 
 model AdminNote {
   id        String   @id @default(cuid())
-  section   String   @unique // 'notifications', 'posts', 'calendar', 'countdowns'
-  content   String   @default("") @db.Text
+  section   String   @unique
+  content   String   @default("")
   updatedAt DateTime @updatedAt
 
   @@map("admin_notes")
 }
 
 model Room {
-  id          String   @id @default(cuid())
+  id          String         @id @default(cuid())
   name        String
   secretCode  String
   description String?
   creatorId   String
-  creator     User     @relation("RoomCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
   categories  RoomCategory[]
   members     RoomMember[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  creator     User           @relation("RoomCreator", fields: [creatorId], references: [id], onDelete: Cascade)
 
   @@map("rooms")
 }
@@ -328,57 +315,57 @@ model RoomMember {
   roomId    String
   userId    String
   role      String   @default("member")
+  createdAt DateTime @default(now())
   room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
 
   @@unique([roomId, userId])
   @@map("room_members")
 }
 
 model RoomCategory {
-  id            String   @id @default(cuid())
+  id            String            @id @default(cuid())
   name          String
   roomId        String
-  room          Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  order         Int               @default(0)
+  room          Room              @relation(fields: [roomId], references: [id], onDelete: Cascade)
   subcategories RoomSubcategory[]
-  order         Int      @default(0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
 
   @@map("room_categories")
 }
 
 model RoomSubcategory {
-  id          String   @id @default(cuid())
+  id          String        @id @default(cuid())
   name        String
-  slug        String   @default("")
-  description String?
   categoryId  String
-  category    RoomCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  order       Int           @default(0)
+  slug        String        @default("")
+  description String?
   messages    RoomMessage[]
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  category    RoomCategory  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@map("room_subcategories")
 }
 
 model RoomMessage {
-  id             String   @id @default(cuid())
-  content        String   @db.Text
-  images         Json?    @default("[]")
-  subcategoryId  String
-  subcategory    RoomSubcategory @relation(fields: [subcategoryId], references: [id], onDelete: Cascade)
-  userId         String
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  parentId       String?
-  parent         RoomMessage? @relation("Thread", fields: [parentId], references: [id], onDelete: Cascade)
-  replies        RoomMessage[] @relation("Thread")
-  isPinned       Boolean  @default(false)
-  pinOrder       Int      @default(0)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id            String          @id @default(cuid())
+  content       String
+  images        Json?           @default("[]")
+  subcategoryId String
+  userId        String
+  parentId      String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  isPinned      Boolean         @default(false)
+  pinOrder      Int             @default(0)
+  parent        RoomMessage?    @relation("Thread", fields: [parentId], references: [id], onDelete: Cascade)
+  replies       RoomMessage[]   @relation("Thread")
+  subcategory   RoomSubcategory @relation(fields: [subcategoryId], references: [id], onDelete: Cascade)
+  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("room_messages")
 }

@@ -101,13 +101,13 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
     const isGeneral = !currentSubId || currentSubId === 'general';
     const isHistory = currentSubId === 'history';
 
-    function formatMessageDate(date: Date, lang: string, short = false) {
-        const connector = lang === 'es' ? ' a las ' : lang === 'pt' ? ' às ' : ' at ';
+    function formatMessageDate(date: Date, lang: string) {
+        const connector = lang === 'es' ? ' a las ' : ' at ';
 
         if (lang !== 'es') {
-            return date.toLocaleDateString(lang === 'pt' ? 'pt-BR' : 'en-US', {
+            return date.toLocaleDateString('en-US', {
                 weekday: 'long', day: 'numeric', month: 'long'
-            }) + connector + date.toLocaleTimeString(lang === 'pt' ? 'pt-BR' : 'en-US', {
+            }) + connector + date.toLocaleTimeString('en-US', {
                 hour: '2-digit', minute: '2-digit', hour12: false
             });
         }
@@ -587,8 +587,8 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                         <span className="reply-count-badge">
                                             <MessageCircle size={10} />
                                             {count} {count === 1 ? 
-                                                (lang === 'es' ? 'respuesta' : lang === 'pt' ? 'resposta' : 'reply') : 
-                                                (lang === 'es' ? 'respuestas' : lang === 'pt' ? 'respostas' : 'replies')}
+                                                (lang === 'es' ? 'respuesta' : 'reply') : 
+                                                (lang === 'es' ? 'respuestas' : 'replies')}
                                         </span>
                                     );
                                 })()}
@@ -745,7 +745,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                     res = await addRoomMessage(currentSubId!, content, imageUrls, isReply ? replyingTo?.id : undefined);
                 }
 
-                if (res.success) {
+                if ('success' in res && res.success) {
                     if (isReply) {
                         setReplyText('');
                         setReplyExternalImageUrl('');
@@ -1148,7 +1148,7 @@ export default function RoomChatClient({ roomId: propRoomId, subcategoryId, init
                                                         <div className="log-main">
                                                             <div className="log-meta">
                                                                 <span className="log-user">{msg.user.name}{(isMe && !msg.user.name.includes('(tú)')) ? ' (tú)' : ''}</span>
-                                                                <span className="log-time">{formatMessageDate(new Date(msg.createdAt), lang, true)}</span>
+                                                                <span className="log-time">{formatMessageDate(new Date(msg.createdAt), lang)}</span>
                                                                 {msg.parentId && (
                                                                     <div className="log-reply-tag">
                                                                         <ReplyIcon size={10} />

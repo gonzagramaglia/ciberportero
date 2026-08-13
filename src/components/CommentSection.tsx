@@ -115,7 +115,7 @@ function ReplyForm({ onSubmit, onCancel, lang, userImage, userName }: {
             autoFocus
             value={text}
             onChange={e => setText(e.target.value)}
-            placeholder={lang === 'es' ? 'Escribe tu respuesta...' : lang === 'pt' ? 'Escreva sua respuesta...' : 'Write your reply...'}
+            placeholder={lang === 'es' ? 'Escribe tu respuesta...' : 'Write your reply...'}
             className="comment-textarea"
             style={{ minHeight: '100px' }}
           />
@@ -223,7 +223,6 @@ function CommentCard({ comment, depth, lang, session, postSlug, podcastSlug, onR
                   const time = date.toLocaleTimeString(lang, { hour: '2-digit', minute: '2-digit', hour12: true }).toLowerCase();
                   
                   if (lang === 'es') return `El ${dayName} ${dayNumber} de ${monthName} a las ${time}`;
-                  if (lang === 'pt') return `No ${dayName}, ${dayNumber} de ${monthName} às ${time}`;
                   return `On ${dayName}, ${monthName} ${dayNumber} at ${time}`;
                 })()}
               </span>
@@ -267,7 +266,7 @@ function CommentCard({ comment, depth, lang, session, postSlug, podcastSlug, onR
           <div style={{ marginTop: '0.4rem', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
             <button onClick={() => setShowReplyForm(!showReplyForm)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.75rem', fontWeight: '700', color: showReplyForm ? '#000' : '#999', display: 'flex', alignItems: 'center', gap: '0.3rem', transition: 'color 0.2s' }}>
               <CornerDownRight size={12} />
-              {lang === 'es' ? 'Responder' : lang === 'pt' ? 'Responder' : 'Reply'}
+              {lang === 'es' ? 'Responder' : 'Reply'}
             </button>
             {(() => {
               const count = countAllReplies((comment as Comment).replies);
@@ -275,9 +274,9 @@ function CommentCard({ comment, depth, lang, session, postSlug, podcastSlug, onR
               return (
                 <span style={{ fontSize: '0.7rem', fontWeight: '700', color: '#cbd5e1', display: 'flex', alignItems: 'center', gap: '0.3rem', background: '#f8fafc', padding: '0.35rem 0.5rem', borderRadius: '6px' }}>
                   <MessageSquare size={10} />
-                  {count} {count === 1 ? 
-                    (lang === 'es' ? 'respuesta' : lang === 'pt' ? 'resposta' : 'reply') : 
-                    (lang === 'es' ? 'respuestas' : lang === 'pt' ? 'respostas' : 'replies')}
+                  {count === 1 ? 
+                    (lang === 'es' ? 'respuesta' : 'reply') : 
+                    (lang === 'es' ? 'respuestas' : 'replies')}
                 </span>
               );
             })()}
@@ -446,7 +445,7 @@ export default function CommentSection({ postSlug, podcastSlug, lang = 'es' }: {
               <textarea
                 value={newComment}
                 onChange={e => setNewComment(e.target.value)}
-                placeholder={lang === 'es' ? "Escribe lo que piensas..." : lang === 'pt' ? "Escreva o que pensa..." : "Write what you think..."}
+                placeholder={lang === 'es' ? "Escribe lo que piensas..." : "Write what you think..."}
                 className="comment-textarea"
               />
               <div className="input-toolbar">
@@ -496,7 +495,7 @@ export default function CommentSection({ postSlug, podcastSlug, lang = 'es' }: {
       ) : (
         <div style={{ background: '#f8f9fa', padding: '2.5rem', borderRadius: '24px', textAlign: 'center', marginBottom: '3rem', border: '1px dashed #ddd', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.2rem' }}>
           <p style={{ margin: 0, color: '#666', fontWeight: '600', fontSize: '1.1rem' }}>
-            {lang === 'es' ? "Iniciá sesión para participar en la conversación" : lang === 'pt' ? "Inicie sessão para participar na conversa" : "Sign in to join the conversation"}
+            {lang === 'es' ? "Iniciá sesión para participar en la conversación" : "Sign in to join the conversation"}
           </p>
           <SignInButton />
         </div>
@@ -509,7 +508,7 @@ export default function CommentSection({ postSlug, podcastSlug, lang = 'es' }: {
           </div>
         ) : comments.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '3rem', color: '#999' }}>
-            {lang === 'es' ? "Aún no hay comentarios. ¡Sé el primero!" : lang === 'pt' ? "Ainda não há comentários. Seja o primeiro!" : "No comments yet. Be the first!"}
+            {lang === 'es' ? "Aún no hay comentarios. ¡Sé el primero!" : "No comments yet. Be the first!"}
           </div>
         ) : (
           comments.map(comment => (

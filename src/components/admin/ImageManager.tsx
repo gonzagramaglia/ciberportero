@@ -5,10 +5,10 @@ import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { uploadImage, getImages, deleteImage } from '@/lib/actions';
 import { 
-  Upload, X, Copy, Check, Trash2, 
-  Image as ImageIcon, Loader2, Plus, 
+  Upload, Copy, Check, Trash2, 
+  Image as ImageIcon, Loader2, 
   FileText, Hash, Info,
-  Search, Grid, List,
+  Search,
   Lock as LockIcon
 } from 'lucide-react';
 import './images.css';
@@ -28,7 +28,7 @@ export default function ImageManager({ filterByUploader = false, source = 'admin
   const [dragActive, setDragActive] = useState(false);
   const [imageToDelete, setImageToDelete] = useState<{id: string, slug: string} | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+
   const [mounted, setMounted] = useState(false);
   
   const fileInputRef = useRef<HTMLInputElement>(null);

@@ -1,20 +1,19 @@
-# 🛡️ Ciberportero 
+# 🛡️ Ciberportero
 
-Welcome to **Ciberportero**, an advanced academic ecosystem and community portal specifically designed for the **UNDEF (National Defense University)** community. Its primary mission is to provide students with a centralized, high-fidelity experience for managing their academic life.
+Welcome to **[Ciberportero](https://www.ciberportero.com)**, a healthy community and content platform dedicated to making cybersecurity and tech careers accessible to everyone. 
 
-## 🏛️ Collaborative Rooms (New)
+Beyond writing code, this is my core initiative to help fellow students navigate the tech and security landscape. It serves as a centralized hub offering both academic tools and educational content.
 
-Ciberportero now features a robust **Room System** designed for deep student collaboration and study coordination:
+![Ciberportero Cover](./public/ciberportero-cover.jpeg)
 
-- **Structured Knowledge Hubs**: Join specific rooms for your year, subject, or interest group.
-- **Hierarchical Organization**: Content is organized into **Categories** and **Subcategories** to keep discussions focused and searchable.
-- **High-Fidelity Chat**: A modern chat experience with support for **Rich Text**, **Image Uploads** (via Supabase Storage), and nested **Replies**.
-- **Community Moderation**: Pin important messages, notes, or files to the top of any subcategory for quick access.
-- **Secure Access Control**: Rooms can be private, requiring a **Secret Code** to join, ensuring a safe environment for study groups.
+## 💪 Tech Content & Community
 
-## 🎓 For UNDEF Students
+- 🌴 **[YouTube Channel](https://www.youtube.com/@ciberportero):** Creating educational videos about the Cyberdefense career, programming, and cybersecurity (some with over 1,000 views!).
+- 📚 **[Student Resources & Course Blogs](https://www.ciberportero.com/blog):** Writing detailed blog posts for each subject as I progress through the Cyberdefense degree, alongside developing tools and compiling resources to help fellow students succeed in tech.
 
-The platform remains heavily focused on the needs of **Cyberdefense (UNDEF)** students, featuring a state-of-the-art **Academic Plan Manager**:
+## 🎓 Academic Plan Manager (For UNDEF Students)
+
+The platform features a state-of-the-art **Academic Plan Manager** built to support the needs of **Cyberdefense (UNDEF)** students:
 
 - **Interactive Kanban Roadmap**: A high-density, side-by-side view of all four academic years. Scroll horizontally to plan your entire career at a glance.
 - **Dependency Tracking (Smart Hover)**: Hover over any subject to instantly see its **Prerequisites** (🔴) and **Unlocks** (🔵) light up with high-intensity gradients.
@@ -27,17 +26,17 @@ The platform remains heavily focused on the needs of **Cyberdefense (UNDEF)** st
 
 - **Full Cloud Synchronization**: Powered by **Supabase (PostgreSQL)** and **Prisma ORM** for real-time data persistence.
 - **Secure Authentication**: Integrated with **Auth.js (v5)** and **Google OAuth** for seamless student access.
-- **Media Orchestration**: High-fidelity image management using **Supabase Storage** for chat attachments and institutional assets.
-- **Progress Persistence**: Student progress and room memberships are securely synced across devices.
-- **Full Localization (ES / EN / PT)**: The entire platform is fully localized to support Spanish, English, and Portuguese across the entire user experience.
-- **Regional Branding**: A custom-designed interface that reflects UNDEF's institutional identity through original illustrations, warm visuals, and a cohesive design language.
+- **Media Orchestration**: High-fidelity image management using **Supabase Storage** for institutional assets.
+- **Progress Persistence**: Student progress is securely synced across devices.
+- **Localization (ES / EN)**: The platform is fully localized to support both Spanish and English across the entire user experience.
+- **Regional Branding**: A custom-designed interface that reflects an inviting, institutional identity through original illustrations, warm visuals, and a cohesive design language.
 
 ## 🧪 Testing & Code Quality
 
-- **Unit Testing**: [Vitest](https://vitest.dev/) with `@vitest/coverage-v8` for fast, reliable tests.
+- **Unit Testing**: **[Vitest](https://vitest.dev/)** with `@vitest/coverage-v8` for fast, reliable tests.
 - **Coverage Threshold**: 80% minimum enforced on statements, branches, functions, and lines.
-- **Automated PR Reviews**: [CodeRabbit](https://coderabbit.ai/) configured with assertive profile for auto-review on every PR to `main`.
-- **Commit Standards**: Conventional Commits enforced via [Commitlint](https://commitlint.js.org/) + [Husky](https://typicode.github.io/husky/) pre-commit hooks.
+- **Automated PR Reviews**: **[CodeRabbit](https://coderabbit.ai/)** configured with assertive profile for auto-review on every PR to `main`.
+- **Commit Standards**: Conventional Commits enforced via **[Commitlint](https://commitlint.js.org/)** + **[Husky](https://typicode.github.io/husky/)** pre-commit hooks.
 
 ```bash
 # Run tests
@@ -51,12 +50,12 @@ yarn test:coverage
 
 | File | Purpose |
 |------|---------|
-| [context/project-overview.md](context/project-overview.md) | High-level project description, features, and target user |
-| [context/architecture.md](context/architecture.md) | Technical architecture, stack, folder structure, data flows |
-| [context/code-standards.md](context/code-standards.md) | Engineering conventions, TypeScript rules, testing standards |
-| [docs/project-report.md](docs/project-report.md) | Full project report (summary, stack, security, future) |
-| [PR_STANDARDS.md](PR_STANDARDS.md) | Pull Request conventions and templates |
-| [AGENTS.md](AGENTS.md) | AI agent instructions (read order, invariants) |
+| **[context/project-overview.md](context/project-overview.md)** | High-level project description, features, and target user |
+| **[context/architecture.md](context/architecture.md)** | Technical architecture, stack, folder structure, data flows |
+| **[context/code-standards.md](context/code-standards.md)** | Engineering conventions, TypeScript rules, testing standards |
+| **[docs/project-report.md](docs/project-report.md)** | Full project report (summary, stack, security, future) |
+| **[PR_STANDARDS.md](PR_STANDARDS.md)** | Pull Request conventions and templates |
+| **[AGENTS.md](AGENTS.md)** | AI agent instructions (read order, invariants) |
 
 ## 🏗️ Project Structure
 
@@ -77,14 +76,21 @@ ciberportero/
 └── scripts/            # Seed scripts
 ```
 
+![Ciberportero Recover](./public/ciberportero-recover.png)
+
 ## 📝 Community Contributions
 
-If you want to contribute, you can still submit a **Pull Request**. While we are migrating to a database-driven system, community contributions remain a core pillar of Ciberportero.
+Contributions are always welcome! Whether you want to fix a bug or add a new feature, you can submit a **Pull Request**. 
+
+If you have ideas for improvements, want to suggest new features, or found a bug, feel free to open an **[Issue](https://github.com/gonzagramaglia/ciberportero/issues)** so we can discuss it.
 
 ## ⭐ Support the Project
 
 If Ciberportero has helped you in your academic journey, please consider giving this repository a **Star** as a token of appreciation. It helps the project reach more students! 🚀
 
-## 📜 Footer
+## 📫 Get in Touch
 
+**[LinkedIn](https://linkedin.com/in/gonzagramaglia)** | **[Book a Call](https://cal.com/gonza)** | **[Portfolio](https://gonzagramaglia.github.io)**
+
+---
 © 2026 | *Mens secura in corpore tuto*

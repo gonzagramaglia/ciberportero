@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Save, X } from 'lucide-react';
 import { upsertNotification } from '@/lib/actions';
 import LanguageTabs from './LanguageTabs';
+import { LocalizedContent, normalizeLocalized } from './CalendarEditor';
 
 interface NotificationEditorProps {
   notification?: any;
@@ -13,11 +14,11 @@ interface NotificationEditorProps {
 export default function NotificationEditor({ notification }: NotificationEditorProps) {
   const router = useRouter();
   const [isPending, setIsPending] = useState(false);
-  const [activeLang, setActiveLang] = useState<'es' | 'en' | 'pt'>('es');
+  const [activeLang, setActiveLang] = useState<'es' | 'en'>('es');
 
   // Form state
-  const [messages, setMessages] = useState<any>(notification?.message || { es: '', en: '', pt: '' });
-  const [descriptions, setDescriptions] = useState<any>(notification?.description || { es: '', en: '', pt: '' });
+  const [messages, setMessages] = useState<LocalizedContent>(normalizeLocalized(notification?.message));
+  const [descriptions, setDescriptions] = useState<LocalizedContent>(normalizeLocalized(notification?.description));
   const [type, setType] = useState(notification?.type || 'info');
   const [active, setActive] = useState(notification?.active ?? true);
   const [url, setUrl] = useState(notification?.url || '');

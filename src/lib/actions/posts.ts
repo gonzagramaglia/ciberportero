@@ -101,8 +101,8 @@ export async function votePost(type: 'LIKE' | 'DISLIKE', postId?: string, slug?:
       post = await db.post.create({
         data: {
           slug,
-          title: { es: slug, en: slug, pt: slug },
-          content: { es: "Draft from sync", en: "Draft from sync", pt: "Draft from sync" },
+          title: { es: slug, en: slug },
+          content: { es: "Draft from sync", en: "Draft from sync" },
           published: true
         } as any
       });

@@ -34,21 +34,6 @@ export function timeAgo(date: Date | string, lang: string = 'es'): string {
       months: '{n} months ago',
       year: '1 year ago',
       years: '{n} years ago'
-    },
-    pt: {
-      now: 'agora mesmo',
-      minute: 'há 1 minuto',
-      minutes: 'há {n} minutos',
-      hour: 'há 1 hora',
-      hours: 'há {n} horas',
-      day: 'há 1 dia',
-      days: 'há {n} dias',
-      week: 'há 1 semana',
-      weeks: 'há {n} semanas',
-      month: 'há 1 mes',
-      months: 'há {n} meses',
-      year: 'há 1 ano',
-      years: 'há {n} anos'
     }
   };
 
@@ -116,6 +101,11 @@ export function slugify(text: string): string {
 export function formatMarkdown(text: unknown): string {
   if (!text || typeof text !== 'string') return '';
   return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;')
       .replace(/\*\*(?!\s)(.*?)(?<!\s)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(?!\s)(.*?)(?<!\s)\*/g, '<strong>$1</strong>')
       .replace(/_(?!\s)(.*?)(?<!\s)_/g, '<em>$1</em>')

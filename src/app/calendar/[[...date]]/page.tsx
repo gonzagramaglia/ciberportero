@@ -95,7 +95,7 @@ export default async function CalendarPage({
     startDate: event.startDate.toISOString().split('T')[0],
     endDate: event.endDate ? event.endDate.toISOString().split('T')[0] : null,
     title: event.title as Record<string, string>,
-    desc: (event.description || { es: '', en: '', pt: '' }) as Record<string, string>,
+    desc: (event.description || { es: '', en: '' }) as Record<string, string>,
     type: event.type,
     subjectId: event.subjectId || undefined,
     url: event.url,

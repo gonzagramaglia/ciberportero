@@ -76,7 +76,7 @@ export default function BlogClient({ initialPosts }: BlogClientProps) {
     return (
         <div className="container fade-in page-container">
             <div className="nav-header-row" style={{ marginTop: '-0.5rem', marginBottom: '2.5rem' }}>
-                <Link href={lang === 'en' ? "/en" : lang === 'pt' ? "/pt" : "/"} className="back-link"><ChevronLeft size={16} />{t.back}</Link>
+                <Link href={lang === 'en' ? "/en" : "/"} className="back-link"><ChevronLeft size={16} />{t.back}</Link>
                 <div className="mobile-only">
                     <LanguageSwitcher />
                 </div>
@@ -171,7 +171,7 @@ export default function BlogClient({ initialPosts }: BlogClientProps) {
             <footer className="footer-main">
                 <div className="footer-social-left" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
                     <a href="https://x.com/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="X (Twitter) de Ciberportero"><FaXTwitter size={16} aria-hidden="true" /></a>
-                    <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label={lang === 'es' ? "Discord de Ciberportero" : lang === 'pt' ? "Discord do Ciberportero" : "Ciberportero Discord"}><TbBrandDiscord size={21} aria-hidden="true" /></a>
+                    <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label={lang === 'es' ? "Discord de Ciberportero" : "Ciberportero Discord"}><TbBrandDiscord size={21} aria-hidden="true" /></a>
                 </div>
                 <span>{t.footer}</span>
                 <div className="footer-social-right" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>

@@ -1,26 +1,24 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { ThumbsUp, ThumbsDown, Share2, Play, Pause, Volume2, Check } from 'lucide-react';
+import { ThumbsUp, Share2, Check } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/lib/translations';
 import { votePodcast } from '@/lib/actions';
 import { useSession } from 'next-auth/react';
 
-export default function PodcastPlayer({ podcast, initialLikes, initialDislikes, userVote, forcedLang }: { 
-    podcast: any, 
-    initialLikes: number, 
+export default function PodcastPlayer({ podcast, initialLikes, initialDislikes, userVote, forcedLang }: {
+    podcast: any,
+    initialLikes: number,
     initialDislikes: number,
     userVote?: 'LIKE' | 'DISLIKE' | null,
     forcedLang?: string
 }) {
     const { lang: contextLang } = useLanguage();
-    const lang = (forcedLang || contextLang) as 'es' | 'en' | 'pt';
+    const lang = (forcedLang || contextLang) as 'es' | 'en';
     const { data: session } = useSession();
     const t = translations[lang].podcast;
-    const [isPlaying, setIsPlaying] = useState(false);
     const [likes, setLikes] = useState(initialLikes);
-    const [dislikes, setDislikes] = useState(initialDislikes);
     const [currentVote, setCurrentVote] = useState(userVote);
     const [isSharing, setIsSharing] = useState(false);
     const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -46,16 +44,13 @@ export default function PodcastPlayer({ podcast, initialLikes, initialDislikes, 
                 // Untoggle
                 setCurrentVote(null);
                 if (type === 'LIKE') setLikes(l => l - 1);
-                else setDislikes(d => d - 1);
             } else {
                 // Switch or new vote
                 if (currentVote) {
                     if (currentVote === 'LIKE') setLikes(l => l - 1);
-                    else setDislikes(d => d - 1);
                 }
                 setCurrentVote(type);
                 if (type === 'LIKE') setLikes(l => l + 1);
-                else setDislikes(d => d + 1);
             }
         }
     };
@@ -72,20 +67,18 @@ export default function PodcastPlayer({ podcast, initialLikes, initialDislikes, 
             <div className="player-card">
                 <div className="player-main">
                     <div className="audio-wrapper">
-                        <audio 
+                        <audio
                             ref={audioRef}
-                            src={podcast.audioUrl} 
-                            controls 
+                            src={podcast.audioUrl}
+                            controls
                             autoPlay
                             className="native-audio"
-                            onPlay={() => setIsPlaying(true)}
-                            onPause={() => setIsPlaying(false)}
                         />
                     </div>
                 </div>
 
                 <div className="player-actions">
-                    <button 
+                    <button
                         className={`action-btn like-btn ${currentVote === 'LIKE' ? 'active' : ''}`}
                         onClick={() => handleVote('LIKE')}
                     >

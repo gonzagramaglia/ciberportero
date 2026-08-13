@@ -48,7 +48,7 @@ export default async function AdminLinksPage() {
             {links.length > 0 ? links.map((link) => {
               // Defensive parsing for name and description
               const nameObj = typeof link.name === 'string' ? { es: link.name } : (link.name as any);
-              const name = nameObj?.es || nameObj?.en || nameObj?.pt || 'Sin nombre';
+              const name = nameObj?.es || nameObj?.en || 'Sin nombre';
               
               const url = link.url || '#';
               const displayUrl = url.length > 30 ? url.substring(0, 30) + '...' : url;

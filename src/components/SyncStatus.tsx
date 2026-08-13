@@ -2,7 +2,6 @@
 
 import { useSession } from "next-auth/react"
 import { useLanguage } from "../context/LanguageContext"
-import { Cloud, Check, Loader2 } from "lucide-react"
 
 export default function SyncStatus() {
   const { data: session, status } = useSession()
@@ -10,14 +9,12 @@ export default function SyncStatus() {
 
   if (status !== 'authenticated' || !session?.user) return null
 
-  const msg = lang === 'es' 
-    ? `Sincronizado con la cuenta cloud de` 
-    : lang === 'pt' 
-      ? `Sincronizado com a conta cloud de` 
-      : `Synced with cloud account of`
+  const msg = lang === 'es'
+    ? `Sincronizado con la cuenta cloud de`
+    : `Synced with cloud account of`
 
   return (
-    <div 
+    <div
       className="sync-status-badge fade-in"
       style={{
         position: 'fixed',
@@ -45,10 +42,10 @@ export default function SyncStatus() {
         boxShadow: '0 0 8px rgba(16, 185, 129, 0.5)',
         animation: 'pulse 2s infinite'
       }} />
-      
-      <span style={{ 
-        fontSize: '0.85rem', 
-        fontWeight: '600', 
+
+      <span style={{
+        fontSize: '0.85rem',
+        fontWeight: '600',
         color: '#4b5563',
         letterSpacing: '-0.01em'
       }}>

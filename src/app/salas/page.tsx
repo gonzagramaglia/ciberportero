@@ -31,8 +31,6 @@ export default async function RoomPage() {
   const myRooms = await getMyRooms();
 
   return (
-    <RoomLandingClient 
-      session={session} 
-    />
+    <RoomLandingClient />
   );
 }

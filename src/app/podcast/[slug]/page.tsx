@@ -87,7 +87,7 @@ export default async function PodcastDetailPage({ params }: { params: Promise<{ 
                     fontSize: '1rem'
                 }}>
                     <ChevronLeft size={20} />
-                    {lang === 'es' ? 'Volver a Podcast' : lang === 'pt' ? 'Voltar ao Podcast' : 'Back to Podcast'}
+                    {lang === 'es' ? 'Volver a Podcast' : 'Back to Podcast'}
                 </Link>
                 <div style={{ width: '1px' }} />
             </div>
@@ -99,7 +99,7 @@ export default async function PodcastDetailPage({ params }: { params: Promise<{ 
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--muted)', fontSize: '0.9rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                                 <Calendar size={14} />
                                 <span>
-                                    {lang === 'es' ? 'Audio del ' : lang === 'pt' ? 'Áudio de ' : 'Audio from '}
+                                    {lang === 'es' ? 'Audio del ' : 'Audio from '}
                                     {new Date(podcast.date || podcast.createdAt).toLocaleDateString(lang, {
                                         year: 'numeric',
                                         month: 'long',
@@ -226,7 +226,7 @@ export default async function PodcastDetailPage({ params }: { params: Promise<{ 
             <footer className="footer-main" style={{ marginTop: '5rem', borderTop: '1px solid #f1f5f9', paddingTop: '2.5rem', marginBottom: '2rem' }}>
                 <div className="footer-social-left" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
                     <a href="https://x.com/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="X (Twitter) de Ciberportero"><FaXTwitter size={16} aria-hidden="true" /></a>
-                    <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label={lang === 'es' ? "Discord de Ciberportero" : lang === 'pt' ? "Discord do Ciberportero" : "Ciberportero Discord"}><TbBrandDiscord size={21} aria-hidden="true" /></a>
+                    <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label={lang === 'es' ? "Discord de Ciberportero" : "Ciberportero Discord"}><TbBrandDiscord size={21} aria-hidden="true" /></a>
                 </div>
                 <span>{t.footer}</span>
                 <div className="footer-social-right" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>

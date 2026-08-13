@@ -64,7 +64,7 @@ export async function createPersonalEvent(data: { title: string, startDate: stri
 
   await db.calendarEvent.create({
     data: {
-      title: { es: data.title, en: data.title, pt: data.title },
+      title: { es: data.title, en: data.title },
       startDate: new Date(data.startDate),
       endDate: data.endDate ? new Date(data.endDate) : null,
       type: data.type,

@@ -6,7 +6,7 @@ import { useLanguage } from "@/context/LanguageContext"
 import { translations } from "@/lib/translations"
 import { curriculum } from "@/data/curriculum"
 import LanguageSwitcher from "@/components/LanguageSwitcher"
-import { CheckCircle, Info, Lock, ChevronLeft, Layers, Star, Zap, Coffee, Youtube, Search, X, Calendar, ExternalLink, Twitch } from "lucide-react"
+import { CheckCircle, Info, Lock, ChevronLeft, Layers, Star, Zap, Coffee, Youtube, Search, X, Calendar, ExternalLink, Twitch, Home } from "lucide-react"
 import NotificationBanners from "@/components/NotificationBanners"
 import CountdownWidget from "@/components/CountdownWidget"
 import { normalizeString } from "@/lib/string-utils"
@@ -38,7 +38,7 @@ export default function PlanPage() {
   const handleTopScroll = (e: React.UIEvent) => {
     if (mainScrollRef.current) mainScrollRef.current.scrollLeft = (e.target as HTMLDivElement).scrollLeft
   }
-  
+
   const handleMainScroll = (e: React.UIEvent) => {
     if (topScrollRef.current) topScrollRef.current.scrollLeft = (e.target as HTMLElement).scrollLeft
   }
@@ -269,7 +269,10 @@ export default function PlanPage() {
           <div style={{ width: '100%' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1.2rem' }}>
               <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: '900', color: '#000', letterSpacing: '-0.03em', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-                {pt.title}
+                <Link href="/" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
+                  <Home className="title-home-icon" size={40} style={{ marginRight: '0.5rem' }} />
+                  {pt.title}
+                </Link>
                 <div style={{
                   opacity: status === 'loading' ? 0 : 1,
                   transition: 'opacity 0.2s',
@@ -280,7 +283,7 @@ export default function PlanPage() {
                 </div>
               </h1>
               <div className="mobile-hide">
-                  <LanguageSwitcher />
+                <LanguageSwitcher />
               </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
@@ -458,15 +461,14 @@ export default function PlanPage() {
       <div style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
         <h2 style={{ fontSize: '1.4rem', fontWeight: '800', margin: 0, display: 'flex', alignItems: 'center', gap: '0.6rem', color: '#000' }}>
           <Layers size={22} style={{ color: 'var(--accent)', flexShrink: 0 }} />
-          {objective === 'intermediate' 
-            ? (lang === 'en' ? 'University Analyst in Cyber Risk Management' : lang === 'pt' ? 'Analista Universitário em Gestão de Riscos Cibernéticos' : 'Analista Universitario en Gestión de Riesgos Cibernéticos')
-            : (lang === 'en' ? 'Bachelor in Cyberdefense' : lang === 'pt' ? 'Licenciatura em Ciberdefesa' : 'Licenciatura en Ciberdefensa')
-          }
+          {objective === 'intermediate'
+            ? (lang === 'en' ? 'University Analyst in Cyber Risk Management' : 'Analista Universitario en Gestión de Riesgos Cibernéticos')
+            : (lang === 'en' ? 'Bachelor in Cyberdefense' : 'Licenciatura en Ciberdefensa')}
         </h2>
       </div>
 
-      <div 
-        ref={topScrollRef} 
+      <div
+        ref={topScrollRef}
         onScroll={handleTopScroll}
         className="custom-scrollbar"
         style={{ overflowX: 'auto', margin: '0 -1rem 1rem -1rem' }}
@@ -474,19 +476,19 @@ export default function PlanPage() {
         <div ref={dummyContentRef} style={{ height: '1px' }}></div>
       </div>
 
-      <main 
+      <main
         ref={mainScrollRef}
         onScroll={handleMainScroll}
         className="custom-scrollbar"
         style={{
-        display: 'grid',
-        gridTemplateColumns: `repeat(${filteredYears.length}, 1fr)`,
-        gap: '2rem',
-        alignItems: 'start',
-        overflowX: 'auto',
-        padding: '0 1rem 4rem 1rem',
-        margin: '0 -1rem' // Compensate container padding
-      }}>
+          display: 'grid',
+          gridTemplateColumns: `repeat(${filteredYears.length}, 1fr)`,
+          gap: '2rem',
+          alignItems: 'start',
+          overflowX: 'auto',
+          padding: '0 1rem 4rem 1rem',
+          margin: '0 -1rem' // Compensate container padding
+        }}>
         {filteredYears.map(year => (
           <section key={year} style={{ minWidth: '280px', padding: '0.5rem' }}>
             <h2 style={{ fontSize: '1.2rem', fontWeight: '900', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
@@ -502,7 +504,7 @@ export default function PlanPage() {
                 const isLocked = subject.prerequisites.some(p => !completed.includes(p))
                 const isHovered = hoveredId === subject.id
 
-                let cardStyle: React.CSSProperties = {
+                const cardStyle: React.CSSProperties = {
                   padding: '0.8rem',
                   borderRadius: '14px',
                   background: isLocked ? '#f1f5f9' : 'white',
@@ -604,10 +606,10 @@ export default function PlanPage() {
         ))}
       </main>
       <div style={{ width: '100%', marginTop: '1.5rem', marginBottom: '2rem', borderRadius: '12px', overflow: 'hidden' }}>
-        <img 
-          src="/messi.jpg" 
+        <img
+          src="/meme-messi.jpg"
           alt="Messi"
-          style={{ width: '100%', height: 'auto', maxHeight: '400px', objectFit: 'cover', display: 'block' }} 
+          style={{ width: '100%', height: 'auto', maxHeight: '400px', objectFit: 'cover', display: 'block' }}
         />
       </div>
       <CommentSection postSlug="plan" lang={lang} />
