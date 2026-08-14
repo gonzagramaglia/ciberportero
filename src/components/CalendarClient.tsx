@@ -859,7 +859,7 @@ export default function CalendarClient({ initialEvents, lang: langProp, initialD
 
           <div style={{ width: '100%', marginTop: '1.5rem', borderRadius: '12px', overflow: 'hidden' }}>
             <img
-              src="/avatar-enzo.png"
+              src="/meme-enzo.png"
               alt="Enzo"
               style={{ width: '100%', height: 'auto', maxHeight: '400px', objectFit: 'cover', display: 'block' }}
             />

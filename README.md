@@ -4,7 +4,7 @@ Welcome to **[Ciberportero](https://www.ciberportero.com)**, a healthy community
 
 Beyond writing code, this is my core initiative to help fellow students navigate the tech and security landscape. It serves as a centralized hub offering both academic tools and educational content.
 
-![Ciberportero Cover](./public/ciberportero-cover.jpeg)
+![Ciberportero Recover](./public/ciberportero-recover.png)
 
 ## 💪 Tech Content & Community
 
@@ -76,7 +76,7 @@ ciberportero/
 └── scripts/            # Seed scripts
 ```
 
-![Ciberportero Recover](./public/ciberportero-recover.png)
+![Ciberportero Cover](./public/ciberportero-cover.jpeg)
 
 ## 📝 Community Contributions
 
@@ -88,9 +88,11 @@ If you have ideas for improvements, want to suggest new features, or found a bug
 
 If Ciberportero has helped you in your academic journey, please consider giving this repository a **Star** as a token of appreciation. It helps the project reach more students! 🚀
 
-## 📫 Get in Touch
+### 🙏 Special Thanks
 
-**[LinkedIn](https://linkedin.com/in/gonzagramaglia)** | **[Book a Call](https://cal.com/gonza)** | **[Portfolio](https://gonzagramaglia.github.io)**
+| Contributor | Contribution |
+|-------------|-------------|
+| **[@Pablo-Gularte](https://github.com/Pablo-Gularte)** | Proposed and documented the Academic Regulations section based on UNDEF Rector's Resolution N° 326/2025, including all promotion regimes and academic continuity rules. [Issue #12](https://github.com/gonzagramaglia/ciberportero/issues/12) |
 
 ---
 © 2026 | *Mens secura in corpore tuto*
