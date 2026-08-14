@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useLanguage } from "../context/LanguageContext";
 import { translations } from "../lib/translations";
@@ -25,19 +25,48 @@ import FloatingFootballButton from "./FloatingFootballButton";
 import { timeAgo } from "../lib/utils";
 
 interface HomeClientProps {
-  initialPosts: any[];
+  initialPosts: HomePost[];
 }
+
+interface HomePost {
+  slug: string;
+  title: string;
+  description: string;
+  updatedAt: string | null;
+  date: string | null;
+}
+
+type SelectedImage = {
+  src: string;
+  alt: string;
+};
 
 export default function HomeClient({ initialPosts }: HomeClientProps) {
   const { lang } = useLanguage();
   const { data: session, status } = useSession();
   const motivation = useMotivation(lang);
-  const [posts, setPosts] = useState(initialPosts);
+  const [posts, setPosts] = useState<HomePost[]>(initialPosts);
   const [isLoadingPosts, setIsLoadingPosts] = useState(false);
   const t = translations[lang];
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<SelectedImage | null>(
+    null,
+  );
+  const lightboxDialogRef = useRef<HTMLDivElement>(null);
+  const lightboxCloseButtonRef = useRef<HTMLButtonElement>(null);
+  const lightboxTriggerRef = useRef<HTMLButtonElement | null>(null);
 
-  const handleImageClick = (src: string) => {
+  const closeLightbox = () => {
+    setSelectedImage(null);
+    requestAnimationFrame(() => {
+      lightboxTriggerRef.current?.focus();
+    });
+  };
+
+  const handleImageClick = (
+    src: string,
+    alt: string,
+    trigger?: HTMLButtonElement,
+  ) => {
     if (
       typeof window !== "undefined" &&
       window.innerWidth < 768 &&
@@ -46,25 +75,49 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
       window.open(
         "https://undef.edu.ar/fadena/carreras-de-grado/licciberdefensa/",
         "_blank",
+        "noopener,noreferrer",
       );
       return;
     }
-    setSelectedImage(src);
+    lightboxTriggerRef.current = trigger || null;
+    setSelectedImage({ src, alt });
   };
 
   useEffect(() => {
+    const abortController = new AbortController();
+    let isCurrentRequest = true;
+
     const fetchPosts = async () => {
       setIsLoadingPosts(true);
       try {
-        const response = await fetch(`/api/posts?lang=${lang}`);
-        const data = await response.json();
-        setPosts(data);
+        const response = await fetch(`/api/posts?lang=${lang}`, {
+          signal: abortController.signal,
+        });
+        if (!response.ok) {
+          return;
+        }
+        const data: unknown = await response.json();
+        if (isCurrentRequest && Array.isArray(data)) {
+          setPosts(data as HomePost[]);
+        }
+      } catch (error) {
+        if (abortController.signal.aborted) {
+          return;
+        }
       } finally {
-        setIsLoadingPosts(false);
+        if (isCurrentRequest) {
+          setIsLoadingPosts(false);
+        }
       }
     };
+
     // Initial posts are from server, but refetch if language changes client-side
     if (lang) fetchPosts();
+
+    return () => {
+      isCurrentRequest = false;
+      abortController.abort();
+    };
   }, [lang]);
 
   useEffect(() => {
@@ -73,11 +126,61 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
     return () => document.body.classList.remove("lightbox-open");
   }, [selectedImage]);
 
+  useEffect(() => {
+    if (!selectedImage) {
+      return;
+    }
+
+    const dialog = lightboxDialogRef.current;
+    if (!dialog) {
+      return;
+    }
+
+    lightboxCloseButtonRef.current?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeLightbox();
+        return;
+      }
+
+      if (event.key !== "Tab") {
+        return;
+      }
+
+      const focusableElements = dialog.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      );
+      if (focusableElements.length === 0) {
+        event.preventDefault();
+        return;
+      }
+
+      const firstFocusable = focusableElements[0];
+      const lastFocusable = focusableElements[focusableElements.length - 1];
+      const activeElement = document.activeElement as HTMLElement | null;
+
+      if (event.shiftKey && activeElement === firstFocusable) {
+        event.preventDefault();
+        lastFocusable.focus();
+      } else if (!event.shiftKey && activeElement === lastFocusable) {
+        event.preventDefault();
+        firstFocusable.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [selectedImage]);
+
   const ingresantesPosts = posts.filter(
-    (p: any) => p.title && p.title.includes("[00]"),
+    (p: HomePost) => p.title && p.title.includes("[00]"),
   );
   const materiaPosts = posts.filter(
-    (p: any) => !(p.title && p.title.includes("[00]")),
+    (p: HomePost) => !(p.title && p.title.includes("[00]")),
   );
 
   return (
@@ -87,21 +190,32 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
       {selectedImage && (
         <div
           className="lightbox-overlay"
-          onClick={() => setSelectedImage(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={
+            lang === "es"
+              ? "Vista ampliada de imagen"
+              : "Enlarged image preview"
+          }
+          onClick={(event) => {
+            if (event.target === event.currentTarget) {
+              closeLightbox();
+            }
+          }}
         >
-          <div className="lightbox-content">
+          <div className="lightbox-content" ref={lightboxDialogRef}>
             <button
+              type="button"
               className="lightbox-close"
-              onClick={() => setSelectedImage(null)}
+              ref={lightboxCloseButtonRef}
+              aria-label={
+                lang === "es" ? "Cerrar imagen ampliada" : "Close image preview"
+              }
+              onClick={closeLightbox}
             >
               <X size={24} />
             </button>
-            <img
-              src={selectedImage}
-              alt="Enlarged view"
-              onClick={() => setSelectedImage(null)}
-              style={{ cursor: "zoom-out" }}
-            />
+            <img src={selectedImage.src} alt={selectedImage.alt} />
           </div>
         </div>
       )}
@@ -375,20 +489,28 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
               </li>
             ))
           ) : materiaPosts.length > 0 ? (
-            materiaPosts.map((post: any) => (
-              <li key={post.slug} className="post-item">
-                <Link href={`/${post.slug}`}>
-                  <span className="post-date" suppressHydrationWarning>
-                    {lang === "es" ? "Última actualización" : "Last update"}:{" "}
-                    {timeAgo(post.updatedAt || post.date, lang)}
-                  </span>
-                  <span className="post-title">{post.title}</span>
-                  <p className="post-description">{post.description}</p>
-                </Link>
-              </li>
-            ))
+            materiaPosts.map((post: HomePost) => {
+              const postTimestamp = post.updatedAt || post.date;
+              return (
+                <li key={post.slug} className="post-item">
+                  <Link href={`/${post.slug}`}>
+                    <span className="post-date" suppressHydrationWarning>
+                      {lang === "es" ? "Última actualización" : "Last update"}:{" "}
+                      {postTimestamp
+                        ? timeAgo(postTimestamp, lang)
+                        : lang === "es"
+                          ? "Sin fecha"
+                          : "No date"}
+                    </span>
+                    <span className="post-title">{post.title}</span>
+                    <p className="post-description">{post.description}</p>
+                  </Link>
+                </li>
+              );
+            })
           ) : (
-            <div
+            <li
+              className="post-item"
               style={{
                 padding: "3rem 1rem",
                 textAlign: "center",
@@ -403,7 +525,7 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
                   ? "No hay posts publicados por el momento."
                   : "No posts published yet."}
               </p>
-            </div>
+            </li>
           )}
         </ul>
 
@@ -429,18 +551,26 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
               />
             </div>
             <ul className="post-list">
-              {ingresantesPosts.map((post: any) => (
-                <li key={post.slug} className="post-item">
-                  <Link href={`/${post.slug}`}>
-                    <span className="post-date" suppressHydrationWarning>
-                      {lang === "es" ? "Última actualización" : "Last update"}:{" "}
-                      {timeAgo(post.updatedAt || post.date, lang)}
-                    </span>
-                    <span className="post-title">{post.title}</span>
-                    <p className="post-description">{post.description}</p>
-                  </Link>
-                </li>
-              ))}
+              {ingresantesPosts.map((post: HomePost) => {
+                const postTimestamp = post.updatedAt || post.date;
+                return (
+                  <li key={post.slug} className="post-item">
+                    <Link href={`/${post.slug}`}>
+                      <span className="post-date" suppressHydrationWarning>
+                        {lang === "es" ? "Última actualización" : "Last update"}
+                        :{" "}
+                        {postTimestamp
+                          ? timeAgo(postTimestamp, lang)
+                          : lang === "es"
+                            ? "Sin fecha"
+                            : "No date"}
+                      </span>
+                      <span className="post-title">{post.title}</span>
+                      <p className="post-description">{post.description}</p>
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </>
         )}
@@ -491,7 +621,13 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
             <button
               type="button"
               className="intro-cover"
-              onClick={() => handleImageClick("/calendar-cover-ghibli.jpeg")}
+              onClick={(event) =>
+                handleImageClick(
+                  "/calendar-cover-ghibli.jpeg",
+                  "Calendario Académico de Grado 2026",
+                  event.currentTarget,
+                )
+              }
               style={{
                 border: "none",
                 background: "none",
@@ -559,7 +695,13 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
             <button
               type="button"
               className="intro-cover"
-              onClick={() => handleImageClick("/calendar.png")}
+              onClick={(event) =>
+                handleImageClick(
+                  "/calendar.png",
+                  "Academic Calendar 2026",
+                  event.currentTarget,
+                )
+              }
               style={{
                 border: "none",
                 background: "none",
@@ -606,7 +748,11 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
             target="_blank"
             rel="noopener noreferrer"
             style={{ display: "flex" }}
-            aria-label="X (Twitter) de Ciberportero"
+            aria-label={
+              lang === "es"
+                ? "X (Twitter) de Ciberportero"
+                : "Ciberportero X (Twitter)"
+            }
           >
             <FaXTwitter size={16} aria-hidden="true" />
           </a>
@@ -632,7 +778,9 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
             target="_blank"
             rel="noopener noreferrer"
             style={{ display: "flex" }}
-            aria-label="Twitch de Ciberportero"
+            aria-label={
+              lang === "es" ? "Twitch de Ciberportero" : "Ciberportero Twitch"
+            }
           >
             <Twitch size={18} aria-hidden="true" />
           </a>
@@ -641,7 +789,9 @@ export default function HomeClient({ initialPosts }: HomeClientProps) {
             target="_blank"
             rel="noopener noreferrer"
             style={{ display: "flex" }}
-            aria-label="YouTube de Ciberportero"
+            aria-label={
+              lang === "es" ? "YouTube de Ciberportero" : "Ciberportero YouTube"
+            }
           >
             <Youtube size={22} aria-hidden="true" />
           </a>
