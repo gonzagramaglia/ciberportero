@@ -137,6 +137,6 @@ Whenever a PR is prepared, the AI assistant must generate a local markdown file 
 | #12 | `refactor/admin-panel-ui`                | Admin panel fixes and UI tweaks                                                       | ✅ Merged |
 | #13 | `refactor/codebase-cleanup`              | Clean codebase, remove Portuguese, and align README                                   | ✅ Merged |
 | #14 | `feat/add-new-subjects`                  | Add new subjects (06-10), navigation chunks, and fix image paths                      | ✅ Merged |
-| #15 | `feat/academic-regulations`              | UI refresh for plan/content pages and build fixes                                     | 🟡 Draft  |
+| #15 | `feat/academic-regulations`              | UI refresh for plan/content pages and build fixes                                     | ✅ Merged  |
 
 _(Update this table every time a PR is opened or merged.)_

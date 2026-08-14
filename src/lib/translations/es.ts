@@ -3,7 +3,7 @@ export const es = {
     description: "Blog técnico sobre ciberseguridad, desarrollo de software y resolución de problemas. Experiencias, guías y recursos prácticos",
     back: "Volver al inicio",
     backToBlog: "Volver al blog",
-    footer: "© 2026 | Mens secura in corpore tuto",
+    footer: "© 2026 | Mens Secura in corpore tuto",
     auth: {
         signIn: "Iniciar sesión",
         signInConcise: "Ingresar",

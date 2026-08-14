@@ -9,6 +9,10 @@ export async function deletePost(id: string) {
   const post = await db.post.findUnique({ where: { id } });
   if (!post) return;
 
+  if ((post as any).protected) {
+    return { error: 'Este post está protegido y no puede eliminarse.' };
+  }
+
   const title = (post.title as any)?.es || 'Sin título';
   
   await db.post.delete({ where: { id } });

@@ -471,7 +471,6 @@ header p {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   display: block;
-  margin-bottom: 0.5rem;
 }
 
 .post-title {
@@ -753,7 +752,7 @@ header p {
     grid-template-areas: 
       "text text text text"
       ". icon1 icon2 .";
-    column-gap: 1rem;
+    column-gap: 1.5rem;
     row-gap: 1.2rem;
     justify-items: center;
     align-items: center;
@@ -956,10 +955,8 @@ footer a:hover {
 }
 
 .title-home-icon {
-  display: none;
   color: #000;
   margin-right: 0.1rem;
-  margin-top: 3px;
 }
 
 .notification-progress {
@@ -1339,19 +1336,64 @@ footer a:hover {
   display: none !important;
 }
 
-.page-container:has(.notification-container-wrapper) .nav-header-row {
+.page-container:has(.notification-container-wrapper) .nav-header-row,
+.post-container:has(.notification-container-wrapper) .nav-header-row {
   margin-bottom: 0 !important;
+  margin-top: -0.25rem;
 }
 
-.page-container:has(.notification-container-wrapper) .title-home-icon {
-  display: block;
+
+
+/* Specific rules for Subject Posts (00 to 10) */
+@media (min-width: 1101px) {
+  .post-container.is-subject-post:has(.notification-container-wrapper) .nav-header-row {
+    display: none !important;
+  }
+  .post-container.is-subject-post:has(.notification-container-wrapper) .back-home-nav-link {
+    display: flex !important;
+  }
+  .post-container.is-subject-post:has(.notification-container-wrapper) .post-date {
+    padding-left: 140px !important;
+  }
+  .post-container:has(.notification-container-wrapper) .post-sidebar {
+    top: 7rem !important;
+  }
+  .post-date-container, .lang-sidebar {
+    height: 32px !important;
+    position: relative;
+  }
+  .post-container.is-subject-post:has(.notification-container-wrapper) .post-date-container {
+    margin-top: -2rem !important;
+  }
+}
+
+.post-container.is-subject-post .back-home-nav-link {
+  display: none !important;
+}
+
+.back-home-link {
+  pointer-events: none;
+  cursor: default;
+  text-decoration: none;
+  color: inherit;
+}
+.post-container.is-subject-post:has(.notification-container-wrapper) .back-home-link {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.post-container.is-subject-post:has(.notification-container-wrapper) .post-body-layout {
+  margin-top: 0 !important;
+}
+.post-container.is-subject-post .notification-container-wrapper {
+  margin-bottom: 0 !important;
 }
 
 @media (max-width: 600px) {
   .last-updated {
     display: block;
     margin-left: 0 !important;
-    margin-top: 0.35rem;
+    margin-top: 0.1rem;
   }
   .countdown-timer {
     gap: 0.2rem !important;
@@ -1944,7 +1986,8 @@ html {
   gap: 1rem;
   flex-wrap: wrap;
   margin-bottom: 0.25rem;
-  margin-top: 1.5rem;
+  margin-top: 0;
+  min-height: 32px;
 }
 
 .post-sidebar {
@@ -1959,6 +2002,7 @@ html {
   .post-body-layout {
     flex-direction: column;
     gap: 0;
+    margin-top: 0.5rem !important;
   }
   .post-sidebar {
     width: 100%;
@@ -1966,6 +2010,9 @@ html {
     order: -1; /* Place it before content on mobile */
     margin-bottom: 2rem;
     margin-top: 0;
+  }
+  .post-sidebar:not(:has(.post-toc)) {
+    display: none !important;
   }
   .post-date-container {
     margin-top: -1.5rem;

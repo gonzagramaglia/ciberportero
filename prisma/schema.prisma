@@ -135,6 +135,7 @@ model Post {
   alternativeSlug  String?     @unique
   alternativeSlug2 String?     @unique
   unlisted         Boolean     @default(false)
+  protected        Boolean     @default(false)
   tags             String[]    @default([])
   keywords         String?
   comments         Comment[]

@@ -100,8 +100,9 @@ export async function GET(request: Request) {
 
     let mergedPosts = [...dbPosts];
 
-    // Filter out "links" post
-    mergedPosts = mergedPosts.filter(p => p.slug !== 'links' && p.title !== 'links');
+    // Filter out ghost/system posts
+    const GHOST_SLUGS = ['links', 'plan', 'calendar'];
+    mergedPosts = mergedPosts.filter(p => !GHOST_SLUGS.includes(p.slug));
 
     // Final sort by date
     mergedPosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());

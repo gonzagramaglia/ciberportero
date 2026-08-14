@@ -34,4 +34,4 @@ We are prepared to deploy **Auth.js v5** with the following security-first featu
 - **Security Headers**: We implement `Content-Security-Policy` and `X-Frame-Options` to proactively defend against XSS and Clickjacking.
 
 ---
-*"Mens secura in corpore tuto"* – *A secure mind in a safe body.*
+*"Mens Secura in corpore tuto"* – *A secure mind in a safe body.*

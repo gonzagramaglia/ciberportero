@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Plus, Hash, Key, ArrowRight, X, ChevronLeft, Github, Youtube, Loader2, Trash2, Coffee, Twitter, Twitch } from 'lucide-react';
 import { FaXTwitter } from 'react-icons/fa6';
-import { TbBrandDiscord } from 'react-icons/tb';
+import { TbBrandGithub } from 'react-icons/tb';
 import { createRoom, joinRoom, deleteRoom } from '@/lib/salasActions';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
@@ -417,9 +417,9 @@ export default function RoomLobbyClient({ initialRooms, session }: any) {
                 <footer className="footer-main" style={{ marginTop: '2.5rem' }}>
                     <div className="footer-social-left" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
                         <a href="https://x.com/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="X (Twitter) de Ciberportero"><FaXTwitter size={16} aria-hidden="true" /></a>
-                        <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label={lang === 'es' ? "Discord de Ciberportero" : "Ciberportero Discord"}><TbBrandDiscord size={21} aria-hidden="true" /></a>
+                        <a href="https://github.com/gonzagramaglia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label={lang === 'es' ? "GitHub de Ciberportero" : "Ciberportero GitHub"}><TbBrandGithub size={21} aria-hidden="true" /></a>
                     </div>
-                    <span>{t.footer}</span>
+                    <a href="https://whatsapp.com/channel/0029VbDixno96H4NZuwELU3Z" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "none" }}>{t.footer}</a>
                     <div className="footer-social-right" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
                         <a href="https://twitch.tv/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex'  }} aria-label="Twitch de Ciberportero"><Twitch size={18} aria-hidden="true" /></a>
                         <a href="https://youtube.com/@ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="YouTube de Ciberportero"><Youtube size={22} aria-hidden="true" /></a>

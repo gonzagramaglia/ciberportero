@@ -88,11 +88,11 @@ If you have ideas for improvements, want to suggest new features, or found a bug
 
 If Ciberportero has helped you in your academic journey, please consider giving this repository a **Star** as a token of appreciation. It helps the project reach more students! 🚀
 
-### 🙏 Special Thanks
+## 🙏 Special Thanks
 
 | Contributor | Contribution |
 |-------------|-------------|
-| **[@Pablo-Gularte](https://github.com/Pablo-Gularte)** | Proposed and documented the Academic Regulations section based on UNDEF Rector's Resolution N° 326/2025, including all promotion regimes and academic continuity rules. [Issue #12](https://github.com/gonzagramaglia/ciberportero/issues/12) |
+| **[Pablo Gularte](https://github.com/Pablo-Gularte)** | Proposed and documented the Academic Regulations section based on UNDEF Rector's Resolution N° 326/2025, including all promotion regimes and academic continuity rules. [**Issue #12**](https://github.com/gonzagramaglia/ciberportero/issues/12) |
 
 ---
-© 2026 | *Mens secura in corpore tuto*
+© 2026 | *Mens Secura in corpore tuto*

@@ -14,7 +14,9 @@ export default async function AdminPostsPage() {
     getAdminNote('posts')
   ]);
 
-  const posts = allPosts.filter(p => p.slug !== 'links' && p.title !== 'links');
+  const GHOST_SLUGS = ['links', 'plan', 'calendar'];
+  const posts = allPosts.filter(p => !GHOST_SLUGS.includes(p.slug));
+
 
   return (
     <div className="space-y-6 fade-in">

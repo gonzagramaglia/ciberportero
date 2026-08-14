@@ -51,3 +51,4 @@ next-env.d.ts
 # PR description drafts
 docs/pr-*
 docs/prs/
+.vscode/

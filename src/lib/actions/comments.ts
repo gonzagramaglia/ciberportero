@@ -92,7 +92,8 @@ export async function addComment(slug: string, content: string, parentId?: strin
           title: { es: slug, en: slug },
           content: { es: "Draft from markdown sync", en: "Draft from markdown sync" },
           published: true,
-          unlisted: true
+          unlisted: true,
+          protected: true
         } as any
       });
     }
@@ -106,7 +107,13 @@ export async function addComment(slug: string, content: string, parentId?: strin
         ...(parentId ? { parentId } : {})
       }
     });
-    revalidatePath(`/${slug}`);
+    if (slug === 'plan') {
+      revalidatePath('/plan');
+    } else if (post.unlisted) {
+      revalidatePath(`/blog/${slug}`);
+    } else {
+      revalidatePath(`/${slug}`);
+    }
   }
 
   return { success: true };
@@ -129,7 +136,15 @@ export async function deleteComment(commentId: string) {
 
   await db.comment.delete({ where: { id: commentId } });
   
-  if (comment.post) revalidatePath(`/${comment.post.slug}`);
+  if (comment.post) {
+    if (comment.post.slug === 'plan') {
+      revalidatePath('/plan');
+    } else if (comment.post.unlisted) {
+      revalidatePath(`/blog/${comment.post.slug}`);
+    } else {
+      revalidatePath(`/${comment.post.slug}`);
+    }
+  }
   if (comment.podcast) revalidatePath(`/podcast/${comment.podcast.slug}`);
   
   return { success: true };

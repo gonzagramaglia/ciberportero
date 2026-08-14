@@ -3,7 +3,7 @@ export const en = {
     description: "Cyberdefense and digital security from the front lines",
     back: "Back to home",
     backToBlog: "Back to blog",
-    footer: "© 2026 | Mens secura in corpore tuto",
+    footer: "© 2026 | Mens Secura in corpore tuto",
     auth: {
         signIn: "Sign in",
         signInConcise: "Sign In",

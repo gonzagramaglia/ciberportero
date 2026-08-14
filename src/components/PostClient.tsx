@@ -5,9 +5,9 @@ import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkBreaks from 'remark-breaks';
-import { ChevronLeft, Github, Youtube, ArrowUp, ArrowDown, X, Link2, Check, Edit, ThumbsUp, Coffee , Twitter, Twitch} from 'lucide-react';
+import { ChevronLeft, Github, Youtube, ArrowUp, ArrowDown, X, Link2, Check, Edit, ThumbsUp, Coffee , Twitter, Twitch, Home } from 'lucide-react';
 import { FaXTwitter } from 'react-icons/fa6';
-import { TbBrandDiscord } from 'react-icons/tb';
+import { TbBrandGithub } from 'react-icons/tb';
 import { useLanguage } from '../context/LanguageContext';
 import { translations } from '../lib/translations';
 import { useSession } from 'next-auth/react';
@@ -441,6 +441,8 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
         del: ({ node, ...props }: any) => <span style={{ color: '#ca8a04', fontWeight: '800' }} {...props} />
     }), [activeHash, setSelectedImage]);
 
+    const isSubjectPost = subjectSlugs.includes(slug) || (typeof postTitle === 'string' && /\[(0[0-9]|10)\]/.test(postTitle));
+
     return (
         <>
             {selectedImage && (
@@ -452,7 +454,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                 </div>
             )}
 
-            <div className={`container fade-in post-container ${isHighlighting ? 'highlight-active' : ''} ${post.unlisted ? 'is-blog-post' : ''}`}>
+            <div className={`container fade-in post-container ${isHighlighting ? 'highlight-active' : ''} ${post.unlisted ? 'is-blog-post' : ''} ${isSubjectPost ? 'is-subject-post' : ''}`}>
                 <CountdownWidget countdowns={post?.countdowns} />
                 <NotificationBanners />
                 <div className="nav-header-row" style={{ marginBottom: 0 }}>
@@ -466,11 +468,15 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                     </div>
                 </div>
 
-                <div className="post-body-layout">
+                <div className="post-body-layout" style={{ marginTop: '1.5rem' }}>
                     <article className={`post-content ${isHighlighting ? 'highlight-active' : ''}`}>
                         <div className="post-date-container" style={{ justifyContent: 'space-between', width: '100%' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-                                <span className="post-date" style={{ margin: 0 }} suppressHydrationWarning>
+                            <div style={{ display: 'flex', alignItems: 'baseline', gap: '1rem', flexWrap: 'wrap' }}>
+                                <Link href="/" className="back-home-nav-link" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#000', textDecoration: 'none' }}>
+                                    <Home size={16} className="title-home-icon" style={{ transform: 'translateY(2px)' }} />
+                                    <span className="title-home-text" style={{ fontSize: '0.9rem', fontWeight: 600, marginRight: '0.5rem' }}>{t.back}</span>
+                                </Link>
+                                <span className="post-date" style={{ margin: 0, display: 'inline' }} suppressHydrationWarning>
                                     <span className="last-updated" style={{ fontSize: '0.85rem', opacity: 0.7, fontWeight: 500 }} suppressHydrationWarning>
                                         {post.unlisted ? (
                                             <>{new Date(post.date).toLocaleDateString(lang, { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })}</>
@@ -489,12 +495,16 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
 
                         {subjectSlugs.includes(slug) && (
                             <div style={{ marginTop: '0rem', marginBottom: '0rem' }}>
-                                <img src={lang === 'en' ? "/bachelor-degree.png" : "/licenciatura-en-ciberdefensa.png"} alt={lang === 'en' ? "Bachelor in Cyber Defense" : "Licenciatura en Ciberdefensa"} style={{ width: '100%', borderRadius: '12px', display: 'block', margin: '0 0 1rem 0' }} />
+                                <Link href="/" className="back-home-link" style={{ display: 'block' }}>
+                                    <img src={lang === 'en' ? "/bachelor-degree.png" : "/licenciatura-en-ciberdefensa.png"} alt={lang === 'en' ? "Bachelor in Cyber Defense" : "Licenciatura en Ciberdefensa"} style={{ width: '100%', borderRadius: '12px', display: 'block', margin: '0 0 1rem 0' }} />
+                                </Link>
                             </div>
                         )}
                         {postTitle && typeof postTitle === 'string' && postTitle.includes('[00]') && (
                             <div style={{ marginTop: '0rem', marginBottom: '0rem' }}>
-                                <img src={lang === 'en' ? "/new-students.png" : "/material-para-ingresantes.png"} alt={lang === 'en' ? "Material for New Students" : "Material para Ingresantes"} style={{ width: '100%', borderRadius: '12px', display: 'block', margin: '0 0 1rem 0' }} />
+                                <Link href="/" className="back-home-link" style={{ display: 'block' }}>
+                                    <img src={lang === 'en' ? "/new-students.png" : "/material-para-ingresantes.png"} alt={lang === 'en' ? "Material for New Students" : "Material para Ingresantes"} style={{ width: '100%', borderRadius: '12px', display: 'block', margin: '0 0 1rem 0' }} />
+                                </Link>
                             </div>
                         )}
 
@@ -528,10 +538,12 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                         </ReactMarkdown>
                     </article>
 
-                    <aside className="post-sidebar" style={{ top: '7rem' }}>
-                        <div className="lang-sidebar" style={{ marginBottom: '1.5rem' }}>
-                            <LanguageSwitcher availableLangs={Object.keys(post.title as any).filter(l => (post.title as any)[l] && (post.content as any)[l])} />
-                        </div>
+                    <aside className="post-sidebar" style={{ top: '7rem', marginTop: 0 }}>
+                        {isSubjectPost && (
+                            <div className="lang-sidebar" style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', minHeight: '32px' }}>
+                                <LanguageSwitcher availableLangs={Object.keys(post.title as any).filter(l => (post.title as any)[l] && (post.content as any)[l])} />
+                            </div>
+                        )}
                         {hasVisibleTocItems && (
                             <nav className="post-toc desktop-toc">
                                 <h3 onClick={handleClearHash} style={{ cursor: 'pointer' }} title={lang === 'es' ? 'Limpiar selección' : 'Clear selection'}>{t.post.index}</h3>
@@ -549,8 +561,8 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                         <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#94a3b8' }}>
                             {lang === 'es' ? 'Autor del post' : 'Post author'}
                         </span>
-                        <a href="https://cafecito.app/gonzagramaglia" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', color: '#0f172a' }} title="Invitame un cafecito">
-                            <Coffee size={20} style={{ color: '#000000' }} />
+                        <a href="https://youtu.be/xrDZpAq2w7g" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', color: '#0f172a' }} title="Ver video en YouTube">
+                            <Youtube size={20} style={{ color: '#ff0000' }} />
                             <h4 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 800 }}>Gonzalo Gramaglia</h4>
                         </a>
                         <p style={{ margin: 0, color: '#475569', fontSize: '0.95rem', fontWeight: 500 }}>Full Stack Developer | Systems Reliability & Security</p>
@@ -564,7 +576,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                     </div>
                 </div>
 
-                <div className="copy-container mobile-only" style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-start', marginBottom: '2rem' }}>
+                <div className="copy-container mobile-only" style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-start', marginTop: '2rem', marginBottom: '0' }}>
                     <button onClick={handleCopy} className={`copy-button ${copied ? 'success' : ''}`}>
                         {copied ? <Check size={16} /> : <Link2 size={16} />}
                         <span>{copied ? t.share.copied : t.share.copy}</span>
@@ -576,9 +588,9 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                 <footer className="footer-main">
                 <div className="footer-social-left" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
                     <a href="https://x.com/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="X (Twitter) de Ciberportero"><FaXTwitter size={16} aria-hidden="true" /></a>
-                    <a href="https://discord.com/invite/AxqkVzYPeN" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label={lang === 'es' ? "Discord de Ciberportero" : "Ciberportero Discord"}><TbBrandDiscord size={21} aria-hidden="true" /></a>
+                    <a href="https://github.com/gonzagramaglia/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label={lang === 'es' ? "GitHub de Ciberportero" : "Ciberportero GitHub"}><TbBrandGithub size={21} aria-hidden="true" /></a>
                 </div>
-                <span>{t.footer}</span>
+                <a href="https://whatsapp.com/channel/0029VbDixno96H4NZuwELU3Z" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "none" }}>{t.footer}</a>
                 <div className="footer-social-right" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
                     <a href="https://twitch.tv/ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex'  }} aria-label="Twitch de Ciberportero"><Twitch size={18} aria-hidden="true" /></a>
                     <a href="https://youtube.com/@ciberportero" target="_blank" rel="noopener noreferrer" style={{ display: 'flex' }} aria-label="YouTube de Ciberportero"><Youtube size={22} aria-hidden="true" /></a>
@@ -587,7 +599,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
             </div>
 
 
-            {['analisis-1', 'aprobar-analisis-1', 'algebra-1', 'aprobar-algebra-1', 'gsi', 'aprobar-gsi', 'ingles-1', 'aprobar-ingles-1', 'sistemas-operativos-1', 'aprobar-sistemas-operativos-1'].includes(slug) && (
+            {((typeof postTitle === 'string' && /\[0[1-5]\]/.test(postTitle)) || ['analisis-1', 'aprobar-analisis-1', 'algebra-1', 'aprobar-algebra-1', 'gsi', 'aprobar-gsi', 'ingles-1', 'aprobar-ingles-1', 'sistemas-operativos-1', 'aprobar-sistemas-operativos-1'].includes(slug)) && (
                 <div className="subject-navigator">
                     {[
                         { id: '01', slugs: ['analisis-1', 'aprobar-analisis-1'] },
@@ -599,7 +611,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                         <Link
                             key={s.id}
                             href={`/${lang === 'es' ? s.slugs[0] : s.slugs[1]}${currentHash}`}
-                            className={`subject-nav-item ${s.slugs.includes(slug) ? 'active' : ''}`}
+                            className={`subject-nav-item ${(s.slugs.includes(slug) || (typeof postTitle === 'string' && postTitle.includes(`[${s.id}]`))) ? 'active' : ''}`}
                         >
                             {s.id}
                         </Link>
@@ -607,7 +619,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                 </div>
             )}
 
-            {['sistemas-de-tratamiento-de-datos', 'aprobar-sistemas-de-tratamiento-de-datos', 'infraestructura-de-telecomunicaciones', 'aprobar-infraestructura-de-telecomunicaciones', 'sociedad-y-estado', 'aprobar-sociedad-y-estado', 'sistemas-operativos-2', 'aprobar-sistemas-operativos-2', 'lenguajes-de-programacion', 'aprobar-lenguajes-de-programacion'].includes(slug) && (
+            {((typeof postTitle === 'string' && /\[(0[6-9]|10)\]/.test(postTitle)) || ['sistemas-de-tratamiento-de-datos', 'aprobar-sistemas-de-tratamiento-de-datos', 'infraestructura-de-telecomunicaciones', 'aprobar-infraestructura-de-telecomunicaciones', 'sociedad-y-estado', 'aprobar-sociedad-y-estado', 'sistemas-operativos-2', 'aprobar-sistemas-operativos-2', 'lenguajes-de-programacion', 'aprobar-lenguajes-de-programacion'].includes(slug)) && (
                 <div className="subject-navigator">
                     {[
                         { id: '06', slugs: ['sistemas-de-tratamiento-de-datos', 'aprobar-sistemas-de-tratamiento-de-datos'] },
@@ -619,7 +631,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                         <Link
                             key={s.id}
                             href={`/${lang === 'es' ? s.slugs[0] : s.slugs[1]}${currentHash}`}
-                            className={`subject-nav-item ${s.slugs.includes(slug) ? 'active' : ''}`}
+                            className={`subject-nav-item ${(s.slugs.includes(slug) || (typeof postTitle === 'string' && postTitle.includes(`[${s.id}]`))) ? 'active' : ''}`}
                         >
                             {s.id}
                         </Link>
@@ -815,7 +827,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                     .lang-header { display: flex !important; }
                 }
                 @media (min-width: 1101px) {
-                    .lang-sidebar { display: block !important; }
+                    .lang-sidebar { display: flex !important; }
                     .lang-header { display: none !important; }
                 }
             `}</style>

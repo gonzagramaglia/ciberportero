@@ -2,9 +2,12 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { FileText, CheckCircle2, Edit } from 'lucide-react';
+import { FileText, CheckCircle2, Edit, Lock } from 'lucide-react';
 import { DeleteButton } from './DeleteButton';
 import { timeAgo } from '@/lib/utils';
+
+const GHOST_SLUGS = ['links', 'plan', 'calendar'];
+
 
 interface AdminPostsListProps {
   posts: any[];
@@ -14,9 +17,11 @@ export default function AdminPostsList({ posts }: AdminPostsListProps) {
   const [tab, setTab] = useState<'listed' | 'unlisted'>('listed');
 
   const filteredPosts = posts.filter(p => {
+    if (GHOST_SLUGS.includes(p.slug)) return false;
     if (tab === 'unlisted') return p.unlisted;
     return !p.unlisted;
   });
+
 
   return (
     <div>
@@ -130,7 +135,21 @@ export default function AdminPostsList({ posts }: AdminPostsListProps) {
                       >
                         <Edit size={16} />
                       </Link>
-                      <DeleteButton id={post.id} type="post" />
+                      {(post as any).protected ? (
+                        <div
+                          title="Post protegido: contiene comentarios y no puede eliminarse"
+                          style={{
+                            width: '36px', height: '36px', borderRadius: '50%',
+                            background: '#f8fafc', display: 'flex', alignItems: 'center',
+                            justifyContent: 'center', color: '#94a3b8',
+                            border: '1px solid #e2e8f0', cursor: 'default'
+                          }}
+                        >
+                          <Lock size={16} />
+                        </div>
+                      ) : (
+                        <DeleteButton id={post.id} type="post" />
+                      )}
                     </div>
                   </td>
                 </tr>

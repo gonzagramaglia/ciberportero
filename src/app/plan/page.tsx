@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import NotificationBanners from "@/components/NotificationBanners";
 import CountdownWidget from "@/components/CountdownWidget";
+import SyncStatus from "@/components/SyncStatus";
 import { normalizeString } from "@/lib/string-utils";
 import { useSession } from "next-auth/react";
 import { getUserProgress, updateUserProgress } from "@/lib/actions";
@@ -38,7 +39,7 @@ import {
 } from "@/components/AuthButtons";
 import CommentSection from "@/components/CommentSection";
 import { FaXTwitter } from "react-icons/fa6";
-import { TbBrandDiscord } from "react-icons/tb";
+import { TbBrandGithub } from "react-icons/tb";
 import FloatingMusicButton from "@/components/FloatingMusicButton";
 import FloatingFootballButton from "@/components/FloatingFootballButton";
 
@@ -933,6 +934,15 @@ export default function PlanPage() {
     }
   };
 
+  const changeObjective = (obj: "intermediate" | "degree") => {
+    const isGuest = !session;
+    const objectiveKey = isGuest
+      ? "ciberportero_plan_objective"
+      : "ciberportero_user_plan_objective";
+    setObjective(obj);
+    localStorage.setItem(objectiveKey, obj);
+  };
+
   const objectiveSubjects =
     objective === "intermediate"
       ? curriculum.filter((subject) => subject.year <= 3)
@@ -1570,7 +1580,210 @@ export default function PlanPage() {
   }
 
   return (
-    <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "0 0 3rem" }}>
+    <div className="container fade-in page-container">
+      <CountdownWidget />
+
+      <NotificationBanners />
+
+      <header style={{ marginBottom: '3rem' }}>
+        <div className="nav-header-row">
+          <Link href="/" className="back-link">
+            <ChevronLeft size={18} /> {translations[lang].back}
+          </Link>
+          <div className="mobile-only">
+            <LanguageSwitcher />
+          </div>
+        </div>
+
+        <div
+          style={{
+            marginTop: "0.5rem",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            gap: "1.5rem",
+          }}
+        >
+          <div style={{ width: "100%" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                flexWrap: "wrap",
+                gap: "1.2rem",
+              }}
+            >
+              <h1
+                style={{
+                  margin: 0,
+                  fontSize: "3rem",
+                  fontWeight: "900",
+                  color: "#000",
+                  letterSpacing: "-0.03em",
+                  display: "flex",
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                  gap: "1rem",
+                }}
+              >
+                <Link
+                  href="/"
+                  style={{
+                    textDecoration: "none",
+                    color: "inherit",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <Home
+                    className="title-home-icon"
+                    size={40}
+                    style={{ marginRight: "0.5rem" }}
+                  />
+                  {pt.title}
+                </Link>
+                <div
+                  style={{
+                    opacity: status === "loading" ? 0 : 1,
+                    transition: "opacity 0.2s",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  {status !== "loading" &&
+                    (session ? (
+                      session.user?.role === "admin" ||
+                      session.user?.email === "ciberportero@gmail.com" ? (
+                        <AdminPanelButton />
+                      ) : (
+                        <SignOutButton />
+                      )
+                    ) : (
+                      <SignInButton />
+                    ))}
+                  <SyncStatus />
+                </div>
+              </h1>
+              <div className="mobile-hide">
+                <LanguageSwitcher />
+              </div>
+            </div>
+            <div className="calendar-desc-row">
+              <p
+                style={{
+                  color: "var(--muted)",
+                  fontSize: "1.2rem",
+                  margin: 0,
+                  fontWeight: "500",
+                }}
+              >
+                {session?.user ? (
+                  <>
+                    <span style={{ color: "var(--accent)", fontWeight: "700" }}>
+                      {t.dashboard.welcome},{" "}
+                      {session.user.name?.split(" ")[0] || "Estudiante"}!
+                    </span>{" "}
+                    <span dangerouslySetInnerHTML={{ __html: pt.description }} />
+                  </>
+                ) : (
+                  <span dangerouslySetInnerHTML={{ __html: pt.description }} />
+                )}
+              </p>
+            </div>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              gap: "0.8rem",
+              alignItems: "center",
+              flexWrap: "wrap",
+            }}
+          >
+            {/* Objective Selector */}
+            <div
+              style={{
+                background: "#f1f5f9",
+                padding: "4px",
+                borderRadius: "14px",
+                display: "flex",
+                gap: "4px",
+                border: "1px solid var(--border)",
+              }}
+            >
+              <button
+                onClick={() => changeObjective("degree")}
+                style={{
+                  padding: "0.6rem 1.2rem",
+                  borderRadius: "10px",
+                  border: "none",
+                  background: objective === "degree" ? "white" : "transparent",
+                  color: objective === "degree" ? "#000" : "var(--muted)",
+                  fontWeight: "700",
+                  fontSize: "0.85rem",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                  boxShadow:
+                    objective === "degree"
+                      ? "0 4px 12px rgba(0,0,0,0.05)"
+                      : "none",
+                }}
+              >
+                {pt.full}
+              </button>
+              <button
+                onClick={() => changeObjective("intermediate")}
+                style={{
+                  padding: "0.6rem 1.2rem",
+                  borderRadius: "10px",
+                  border: "none",
+                  background:
+                    objective === "intermediate" ? "white" : "transparent",
+                  color: objective === "intermediate" ? "#000" : "var(--muted)",
+                  fontWeight: "700",
+                  fontSize: "0.85rem",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                  boxShadow:
+                    objective === "intermediate"
+                      ? "0 4px 12px rgba(0,0,0,0.05)"
+                      : "none",
+                }}
+              >
+                {pt.intermediate}
+              </button>
+            </div>
+
+            {/* PDF Link */}
+            <a
+              href="https://undef.edu.ar/fadena/wp-content/uploads/2025/10/Plan-de-estudios-CIBERDEFENSA.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="pdf-link"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.4rem",
+                fontSize: "0.85rem",
+                color: "var(--accent)",
+                fontWeight: "700",
+                padding: "0.4rem 0.8rem",
+                background: "rgba(0, 112, 243, 0.05)",
+                borderRadius: "10px",
+                textDecoration: "none",
+                transition: "all 0.2s",
+                whiteSpace: "nowrap",
+              }}
+            >
+              <ExternalLink size={16} />
+              Plan Oficial (PDF)
+            </a>
+          </div>
+        </div>
+      </header>
+
       <header
         style={{
           background: "rgba(255,255,255,0.9)",
@@ -2180,12 +2393,13 @@ export default function PlanPage() {
             <FaXTwitter size={16} aria-hidden="true" />
           </a>
           <a
-            href="https://discord.com/invite/AxqkVzYPeN"
+            href="https://github.com/gonzagramaglia/ciberportero"
             target="_blank"
             rel="noopener noreferrer"
             style={{ display: "flex", color: "var(--muted)" }}
+            aria-label={lang === 'es' ? "GitHub de Ciberportero" : "Ciberportero GitHub"}
           >
-            <TbBrandDiscord size={21} aria-hidden="true" />
+            <TbBrandGithub size={21} aria-hidden="true" />
           </a>
           <a
             href="https://twitch.tv/ciberportero"

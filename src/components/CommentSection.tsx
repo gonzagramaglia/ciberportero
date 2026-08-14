@@ -503,8 +503,22 @@ export default function CommentSection({ postSlug, podcastSlug, lang = 'es' }: {
 
       <div style={{ display: 'grid', gap: '2rem' }}>
         {isLoading ? (
-          <div style={{ textAlign: 'center', padding: '2rem' }}>
-            <Loader2 className="spin" style={{ opacity: 0.2 }} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            {[1, 2, 3].map((i) => (
+              <div key={i} style={{ display: 'flex', gap: '0.9rem', opacity: 1 - (i * 0.15) }}>
+                <div className="skeleton-pulse" style={{ width: '44px', height: '44px', flexShrink: 0, borderRadius: '14px' }} />
+                <div style={{ flex: 1 }}>
+                  <div className="comment-header" style={{ marginBottom: '0.5rem' }}>
+                    <div className="skeleton-pulse" style={{ width: '120px', height: '18px', borderRadius: '6px' }} />
+                  </div>
+                  <div style={{ background: '#fcfcfc', padding: '1rem 1.2rem', borderRadius: '0 16px 16px 16px', border: '1px solid #f0f0f0', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <div className="skeleton-pulse" style={{ width: '100%', height: '14px', borderRadius: '6px' }} />
+                    <div className="skeleton-pulse" style={{ width: '85%', height: '14px', borderRadius: '6px' }} />
+                    <div className="skeleton-pulse" style={{ width: '60%', height: '14px', borderRadius: '6px' }} />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         ) : comments.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '3rem', color: '#999' }}>
@@ -779,7 +793,7 @@ export default function CommentSection({ postSlug, podcastSlug, lang = 'es' }: {
         @media (max-width: 768px) {
           .comments-container {
             padding: 1.5rem;
-            margin-top: 2rem;
+            margin-top: 0.5rem;
             border-radius: 24px;
           }
           .comments-header {
