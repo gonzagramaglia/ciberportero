@@ -44,7 +44,9 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
     const t = translations[lang];
     const subjectSlugs = [
         'sistemas-operativos-1', 'ingles-1', 'gsi', 'algebra-1', 'analisis-1',
-        'aprobar-sistemas-operativos-1', 'aprobar-ingles-1', 'aprobar-gsi', 'aprobar-algebra-1', 'aprobar-analisis-1'
+        'sistemas-de-tratamiento-de-datos', 'infraestructura-de-telecomunicaciones', 'sociedad-y-estado', 'sistemas-operativos-2', 'lenguajes-de-programacion',
+        'aprobar-sistemas-operativos-1', 'aprobar-ingles-1', 'aprobar-gsi', 'aprobar-algebra-1', 'aprobar-analisis-1',
+        'aprobar-sistemas-de-tratamiento-de-datos', 'aprobar-infraestructura-de-telecomunicaciones', 'aprobar-sociedad-y-estado', 'aprobar-sistemas-operativos-2', 'aprobar-lenguajes-de-programacion'
     ];
     const owaspSlugs = ['owasp-top-10', ...Array.from({ length: 10 }, (_, i) => `owasp-${i + 1}`)];
 
@@ -587,21 +589,40 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
 
             {subjectSlugs.includes(slug) && (
                 <div className="subject-navigator">
-                    {[
-                        { id: '01', slugs: ['analisis-1', 'aprobar-analisis-1'] },
-                        { id: '02', slugs: ['algebra-1', 'aprobar-algebra-1'] },
-                        { id: '03', slugs: ['gsi', 'aprobar-gsi'] },
-                        { id: '04', slugs: ['ingles-1', 'aprobar-ingles-1'] },
-                        { id: '05', slugs: ['sistemas-operativos-1', 'aprobar-sistemas-operativos-1'] }
-                    ].map((s) => (
-                        <Link
-                            key={s.id}
-                            href={`/${lang === 'es' ? s.slugs[0] : s.slugs[1]}${currentHash}`}
-                            className={`subject-nav-item ${s.slugs.includes(slug) ? 'active' : ''}`}
-                        >
-                            {s.id}
-                        </Link>
-                    ))}
+                    <div className="nav-group">
+                        {[
+                            { id: '01', slugs: ['analisis-1', 'aprobar-analisis-1'] },
+                            { id: '02', slugs: ['algebra-1', 'aprobar-algebra-1'] },
+                            { id: '03', slugs: ['gsi', 'aprobar-gsi'] },
+                            { id: '04', slugs: ['ingles-1', 'aprobar-ingles-1'] },
+                            { id: '05', slugs: ['sistemas-operativos-1', 'aprobar-sistemas-operativos-1'] },
+                        ].map((s) => (
+                            <Link
+                                key={s.id}
+                                href={`/${lang === 'es' ? s.slugs[0] : s.slugs[1]}${currentHash}`}
+                                className={`subject-nav-item ${s.slugs.includes(slug) ? 'active' : ''}`}
+                            >
+                                {s.id}
+                            </Link>
+                        ))}
+                    </div>
+                    <div className="nav-group">
+                        {[
+                            { id: '06', slugs: ['sistemas-de-tratamiento-de-datos', 'aprobar-sistemas-de-tratamiento-de-datos'] },
+                            { id: '07', slugs: ['infraestructura-de-telecomunicaciones', 'aprobar-infraestructura-de-telecomunicaciones'] },
+                            { id: '08', slugs: ['sociedad-y-estado', 'aprobar-sociedad-y-estado'] },
+                            { id: '09', slugs: ['sistemas-operativos-2', 'aprobar-sistemas-operativos-2'] },
+                            { id: '10', slugs: ['lenguajes-de-programacion', 'aprobar-lenguajes-de-programacion'] }
+                        ].map((s) => (
+                            <Link
+                                key={s.id}
+                                href={`/${lang === 'es' ? s.slugs[0] : s.slugs[1]}${currentHash}`}
+                                className={`subject-nav-item ${s.slugs.includes(slug) ? 'active' : ''}`}
+                            >
+                                {s.id}
+                            </Link>
+                        ))}
+                    </div>
                 </div>
             )}
 
@@ -678,7 +699,8 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                     color: #eab308 !important;
                 }
                 .post-content { transition: all 0.6s ease; }
-                .subject-navigator { position: fixed; left: 2.5rem; bottom: 3.5rem; display: flex; flex-direction: column; gap: 1rem; z-index: 1000; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+                .subject-navigator { position: fixed; left: 2.5rem; bottom: 3.5rem; display: flex; flex-direction: row; gap: 1rem; z-index: 1000; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+                .nav-group { display: flex; flex-direction: column; gap: 1rem; }
                 .subject-navigator.owasp-navigator { flex-direction: column-reverse; }
                 .subject-nav-item { width: 62px; height: 62px; border-radius: 50%; background: #ffffff; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); color: #1e293b; font-weight: 900; font-size: 1.3rem; text-decoration: none; opacity: 0.8; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
                 .subject-nav-item.active { background: #fff; border: 2px solid #eab308; color: #eab308; box-shadow: 0 0 20px rgba(234, 179, 8, 0.2); pointer-events: none; opacity: 1; }
@@ -741,13 +763,13 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                         left: 50%; 
                         bottom: 2.5rem; 
                         transform: translateX(-50%); 
-                        flex-direction: row; 
+                        flex-direction: column; 
                         gap: 0.6rem; 
-                        flex-wrap: wrap;
-                        justify-content: center;
+                        align-items: center;
                         width: max-content;
                         max-width: 95vw;
                     }
+                    .nav-group { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 0.6rem; width: 100%; max-width: 100%; }
                     .subject-navigator.owasp-navigator {
                         flex-direction: row-reverse;
                         flex-wrap: wrap-reverse;

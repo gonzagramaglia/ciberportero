@@ -607,7 +607,7 @@ export default function PlanPage() {
       </main>
       <div style={{ width: '100%', marginTop: '1.5rem', marginBottom: '2rem', borderRadius: '12px', overflow: 'hidden' }}>
         <img
-          src="/meme-messi.jpg"
+          src="/avatar-messi.jpg"
           alt="Messi"
           style={{ width: '100%', height: 'auto', maxHeight: '400px', objectFit: 'cover', display: 'block' }}
         />
