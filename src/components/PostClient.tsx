@@ -587,7 +587,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
             </div>
 
 
-            {['analisis-1', 'aprobar-analisis-1', 'algebra-1', 'aprobar-algebra-1', 'gsi', 'aprobar-gsi', 'ingles-1', 'aprobar-ingles-1', 'sistemas-operativos-1', 'aprobar-sistemas-operativos-1'].includes(slug) && (
+            {subjectSlugs.includes(slug) && (
                 <div className="subject-navigator">
                     <div className="nav-group">
                         {[
@@ -606,11 +606,6 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                             </Link>
                         ))}
                     </div>
-                </div>
-            )}
-
-            {['sistemas-de-tratamiento-de-datos', 'aprobar-sistemas-de-tratamiento-de-datos', 'infraestructura-de-telecomunicaciones', 'aprobar-infraestructura-de-telecomunicaciones', 'sociedad-y-estado', 'aprobar-sociedad-y-estado', 'sistemas-operativos-2', 'aprobar-sistemas-operativos-2', 'lenguajes-de-programacion', 'aprobar-lenguajes-de-programacion'].includes(slug) && (
-                <div className="subject-navigator">
                     <div className="nav-group">
                         {[
                             { id: '06', slugs: ['sistemas-de-tratamiento-de-datos', 'aprobar-sistemas-de-tratamiento-de-datos'] },
@@ -774,7 +769,7 @@ export default function PostClient({ post: initialPost, slug, session: initialSe
                         width: max-content;
                         max-width: 95vw;
                     }
-                    .nav-group { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 0.6rem; }
+                    .nav-group { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 0.6rem; width: 100%; max-width: 100%; }
                     .subject-navigator.owasp-navigator {
                         flex-direction: row-reverse;
                         flex-wrap: wrap-reverse;
