@@ -130,6 +130,7 @@ Whenever a PR is prepared, the AI assistant must generate a local markdown file 
 | #9 | `style/ui-enhancements` | Update footer spacing, English banners for posts, and /plan scrollbar | ✅ Merged |
 | #10 | `feat/global-music-football-buttons` | Add global floating music and football buttons across pages | ✅ Merged |
 | #11 | `style/mobile-countdowns-and-admin-auth` | Layout for mobile countdowns and admin auth buttons | ✅ Merged |
-| #12 | `refactor/codebase-cleanup` | Clean codebase, remove Portuguese, and align README | 🟡 Draft |
-
+| #12 | `refactor/admin-panel-ui` | Admin panel fixes and UI tweaks | ✅ Merged |
+| #13 | `refactor/codebase-cleanup` | Clean codebase, remove Portuguese, and align README | ✅ Merged |
+| #14 | `feat/add-new-subjects` | Add new subjects (06-10), navigation chunks, and fix image paths | 🟡 Draft |
 *(Update this table every time a PR is opened or merged.)*
