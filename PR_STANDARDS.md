@@ -13,18 +13,19 @@ Follows Conventional Commits. Must be under 50 characters to avoid GitHub trunca
 <type>(<scope>): <short description>
 ```
 
-| Type | When to use |
-|------|-------------|
-| `feat` | New feature or page |
-| `fix` | Bug fix |
-| `chore` | Tooling, config, dependencies |
+| Type       | When to use                               |
+| ---------- | ----------------------------------------- |
+| `feat`     | New feature or page                       |
+| `fix`      | Bug fix                                   |
+| `chore`    | Tooling, config, dependencies             |
 | `refactor` | Code restructure without behaviour change |
-| `test` | Adding or updating tests |
-| `docs` | Documentation only |
-| `ci` | CI/CD pipeline changes |
-| `perf` | Performance improvements |
+| `test`     | Adding or updating tests                  |
+| `docs`     | Documentation only                        |
+| `ci`       | CI/CD pipeline changes                    |
+| `perf`     | Performance improvements                  |
 
 **Examples:**
+
 - `feat(rooms): add message pinning`
 - `fix(auth): resolve Google OAuth redirect loop`
 - `ci(coverage): enforce 80% unit test threshold`
@@ -73,6 +74,7 @@ When GitHub asks for the Extended Description during the merge, use this bullet 
 ```
 
 **Example:**
+
 ```text
 - CI: GitHub Actions workflow with lint, test, and coverage checks.
 - CodeRabbit: Assertive auto-review config on PRs to main.
@@ -100,6 +102,7 @@ Branches follow the pattern:
 ```
 
 **Examples:**
+
 - `feat/podcast-search`
 - `fix/auth-token-refresh`
 - `ci/coderabbit-and-coverage`
@@ -111,6 +114,7 @@ Branches follow the pattern:
 ## PR Draft Generation
 
 Whenever a PR is prepared, the AI assistant must generate a local markdown file containing the **PR Title**, the **Description Template**, and the **Extended Description** for the user to review or copy.
+
 - **Path:** `docs/prs/pr-[number]-[slug].md`
 - **Note:** The `docs/prs/` directory is git-ignored, so these drafts won't be pushed.
 
@@ -118,19 +122,21 @@ Whenever a PR is prepared, the AI assistant must generate a local markdown file 
 
 ## PR History Reference
 
-| PR | Branch | Description | Status |
-|----|--------|-------------|--------|
-| #2 | `feat/coderabbit-coverage` | CodeRabbit config & 80% coverage enforcement | ✅ Merged |
-| #3 | `docs/agent-context-files` | Agent docs, context files, PR standards | ✅ Merged |
-| #4 | `refactor/modularize-actions` | Modularize actions.ts into domain-specific modules | ✅ Merged |
-| #5 | `refactor/modularize-translations` | Modularize translations into per-language files | ✅ Merged |
-| #6 | `feat/enhance-links-admin` | Link admin image uploads and compact UI | ✅ Merged |
-| #7 | `feat/social-links-and-calendar` | Update social links (X, Discord, Twitch, YouTube) and fix calendar date timezone bugs | ✅ Merged |
-| #8 | `style/posts-cards-and-images` | UI enhancements for posts, tree/messi images, and admin tweaks | ✅ Merged |
-| #9 | `style/ui-enhancements` | Update footer spacing, English banners for posts, and /plan scrollbar | ✅ Merged |
-| #10 | `feat/global-music-football-buttons` | Add global floating music and football buttons across pages | ✅ Merged |
-| #11 | `style/mobile-countdowns-and-admin-auth` | Layout for mobile countdowns and admin auth buttons | ✅ Merged |
-| #12 | `refactor/admin-panel-ui` | Admin panel fixes and UI tweaks | ✅ Merged |
-| #13 | `refactor/codebase-cleanup` | Clean codebase, remove Portuguese, and align README | ✅ Merged |
-| #14 | `feat/add-new-subjects` | Add new subjects (06-10), navigation chunks, and fix image paths | 🟡 Draft |
-*(Update this table every time a PR is opened or merged.)*
+| PR  | Branch                                   | Description                                                                           | Status    |
+| --- | ---------------------------------------- | ------------------------------------------------------------------------------------- | --------- |
+| #2  | `feat/coderabbit-coverage`               | CodeRabbit config & 80% coverage enforcement                                          | ✅ Merged |
+| #3  | `docs/agent-context-files`               | Agent docs, context files, PR standards                                               | ✅ Merged |
+| #4  | `refactor/modularize-actions`            | Modularize actions.ts into domain-specific modules                                    | ✅ Merged |
+| #5  | `refactor/modularize-translations`       | Modularize translations into per-language files                                       | ✅ Merged |
+| #6  | `feat/enhance-links-admin`               | Link admin image uploads and compact UI                                               | ✅ Merged |
+| #7  | `feat/social-links-and-calendar`         | Update social links (X, Discord, Twitch, YouTube) and fix calendar date timezone bugs | ✅ Merged |
+| #8  | `style/posts-cards-and-images`           | UI enhancements for posts, tree/messi images, and admin tweaks                        | ✅ Merged |
+| #9  | `style/ui-enhancements`                  | Update footer spacing, English banners for posts, and /plan scrollbar                 | ✅ Merged |
+| #10 | `feat/global-music-football-buttons`     | Add global floating music and football buttons across pages                           | ✅ Merged |
+| #11 | `style/mobile-countdowns-and-admin-auth` | Layout for mobile countdowns and admin auth buttons                                   | ✅ Merged |
+| #12 | `refactor/admin-panel-ui`                | Admin panel fixes and UI tweaks                                                       | ✅ Merged |
+| #13 | `refactor/codebase-cleanup`              | Clean codebase, remove Portuguese, and align README                                   | ✅ Merged |
+| #14 | `feat/add-new-subjects`                  | Add new subjects (06-10), navigation chunks, and fix image paths                      | ✅ Merged |
+| #15 | `feat/academic-regulations`              | UI refresh for plan/content pages and build fixes                                     | 🟡 Draft  |
+
+_(Update this table every time a PR is opened or merged.)_
